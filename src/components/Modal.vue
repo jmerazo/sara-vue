@@ -1,0 +1,81 @@
+<script setup>
+import { Dialog, DialogPanel, DialogTitle, TransitionChild, TransitionRoot } from '@headlessui/vue'
+import {useModalStore} from '../stores/modal'
+import { useEspeciesStore } from '../stores/species';
+
+const modal = useModalStore()
+const especies = useEspeciesStore()
+
+
+</script>
+
+<template>
+    <TransitionRoot as="template" :show="modal.modal" >
+      <Dialog as="div" class="relative z-10" @close="modal.handleClickModal()">
+        <TransitionChild as="template" enter="ease-out duration-300" enter-from="opacity-0" enter-to="opacity-100" leave="ease-in duration-200" leave-from="opacity-100" leave-to="opacity-0">
+          <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
+        </TransitionChild>
+        <div class="fixed inset-0 z-10 overflow-y-auto">
+          <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+            <TransitionChild as="template" enter="ease-out duration-300" enter-from="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95" enter-to="opacity-100 translate-y-0 sm:scale-100" leave="ease-in duration-200" leave-from="opacity-100 translate-y-0 sm:scale-100" leave-to="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95">
+              <DialogPanel class="relative transform overflow-hidden rounded-lg bg-white px-4 pt-5 pb-4 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-3xl sm:p-6 " >
+                <div>
+                  <div class="mt-3">
+                    <!-- llenar la info dinámica -->
+                    
+                    <div class="flex flex-wrap justify-center gap-6 mb-8">
+
+                      <img class="hover:scale-110 transition-transform hover:rotate-1" width="64" height="64" src="https://img.icons8.com/external-flaticons-lineal-color-flat-icons/64/external-leaves-plants-flaticons-lineal-color-flat-icons-2.png" alt="external-leaves-plants-flaticons-lineal-color-flat-icons-2"/>
+                      <img class="hover:scale-110 transition-transform hover:rotate-1" width="64" height="64" src="https://img.icons8.com/external-flaticons-lineal-color-flat-icons/64/external-stem-plants-flaticons-lineal-color-flat-icons-2.png" alt="external-stem-plants-flaticons-lineal-color-flat-icons-2"/>
+                      <img class="hover:scale-110 transition-transform hover:rotate-1" width="64" height="64" src="https://img.icons8.com/external-flatart-icons-lineal-color-flatarticons/64/external-flowers-valentines-day-flatart-icons-lineal-color-flatarticons.png" alt="external-flowers-valentines-day-flatart-icons-lineal-color-flatarticons"/>
+                      <img class="hover:scale-110 transition-transform hover:rotate-1" width="64" height="64" src="https://img.icons8.com/external-flaticons-lineal-color-flat-icons/64/external-fruits-farm-flaticons-lineal-color-flat-icons-2.png" alt="external-fruits-farm-flaticons-lineal-color-flat-icons-2"/>
+
+                    </div>
+
+                    <img 
+                        src="https://miputumayo.com.co/wp-content/uploads/2015/06/%C3%81rbol-emergente.-PNN-Amacayacu-20-09-2011.jpg" 
+                        :alt="'imagen de '+ especies.especies.nom_comunes"
+                        class="rounded-lg mx-auto w-96 position-absolute"
+                    >
+                    <DialogTitle as="h3" class="text-gray-900 text-3xl text-center font-extrabold my-5">
+                       {{ especies.especie.nom_comunes }}
+                    </DialogTitle>
+                    <DialogTitle as="h3" class="text-gray-900 text-2xl font-extrabold my-5">
+                        Distribución
+                    </DialogTitle>
+
+                    <p> {{ especies.especie.distribucion }}</p>
+
+                    <DialogTitle as="h3" class="text-gray-900 text-2xl font-extrabold my-5">
+                       Otros nombres
+                    </DialogTitle>
+
+                    <p class="text-lg text-gray-600 font-bold">
+                      {{ especies.especie.otros_nombres }}
+                    </p>
+                  </div>
+                </div>
+                <div class="mt-8 sm:mt-6 flex justify-between gap-4">
+
+                    <button
+                        type="button"
+                        class="shadow p-3  w-full rounded-lg bg-gray-700 hover:bg-gray-800 text-white uppercase font-bold"
+                        @click="modal.handleClickModal()"
+                    >
+                        Cerrar
+                    </button>
+                    <button
+                        type="button"
+                        class="shadow p-3  w-full rounded-lg bg-green-600 hover:bg-green-700 text-white uppercase font-bold"
+                        
+                    >
+                       Ver Descripción completa
+                    </button>
+                </div> 
+              </DialogPanel>
+            </TransitionChild>
+          </div>
+        </div>
+      </Dialog>
+    </TransitionRoot>
+</template>
