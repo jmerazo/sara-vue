@@ -1,10 +1,12 @@
 <script setup>
 import { computed } from "vue";
 import { RouterLink, useRoute } from "vue-router";
+import {useFamiliasStore} from '../stores/families'
 
 const route = useRoute();
 const paginaInicio = computed(() => route.name === "home");
 
+const familias = useFamiliasStore()
 
 </script>
 
@@ -68,6 +70,7 @@ const paginaInicio = computed(() => route.name === "home");
                         <option> Familia </option>
                         <option> Especie </option>
                         <option> Nombre común </option>
+                        <!-- <option v-for="familia in familias.familias" :key="familia.familias"> {{familia.familia}} </option> -->
                     </select>
                 </div>
 
