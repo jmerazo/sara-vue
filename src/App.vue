@@ -15,4 +15,12 @@ import Modal from './components/Modal.vue';
   <Modal/>
 </template>
 
+<style>
+#app {
+  width: auto;
+  height: auto;
+  overflow: hidden;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+</style>
 

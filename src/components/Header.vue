@@ -12,10 +12,10 @@ const familias = useFamiliasStore()
 
 <template>
     <header
-        class="bg-green-950"
+        class="bg-navbar"
         :class="{header : paginaInicio}"
     >
-        <div class="mx-auto container px-5 py-16">
+        <div class="fixed-between-navbar py-16">
             <div class="flex justify-between items-center">
                 <div>
                     <RouterLink
@@ -51,10 +51,12 @@ const familias = useFamiliasStore()
                 </nav>
             </div>
 
-
+            <div>
+                
+            </div>
             <form
                 v-if="paginaInicio"
-                class="md:w-1/2 2xl:w-1/3 bg-green-700 my-32 p-10 rounded-lg shadow space-y-6 bg-opacity-50"
+                class="md:w-1/2 2xl:w-1/3 bg-green-700 my-32 p-10 rounded-lg shadow space-y-6 bg-opacity-30 form-blur"
                 @submit.prevent="handleSubmit"
             >
                 <div class="space-y-4">
@@ -63,13 +65,13 @@ const familias = useFamiliasStore()
                         for="ingrediente">Buscar</label>
                         <select 
                         id="categoria"
-                        class="text-2xl p-3 w-full rounded-lg focus:outline-none font-bold"
+                        class="text-base p-3 w-full rounded-lg focus:outline-none font-bold"
                         
                     >
-                        <option value="">-- Seleccione -- </option>
+                        <option value="">Seleccione una opción... </option>
                         <option> Familia </option>
-                        <option> Especie </option>
                         <option> Nombre común </option>
+                        <option> Nombre científico </option>
                         <!-- <option v-for="familia in familias.familias" :key="familia.familias"> {{familia.familia}} </option> -->
                     </select>
                 </div>
@@ -80,14 +82,14 @@ const familias = useFamiliasStore()
                         for="parametro">Valor a buscar</label>
                     <input 
                         id="parametro"
-                        class="text-2xl p-3 w-full rounded-lg focus:outline-none"
-                        placeholder="Familia, especie o nombre común"
+                        class="text-base p-3 w-full rounded-lg focus:outline-none"
+                        placeholder="Familia, nombre científico o nombre común"
                     >
                 </div>
                     
                 <input
                     type="submit"
-                    class="bg-lime-400 hover:bg-lime-500 cursor-pointer  font-extrabold w-full p-2 rounded-lg uppercase"
+                    class="bg-button-search cursor-pointer  font-extrabold w-full p-2 rounded-lg uppercase"
                     value="Buscar"
                 />
             </form>
@@ -101,5 +103,29 @@ const familias = useFamiliasStore()
         background-image: url('../assets/media/r1.jpg');
         background-size: cover;
         background-position: center;
+    }
+
+    .form-blur {
+        backdrop-filter: blur(10px);
+    }
+
+    .bg-navbar {
+        background-color: #273323;
+        backdrop-filter: blur(10px);
+    }
+
+    .bg-button-search {
+        background-color: #96c287;
+        color: white;
+    }
+
+    .bg-button-search:hover {
+        background-color: #a1ad9d;
+        color: #273323;
+    }
+
+    .fixed-between-navbar{
+        margin-left: 200px;
+        margin-right: 200px;
     }
 </style>

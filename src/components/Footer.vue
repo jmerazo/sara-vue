@@ -49,7 +49,7 @@ footer {
   width: 100vw;
   height: auto;
 
-  background-color: rgba(4, 31, 10, 0.95);
+  background-color: #273323;
   color: #fff;
   
   display: flex;
@@ -74,7 +74,7 @@ footer {
 .logotipo-corpoamazonia {
   width: auto;
   height: auto;
-  margin: 10px;
+  margin: 20px;
 }
 
 .contact {
