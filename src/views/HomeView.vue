@@ -6,7 +6,7 @@ import { onMounted } from 'vue';
 </script>
 
 <template>
-<div class="w-auto text-xs flex flex-col min-w-[400px] w-screen justify-center items-center grid grid-rows-1 grid-row-gap-0">
+<div class="w-auto text-xs flex flex-col min-w-[400px] justify-center items-center grid grid-rows-1 grid-row-gap-0">
     <div class="information-sara">
       <div class="text-information">
         <span class="title-information">PROYECTO SEMILLAS CTEI</span><br><br>

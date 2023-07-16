@@ -19,6 +19,12 @@ const router = createRouter({
       name: 'familias',
       component: ()=> import('../views/FamiliesView.vue')
     },
+    ,
+    {
+      path: '/glossary',
+      name: 'glossary',
+      component: ()=> import('../views/GlossaryView.vue')
+    },
   ]
 })
 

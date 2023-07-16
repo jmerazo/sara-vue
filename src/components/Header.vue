@@ -48,6 +48,14 @@ const familias = useFamiliasStore()
                     >
                         Familias
                     </RouterLink>
+
+                    <RouterLink
+                        :to="{name: 'glossary'}"
+                        class="text-2xl  rounded-lg p-2 hover:bg-green-900 uppercase font-bold"
+                        active-class="text-green-500"
+                    >
+                        Glosario
+                    </RouterLink>
                 </nav>
             </div>
 
