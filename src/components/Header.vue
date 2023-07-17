@@ -1,13 +1,22 @@
 <script setup>
-import { computed } from "vue";
+import { computed, onMounted } from "vue";
 import { RouterLink, useRoute } from "vue-router";
 import {useFamiliasStore} from '../stores/families'
+import Glide from '@glidejs/glide'
+import '@glidejs/glide/dist/css/glide.core.css'
+import '@glidejs/glide/dist/css/glide.theme.css'
 
 const route = useRoute();
 const paginaInicio = computed(() => route.name === "home");
 
 const familias = useFamiliasStore()
 
+onMounted(() => {
+    const glide = new Glide('.glide', {
+        type: 'carousel',
+        autoplay: 5000
+    });
+});
 </script>
 
 <template>
@@ -15,6 +24,28 @@ const familias = useFamiliasStore()
         class="bg-navbar"
         :class="{header : paginaInicio}"
     >
+    <div v-if="paginaInicio" class="header-slider">
+        <div class="glide w-full h-650px">
+        <div class="glide__track" data-glide-el="track">
+            <ul class="glide__slides">
+                <li class="glide__slide">
+                    <img src="../assets/media/r1.jpg" />
+                </li>
+                <li class="glide__slide">
+                    <img src="../assets/media/r2.jpg" />
+                </li>
+                <li class="glide__slide">
+                    <img src="../assets/media/r3.jpg" />
+                </li>      
+            </ul>
+        </div>
+        <div class="glide__bullets" data-glide-el="controls[nav]">
+            <!-- Agrega tus controles de navegación aquí si es necesario -->
+        </div>
+    </div>
+
+    </div>
+    
         <div class="fixed-between-navbar py-16">
             <div class="flex justify-between items-center">
                 <div>
@@ -107,10 +138,32 @@ const familias = useFamiliasStore()
 </template>
 
 <style>
-    .header {
+    /* .header {
         background-image: url('../assets/media/r1.jpg');
         background-size: cover;
         background-position: center;
+    } */
+
+    .glide {
+        position: relative;
+        background-size: cover;
+        background-position: center;
+        z-index: -999;
+    }
+
+    .header-slider {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: -999;
+    }
+
+    .header-slider .glide__slide img {
+        object-fit: cover;
+        width: 100%;
+        height: 850px;
     }
 
     .form-blur {

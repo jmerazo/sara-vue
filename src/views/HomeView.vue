@@ -1,8 +1,5 @@
 <script setup>
-import { Swiper, SwiperSlide } from 'swiper/vue';
-import 'swiper/css';
-import { Navigation, Pagination } from 'swiper/modules'
-import { onMounted } from 'vue';
+
 </script>
 
 <template>
