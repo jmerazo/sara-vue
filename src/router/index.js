@@ -25,6 +25,11 @@ const router = createRouter({
       name: 'glossary',
       component: ()=> import('../views/GlossaryView.vue')
     },
+    {
+      path: '/busqueda',
+      name: 'busqueda',
+      component: ()=> import('../views/specieSoughtView.vue')
+    },
   ]
 })
 

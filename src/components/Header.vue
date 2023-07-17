@@ -14,7 +14,7 @@ const router = useRouter();
 const paginaInicio = computed(() => route.name === "home");
 
 const familias = useFamiliasStore();
-const especies = useEspeciesStore()
+const especies = useEspeciesStore();
 
 onMounted(() => {
     setTimeout(() => {
@@ -59,13 +59,13 @@ const validarcampos = ()=>{
 }
 
 const msgFamilia = ()=>{
-  router.push('/familias');
+  router.push('/busqueda');
 }
 const msgComun = (comun)=>{
-  router.push('/especies');
+  router.push('/busqueda');
 }
 const msgCientifico = (cientifico)=>{
-  alert(cientifico)
+  router.push('/busqueda');
 }
 </script>
 
@@ -76,24 +76,23 @@ const msgCientifico = (cientifico)=>{
     >
     <div v-if="paginaInicio" class="header-slider">
         <div class="glide w-full h-650px">
-        <div class="glide__track" data-glide-el="track">
-            <ul class="glide__slides">
-                <li class="glide__slide">
-                    <img src="../assets/media/r1.jpg" />
-                </li>
-                <li class="glide__slide">
-                    <img src="../assets/media/r2.jpg" />
-                </li>
-                <li class="glide__slide">
-                    <img src="../assets/media/r3.jpg" />
-                </li>      
-            </ul>
-        </div>
-        <div class="glide__bullets" data-glide-el="controls[nav]">
-            <!-- Agrega tus controles de navegación aquí si es necesario -->
-        </div>
-    </div>
-
+          <div class="glide__track" data-glide-el="track">
+              <ul class="glide__slides">
+                  <li class="glide__slide">
+                      <img src="../assets/media/r1.jpg" />
+                  </li>
+                  <li class="glide__slide">
+                      <img src="../assets/media/r2.jpg" />
+                  </li>
+                  <li class="glide__slide">
+                      <img src="../assets/media/r3.jpg" />
+                  </li>      
+              </ul>
+          </div>
+          <div class="glide__bullets" data-glide-el="controls[nav]">
+              <!-- Agrega tus controles de navegación aquí si es necesario -->
+          </div>
+      </div>
     </div>
     
         <div class="fixed-between-navbar py-16">
@@ -144,100 +143,101 @@ const msgCientifico = (cientifico)=>{
                 
             </div>
             <form
-                v-if="paginaInicio"
-                class="md:w-1/2 2xl:w-1/3 bg-green-700 my-32 p-10 rounded-lg shadow space-y-6 bg-opacity-30 form-blur .form"
-                @submit.prevent="handleSubmit"
+              v-if="paginaInicio"
+              class="md:w-1/3 2xl:w-1/3 bg-green-700 my-28 p-10 rounded-lg shadow space-y-6 bg-opacity-50 "
+              @submit.prevent="handleSubmit"
             >
             <Alerta v-if="error">
-        {{ error }}
-      </Alerta>
-        <div class="space-y-4">
-          <label
-            class="block text-white uppercase font-extrabold text-lg"
-            for="ingrediente"
-            >Buscar</label
-          >
-          <select
-            id="categoria"
-            class="text-2xl p-3 w-full rounded-lg focus:outline-none font-bold"
-            v-model="categoria"
-            @click="valorBuscar=''"
-          >
-            <option value="" >-- Seleccione --</option>
-            <option>Familia</option>
-            <option>Especie</option>
-            <option>Nombre científico</option>
-            
-          </select>
-        </div>
+              {{ error }}
+            </Alerta>
+              <div class="space-y-4">
+                <label
+                  class="block text-white uppercase font-bold "
+                  for="ingrediente"
+                  >Buscar</label
+                >
+                <select
+                  id="categoria"
+                  class="p-3 w-full rounded-lg focus:outline-none font-bold"
+                  v-model="categoria"
+                  @click="valorBuscar=''"
+                >
+                  <option value="" >-- Seleccione --</option>
+                  <option>Familia</option>
+                  <option>Especie</option>
+                  <option>Nombre científico</option>
+                  
+                </select>
+              </div>
 
-        <div v-if="categoria ==='Familia'" class="space-y-4">
-          <label
-            class="block text-white uppercase font-extrabold text-lg"
-            for="parametro"
-            >Valor a buscar</label
-          >
-          <select
-            id="categoria"
-            class="text-2xl p-3 w-full rounded-lg focus:outline-none font-bold"
-            v-model="valorBuscar"
-          >
-            <option value="">-- Seleccione --</option>
-            <option v-for="familia in familias.familias" :key="familia.familia"> {{ familia.familia }}</option>
-          </select>
-        </div>
-        <div v-if="categoria ==='Especie'" class="space-y-4">
-          <label
-            class="block text-white uppercase font-extrabold text-lg"
-            for="parametro"
-            >Valor a buscar</label
-          >
-          <select
-            id="categoria"
-            class="text-2xl p-3 w-full rounded-lg focus:outline-none font-bold"
-            v-model="valorBuscar"
-          >
-            <option value="">-- Seleccione --</option>
-            <option v-for="especie in especies.especies" :key="especie.nom_comunes"> {{ especie.nom_comunes }}</option>
-          </select>
-        </div>
-        <div v-if="categoria ==='Nombre científico'" class="space-y-4">
-          <label
-            class="block text-white uppercase font-extrabold text-lg"
-            for="parametro"
-            >Valor a buscar</label
-          >
-          <select
-            id="categoria"
-            class="text-2xl p-3 w-full rounded-lg focus:outline-none font-bold"
-            v-model="valorBuscar"
-          >
-            <option value="">-- Seleccione --</option>
-            <option v-for="especie in especies.especies" :key="especie.nombre_cientifico"> {{ especie.nombre_cientifico }}</option>
-          </select>
-        </div>
-        <div v-if="!categoria" class="space-y-4">
-          <label
-            class="block text-white uppercase font-extrabold text-lg"
-            for="parametro"
-            >Valor a buscar</label
-          >
-          <select
-            disabled
-            id="categoria"
-            class="text-2xl p-3 w-full rounded-lg focus:outline-none font-bold"
-            
-          >
-            <option value="">-- Seleccione --</option>
-            
-          </select>
-        </div>
-        <input
-          type="submit"
-          class="bg-lime-400 hover:bg-lime-500 cursor-pointer font-extrabold w-full p-2 rounded-lg uppercase"
-          value="Buscar"
-          @click="validarcampos()"
-        />
+              <div v-if="categoria ==='Familia'" class="space-y-4">
+                <label
+                  class="block text-white uppercase font-bold "
+                  for="parametro"
+                  >Valor a buscar</label
+                >
+                <select
+                  id="categoria"
+                  class="p-3 w-full rounded-lg focus:outline-none font-bold"
+                  v-model="valorBuscar"
+                >
+                  <option value="">-- Seleccione --</option>
+                  <option v-for="familia in familias.familias" :key="familia.familia"> {{ familia.familia }}</option>
+                </select>
+              </div>
+              <div v-if="categoria ==='Especie'" class="space-y-4">
+                <label
+                  class="block text-white uppercase font-bold "
+                  for="parametro"
+                  >Valor a buscar</label
+                >
+                <select
+                  id="categoria"
+                  class="text-lg p-3 w-full rounded-lg focus:outline-none font-bold"
+                  v-model="valorBuscar"
+                >
+                  <option value="">-- Seleccione --</option>
+                  <option v-for="especie in especies.especies" :key="especie.nom_comunes"> {{ especie.nom_comunes }}</option>
+                </select>
+              </div>
+              <div v-if="categoria ==='Nombre científico'" class="space-y-4">
+                <label
+                  class="block text-white uppercase font-bold "
+                  for="parametro"
+                  >Valor a buscar</label
+                >
+                <select
+                  id="categoria"
+                  class="text-lg p-3 w-full rounded-lg focus:outline-none font-bold"
+                  v-model="valorBuscar"
+                >
+                  <option value="">-- Seleccione --</option>
+                  <option v-for="especie in especies.especies" :key="especie.nombre_cientifico"> {{ especie.nombre_cientifico }}</option>
+                </select>
+              </div>
+              <div v-if="!categoria" class="space-y-4">
+                <label
+                  class="block text-white uppercase font-bold "
+                  for="parametro"
+                  >Valor a buscar</label
+                >
+                <select
+                  disabled
+                  id="categoria"
+                  class="text-lg p-3 w-full rounded-lg focus:outline-none font-bold"
+                  
+                >
+                  <option value="">-- Seleccione --</option>
+                  
+                </select>
+              </div>
+              <input
+                type="submit"
+                class="bg-lime-400 hover:bg-lime-500 cursor-pointer font-bold w-full p-2 rounded-lg uppercase"
+                value="Buscar"
+                @click="validarcampos()"
+              />
+              <!-- fdsfjskdfjsdonsdondso -->
             </form>
         </div>
 
@@ -270,7 +270,7 @@ const msgCientifico = (cientifico)=>{
     .header-slider .glide__slide img {
         object-fit: cover;
         width: 100%;
-        height: 860px;
+        height: 830px;
     }
 
     .form-blur {

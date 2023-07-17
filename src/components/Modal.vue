@@ -23,12 +23,7 @@ const cambiarImagenModal = (nuevaImagen)=>{
   }else{
     imagenModal.value.imgEspecie = imagenModal.value.sinImagen
   }
-    
-    
 }
-
-
-
 </script>
 
 <template>
@@ -38,43 +33,42 @@ const cambiarImagenModal = (nuevaImagen)=>{
           <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
         </TransitionChild>
         <div class="fixed inset-0 z-10 overflow-y-auto">
-          <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+          <div class="flex min-h-full items-end justify-center p-2 text-center sm:items-center sm:p-0">
             <TransitionChild as="template" enter="ease-out duration-300" enter-from="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95" enter-to="opacity-100 translate-y-0 sm:scale-100" leave="ease-in duration-200" leave-from="opacity-100 translate-y-0 sm:scale-100" leave-to="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95">
-              <DialogPanel class="relative transform overflow-hidden rounded-lg bg-white px-4 pt-5 pb-4 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-3xl sm:p-6 " >
+              <DialogPanel class="relative transform overflow-hidden rounded-lg bg-white px-2 pt-2 pb-2 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-3xl sm:p-6 " >
                 <div>
-                  <div class="mt-3">
+                  <div >
                     <!-- llenar la info dinámica -->
                     
-                    <div class="flex flex-wrap justify-center gap-6 mb-8">
+                    <div class="flex flex-wrap justify-center gap-6 mt-3">
 
-                      <img @click="cambiarImagenModal(imagenModal.imgHojas)" class="hover:scale-110 transition-transform hover:rotate-1" width="64" height="64" src="https://img.icons8.com/external-flaticons-lineal-color-flat-icons/64/external-leaves-plants-flaticons-lineal-color-flat-icons-2.png" alt="external-leaves-plants-flaticons-lineal-color-flat-icons-2"/>
-                      <img @click="cambiarImagenModal(imagenModal.imgTallo)" class="hover:scale-110 transition-transform hover:rotate-1" width="64" height="64" src="https://img.icons8.com/external-flaticons-lineal-color-flat-icons/64/external-stem-plants-flaticons-lineal-color-flat-icons-2.png" alt="external-stem-plants-flaticons-lineal-color-flat-icons-2"/>
-                      <img @click="cambiarImagenModal(imagenModal.imgFlores)" class="hover:scale-110 transition-transform hover:rotate-1" width="64" height="64" src="https://img.icons8.com/external-flatart-icons-lineal-color-flatarticons/64/external-flowers-valentines-day-flatart-icons-lineal-color-flatarticons.png" alt="external-flowers-valentines-day-flatart-icons-lineal-color-flatarticons"/>
-                      <img @click="cambiarImagenModal(imagenModal.imgFrutos)" class="hover:scale-110 transition-transform hover:rotate-1" width="64" height="64" src="https://img.icons8.com/external-flaticons-lineal-color-flat-icons/64/external-fruits-farm-flaticons-lineal-color-flat-icons-2.png" alt="external-fruits-farm-flaticons-lineal-color-flat-icons-2"/>
+                      <img @click="cambiarImagenModal(imagenModal.imgHojas)" class="hover:scale-110 transition-transform hover:rotate-1 w-11 h-11"  src="https://img.icons8.com/external-flaticons-lineal-color-flat-icons/64/external-leaves-plants-flaticons-lineal-color-flat-icons-2.png" alt="external-leaves-plants-flaticons-lineal-color-flat-icons-2"/>
+                      <img @click="cambiarImagenModal(imagenModal.imgTallo)" class="hover:scale-110 transition-transform hover:rotate-1 w-11 h-11"  src="https://img.icons8.com/external-flaticons-lineal-color-flat-icons/64/external-stem-plants-flaticons-lineal-color-flat-icons-2.png" alt="external-stem-plants-flaticons-lineal-color-flat-icons-2"/>
+                      <img @click="cambiarImagenModal(imagenModal.imgFlores)" class="hover:scale-110 transition-transform hover:rotate-1 w-11 h-11"  src="https://img.icons8.com/external-flatart-icons-lineal-color-flatarticons/64/external-flowers-valentines-day-flatart-icons-lineal-color-flatarticons.png" alt="external-flowers-valentines-day-flatart-icons-lineal-color-flatarticons"/>
+                      <img @click="cambiarImagenModal(imagenModal.imgFrutos)" class="hover:scale-110 transition-transform hover:rotate-1 w-11 h-11" src="https://img.icons8.com/external-flaticons-lineal-color-flat-icons/64/external-fruits-farm-flaticons-lineal-color-flat-icons-2.png" alt="external-fruits-farm-flaticons-lineal-color-flat-icons-2"/>
 
                     </div>
 
                     <img 
-                        :src="imagenModal.imgEspecie" 
-                        :alt="'imagen de '+ especies.especies.nom_comunes"
-                        class="rounded-lg mx-auto position-absolute"
-                        @click="cambiarImagenModal(imgDefault)"
-                        
+                      :src="imagenModal.imgEspecie" 
+                      :alt="'imagen de ' + especies.especies.nom_comunes"
+                      class="rounded-lg mx-auto position-absolute mt-5 mb-3 w-96 h-auto"
+                      @click="cambiarImagenModal(imgDefault)"
                     >
-                    <DialogTitle as="h3" @click="cambiarImagenModal(imgDefault)" class="text-gray-900 text-3xl text-center font-extrabold my-5">
+                    <DialogTitle as="h4" @click="cambiarImagenModal(imgDefault)" class="text-gray-900 text-lg text-center font-extrabold ">
                        {{ especies.especie.nom_comunes }}
                     </DialogTitle>
-                    <DialogTitle as="h3" class="text-gray-900 text-2xl font-extrabold my-5">
+                    <DialogTitle as="h3" class="text-gray-900 text-lg font-bold my-5">
                         Distribución
                     </DialogTitle>
 
                     <p> {{ especies.especie.distribucion }}</p>
 
-                    <DialogTitle as="h3" class="text-gray-900 text-2xl font-extrabold my-5">
+                    <DialogTitle as="h3" class="text-gray-900 text-lg font-bold my-5">
                        Otros nombres
                     </DialogTitle>
 
-                    <p class="text-lg text-gray-600 font-bold">
+                    <p class="   text-gray-600 font-bold">
                       {{ especies.especie.otros_nombres }}
                     </p>
                   </div>
@@ -83,14 +77,14 @@ const cambiarImagenModal = (nuevaImagen)=>{
 
                     <button
                         type="button"
-                        class="shadow p-3  w-full rounded-lg bg-gray-700 hover:bg-gray-800 text-white uppercase font-bold"
+                        class="shadow p-1  w-full rounded-lg bg-gray-700 hover:bg-gray-800 text-white uppercase font-bold"
                         @click="modal.handleClickModal(),cambiarImagenModal(imgDefault)"
                     >
                         Cerrar
                     </button>
                     <button
                         type="button"
-                        class="shadow p-3  w-full rounded-lg bg-green-600 hover:bg-green-700 text-white uppercase font-bold"
+                        class="shadow p-1  w-full rounded-lg bg-green-600 hover:bg-green-700 text-white uppercase font-bold"
                         
                     >
                        Ver Descripción completa
