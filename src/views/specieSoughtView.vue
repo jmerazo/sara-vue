@@ -1,6 +1,8 @@
 <script setup>
+import QuoteButton from '../components/QuoteButton.vue'
 </script>
 <template>
+    <QuoteButton></QuoteButton>
     <div class="md:flex mb-6 gap-4 p-4">
     
         <div class="w-3/4 rounded-lg shadow-lg  px-14">
@@ -41,5 +43,6 @@
             <p class="text-justify">Lorem ipsum dolor sit, amet consectetur adipisicing elit. Soluta debitis ea maxime, cupiditate, laborum odit magni facilis asperiores harum voluptates blanditiis sapiente ratione, dolores eos velit nam sint sunt. Id!</p>
             <img class="px-10 mb-14 rounded-lg mt-3" src="https://img.freepik.com/fotos-premium/fruta-granada-madura-colgando-jardin-espacio-copiar_150101-4103.jpg" alt="">
         </div>
-  </div>
+    </div>
+    
 </template>
