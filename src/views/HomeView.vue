@@ -3,9 +3,9 @@
 </script>
 
 <template>
-<div class="w-auto text-xs flex flex-col min-w-[400px] justify-center items-center ">
+<div class="w-auto text-xs flex flex-col min-w-[400px] justify-center items-center grid grid-rows-1 grid-row-gap-0">
     <div class="information-sara">
-      <div class="text-information w-full mr-20">
+      <div class="text-information w-full">
         <span class="title-information font-bold">PROYECTO SEMILLAS CTEI</span><br><br>
         <p class="p-h">
           Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce nec ultricies nisi. Cras in posuere orci, quis lobortis urna. 
@@ -21,7 +21,11 @@
       </div>
       <div class="imagen-information w-full rounded-lg">
         <div class="flex flex-col items-center">
-          <h2 class="text-xl font-bold text-center mb-4">TOP ESPECIES</h2>
+          <div class="flex justify-center">
+        <div class="overflow-hidden h-8 bg-pastel-green rounded-md">
+          <h2 class="text-xl font-bold text-center animate-marquee">TOP ESPECIES</h2>
+        </div>
+      </div>
           <div class="flex justify-center">
             <div class="relative mr-4">
               <img src="../assets/media/algarrobo.jpg" class="img-information rounded-lg w-40 h-40 object-cover" />
@@ -97,6 +101,19 @@
   transform: scale(1.1);
 }
 
+@keyframes marquee {
+  0% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+.animate-marquee {
+  animation: marquee 5s linear infinite;
+  white-space: nowrap; /* Evita que el texto se divida en varias líneas */
+}
 .p-h {
   text-align: justify;
 }
