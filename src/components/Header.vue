@@ -270,7 +270,7 @@ const msgCientifico = (cientifico)=>{
     .header-slider .glide__slide img {
         object-fit: cover;
         width: 100%;
-        height: 830px;
+        height: 810px;
     }
 
     .form-blur {

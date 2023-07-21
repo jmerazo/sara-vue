@@ -3,10 +3,10 @@
 </script>
 
 <template>
-<div class="w-auto text-xs flex flex-col min-w-[400px] justify-center items-center grid grid-rows-1 grid-row-gap-0">
+<div class="w-auto text-xs flex flex-col min-w-[400px] justify-center items-center ">
     <div class="information-sara">
-      <div class="text-information">
-        <span class="title-information">PROYECTO SEMILLAS CTEI</span><br><br>
+      <div class="text-information w-full mr-20">
+        <span class="title-information font-bold">PROYECTO SEMILLAS CTEI</span><br><br>
         <p class="p-h">
           Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce nec ultricies nisi. Cras in posuere orci, quis lobortis urna. 
           Nulla congue velit et viverra vehicula. Nunc ut ligula purus. Phasellus vitae ultrices lacus. Cras efficitur imperdiet orci, 
@@ -19,17 +19,33 @@
           Ut vitae nulla non sapien finibus euismod. Etiam quis neque laoreet, sodales diam gravida, sodales diam.
         </p>
       </div>
-      <div class="imagen-information">
-        <img src="../assets/tree.png" class="img-information">
+      <div class="imagen-information w-full rounded-lg">
+        <div class="flex flex-col items-center">
+          <h2 class="text-xl font-bold text-center mb-4">TOP ESPECIES</h2>
+          <div class="flex justify-center">
+            <div class="relative mr-4">
+              <img src="../assets/media/algarrobo.jpg" class="img-information rounded-lg w-40 h-40 object-cover" />
+              <span class="text-white font-bold text-xs text-center absolute top-0 left-0 right-0 p-2 bg-black bg-opacity-50 rounded-lg">Algarrobo</span>
+            </div>
+            <div class="relative mr-4">
+              <img src="../assets/media/gualanday.jpg" class="img-information rounded-lg w-40 h-40 object-cover" />
+              <span class="text-white font-bold text-xs text-center absolute top-0 left-0 right-0 p-2 bg-black bg-opacity-50 rounded-lg">Gualanday</span>
+            </div>
+            <div class="relative">
+              <img src="../assets/media/nogal_cafetero.jpg" class="img-information rounded-lg w-40 h-40 object-cover" />
+              <span class="text-white font-bold text-xs text-center absolute top-0 left-0 right-0 p-2 bg-black bg-opacity-50 rounded-lg">Nogal Cafetero</span>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
     <div class="colaborators">
-        <img src="../assets/minciencias-logo.png" class="log-minciencia fixed-between">
-        <img src="../assets/corpoamazonia.png" class="log-corpoamazonia fixed-between">
-        <img src="../assets/sgr.png" class="log-sgr fixed-between">
-        <img src="../assets/gobernacion-putumayo.png" class="log-gobernacion fixed-between">
-        <img src="../assets/logoitp.png" class="log-itp fixed-between">
+        <a href="https://minciencias.gov.co/"><img src="../assets/minciencias-logo.png" class="log-minciencia fixed-between hover:scale-110"></a>
+        <a href="https://www.corpoamazonia.gov.co/"><img src="../assets/corpoamazonia.png" class="log-corpoamazonia fixed-between hover:scale-110"></a>
+        <a href="https://www.sgr.gov.co/"><img src="../assets/sgr.png" class="log-sgr fixed-between hover:scale-110"></a>
+        <a href="https://www.putumayo.gov.co/"><img src="../assets/gobernacion-putumayo.png" class="log-gobernacion fixed-between hover:scale-110"></a>
+        <a href="https://itp.edu.co/ITP2022/"><img src="../assets/logoitp.png" class="log-itp fixed-between hover:scale-110"></a>
     </div>
 </div>
 
@@ -49,11 +65,6 @@
   display: grid;
   grid-template-columns: 1fr .2fr;
 }
-
-.title-information{
-  font-weight: bold;
-}
-
 .text-information {
   text-align: justify;
   grid-column-start: 1;
@@ -68,11 +79,22 @@
   justify-content: center;
   align-items: center;
   margin-left: 15px;
+
+  background-color: #b6dfbb;
+  padding: 1rem;
+}
+
+.relative {
+  position: relative;
 }
 
 .img-information {
-  width: 220px;
-  height: 172px;
+  cursor: pointer;
+  transition: transform 0.3s;
+}
+
+.img-information:hover {
+  transform: scale(1.1);
 }
 
 .p-h {
