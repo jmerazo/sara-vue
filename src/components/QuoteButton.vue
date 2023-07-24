@@ -20,7 +20,7 @@ const copyText = () => {
   <div>
     <div class="fixed top-2/4 right-0 z-50">
       <button class="floating-button bg-green-700 text-white rounded-l-lg py-1 px-1" @click="showText = !showText">
-        <i class="fas fa-quote mr-1"></i> Cómo Citar
+        <font-awesome-icon icon="quote-left" class="mr-2"/> Cómo Citar
       </button>
       <div v-if="showText" class="citation-text bg-white border border-gray-300 rounded-r-lg px-4 py-2 mt-2">
         <h1 class="text-lg font-bold">Cítese como</h1>

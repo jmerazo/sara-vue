@@ -16,4 +16,7 @@ export default {
     getGlossary(){
         return api.get(`/glossary`)
     },
+    getGeoCandidateTrees(){
+        return api.get('/candidate/geolocation')
+    }
 }

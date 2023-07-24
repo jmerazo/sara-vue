@@ -84,7 +84,7 @@ const validarcampos = ()=>{
                 <nav class="flex gap-4 text-white ">
                     <RouterLink
                         :to="{name: 'home'}"
-                        class="text-2xl  rounded-lg p-2 hover:bg-green-900 uppercase font-bold"
+                        class="text-xl  rounded-lg p-2 hover:bg-green-900 uppercase font-bold"
                         active-class="text-green-500"
                     >
                         Inicio
@@ -92,14 +92,14 @@ const validarcampos = ()=>{
 
                     <RouterLink
                         :to="{name: 'especies'}"
-                        class="text-2xl  rounded-lg p-2 hover:bg-green-900 uppercase font-bold"
+                        class="text-xl  rounded-lg p-2 hover:bg-green-900 uppercase font-bold"
                         active-class="text-green-500"
                     >
                         Especies
                     </RouterLink>
                     <RouterLink
                         :to="{name: 'familias'}"
-                        class="text-2xl  rounded-lg p-2 hover:bg-green-900 uppercase font-bold"
+                        class="text-xl  rounded-lg p-2 hover:bg-green-900 uppercase font-bold"
                         active-class="text-green-500"
                     >
                         Familias
@@ -107,10 +107,17 @@ const validarcampos = ()=>{
 
                     <RouterLink
                         :to="{name: 'glossary'}"
-                        class="text-2xl  rounded-lg p-2 hover:bg-green-900 uppercase font-bold"
+                        class="text-xl  rounded-lg p-2 hover:bg-green-900 uppercase font-bold"
                         active-class="text-green-500"
                     >
                         Glosario
+                    </RouterLink>
+                    <RouterLink
+                        :to="{name: 'aboutus'}"
+                        class="text-xl  rounded-lg p-2 hover:bg-green-900 uppercase font-bold"
+                        active-class="text-green-500"
+                    >
+                        Acerca de
                     </RouterLink>
                 </nav>
             </div>

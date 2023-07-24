@@ -5,6 +5,7 @@ import { useRouter } from "vue-router";
 
 import QuoteButton from '../components/QuoteButton.vue'
 import PagesQueries from '../components/PagesQueries.vue';
+import RenderGeo from '../components/RenderGeo.vue'
 
 const especie = useConsultaStore()
 const router = useRouter();
@@ -105,6 +106,8 @@ scrollToTop()
             <img class="px-10 mb-14 rounded-lg mt-3" src="https://img.freepik.com/fotos-premium/fruta-granada-madura-colgando-jardin-espacio-copiar_150101-4103.jpg" alt="">
         </div>
     </div>
+
+    <RenderGeo></RenderGeo>
     <PagesQueries></PagesQueries>    
    </div>
    <div v-else class="flex flex-col items-center justify-center h-80">
