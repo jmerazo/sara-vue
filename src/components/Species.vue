@@ -1,6 +1,8 @@
 <script setup>
 import {useEspeciesStore} from '../stores/species'
 
+
+
 const especies = useEspeciesStore()
 
  defineProps({

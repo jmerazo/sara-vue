@@ -1,8 +1,10 @@
 <script setup>
 import { ref, computed, onMounted, createElementBlock } from "vue";
-import { RouterLink, useRoute, useRouter } from "vue-router";
+import { RouterLink, useRoute} from "vue-router";
 import {useFamiliasStore} from '../stores/families'
 import {useEspeciesStore} from '../stores/species'
+import { useConsultaStore } from "../stores/consulta";
+
 import Alerta from '../components/Alerta.vue'
 
 import Glide from '@glidejs/glide'
@@ -10,11 +12,12 @@ import '@glidejs/glide/dist/css/glide.core.css'
 import '@glidejs/glide/dist/css/glide.theme.css'
 
 const route = useRoute();
-const router = useRouter();
+
 const paginaInicio = computed(() => route.name === "home");
 
 const familias = useFamiliasStore();
 const especies = useEspeciesStore();
+const consulta = useConsultaStore()
 
 onMounted(() => {
     setTimeout(() => {
@@ -27,52 +30,25 @@ onMounted(() => {
 
 const error = ref('')
 
-const categoria = ref('')
-const valorBuscar = ref('')
-
 const validarcampos = ()=>{
   
-  if(categoria.value){
-
-    if(categoria.value === 'Familia' && valorBuscar.value ){
-      msgFamilia()
-      return
-    }else if(categoria.value === 'Especie' && valorBuscar.value){
-      msgComun(valorBuscar.value)
-      return
-    }else if(categoria.value === 'Nombre científico' && valorBuscar.value){
-      msgCientifico(valorBuscar.value)
-      return
-    }else{
-      error.value = 'Todos los campos son obligatorios'
-      setTimeout(()=>{
-        error.value = ''
-      },3000)
-  }
-
+  if(consulta.consulta.categoria && consulta.consulta.vrBuscar){
+    consulta.mostrarConsulta()
+    return
   }else{
     error.value = 'Todos los campos son obligatorios'
     setTimeout(()=>{
       error.value = ''
     },3000)
   }
+
 }
 
-const msgFamilia = ()=>{
-  router.push('/busqueda');
-}
-const msgComun = (comun)=>{
-  router.push('/busqueda');
-}
-const msgCientifico = (cientifico)=>{
-  router.push('/busqueda');
-}
 </script>
 
 <template>
     <header
         class="bg-navbar"
-        :class="{header : paginaInicio}"
     >
     <div v-if="paginaInicio" class="header-slider">
         <div class="glide w-full h-650px">
@@ -159,63 +135,67 @@ const msgCientifico = (cientifico)=>{
                 <select
                   id="categoria"
                   class="p-3 w-full rounded-lg focus:outline-none font-bold"
-                  v-model="categoria"
-                  @click="valorBuscar=''"
+                  v-model="consulta.consulta.categoria"
+                  @change="consulta.consulta.vrBuscar=''"
                 >
                   <option value="" >-- Seleccione --</option>
                   <option>Familia</option>
-                  <option>Especie</option>
+                  <option>Nombre Común</option>
                   <option>Nombre científico</option>
                   
                 </select>
               </div>
-
-              <div v-if="categoria ==='Familia'" class="space-y-4">
+              <!-- Familia -->
+              <div v-if="consulta.consulta.categoria ==='Familia'" class="space-y-4">
                 <label
                   class="block text-white uppercase font-bold "
                   for="parametro"
                   >Valor a buscar</label
                 >
                 <select
-                  id="categoria"
+                  id="familia"
                   class="p-3 w-full rounded-lg focus:outline-none font-bold"
-                  v-model="valorBuscar"
+                  v-model="consulta.consulta.vrBuscar"
                 >
                   <option value="">-- Seleccione --</option>
                   <option v-for="familia in familias.familias" :key="familia.familia"> {{ familia.familia }}</option>
                 </select>
               </div>
-              <div v-if="categoria ==='Especie'" class="space-y-4">
+
+              <!-- Especie -->
+              <div v-if="consulta.consulta.categoria ==='Nombre Común'" class="space-y-4">
                 <label
                   class="block text-white uppercase font-bold "
                   for="parametro"
                   >Valor a buscar</label
                 >
                 <select
-                  id="categoria"
+                  id="especie"
                   class="text-lg p-3 w-full rounded-lg focus:outline-none font-bold"
-                  v-model="valorBuscar"
+                  v-model="consulta.consulta.vrBuscar"
                 >
                   <option value="">-- Seleccione --</option>
                   <option v-for="especie in especies.especies" :key="especie.nom_comunes"> {{ especie.nom_comunes }}</option>
                 </select>
               </div>
-              <div v-if="categoria ==='Nombre científico'" class="space-y-4">
+
+              <!-- nombre científico -->
+              <div v-if="consulta.consulta.categoria ==='Nombre científico'" class="space-y-4">
                 <label
                   class="block text-white uppercase font-bold "
                   for="parametro"
                   >Valor a buscar</label
                 >
                 <select
-                  id="categoria"
+                  id="cientifico"
                   class="text-lg p-3 w-full rounded-lg focus:outline-none font-bold"
-                  v-model="valorBuscar"
+                  v-model="consulta.consulta.vrBuscar"
                 >
                   <option value="">-- Seleccione --</option>
                   <option v-for="especie in especies.especies" :key="especie.nombre_cientifico"> {{ especie.nombre_cientifico }}</option>
                 </select>
               </div>
-              <div v-if="!categoria" class="space-y-4">
+              <div v-if="!consulta.consulta.categoria" class="space-y-4">
                 <label
                   class="block text-white uppercase font-bold "
                   for="parametro"
@@ -237,7 +217,7 @@ const msgCientifico = (cientifico)=>{
                 value="Buscar"
                 @click="validarcampos()"
               />
-              <!-- fdsfjskdfjsdonsdondso -->
+              
             </form>
         </div>
 
@@ -245,11 +225,6 @@ const msgCientifico = (cientifico)=>{
 </template>
 
 <style>
-    /* .header {
-        background-image: url('../assets/media/r1.jpg');
-        background-size: cover;
-        background-position: center;
-    } */
 
     .glide {
         position: relative;

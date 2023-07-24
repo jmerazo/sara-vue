@@ -10,6 +10,9 @@ export default {
     lookSpecie(nombre_comun){
         return api.get(`/especie_forestal/search/nombre_comun/${nombre_comun}`)
     },
+    lookScientificName(scientific_name){
+        return api.get(`/especie_forestal/search/scientificname/${scientific_name}`)
+    },
     getGlossary(){
         return api.get(`/glossary`)
     },

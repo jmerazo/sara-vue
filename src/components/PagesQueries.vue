@@ -8,16 +8,16 @@
       <div class="w-full bg-pastel-green p-4 rounded-lg hover:shadow-lg transition-shadow">
         <h2 class="text-base font-semibold mb-4">Páginas de consultas relacionadas</h2>
         <div class="flex items-start">
-          <a href="http://catalogoplantasdecolombia.unal.edu.co/es/" class="mx-4">
+          <a href="http://catalogoplantasdecolombia.unal.edu.co/es/" target="_blank" class="mx-4">
             <img src="../assets/logos/cat_plantas_liquines_col.png" title="Catálogo de plantas y liquenes de Colombia" class="w-14 h-auto backdrop-blur-md transform hover:scale-110">
           </a>
-          <a href="https://tropicos.org/home" class="mx-4">
+          <a href="https://tropicos.org/home" target="_blank" class="mx-4">
             <img src="../assets/logos/tropicos.png" title="Trópicos" class="w-14 h-auto backdrop-blur-md transform hover:scale-110">
           </a>
-          <a href="https://catalogofloravalleaburra.eia.edu.co/" class="mx-4">
+          <a href="https://catalogofloravalleaburra.eia.edu.co/" target="_blank" class="mx-4">
             <img src="../assets/logos/valle_aburra.png" title="Catálogo virtual de flora del Valle de Aburrá" class="w-14 h-auto backdrop-blur-md transform hover:scale-110">
           </a>
-          <a href="https://powo.science.kew.org/" class="mx-4">
+          <a href="https://powo.science.kew.org/" target="_blank" class="mx-4">
             <img src="../assets/powo.png" title="Plants of the World Online" class="w-14 h-auto rounded-lg backdrop-blur-md transform hover:scale-110">
           </a>
         </div>

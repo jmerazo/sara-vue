@@ -3,9 +3,12 @@ import {reactive, ref} from 'vue'
 import { Dialog, DialogPanel, DialogTitle, TransitionChild, TransitionRoot } from '@headlessui/vue'
 import {useModalStore} from '../stores/modal'
 import { useEspeciesStore } from '../stores/species';
+import { useConsultaStore } from '../stores/consulta';
 
 const modal = useModalStore()
 const especies = useEspeciesStore()
+const consulta = useConsultaStore()
+
 const imgDefault = ref('https://miputumayo.com.co/wp-content/uploads/2015/06/%C3%81rbol-emergente.-PNN-Amacayacu-20-09-2011.jpg')
 
 const imagenModal = ref({
@@ -23,6 +26,12 @@ const cambiarImagenModal = (nuevaImagen)=>{
   }else{
     imagenModal.value.imgEspecie = imagenModal.value.sinImagen
   }
+}
+
+const consultar = (nombre_comun)=>{
+  consulta.consulta.categoria = 'Nombre Común'
+  consulta.consulta.vrBuscar = nombre_comun
+  consulta.mostrarConsulta()
 }
 </script>
 
@@ -85,6 +94,7 @@ const cambiarImagenModal = (nuevaImagen)=>{
                     <button
                         type="button"
                         class="shadow p-1  w-full rounded-lg bg-green-600 hover:bg-green-700 text-white uppercase font-bold"
+                        @click="consultar(especies.especie.nom_comunes),modal.handleClickModal()"
                         
                     >
                        Ver Descripción completa

@@ -1,4 +1,4 @@
-import {ref, onMounted, reactive} from 'vue'
+import {ref, onMounted} from 'vue'
 import {defineStore} from 'pinia'
 import {useModalStore} from '../stores/modal'
 import APIService from '../services/APIService'
