@@ -1,7 +1,8 @@
 <script setup>
-
+import { ref, onMounted, onActivated, watch } from 'vue';
 import { useConsultaStore } from '../stores/consulta';
 import { useRouter } from "vue-router";
+import { useGeoCandidateTrees } from '../stores/candidate'
 
 import QuoteButton from '../components/QuoteButton.vue'
 import PagesQueries from '../components/PagesQueries.vue';
@@ -9,6 +10,12 @@ import RenderGeo from '../components/RenderGeo.vue'
 
 const especie = useConsultaStore()
 const router = useRouter();
+const geoStore = useGeoCandidateTrees();
+
+console.log("geo", geoStore.geoCandidateData)
+const codigo = especie.especie.cod_especie
+console.log('codigo: ', codigo)
+const filteredData = ref([]);
 
 const {
     nom_comunes,
@@ -34,6 +41,17 @@ const scrollToTop = () => {
   window.scrollTo(0, 0);
 }
 scrollToTop()
+
+async function filterGeo(codigo, data) {
+    console.log("codigo: ", codigo," data: ", data)
+    return await data.filter(item => item.codigo === codigo)
+             .map(item => ({ lon: item.lon, lat: item.lat }));
+}
+
+onActivated (async () => {
+    filteredData.value = filterGeo(codigo, geoStore.geoCandidateData.value);
+    console.log('FilteredData: ', filteredData.value)
+});
 </script>
 <template>
    <div v-if="nom_comunes">
@@ -107,7 +125,7 @@ scrollToTop()
         </div>
     </div>
 
-    <RenderGeo></RenderGeo>
+    <RenderGeo :filteredData="filteredData"></RenderGeo>
     <PagesQueries></PagesQueries>    
    </div>
    <div v-else class="flex flex-col items-center justify-center h-80">

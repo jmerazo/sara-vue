@@ -9,6 +9,7 @@ export const useGeoCandidateTrees = defineStore('geoCandidateTrees',()=>{
     onMounted(async ()=>{
         const {data} = await APIService.getGeoCandidateTrees()
         geoCandidateData.value = data
+        /* console.log("Datos cargados en el store:", geoCandidateData.value); */
     })
 
     return {
