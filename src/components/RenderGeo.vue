@@ -3,7 +3,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed, watch  } from 'vue';
+import { ref, onMounted, computed, watch, onActivated  } from 'vue';
 import Map from 'ol/Map';
 import View from 'ol/View';
 import TileLayer from 'ol/layer/Tile';
@@ -15,11 +15,12 @@ import { fromLonLat } from 'ol/proj';
 import Point from 'ol/geom/Point';
 import Feature from 'ol/Feature';
 
-const { filteredData } = defineProps(['filteredData']);
 const mapContainer = ref(null);
+const { filteredData } =  defineProps(['filteredData']);
+console.log('filtered data render geo: ', filteredData)
 
-onMounted(() => {
-    drawMap();
+onMounted(async () => {
+   await drawMap();
 });
 
 function drawMap() {
@@ -43,6 +44,7 @@ function drawMap() {
     { lon: 139.6917, lat: 35.6895 }, // Tokyo
   ];
  */
+  
   const vectorSource = new VectorSource({
     features: filteredData.map((point) => {
       const geometry = new Point(fromLonLat([point.lon, point.lat]));
