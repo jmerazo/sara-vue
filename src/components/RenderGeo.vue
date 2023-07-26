@@ -19,8 +19,10 @@ const mapContainer = ref(null);
 const { filteredData } =  defineProps(['filteredData']);
 console.log('filtered data render geo: ', filteredData)
 
-onMounted(async () => {
-   await drawMap();
+onMounted(() => {
+  if (filteredData.length > 0) {
+    drawMap();
+  }
 });
 
 function drawMap() {

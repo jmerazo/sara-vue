@@ -136,7 +136,9 @@ scrollToTop()
         </div>
     </div>
 
-    <RenderGeo :filteredData="filteredData"></RenderGeo>
+    <template v-if="filteredData.length > 0">
+      <RenderGeo :filteredData="filteredData" />
+    </template>
     <PagesQueries></PagesQueries>    
    </div>
    <div v-else class="flex flex-col items-center justify-center h-80">
