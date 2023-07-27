@@ -16,7 +16,17 @@ console.log("geo", geoStore.geoCandidateData)
 const codigo = especie.especie.cod_especie
 console.log('codigo: ', codigo)
 const filteredData = ref([]);
+/* function orderGeo(codigo, data){
+    console.log('codigo example: ', codigo)
+    console.log('data example: ', data)
+    return data.filter(item => item.codigo === codigo)
+             .map(item => ({ lon: item.lon, lat: item.lat }));
+}
 
+const codeExample = '2769'
+const dataGeo = [{'codigo': '2769', 'lat': 0.65413, 'lon': -76.71027}, {'codigo': '2769', 'lat': 0.65423, 'lon': -76.71018}, {'codigo': '4912', 'lat': 0.65401, 'lon': -76.70983}, {'codigo': '1189', 'lat': 0.635224, 'lon': -76.873469}, {'codigo': '2313', 'lat': 0.635252, 'lon': -76.873421}, {'codigo': '827', 'lat': 0.63531, 'lon': -76.87325}, {'codigo': '197', 'lat': 0.63535, 'lon': -76.87348}, {'codigo': '3244', 'lat': 0.63535, 'lon': -76.873741}, {'codigo': '605', 'lat': 0.635499, 'lon': -76.874022}, {'codigo': '3244', 'lat': 0.6355, 'lon': -76.873684}, {'codigo': '3346', 'lat': 0.63558, 'lon': -76.86891}, {'codigo': '3244', 'lat': 0.635473, 'lon': -76.873534}, {'codigo': '846', 'lat': 0.63538, 'lon': -76.873436}, {'codigo': '782', 'lat': 0.63567, 'lon': -76.87333}, {'codigo': '1897', 'lat': 0.63558, 'lon': -76.87315}, {'codigo': '1189', 'lat': 0.635494, 'lon': -76.87264}, {'codigo': '1189', 'lat': 0.635988, 'lon': -76.872022}, {'codigo': '5396', 'lat': 0.635513, 'lon': -76.873289}]
+const dataOrder = orderGeo(codeExample, dataGeo)
+console.log('data order: ', dataOrder) */
 async function filterGeo(codigo, data) {
     console.log("codigo: ", codigo," data: ", data)
     return await data.filter(item => item.codigo === codigo)

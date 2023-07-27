@@ -62,6 +62,7 @@ function drawMap(centerCoordinate) {
     src: treeIconPath, // Ruta de la imagen del árbol
     scale: 0.4, // Puedes ajustar este valor para cambiar el tamaño del icono
     anchor: [0.5, 1], // Posición del icono donde se encuentra el punto (centro inferior del icono)        
+
   });
 
   const vectorLayer = new VectorLayer({
@@ -69,6 +70,7 @@ function drawMap(centerCoordinate) {
     style: new Style({
         image: treeIcon
       /* image: new Circle({
+      image: new Circle({
         radius: 6,
         fill: new Fill({ color: 'green' }),
         stroke: new Stroke({ color: 'white', width: 2 }),

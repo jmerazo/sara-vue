@@ -62,7 +62,7 @@ const validarcampos = ()=>{
                   </li>
                   <li class="glide__slide">
                       <img src="../assets/media/r3.jpg" />
-                  </li>      
+                  </li>  
               </ul>
           </div>
           <div class="glide__bullets" data-glide-el="controls[nav]">

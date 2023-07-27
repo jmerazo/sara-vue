@@ -1,10 +1,20 @@
 <script setup>
+import { useConsultaStore } from '../stores/consulta';
+
+const consulta = useConsultaStore()
+
+const mostrarIndividuos = (nom_familia)=>{
+  consulta.consulta.categoria = 'Familia'
+  consulta.consulta.vrBuscar = nom_familia
+  consulta.mostrarConsulta()
+}
+
 defineProps({
   familia: {
     type: Object,
   },
 });
-//class="max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden md:max-w-2xl"
+
 </script>
 <template>
   <div
@@ -32,6 +42,7 @@ defineProps({
         <div class="flex items-center">
           <button
             class="shadow-lg bg-green-800 hover:bg-green-900 flex items-center justify-center w-full p-3 text-bold text-3xl text-white rounded-lg"
+            @click="mostrarIndividuos(familia.familia)"
           >
             Ver individuos
           </button>
