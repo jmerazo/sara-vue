@@ -17,6 +17,16 @@ const codigo = especie.especie.cod_especie
 console.log('codigo: ', codigo)
 const filteredData = ref([]);
 
+async function filterGeo(codigo, data) {
+    console.log("codigo: ", codigo," data: ", data)
+    return await data.filter(item => item.codigo === codigo)
+             .map(item => ({ lon: item.lon, lat: item.lat }));
+}
+
+onMounted(async () => {
+    filteredData.value  = await filterGeo(codigo, geoStore.geoCandidateData);
+    console.log('FilteredData mounted: ', filteredData.value);
+})
 const {
     nom_comunes,
     nombre_cientifico,
@@ -41,17 +51,6 @@ const scrollToTop = () => {
   window.scrollTo(0, 0);
 }
 scrollToTop()
-
-async function filterGeo(codigo, data) {
-    console.log("codigo: ", codigo," data: ", data)
-    return await data.filter(item => item.codigo === codigo)
-             .map(item => ({ lon: item.lon, lat: item.lat }));
-}
-
-onActivated (async () => {
-    filteredData.value = filterGeo(codigo, geoStore.geoCandidateData.value);
-    console.log('FilteredData: ', filteredData.value)
-});
 </script>
 <template>
    <div v-if="nom_comunes">
@@ -125,7 +124,9 @@ onActivated (async () => {
         </div>
     </div>
 
-    <RenderGeo :filteredData="filteredData"></RenderGeo>
+    <template v-if="filteredData.length > 0">
+      <RenderGeo :filteredData="filteredData" />
+    </template>
     <PagesQueries></PagesQueries>    
    </div>
    <div v-else class="flex flex-col items-center justify-center h-80">

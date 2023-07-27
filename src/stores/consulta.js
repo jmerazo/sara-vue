@@ -19,6 +19,7 @@ export const useConsultaStore = defineStore('consulta',()=>{
         
         if(categoria==='Nombre Común'){
            await seleccionarComun(vrBuscar)
+
            router.push('/busqueda')
            consulta.categoria = '';
            consulta.vrBuscar = '';
@@ -51,9 +52,6 @@ export const useConsultaStore = defineStore('consulta',()=>{
     return {
         consulta,
         especie,
-        mostrarConsulta
-        
-        
-        
+        mostrarConsulta        
     }
 })

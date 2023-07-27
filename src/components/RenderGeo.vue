@@ -3,26 +3,31 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed, watch  } from 'vue';
+import { ref, onMounted, computed, watch, onActivated  } from 'vue';
 import Map from 'ol/Map';
 import View from 'ol/View';
 import TileLayer from 'ol/layer/Tile';
 import OSM from 'ol/source/OSM';
 import VectorLayer from 'ol/layer/Vector';
 import VectorSource from 'ol/source/Vector';
-import { Style, Fill, Stroke, Circle } from 'ol/style';
+import { Style, Fill, Stroke, Circle, Icon } from 'ol/style';
 import { fromLonLat } from 'ol/proj';
 import Point from 'ol/geom/Point';
 import Feature from 'ol/Feature';
+import treeIconPath from '../assets/icons/icon_tree_cg.png'
 
-const { filteredData } = defineProps(['filteredData']);
 const mapContainer = ref(null);
+const { filteredData } =  defineProps(['filteredData']);
+console.log('filtered data render geo: ', filteredData)
 
 onMounted(() => {
-    drawMap();
+  if (filteredData.length > 0) {
+    const firstCoordinate = [filteredData[0].lon, filteredData[0].lat];
+    drawMap(firstCoordinate);
+  }
 });
 
-function drawMap() {
+function drawMap(centerCoordinate) {
   const map = new Map({
     target: mapContainer.value,
     layers: [
@@ -31,8 +36,10 @@ function drawMap() {
       }),
     ],
     view: new View({
-      center: fromLonLat([-74.005974, 40.712776]), // New York coordinates
-      zoom: 8,
+      center: fromLonLat(centerCoordinate), // New York coordinates
+      zoom: 9,
+      minZoom: 9, // Establecer el zoom mínimo permitido
+      maxZoom: 9, // Establecer el zoom máximo permitido
     }),
   });
 
@@ -43,6 +50,7 @@ function drawMap() {
     { lon: 139.6917, lat: 35.6895 }, // Tokyo
   ];
  */
+  
   const vectorSource = new VectorSource({
     features: filteredData.map((point) => {
       const geometry = new Point(fromLonLat([point.lon, point.lat]));
@@ -50,14 +58,21 @@ function drawMap() {
     }),
   });
 
+  const treeIcon = new Icon({
+    src: treeIconPath, // Ruta de la imagen del árbol
+    scale: 0.4, // Puedes ajustar este valor para cambiar el tamaño del icono
+    anchor: [0.5, 1], // Posición del icono donde se encuentra el punto (centro inferior del icono)        
+  });
+
   const vectorLayer = new VectorLayer({
     source: vectorSource,
     style: new Style({
-      image: new Circle({
+        image: treeIcon
+      /* image: new Circle({
         radius: 6,
-        fill: new Fill({ color: 'blue' }),
+        fill: new Fill({ color: 'green' }),
         stroke: new Stroke({ color: 'white', width: 2 }),
-      }),
+      }), */
     }),
   });
 
