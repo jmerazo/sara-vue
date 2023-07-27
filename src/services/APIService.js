@@ -13,6 +13,9 @@ export default {
     lookScientificName(scientific_name){
         return api.get(`/especie_forestal/search/scientificname/${scientific_name}`)
     },
+    lookFamily(n_familia){
+        return api.get(`/especie_forestal/search/familia/${n_familia}`)
+    },
     getGlossary(){
         return api.get(`/glossary`)
     },
