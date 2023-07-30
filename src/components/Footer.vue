@@ -2,12 +2,12 @@
   <footer>
     <div class="footer-data">
       <div class="logo">
-        <img src="../assets/corpoamazonia-log-white.png" alt="Logo de la empresa" class="logotipo-corpoamazonia">
+        <img src="../assets/log_corpoamazonia_black.png" alt="Logo de la empresa" class="logotipo-corpoamazonia">
       </div>
       <div class="contact">
         <div class="sedes">
           <div>
-            <h5>Sedes</h5>
+            <h5 class="font-bold"><font-awesome-icon :icon="['fas', 'building-wheat']" class="mr-2"/>Sedes</h5>
             <p class="p-f">Sede Principal Mocoa, Putumayo:</p>
             <p class="p-f">Cra. 17 14-85</p>
             <p class="p-f">Tel: +57 608 4296395,  4296396, 4296642, 4296641, 4295255.</p>
@@ -15,7 +15,7 @@
         </div>
         <div class="linea">
           <div>
-            <h5>Línea Gratuita</h5>
+            <h5 class="font-bold"><font-awesome-icon :icon="['fas', 'phone-volume']" class="mr-2"/>Línea Gratuita</h5>
             <p class="p-f">Amazonas, Caquetá y Putumayo: 018000-930506</p>
             <p class="p-f">3152370176</p>
             <p class="p-f">Horario de Atención:</p>
@@ -25,9 +25,17 @@
         </div>
         <div class="ubicacion">
           <div>
-            <h5>Ubícanos</h5>
+            <h5 class="font-bold"><font-awesome-icon :icon="['fas', 'map-location-dot']" class="mr-2"/>Ubícanos</h5>
             <p class="p-f">Teléfono: (123) 456-7890</p>
             <p class="p-f">Email: info@miempresa.com</p>
+          </div>
+        </div>
+        <div class="social-media">
+          <div>
+            <a href="#"><font-awesome-icon :icon="['fab', 'facebook']" class="mr-2 s-icon"/></a>
+            <a href="#"><font-awesome-icon :icon="['fab', 'instagram']" class="mr-2 s-icon"/></a>
+            <a href="#"><font-awesome-icon :icon="['fab', 'twitter']" class="mr-2 s-icon"/></a>
+            <a href="#"><font-awesome-icon :icon="['fab', 'youtube']" class="s-icon"/></a>
           </div>
         </div>
       </div>
@@ -49,8 +57,8 @@ footer {
   width: 100vw;
   height: auto;
 
-  background-color: #273323;
-  color: #fff;
+  background-color: #eaf2ed;
+  color: #262f21;
   
   display: flex;
   
@@ -64,6 +72,17 @@ footer {
   grid-template-columns: repeat(3, auto);
   grid-gap: 15px;
   width: 100vw;
+}
+
+.s-icon{
+  width: 20px;
+  height: auto;
+}
+
+.social-media {
+  margin-left: 20px;
+  color: #1c201a;
+  padding-top: 20px;
 }
 
 .logo {
@@ -96,7 +115,7 @@ footer {
   width: auto;
   height: auto;
   display: flex;
-  padding: 10px;
+  padding: 20px;
 
   justify-content: left;
   align-items: top;
@@ -110,7 +129,7 @@ footer {
   width: auto;
   height: auto;
   display: flex;
-  padding: 10px;
+  padding: 20px;
 
   justify-content: center;
   align-items: top;
@@ -124,7 +143,7 @@ footer {
   width: auto;
   height: auto;
   display: flex;
-  padding: 10px;
+  padding: 20px;
 
   justify-content: center;
   align-items: top;

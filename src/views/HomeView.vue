@@ -3,8 +3,52 @@
 </script>
 
 <template>
-<div class="w-auto text-xs flex flex-col min-w-[400px] justify-center items-center grid grid-rows-1 grid-row-gap-0">
-    <div class="information-sara">
+  <div class="w-auto text-xs flex flex-col min-w-[400px] justify-center items-center ">
+    <div class="imagen-information w-full rounded-lg mb-10">
+      <div class="flex flex-col items-center">
+        <div class="flex justify-center">
+          <div class="overflow-hidden h-8 rounded-md">
+            <h2 class="text-xl font-bold text-center animate-marquee">TOP ESPECIES</h2>
+          </div>
+        </div>
+        <div class="flex justify-center">
+          <div class="relative mr-4">
+            <img src="../assets/media/algarrobo.jpg" class="img-information rounded-lg w-40 h-40 object-cover" />
+            <span class="text-white font-bold text-xs text-center absolute top-0 left-0 right-0 p-2 bg-black bg-opacity-50 rounded-lg">Algarrobo</span>
+          </div>
+          <div class="relative mr-4">
+            <img src="../assets/media/gualanday.jpg" class="img-information rounded-lg w-40 h-40 object-cover" />
+            <span class="text-white font-bold text-xs text-center absolute top-0 left-0 right-0 p-2 bg-black bg-opacity-50 rounded-lg">Gualanday</span>
+          </div>
+          <div class="relative mr-4">
+            <img src="../assets/media/nogal_cafetero.jpg" class="img-information rounded-lg w-40 h-40 object-cover" />
+            <span class="text-white font-bold text-xs text-center absolute top-0 left-0 right-0 p-2 bg-black bg-opacity-50 rounded-lg">Nogal Cafetero</span>
+          </div>
+          <div class="relative mr-4">
+            <img src="../assets/media/gualanday.jpg" class="img-information rounded-lg w-40 h-40 object-cover" />
+            <span class="text-white font-bold text-xs text-center absolute top-0 left-0 right-0 p-2 bg-black bg-opacity-50 rounded-lg">Gualanday</span>
+          </div>
+          <div class="relative mr-4">
+            <img src="../assets/media/gualanday.jpg" class="img-information rounded-lg w-40 h-40 object-cover" />
+            <span class="text-white font-bold text-xs text-center absolute top-0 left-0 right-0 p-2 bg-black bg-opacity-50 rounded-lg">Gualanday</span>
+          </div>
+          <div class="relative mr-4">
+            <img src="../assets/media/gualanday.jpg" class="img-information rounded-lg w-40 h-40 object-cover" />
+            <span class="text-white font-bold text-xs text-center absolute top-0 left-0 right-0 p-2 bg-black bg-opacity-50 rounded-lg">Gualanday</span>
+          </div>
+          <div class="relative mr-4">
+            <img src="../assets/media/gualanday.jpg" class="img-information rounded-lg w-40 h-40 object-cover" />
+            <span class="text-white font-bold text-xs text-center absolute top-0 left-0 right-0 p-2 bg-black bg-opacity-50 rounded-lg">Gualanday</span>
+          </div>
+          <div class="relative mr-4">
+            <img src="../assets/media/gualanday.jpg" class="img-information rounded-lg w-40 h-40 object-cover" />
+            <span class="text-white font-bold text-xs text-center absolute top-0 left-0 right-0 p-2 bg-black bg-opacity-50 rounded-lg">Gualanday</span>
+          </div>
+        </div>
+      </div>
+    </div>  
+
+    <div class="information-sara flex flex-row">
       <div class="text-information w-full">
         <span class="title-information font-bold">PROYECTO SEMILLAS CTEI</span><br><br>
         <p class="p-h">
@@ -19,55 +63,24 @@
           Ut vitae nulla non sapien finibus euismod. Etiam quis neque laoreet, sodales diam gravida, sodales diam.
         </p>
       </div>
-      <div class="imagen-information w-full rounded-lg">
-        <div class="flex flex-col items-center">
-          <div class="flex justify-center">
-        <div class="overflow-hidden h-8 bg-pastel-green rounded-md">
-          <h2 class="text-xl font-bold text-center animate-marquee">TOP ESPECIES</h2>
-        </div>
-      </div>
-          <div class="flex justify-center">
-            <div class="relative mr-4">
-              <img src="../assets/media/algarrobo.jpg" class="img-information rounded-lg w-40 h-40 object-cover" />
-              <span class="text-white font-bold text-xs text-center absolute top-0 left-0 right-0 p-2 bg-black bg-opacity-50 rounded-lg">Algarrobo</span>
-            </div>
-            <div class="relative mr-4">
-              <img src="../assets/media/gualanday.jpg" class="img-information rounded-lg w-40 h-40 object-cover" />
-              <span class="text-white font-bold text-xs text-center absolute top-0 left-0 right-0 p-2 bg-black bg-opacity-50 rounded-lg">Gualanday</span>
-            </div>
-            <div class="relative">
-              <img src="../assets/media/nogal_cafetero.jpg" class="img-information rounded-lg w-40 h-40 object-cover" />
-              <span class="text-white font-bold text-xs text-center absolute top-0 left-0 right-0 p-2 bg-black bg-opacity-50 rounded-lg">Nogal Cafetero</span>
-            </div>
-          </div>
-        </div>
-      </div>
     </div>
 
-    <div class="colaborators">
-        <a href="https://minciencias.gov.co/"><img src="../assets/minciencias-logo.png" class="log-minciencia fixed-between hover:scale-110"></a>
-        <a href="https://www.corpoamazonia.gov.co/"><img src="../assets/corpoamazonia.png" class="log-corpoamazonia fixed-between hover:scale-110"></a>
-        <a href="https://www.sgr.gov.co/"><img src="../assets/sgr.png" class="log-sgr fixed-between hover:scale-110"></a>
-        <a href="https://www.putumayo.gov.co/"><img src="../assets/gobernacion-putumayo.png" class="log-gobernacion fixed-between hover:scale-110"></a>
-        <a href="https://itp.edu.co/ITP2022/"><img src="../assets/logoitp.png" class="log-itp fixed-between hover:scale-110"></a>
+    <div class="colaborators flex flex-row">
+        <a href="https://minciencias.gov.co/"><img src="../assets/logos/mc-vida.png" class="log-minciencia fixed-between hover:scale-110"></a>
+        <a href="https://www.corpoamazonia.gov.co/"><img src="../assets/logos/corpoamazonia.png" class="log-corpoamazonia fixed-between hover:scale-110"></a>
+        <a href="https://www.sgr.gov.co/"><img src="../assets/logos/sgr.png" class="log-sgr fixed-between hover:scale-110"></a>
+        <a href="https://www.putumayo.gov.co/"><img src="../assets/logos/gp.png" class="log-gobernacion fixed-between hover:scale-110"></a>
+        <a href="https://itp.edu.co/ITP2022/"><img src="../assets/logos/itp.png" class="log-itp fixed-between hover:scale-110"></a>
     </div>
-</div>
-
+  </div>
 </template>
 
 <style scoped>
 .information-sara {
-  width: 85vw;
   font-size: 16px;
   margin-left: auto;
   margin-right: auto;
   margin-bottom: 25px;
-
-  grid-row-start: 1;
-  grid-row-end: 2;
-  
-  display: grid;
-  grid-template-columns: 1fr .2fr;
 }
 .text-information {
   text-align: justify;
@@ -78,13 +91,12 @@
 .imagen-information {
   grid-column-start: 2;
   grid-column-end: 3;
+  color: #262f21;
 
   display: flex;
   justify-content: center;
   align-items: center;
   margin-left: 15px;
-
-  background-color: #b6dfbb;
   padding: 1rem;
 }
 
@@ -121,37 +133,38 @@
   width: 100vw;
   height: auto;
   display: flex;
+  margin-bottom: 20px;
 
   align-items: center;
   justify-content: center;
 
-  background-color: #EDF1D6;
+  background-color: #ffffff;
 }
 
 
 .log-minciencia {
-  width: 25vw;
-  height: auto;
+  width: auto;
+  height: 10vh;
 }
 
 .log-corpoamazonia {
-  width: 7vw;
-  height: auto;
+  width: auto;
+  height: 10vh;
 }
 
 .log-gobernacion {
-  width: 6vw;
-  height: auto;
+  width: auto;
+  height: 10vh;
 }
 
 .log-sgr {
-  width: 12vw;
-  height: auto;
+  width: auto;
+  height: 10vh;
 }
 
 .log-itp {
-  width: 5vw;
-  height: auto;
+  width: auto;
+  height: 10vh;
 }
 
 .fixed-between {

@@ -41,7 +41,7 @@ defineProps({
         </div>
         <div class="flex items-center">
           <button
-            class="shadow-lg bg-green-800 hover:bg-green-900 flex items-center justify-center w-full p-3 text-bold text-3xl text-white rounded-lg"
+            class="shadow-lg bg-customGreen hover:bg-green-900 flex items-center justify-center w-full p-3 text-bold text-3xl text-white rounded-lg"
             @click="mostrarIndividuos(familia.familia)"
           >
             Ver individuos

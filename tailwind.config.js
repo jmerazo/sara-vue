@@ -5,7 +5,12 @@ module.exports = {
       './src/**/*.{vue,js,jsx,ts,tsx}'
   ],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        customGreen: '#262f21', // Color para la ruta activa
+        greenFooter: '#eaf2ed'
+      },
+    },
   },
   plugins: [],
 }

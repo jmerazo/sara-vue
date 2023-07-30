@@ -9,7 +9,7 @@ const familias = useFamiliasStore()
 </script>
 <template>
     <div>
-        <h1 class="text-6xl mb-20 mt-5 text-center font-extrabold">Listado de familias</h1>
+        <h1 class="text-5xl mb-10 mt-20 text-center font-extrabold">Listado de familias</h1>
         <hr>
        <div class="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-2 mt-10 gap-10 my-10">
             <Family
