@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, onMounted, createElementBlock } from "vue";
+import { ref, computed, onMounted} from "vue";
 import { RouterLink, useRoute } from "vue-router";
 import { useFamiliasStore } from '../stores/families'
 import { useEspeciesStore } from '../stores/species'
@@ -25,7 +25,7 @@ onMounted(() => {
       type: 'carousel',
       autoplay: 5000
     }).mount();
-  }, 0);
+  }, 1000);
 });
 
 const error = ref('')
@@ -43,23 +43,25 @@ const validarcampos = () => {
   }
 
 }
-
 </script>
 
 <template>
   <header class="bg-navbar" :style="!paginaInicio ? {'background-color': '#eaf2ed'} : {}">
     <div v-if="paginaInicio" class="header-slider">
-      <div class="glide w-full h-650px">
+      <div ref="glide" class="glide w-full h-650px">
         <div class="glide__track" data-glide-el="track">
           <ul class="glide__slides">
             <li class="glide__slide">
-              <img src="../assets/media/r1.jpg" />
+              <img src="../assets/media/pi1.jpg" />
             </li>
             <li class="glide__slide">
-              <img src="../assets/media/r2.jpg" />
+              <img src="../assets/media/pi2.jpg" />
             </li>
             <li class="glide__slide">
-              <img src="../assets/media/r3.jpg" />
+              <img src="../assets/media/pi3.jpg" />
+            </li>
+            <li class="glide__slide">
+              <img src="../assets/media/pi4.jpg" />
             </li>
           </ul>
         </div>

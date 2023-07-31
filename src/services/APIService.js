@@ -21,5 +21,8 @@ export default {
     },
     getGeoCandidateTrees(){
         return api.get('/candidate/geolocation')
+    },
+    getAverageCandidateTrees(){
+        return api.get('/candidate/average')
     }
 }

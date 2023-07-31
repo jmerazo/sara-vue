@@ -7,7 +7,7 @@
     <div class="imagen-information w-full rounded-lg mb-10">
       <div class="flex flex-col items-center">
         <div class="flex justify-center">
-          <div class="overflow-hidden h-8 rounded-md">
+          <div class="marquee-container">
             <h2 class="text-xl font-bold text-center animate-marquee">TOP ESPECIES</h2>
           </div>
         </div>
@@ -87,6 +87,13 @@
   grid-column-start: 1;
   grid-column-end: 2;
 }
+
+.marquee-container {
+  width: 100%; /* Ajusta el ancho según tus necesidades */
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+
 
 .imagen-information {
   grid-column-start: 2;
