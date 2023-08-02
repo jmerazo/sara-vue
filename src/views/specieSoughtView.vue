@@ -3,6 +3,7 @@ import { ref, onMounted, onActivated, watch } from 'vue';
 import { useConsultaStore } from '../stores/consulta';
 import { useRouter } from "vue-router";
 import { useGeoCandidateTrees } from '../stores/candidate'
+import { useAverageSpecie } from '../stores/average'
 
 import QuoteButton from '../components/QuoteButton.vue'
 import PagesQueries from '../components/PagesQueries.vue';
@@ -11,15 +12,17 @@ import RenderGeo from '../components/RenderGeo.vue'
 const especie = useConsultaStore()
 const router = useRouter();
 const geoStore = useGeoCandidateTrees();
+const averageStore = useAverageSpecie()
 
-console.log("geo", geoStore.geoCandidateData)
+console.log('average data: ', averageStore.averageCandidateData)
 const codigo = especie.especie.cod_especie
 console.log('codigo: ', codigo)
 const filteredData = ref([]);
-const average = ref([])
+const totalHeightSpecie = ref(0)
+const commercialHeightSpecie = ref(0)
+const averageAltitude = ref(0)
 
 async function filterGeo(codigo, data) {
-/*     console.log("codigo: ", codigo," data: ", data) */
     return await data.filter(item => item.codigo === codigo)
              .map(item => ({ lon: item.lon, lat: item.lat }));
 }
@@ -29,16 +32,25 @@ async function filterDataAverage(codigo, data){
     const countData = dataSpecieAverage.length;
     const totalHeightSpecie = dataSpecieAverage.reduce((sum, item) => sum + item.altura_total, 0) / countData;
     const commercialHeightSpecie = dataSpecieAverage.reduce((sum, item) => sum + item.altura_comercial, 0) / countData;
+    const averageAltitude = dataSpecieAverage.reduce((sum, item) => sum + item.altitud, 0) / countData;
 
-    return totalHeightSpecie, commercialHeightSpecie;
+    const totalHeightSpecieRounded = Math.round(totalHeightSpecie);
+    const commercialHeightSpecieRounded = Math.round(commercialHeightSpecie);
+    const averageAltitudeRounded = Math.round(averageAltitude);
+    console.log('totalHeightSpecie: ', totalHeightSpecieRounded, ' commercialHeightSpecie: ', commercialHeightSpecieRounded)
+
+    return { totalHeightSpecie: totalHeightSpecieRounded, commercialHeightSpecie : commercialHeightSpecieRounded, averageAltitude : averageAltitudeRounded};
 }
 
 onMounted(async () => {
     filteredData.value  = await filterGeo(codigo, geoStore.geoCandidateData);
-    average.value = await filterDataAverage(codigo, geoStore.averageCandidateData);
-    console.log('totalHeight: ', average.value)
+    const { totalHeightSpecie: totalHeight, commercialHeightSpecie: commercialHeight, averageAltitude: average } = await filterDataAverage(codigo, averageStore.averageCandidateData);
+    totalHeightSpecie.value = totalHeight;
+    commercialHeightSpecie.value = commercialHeight;
+    averageAltitude.value = average;
     /* console.log('FilteredData mounted: ', filteredData.value); */
 })
+
 const {
     nom_comunes,
     nombre_cientifico,
@@ -111,10 +123,18 @@ scrollToTop()
                 </p>
 
             </div>
+            <div class="shadow-lg bg-gray-50 p-2 rounded-lg mb-5">
+                <span>Altura total promedio: {{ totalHeightSpecie }}</span><br>
+                <span>Altura comercial promedio: {{ commercialHeightSpecie }}</span><br>
+                <span>Altitud: {{ averageAltitude }}</span>
+            </div>
 
-            <p class="font-bold text-lg mt-10 mb-3">Triangulación</p>
-            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/91/FisionomiaPNS.png/290px-FisionomiaPNS.png" alt="">
-
+            <div class="shadow-lg bg-gray-50 p-2 rounded-lg mb-5">
+                <p class="font-bold text-lg mt-10 mb-3">Distribución región amazónica</p>
+                <template v-if="filteredData.length > 0">
+                    <RenderGeo :filteredData="filteredData" />
+                </template>
+            </div>            
         </div>
 
 
@@ -136,9 +156,7 @@ scrollToTop()
         </div>
     </div>
 
-    <template v-if="filteredData.length > 0">
-      <RenderGeo :filteredData="filteredData" />
-    </template>
+    
     <PagesQueries></PagesQueries>    
    </div>
    <div v-else class="flex flex-col items-center justify-center h-80">
