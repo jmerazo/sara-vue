@@ -4,6 +4,7 @@ import { useConsultaStore } from '../stores/consulta';
 import { useRouter } from "vue-router";
 import { useGeoCandidateTrees } from '../stores/candidate'
 import { useAverageSpecie } from '../stores/average'
+import * as d3 from 'd3'
 
 import QuoteButton from '../components/QuoteButton.vue'
 import PagesQueries from '../components/PagesQueries.vue';
@@ -42,6 +43,75 @@ async function filterDataAverage(codigo, data){
     return { totalHeightSpecie: totalHeightSpecieRounded, commercialHeightSpecie : commercialHeightSpecieRounded, averageAltitude : averageAltitudeRounded};
 }
 
+function createChart() {
+  const data = [
+    {
+      name: "Altura",
+      value: totalHeightSpecie.value,
+    },
+    {
+      name: "Altura comercial",
+      value: commercialHeightSpecie.value,
+    },
+    {
+      name: "Altitud",
+      value: averageAltitude.value,
+    },
+  ];
+
+  const colors = d3.scaleOrdinal()
+    .domain(data.map(d => d.name))
+    .range(["#1f77b4", "#ff7f0e", "#2ca02c"]);
+
+  const margin = { top: 20, right: 20, bottom: 30, left: 40 };
+  const width = 400;
+  const height = 200;
+
+  const x = d3.scaleBand()
+    .domain(data.map(d => d.name))
+    .range([margin.left, width - margin.right])
+    .padding(0.1);
+
+  const y = d3.scaleLinear()
+    .domain([0, d3.max(data, d => d.value)])
+    .nice()
+    .range([height - margin.bottom, margin.top]);
+
+  const chart = d3.select("#chart")
+    .append("svg")
+    .attr("width", width)
+    .attr("height", height);
+
+  chart.selectAll(".bar")
+    .data(data)
+    .enter()
+    .append("rect")
+    .attr("class", "bar")
+    .attr("x", d => x(d.name))
+    .attr("y", d => y(d.value))
+    .attr("width", x.bandwidth())
+    .attr("height", d => height - margin.bottom - y(d.value))
+    .attr("fill", d => colors(d.name));
+
+  chart.selectAll(".label")
+    .data(data)
+    .enter()
+    .append("text")
+    .attr("class", "label")
+    .attr("x", d => x(d.name) + x.bandwidth() / 2)
+    .attr("y", d => y(d.value) - 5)
+    .attr("text-anchor", "middle")
+    .text(d => d.value);
+
+  chart.append("g")
+    .attr("transform", `translate(0, ${height - margin.bottom})`)
+    .call(d3.axisBottom(x));
+
+  chart.append("g")
+    .attr("transform", `translate(${margin.left}, 0)`)
+    .call(d3.axisLeft(y));
+}
+
 onMounted(async () => {
     filteredData.value  = await filterGeo(codigo, geoStore.geoCandidateData);
     const { totalHeightSpecie: totalHeight, commercialHeightSpecie: commercialHeight, averageAltitude: average } = await filterDataAverage(codigo, averageStore.averageCandidateData);
@@ -49,6 +119,8 @@ onMounted(async () => {
     commercialHeightSpecie.value = commercialHeight;
     averageAltitude.value = average;
     /* console.log('FilteredData mounted: ', filteredData.value); */
+
+    createChart();
 })
 
 const {
@@ -123,10 +195,9 @@ scrollToTop()
                 </p>
 
             </div>
-            <div class="shadow-lg bg-gray-50 p-2 rounded-lg mb-5">
-                <span>Altura total promedio: {{ totalHeightSpecie }}</span><br>
-                <span>Altura comercial promedio: {{ commercialHeightSpecie }}</span><br>
-                <span>Altitud: {{ averageAltitude }}</span>
+            <div class="shadow-lg bg-gray-50 p-2 rounded-lg mb-5 mt-4">
+                <span class="font-bold mb-5">Alturas y altitud promedio de la especie</span><br><br>
+                <div v-if="!isNaN(Number(totalHeightSpecie)) || !isNaN(Number(commercialHeightSpecie)) || !isNaN(Number(averageAltitude))" id="chart"></div>
             </div>
 
             <div class="shadow-lg bg-gray-50 p-2 rounded-lg mb-5">
@@ -170,3 +241,9 @@ scrollToTop()
     </button>
    </div>
 </template>
+
+<style>
+.bar {
+  fill: #262f21;
+}
+</style>
