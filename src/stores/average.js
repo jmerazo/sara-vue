@@ -9,7 +9,7 @@ export const useAverageSpecie = defineStore('averageSpecie',()=>{
     onMounted(async ()=>{
         const { data } = await APIService.getAverageCandidateTrees()
         averageCandidateData.value = data
-        console.log("store: ", averageCandidateData.value)
+        /* console.log("store: ", averageCandidateData.value) */
     })
 
     return {

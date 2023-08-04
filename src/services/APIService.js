@@ -1,6 +1,9 @@
 import api from '../api/axios';
 
 export default {
+    getAuthToken(credentials){
+        return api.post('/auth/token/', credentials)
+    },
     getSpecies(){
         return api.get('/especie_forestal')
     },
