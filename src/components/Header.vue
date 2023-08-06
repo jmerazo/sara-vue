@@ -1,32 +1,19 @@
 <script setup>
-import { ref, computed, onMounted} from "vue";
+import { ref, computed } from "vue";
 import { RouterLink, useRoute } from "vue-router";
 import { useFamiliasStore } from '../stores/families'
 import { useEspeciesStore } from '../stores/species'
 import { useConsultaStore } from "../stores/consulta";
 
 import Alerta from '../components/Alerta.vue'
-
-import Glide from '@glidejs/glide'
-import '@glidejs/glide/dist/css/glide.core.css'
-import '@glidejs/glide/dist/css/glide.theme.css'
+import Slider from '../components/Slider.vue'
 
 const route = useRoute();
-
 const paginaInicio = computed(() => route.name === "home");
 
 const familias = useFamiliasStore();
 const especies = useEspeciesStore();
 const consulta = useConsultaStore()
-
-onMounted(() => {
-  setTimeout(() => {
-    new Glide('.glide', {
-      type: 'carousel',
-      autoplay: 5000
-    }).mount();
-  }, 1000);
-});
 
 const error = ref('')
 
@@ -47,29 +34,7 @@ const validarcampos = () => {
 
 <template>
   <header class="bg-navbar" :style="!paginaInicio ? {'background-color': '#eaf2ed'} : {}">
-    <div v-if="paginaInicio" class="header-slider">
-      <div ref="glide" class="glide w-full h-650px">
-        <div class="glide__track" data-glide-el="track">
-          <ul class="glide__slides">
-            <li class="glide__slide">
-              <img src="../assets/media/pi1.jpg" />
-            </li>
-            <li class="glide__slide">
-              <img src="../assets/media/pi2.jpg" />
-            </li>
-            <li class="glide__slide">
-              <img src="../assets/media/pi3.jpg" />
-            </li>
-            <li class="glide__slide">
-              <img src="../assets/media/pi4.jpg" />
-            </li>
-          </ul>
-        </div>
-        <div class="glide__bullets" data-glide-el="controls[nav]">
-          <!-- Agrega tus controles de navegación aquí si es necesario -->
-        </div>
-      </div>
-    </div>
+    <Slider v-if="paginaInicio" class="header-slider"></Slider>
 
     <div class="fixed-between-navbar py-16">
       <div class="flex justify-between items-center">
@@ -101,6 +66,10 @@ const validarcampos = () => {
           <RouterLink :to="{ name: 'aboutus' }" class="text-xl  rounded-lg p-2 txt-blur-transparent uppercase font-bold"
             active-class="text-green-500">
             Acerca de
+          </RouterLink>
+          <RouterLink :to="{ name: 'auth' }" class="text-xl rounded-lg p-2 txt-blur-transparent uppercase font-bold bg-customGreen text-white flex items-center space-x-2">
+            <font-awesome-icon :icon="['far', 'circle-user']" />
+            <span>Ingresar</span>            
           </RouterLink>
         </nav>
       </div>

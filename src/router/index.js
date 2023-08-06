@@ -33,7 +33,10 @@ const router = createRouter({
     {
       path: '/acercade',
       name: 'aboutus',
-      component: ()=> import('../views/AboutUsView.vue')
+      component: ()=> import('../views/AboutUsView.vue'),
+      meta: {
+        auth: true
+      }
     },
     {
       path: '/auth',
@@ -41,6 +44,21 @@ const router = createRouter({
       component: ()=> import('../views/AuthView.vue')
     },
   ]
+})
+
+router.beforeEach((to, from, next) => {
+  const access_token = localStorage.getItem("access_token")
+  const refresh_token = localStorage.getItem("refresh_token")
+
+  if (to.matched.some(record => record.meta.auth)){
+    if (!access_token || !refresh_token){
+      next('/auth')
+    } else {
+      next() // Llama a next solo si la ruta requiere autenticación y los tokens están presentes
+    }
+  } else {
+    next() // Llama a next para otras rutas que no requieren autenticación
+  }
 })
 
 export default router

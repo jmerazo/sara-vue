@@ -13,10 +13,11 @@ import { fab } from '@fortawesome/free-brands-svg-icons'
 const app = createApp(App)
 
 import { faCopy } from '@fortawesome/free-solid-svg-icons'
+import { faCircleUser } from '@fortawesome/free-regular-svg-icons';
 
 import { } from '@fortawesome/free-brands-svg-icons';
 
-library.add( fas, fab, faCopy )
+library.add( fas, fab, faCopy, faCircleUser)
 
 app.use(createPinia())
 app.use(router)

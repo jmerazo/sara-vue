@@ -9,34 +9,44 @@ const username = ref('')
 const password = ref('')
 
 
-const loginError = ref(null);
+const error = ref(null);
 
 const handleLogin = async () => {
     const credentials = {
       username: username.value,
       password: password.value,
     }
-
-    await store.login(credentials)
-
-    // Si el inicio de sesión fue exitoso, redireccionamos a la página 'aboutus'
-    if (!store.error) {
-        router.push({ name: 'aboutus' })
+    try {
+        const response = await store.login(credentials);
+        console.log('r: ', response)
+        if (response.success) {
+            router.push({name : 'aboutus' });
+        } else {
+            showLoginError('Credenciales inválidas');
+        }
+    } catch (e) {
+        showLoginError(e.message);
     }
 }
 
-const showLoginError  = () => {
-    loginError.value = 'Credenciales incorrectas';
+const handleLogout = () => {
+    store.logout();
+    // Redirigir a la página de inicio de sesión u otra página adecuada
+    router.push('/');
+}
+
+const showLoginError = (message) => {
+    error.value = message;
     setTimeout(() => {
-        loginError.value = null;
+        error.value = null;
     }, 3000); // El mensaje de error desaparecerá después de 3 segundos
 };
 </script>
 
 <template>
-    <div class="h-screen flex justify-center items-center bg-gray-50">
-        <div class="relative bg-white p-8 rounded-lg shadow-lg backdrop-blur-lg backdrop-opacity-50">
-            <h2 class="text-2xl font-bold mb-4">Iniciar sesión</h2>
+    <div class="h-screen flex justify-center items-center mb-8">
+        <div class="w-full max-w-md relative bg-white p-8 rounded-lg shadow-lg backdrop-blur-lg backdrop-opacity-50">
+            <h2 class="text-2xl font-bold mb-4 text-center">Iniciar sesión</h2>
             <form @submit.prevent="handleLogin" class="space-y-4">
                 <div>
                 <label for="email" class="block font-semibold mb-1">Usuario</label>
@@ -47,8 +57,11 @@ const showLoginError  = () => {
                 <input v-model="password" type="password" id="password" class="w-full rounded-lg border px-4 py-2" required>
                 </div>
                 <button type="submit" class="w-full bg-green-500 text-white font-semibold rounded-lg py-2">Ingresar</button>
-                <div v-if="error" class="text-red-500 mt-2">Credenciales incorrectas</div>
+                <div v-if="error" class="text-red-500 mt-2">{{ error }}</div>
             </form>
         </div>
     </div>
 </template>
+
+<style scoped>
+</style>
