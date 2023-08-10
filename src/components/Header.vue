@@ -5,6 +5,7 @@ import { useFamiliasStore } from '../stores/families'
 import { useEspeciesStore } from '../stores/species'
 import { useConsultaStore } from "../stores/consulta";
 
+
 import Alerta from '../components/Alerta.vue'
 import Slider from '../components/Slider.vue'
 
@@ -73,7 +74,7 @@ const validarcampos = () => {
           </RouterLink>
         </nav>
       </div>
-
+      <example/>
       <form v-if="paginaInicio" class="form-blur md:w-1/3 2xl:w-1/3 my-28 p-10 rounded-lg shadow space-y-6 bg-opacity-50 "
         @submit.prevent="handleSubmit">
         <Alerta v-if="error">

@@ -43,6 +43,7 @@ const router = createRouter({
       name: 'auth',
       component: ()=> import('../views/AuthView.vue')
     },
+    
   ]
 })
 

@@ -1,8 +1,10 @@
 <script setup>
-
+ 
+  
 </script>
 
 <template>
+  
   <div class="w-auto text-xs flex flex-col min-w-[400px] justify-center items-center ">
     <div class="imagen-information w-full rounded-lg mb-10">
       <div class="flex flex-col items-center">
@@ -73,6 +75,7 @@
         <a href="https://itp.edu.co/ITP2022/"><img src="../assets/logos/itp.png" class="log-itp fixed-between hover:scale-110"></a>
     </div>
   </div>
+  
 </template>
 
 <style scoped>

@@ -6,6 +6,7 @@ const alphabet = 'abcdefghijklmnopqrstuvwxyz'.split('');
 /* const searchTerm = computed(() => glossary.searchTerm); */
 
 const filteredGlossary = computed(() => glossary.getFilteredGlossary());
+
 const searchTerm = computed({
    get: () => glossary.searchTerm,
    set: (value) => glossary.setSearchTerm(value),
