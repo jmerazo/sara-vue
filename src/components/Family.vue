@@ -33,10 +33,8 @@ defineProps({
         <div class="mb-6">
           <h2 class="text-3xl font-bold mb-2">{{familia.familia}}</h2>
           <p class="text-justify text-xl">
-            Lorem ipsum dolor, sit amet consectetur adipisicing elit. Ipsum
-            consequuntur vel in ex eveniet aut at aspernatur necessitatibus unde
-            ducimus vero fugiat sint reiciendis aperiam odio deleniti, qui rem
-            voluptatum.
+            la familia {{ familia.familia.toLowerCase() }} comparte las siguientes características:
+            <span class="font-bold">hojas en punta de auja, tallo corrugado my húmedo</span>
           </p>
         </div>
         <div class="flex items-center">

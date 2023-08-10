@@ -22,6 +22,7 @@ const especies = useEspeciesStore()
         <div class="p-5">    
             <h2 class="text-2xl font-extrabold truncate">{{especie.nom_comunes}}</h2>        
             <p class="block truncate">{{especie.nombre_cientifico}}</p>
+            <p class="block truncate">{{especie.familia}}</p>
             <button 
                 type="button"
                 class="w-full bg-customGreen hover:bg-green-900 text-white rounded-lg p-2 mt-3 mb-4 font-bold text-2xl"
