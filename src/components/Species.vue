@@ -1,8 +1,6 @@
 <script setup>
 import {useEspeciesStore} from '../stores/species'
 
-
-
 const especies = useEspeciesStore()
 
  defineProps({
@@ -30,7 +28,8 @@ const especies = useEspeciesStore()
             >
                 Ver Especie
             </button>
+            
         </div>
         
-    </div>
+    </div>  
 </template>

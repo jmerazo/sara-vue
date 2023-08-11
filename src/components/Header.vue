@@ -5,9 +5,11 @@ import { useFamiliasStore } from '../stores/families'
 import { useEspeciesStore } from '../stores/species'
 import { useConsultaStore } from "../stores/consulta";
 
+//componentes
+import Alerta from './Alerta.vue'
+import Slider from './Slider.vue'
 
-import Alerta from '../components/Alerta.vue'
-import Slider from '../components/Slider.vue'
+
 
 const route = useRoute();
 const paginaInicio = computed(() => route.name === "home");
@@ -130,8 +132,9 @@ const validarcampos = () => {
         </div>
         <input type="submit" class="btn-form-search-header cursor-pointer font-bold w-full p-2 rounded-lg uppercase"
           value="Buscar" @click="validarcampos()" />
-
+         
       </form>
+      
     </div>
 
   </header>

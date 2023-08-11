@@ -10,6 +10,7 @@ import QuoteButton from '../components/QuoteButton.vue'
 import PagesQueries from '../components/PagesQueries.vue';
 import RenderGeo from '../components/RenderGeo.vue'
 
+
 const especie = useConsultaStore()
 const router = useRouter();
 const geoStore = useGeoCandidateTrees();
@@ -147,6 +148,7 @@ const scrollToTop = () => {
   window.scrollTo(0, 0);
 }
 scrollToTop()
+
 </script>
 <template>
    <div v-if="nom_comunes">

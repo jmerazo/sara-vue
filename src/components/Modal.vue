@@ -5,6 +5,8 @@ import {useModalStore} from '../stores/modal'
 import { useEspeciesStore } from '../stores/species';
 import { useConsultaStore } from '../stores/consulta';
 
+
+
 const modal = useModalStore()
 const especies = useEspeciesStore()
 const consulta = useConsultaStore()
@@ -94,12 +96,13 @@ const consultar = (nombre_comun)=>{
                     <button
                         type="button"
                         class="shadow p-1  w-full rounded-lg bg-green-600 hover:bg-green-700 text-white uppercase font-bold"
-                        @click="consultar(especies.especie.nom_comunes),modal.handleClickModal()"
+                        @click="consultar(especies.especie.nom_comunes)"
                         
                     >
                        Ver Descripción completa
                     </button>
                 </div> 
+                
               </DialogPanel>
             </TransitionChild>
           </div>
