@@ -9,6 +9,7 @@ import Footer from "./components/Footer.vue";
 import Modal from './components/Modal.vue';
 import ModalFamily from "./components/ModalFamily.vue";
 import Spinner from './components/Spinner.vue'
+
 </script>
 
 <template>

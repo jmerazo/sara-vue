@@ -1,27 +1,33 @@
 import {ref, onMounted,computed} from 'vue'
 import {defineStore} from 'pinia'
 import {useModalStore} from '../stores/modal'
+import {useConsultaStore} from '../stores/consulta'
 import APIService from '../services/APIService'
 
 
 
 export const useEspeciesStore = defineStore('especies', () => {
     const modal = useModalStore();
+    const consulta = useConsultaStore()
     const especies = ref([]);
     const especie = ref({});
     const vrBuscar = ref('');
     const noResultados = computed(() => especies.value.length === 0 );
     const especiesOriginales = ref([]);
-  
+
     onMounted(async () => {
+      consulta.cargando = true
       const { data } = await APIService.getSpecies();
       especies.value = data;
       especiesOriginales.value = data;
+      consulta.cargando = false
     });
   
     async function seleccionarEspecie(nombre_comun) {
+      consulta.cargando = true
       const { data } = await APIService.lookSpecie(nombre_comun);
       especie.value = data;
+      consulta.cargando = false
       modal.handleClickModal();
     }
   
