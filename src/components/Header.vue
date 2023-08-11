@@ -76,7 +76,6 @@ const validarcampos = () => {
           </RouterLink>
         </nav>
       </div>
-      <example/>
       <form v-if="paginaInicio" class="form-blur md:w-1/3 2xl:w-1/3 my-28 p-10 rounded-lg shadow space-y-6 bg-opacity-50 "
         @submit.prevent="handleSubmit">
         <Alerta v-if="error">
@@ -127,13 +126,12 @@ const validarcampos = () => {
           <label class="block text-white uppercase font-bold " for="parametro">Valor a buscar</label>
           <select disabled id="categoria" class="text-lg p-3 w-full rounded-lg focus:outline-none font-bold">
             <option value="">-- Seleccione --</option>
-
           </select>
         </div>
         <input type="submit" class="btn-form-search-header cursor-pointer font-bold w-full p-2 rounded-lg uppercase"
           value="Buscar" @click="validarcampos()" />
-         
       </form>
+
       
     </div>
 

@@ -38,12 +38,3 @@ const especies = useEspeciesStore();
 
   </div>
 </template>
-
-<style>
-.form-blur {
-  backdrop-filter: blur(10px);
-  opacity: 1;
-  background-color: rgba(255, 255, 255, 0.1);
-  /* border: 1px solid #ccc; */
-}
-</style>

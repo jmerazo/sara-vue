@@ -50,4 +50,4 @@ export const useEspeciesStore = defineStore('especies', () => {
       seleccionarEspecie,
       buscarTermino,
     };
-  });
+});
