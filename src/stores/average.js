@@ -6,13 +6,13 @@ export const useAverageSpecie = defineStore('averageSpecie',()=>{
 
     const averageCandidateData = ref([])
 
-    onMounted(async ()=>{
+    const fetchData = async ()=>{
         const { data } = await APIService.getAverageCandidateTrees()
         averageCandidateData.value = data
-        /* console.log("store: ", averageCandidateData.value) */
-    })
+    }
 
     return {
-        averageCandidateData
+        averageCandidateData,
+        fetchData
     }
 })
