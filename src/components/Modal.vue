@@ -69,11 +69,6 @@ const consultar = (nombre_comun)=>{
                     <DialogTitle as="h4" @click="cambiarImagenModal(imgDefault)" class="text-gray-900 text-lg text-center font-extrabold ">
                        {{ especies.especie.nom_comunes }}
                     </DialogTitle>
-                    <DialogTitle as="h3" class="text-gray-900 text-lg font-bold my-5">
-                        Distribución
-                    </DialogTitle>
-
-                    <p> {{ especies.especie.distribucion }}</p>
 
                     <DialogTitle as="h3" class="text-gray-900 text-lg font-bold my-5">
                        Otros nombres
@@ -81,6 +76,13 @@ const consultar = (nombre_comun)=>{
 
                     <p class="   text-gray-600 font-bold">
                       {{ especies.especie.otros_nombres }}
+                    </p>
+                    <DialogTitle as="h3" class="text-gray-900 text-lg font-bold my-5">
+                       Sinónimos
+                    </DialogTitle>
+
+                    <p class="   text-gray-600 font-bold">
+                      {{ especies.especie.sinonimos }}
                     </p>
                   </div>
                 </div>

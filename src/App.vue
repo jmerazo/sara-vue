@@ -26,13 +26,4 @@ const panel = ref(false)
   
 </template>
 
-<style>
-
-/* #app {
-  width: auto;
-  height: auto;
-  overflow: hidden;
-  font-family: 'Montserrat', sans-serif;
-} */
-</style>
 
