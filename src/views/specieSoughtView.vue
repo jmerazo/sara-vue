@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted, onActivated, watch } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import { useConsultaStore } from '../stores/consulta';
 import { useRouter } from "vue-router";
 import { useGeoCandidateTrees } from '../stores/candidate'
@@ -10,15 +10,12 @@ import QuoteButton from '../components/QuoteButton.vue'
 import PagesQueries from '../components/PagesQueries.vue';
 import RenderGeo from '../components/RenderGeo.vue'
 
-
 const especie = useConsultaStore()
 const router = useRouter();
 const geoStore = useGeoCandidateTrees();
 const averageStore = useAverageSpecie()
 
-console.log('average data: ', averageStore.averageCandidateData)
 const codigo = especie.especie.cod_especie
-console.log('codigo: ', codigo)
 const filteredData = ref([]);
 const totalHeightSpecie = ref(0)
 const commercialHeightSpecie = ref(0)
@@ -39,7 +36,6 @@ async function filterDataAverage(codigo, data){
     const totalHeightSpecieRounded = Math.round(totalHeightSpecie);
     const commercialHeightSpecieRounded = Math.round(commercialHeightSpecie);
     const averageAltitudeRounded = Math.round(averageAltitude);
-    console.log('totalHeightSpecie: ', totalHeightSpecieRounded, ' commercialHeightSpecie: ', commercialHeightSpecieRounded)
 
     return { totalHeightSpecie: totalHeightSpecieRounded, commercialHeightSpecie : commercialHeightSpecieRounded, averageAltitude : averageAltitudeRounded};
 }
@@ -114,15 +110,14 @@ function createChart() {
 }
 
 onMounted(async () => {
-    filteredData.value  = await filterGeo(codigo, geoStore.geoCandidateData);
+    filteredData.value = await filterGeo(codigo, geoStore.geoCandidateData);
     const { totalHeightSpecie: totalHeight, commercialHeightSpecie: commercialHeight, averageAltitude: average } = await filterDataAverage(codigo, averageStore.averageCandidateData);
     totalHeightSpecie.value = totalHeight;
     commercialHeightSpecie.value = commercialHeight;
     averageAltitude.value = average;
-    /* console.log('FilteredData mounted: ', filteredData.value); */
 
     createChart();
-})
+});
 
 const {
     nom_comunes,
@@ -148,8 +143,8 @@ const scrollToTop = () => {
   window.scrollTo(0, 0);
 }
 scrollToTop()
-
 </script>
+
 <template>
    <div v-if="nom_comunes">
     <QuoteButton></QuoteButton>

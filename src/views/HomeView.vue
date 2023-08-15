@@ -1,6 +1,14 @@
 <script setup>
- 
-  
+import { onMounted } from "vue";
+import { useGeoCandidateTrees } from '../stores/candidate'
+import { useAverageSpecie } from '../stores/average'
+const geoStore = useGeoCandidateTrees();
+const averageStore = useAverageSpecie()
+
+onMounted(async () => {
+    await geoStore.fetchData();
+    await averageStore.fetchData();
+});  
 </script>
 
 <template>

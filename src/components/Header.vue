@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed } from "vue";
+import { ref, computed, onMounted } from "vue";
 import { RouterLink, useRoute } from "vue-router";
 import { useFamiliasStore } from '../stores/families'
 import { useEspeciesStore } from '../stores/species'
@@ -8,8 +8,6 @@ import { useConsultaStore } from "../stores/consulta";
 //componentes
 import Alerta from './Alerta.vue'
 import Slider from './Slider.vue'
-
-
 
 const route = useRoute();
 const paginaInicio = computed(() => route.name === "home");
