@@ -33,8 +33,8 @@ defineProps({
         <div class="mb-6">
           <h2 class="text-3xl font-bold mb-2">{{familia.familia}}</h2>
           <p class="text-justify text-xl">
-            la familia {{ familia.familia.toLowerCase() }} comparte las siguientes características:
-            <span class="font-bold">hojas en punta de auja, tallo corrugado my húmedo</span>
+            Esta familia comparte las siguientes caraterísticaslas:
+            <span class="font-bold">hojas en punta de auja, tallo corrugado y muy húmedo</span>
           </p>
         </div>
         <div class="flex items-center">

@@ -140,7 +140,7 @@
   text-align: justify;
 }
 .colaborators {
-  width: 100vw;
+  width: auto;
   height: auto;
   display: flex;
   margin-bottom: 20px;

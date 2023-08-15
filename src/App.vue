@@ -1,35 +1,38 @@
 <script setup>
-import { RouterView } from "vue-router";
+import { ref } from 'vue'
+import { RouterView} from "vue-router";
 import { useConsultaStore } from './stores/consulta';
-
-const consulta = useConsultaStore()
-
 import Header from './components/Header.vue';
 import Footer from "./components/Footer.vue";
 import Modal from './components/Modal.vue';
 import ModalFamily from "./components/ModalFamily.vue";
 import Spinner from './components/Spinner.vue'
+import Dashboard from './views/DashboardView.vue'
+const consulta = useConsultaStore()
 
+const panel = ref(false)
 </script>
 
 <template>
-  
-  <Header/>
-   <main class="container mx-auto mt-10">
+  <Dashboard v-if="panel"/>
+  <Header v-if="!panel"/>
+   <main v-if="!panel" class="container mx-auto mt-10" >
     <router-view />
   </main>
   <Spinner v-if="consulta.cargando"/>
-  <Footer/>
+  <Footer v-if="!panel" />
   <Modal/>
   <ModalFamily/>
+  
 </template>
 
 <style>
-#app {
+
+/* #app {
   width: auto;
   height: auto;
   overflow: hidden;
   font-family: 'Montserrat', sans-serif;
-}
+} */
 </style>
 
