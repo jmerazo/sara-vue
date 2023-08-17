@@ -33,7 +33,7 @@ const router = createRouter({
     {
       path: '/panel',
       name: 'panel',
-      component: ()=> import('../views/HomePanelView.vue')
+      component: ()=> import('../views/dashboardviews/HomePanelView.vue')
     },
     {
       path: '/acercade',

@@ -7,10 +7,10 @@ import Footer from "./components/Footer.vue";
 import Modal from './components/Modal.vue';
 import ModalFamily from "./components/ModalFamily.vue";
 import Spinner from './components/Spinner.vue'
-import Dashboard from './views/DashboardView.vue'
+import Dashboard from './views/dashboardviews/DashboardMainView.vue'
 const consulta = useConsultaStore()
 
-const panel = ref(false)
+const panel = ref(true)
 </script>
 
 <template>
@@ -20,7 +20,7 @@ const panel = ref(false)
     <router-view />
   </main>
   <Spinner v-if="consulta.cargando"/>
-  <Footer v-if="!panel" />
+  <Footer  />
   <Modal/>
   <ModalFamily/>
   

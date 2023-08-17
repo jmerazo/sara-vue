@@ -124,7 +124,7 @@ import { RouterLink } from "vue-router";
           </li>
           <li class="nav-header">EVENTOS</li>
           <li class="nav-item">
-            <a href="../calendar.html" class="nav-link">
+            <a href="#" class="nav-link">
               <i class="nav-icon far fa-calendar-alt"></i>
               <p>
                 Calendario Sara
@@ -133,7 +133,7 @@ import { RouterLink } from "vue-router";
             </a>
           </li>
           <li class="nav-item">
-            <a href="../gallery.html" class="nav-link">
+            <a href="#" class="nav-link">
               <i class="nav-icon far fa-image"></i>
               <p>Galería</p>
             </a>

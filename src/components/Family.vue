@@ -33,7 +33,7 @@ defineProps({
         <div class="mb-6">
           <h2 class="text-3xl font-bold mb-2">{{familia.familia}}</h2>
           <p class="text-justify text-xl">
-            Esta familia comparte las siguientes caraterísticaslas:
+            Caraterísticas similares:
             <span class="font-bold">hojas en punta de auja, tallo corrugado y muy húmedo</span>
           </p>
         </div>

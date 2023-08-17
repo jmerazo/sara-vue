@@ -1,9 +1,10 @@
 <script setup>
-import BarraLateral from "../components/BarraLateral.vue";
-
+//components
+import SideBar from "@/components/dashboard/SideBar.vue";
+import NavBar from "@/components/dashboard/NavBar.vue";
+//librery
 import "@/adminlte/plugins/jquery/jquery.min.js";
 import "@/adminlte/plugins/bootstrap/js/bootstrap.bundle.min.js";
-import "@/adminlte/plugins/filterizr/jquery.filterizr.min.js";
 import "@/adminlte/plugins/ekko-lightbox/ekko-lightbox.min.js";
 import "@/adminlte/dist/js/adminlte.min.js";
 
@@ -22,45 +23,11 @@ import { RouterView } from "vue-router";
   <body class="sidebar-mini">
     <div class="wrapper">
       <!-- Navbar -->
-      <nav class="main-header navbar navbar-expand navbar-white navbar-light">
-        <!-- Left navbar links -->
-        <ul class="navbar-nav mt-2">
-          <li class="nav-item">
-            <a class="nav-link" data-widget="pushmenu" href="#" role="button"
-              ><i class="fas fa-bars"></i
-            ></a>
-          </li>
-          <li class="nav-item">
-            <a href="#" class="brand-link">
-              <img
-                src="@/adminlte/img/sara.png"
-                alt="AdminLTE Logo"
-                class="brand-image img-circle elevation-1"
-                style="opacity: 0.8"
-              />
-              <h4>SARA</h4>
-            </a>
-          </li>
-        </ul>
-
-        <!-- Right navbar links -->
-        <ul class="navbar-nav ml-auto">
-          <li>
-            <a class="btn btn-success" href="#"
-              ><i class="fa fa-home"></i> Inicio</a
-            >
-          </li>
-          <li class="mx-3">
-            <a class="btn btn-danger" href="#"
-              ><i class="fa fa-user"></i> Cerrar sesión</a
-            >
-          </li>
-        </ul>
-      </nav>
+      <NavBar/>
       <!-- /.navbar -->
 
       <!-- BarraLateral -->
-      <BarraLateral />
+      <SideBar />
       <!-- contenido -->
 
       <div class="content-wrapper">
