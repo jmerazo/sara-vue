@@ -11,7 +11,6 @@ export const useEspeciesStore = defineStore('especies', () => {
     const consulta = useConsultaStore()
     const especies = ref([]);
     const especie = ref({});
-    const vrBuscar = ref('');
     const noResultados = computed(() => especies.value.length === 0 );
     const especiesOriginales = ref([]);
 
@@ -29,16 +28,24 @@ export const useEspeciesStore = defineStore('especies', () => {
       especie.value = data;
       consulta.cargando = false
       modal.handleClickModal();
+      
     }
-  
+
+    //quitar los filtros del motor de busqueda
+    function quitarFiltroEspecie(){
+      if(especiesOriginales.value !==[]){
+        especies.value = especiesOriginales.value
+      }
+    }
+
+    
     function buscarTermino(termino) {
-      vrBuscar.value = termino.toLowerCase();
-  
+      
       especies.value = especiesOriginales.value.filter(term => {
-        const lowerTermino = vrBuscar.value;
-        const lowerNomComunes = term.nom_comunes.toLowerCase();
-        const lowerCientifico = term.nombre_cientifico.toLowerCase();
-        const lowerFamilia = term.familia.toLowerCase();
+        const lowerTermino = termino.toLowerCase();
+        const lowerNomComunes = term.nom_comunes ? term.nom_comunes.toLowerCase() : '';
+        const lowerCientifico = term.nombre_cientifico ? term.nombre_cientifico.toLowerCase(): '';
+        const lowerFamilia = term.familia ? term.familia.toLowerCase(): '';
   
         return (
           lowerNomComunes.includes(lowerTermino) ||
@@ -53,7 +60,9 @@ export const useEspeciesStore = defineStore('especies', () => {
       especies,
       especie,
       noResultados,
+      especiesOriginales,
       seleccionarEspecie,
       buscarTermino,
+      quitarFiltroEspecie
     };
 });

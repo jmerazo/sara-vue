@@ -29,8 +29,8 @@ const validarcampos = () => {
       error.value = ''
     }, 3000)
   }
-
 }
+
 </script>
 
 <template>

@@ -9,7 +9,7 @@ import APIService from '../services/APIService'
 export const useConsultaStore = defineStore('consulta',()=>{
     
     const modal = useModalStore()
-    const router = useRouter();
+    const router = useRouter()
     const especie = ref({})
     const familia = ref({})
     const strFamilia = ref('')
@@ -50,6 +50,8 @@ export const useConsultaStore = defineStore('consulta',()=>{
             consulta.vrBuscar = '';
             return
          }
+        
+        
     }
 
     //Búsqueda por nombre común
@@ -58,6 +60,7 @@ export const useConsultaStore = defineStore('consulta',()=>{
         const {data} = await APIService.lookSpecie(nombre_comun)
         especie.value = data
         cargando.value = false
+       
     }
 
     //Búsqueda por nombre científico
@@ -76,6 +79,8 @@ export const useConsultaStore = defineStore('consulta',()=>{
         modal.handleClickModalFamily()
         cargando.value = false
     }
+
+
 
     return {
         consulta,

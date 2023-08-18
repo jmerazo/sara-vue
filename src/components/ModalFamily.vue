@@ -99,6 +99,9 @@ const irFamilias = ()=>{
                           {{ especie.nom_comunes }} -
                           {{ especie.nombre_cientifico }}
                         </p>
+                        <p class="text-slate-600" >
+                          {{ especie.otros_nombres }}
+                        </p>
                       </td>
                       <td class="w-1/4 p-4">
                         <button

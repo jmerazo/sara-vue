@@ -2,7 +2,7 @@
 import { ref } from 'vue'
 import { RouterView} from "vue-router";
 import { useConsultaStore } from './stores/consulta';
-import Header from './components/Header.vue';
+import Header from '@/components/Header.vue';
 import Footer from "./components/Footer.vue";
 import Modal from './components/Modal.vue';
 import ModalFamily from "./components/ModalFamily.vue";

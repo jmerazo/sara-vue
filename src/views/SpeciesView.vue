@@ -1,8 +1,15 @@
 <script setup>
+import { onBeforeRouteLeave } from "vue-router";
 import { useEspeciesStore } from "../stores/species";
 import Species from "../components/Species.vue";
 
+
 const especies = useEspeciesStore();
+
+onBeforeRouteLeave((to, from, next) => {
+  especies.quitarFiltroEspecie()
+  next();
+});
 </script>
 <template>
   <div>

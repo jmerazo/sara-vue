@@ -34,7 +34,9 @@ defineProps({
           <h2 class="text-3xl font-bold mb-2">{{familia.familia}}</h2>
           <p class="text-justify text-xl">
             Caraterísticas similares:
-            <span class="font-bold">hojas en punta de auja, tallo corrugado y muy húmedo</span>
+            <span class="font-bold">
+              Flores vistosas y grandes, hojas palmeadas o lobuladas, frutos en cápsulas, distribución global en climas cálidos, importancia ornamental y en productos (algodón, okra), polinización por insectos.
+            </span>
           </p>
         </div>
         <div class="flex items-center">
