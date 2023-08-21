@@ -17,7 +17,7 @@ const panel = ref(true)
   <Dashboard v-if="panel"/>
   <Header v-if="!panel"/>
    <main v-if="!panel" class="container mx-auto mt-10" >
-    <router-view />
+    <router-view v-if="!panel" />
   </main>
   <Spinner v-if="consulta.cargando"/>
   <Footer  />
