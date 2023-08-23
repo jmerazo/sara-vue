@@ -1,3 +1,4 @@
+import { approximatelyEquals } from 'ol/extent';
 import api from '../api/axios';
 
 export default {
@@ -27,5 +28,8 @@ export default {
     },
     getAverageCandidateTrees(){
         return api.get('/candidate/average')
+    },
+    getValuesByDepartment(){
+        return api.get('/monitoring/report/general/total')
     }
 }

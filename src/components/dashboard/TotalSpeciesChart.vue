@@ -1,34 +1,41 @@
 <script setup>
 import "@/adminlte/plugins/chart/Chart.min.js";
-$(function () {
-  var donutChartCanvas = $("#donutChart").get(0).getContext("2d");
-  var valorRamdon = 256;
-  var donutData = {
-    labels: [ "Putumayo 343",`Caquetá ${valorRamdon}`, "Amazonía 178"],
-    datasets: [
-      {
-        data: [700, 500, 300],
-        backgroundColor: ["#00a65a", "#f56954", "#f39c12"],
-      },
-    ],
-  };
-  
-  var donutOptions = {
-    maintainAspectRatio: false,
-    responsive: true,
-  };
-  //Create pie or douhnut chart
-  // You can switch between pie and douhnut using the method below.
-  new Chart(donutChartCanvas, {
-    type: "doughnut",
-    data: donutData,
-    options: donutOptions,
+import { useChartsStore } from "@/stores/dashboard/charts";
+import { computed} from "vue";
+
+const chartsHome = useChartsStore();
+const isReady = computed(() => chartsHome.isReady);
+if (isReady) {
+  $(function () {
+    
+    var donutChartCanvas = $("#donutChart").get(0).getContext("2d");
+    var donutData = {
+      labels: chartsHome.departamentos,
+      datasets: [
+        {
+
+          data: chartsHome.CantidadDepartamento,
+          backgroundColor: ["#f56954", "#00a65a"],
+        },
+      ],
+    };
+
+    var donutOptions = {
+      maintainAspectRatio: false,
+      responsive: true,
+    };
+
+    // You can switch between pie and douhnut using the method below.
+    new Chart(donutChartCanvas, {
+      type: "doughnut",
+      data: donutData,
+      options: donutOptions,
+    });
   });
-});
+}
 </script>
 <template>
   <div class="p-4 mt-10">
-    <!-- DONUT CHART -->
     <div class="card card-success">
       <div class="card-header">
         <h3 class="card-title">

@@ -2,6 +2,15 @@
 import "@/adminlte/plugins/chart/Chart.min.js";
 import TotalSpeciesChart from  '@/components/dashboard/TotalSpeciesChart.vue'
 import SpeciesYearChart from '@/components/dashboard/SpeciesYearChart.vue'
+import {useChartsStore} from '@/stores/dashboard/charts'
+import { onMounted } from "vue";
+
+const charts = useChartsStore()
+
+onMounted(()=>{
+  charts.chartDepartment()
+  
+})
 </script>
 <template>
   <div >
