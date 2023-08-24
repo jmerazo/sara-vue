@@ -31,9 +31,12 @@ const router = createRouter({
       component: ()=> import('../views/specieSoughtView.vue')
     },
     {
-      path: '/panel',
-      name: 'panel',
-      component: ()=> import('../views/dashboardviews/HomePanelView.vue')
+      path: '/dashboard',
+      name: 'dashboard',
+      component: ()=> import('../views/dashboardviews/HomePanelView.vue'),
+      meta: {
+        auth: true
+      }
     },
     {
       path: '/acercade',

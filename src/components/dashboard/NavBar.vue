@@ -1,5 +1,14 @@
 <script setup>
 import { RouterLink } from "vue-router";
+import { useAuthToken } from "../../stores/auth";
+const store = useAuthToken();
+
+const handleLogout = () => {
+  store.logout();
+  // Redirigir a la página de inicio de sesión u otra página adecuada
+  router.push("/");
+};
+const expose = { handleLogout };
 </script>
 <template>
   <nav class="main-header navbar navbar-expand navbar-white navbar-light">
@@ -25,7 +34,7 @@ import { RouterLink } from "vue-router";
 
     <!-- Right navbar links -->
     <ul class="navbar-nav ml-auto">
-      <RouterLink :to="{ name: 'panel' }">
+      <RouterLink :to="{ name: 'dashboard' }">
         <li>
         <a class="btn btn-success" href="#"
           ><i class="fa fa-home"></i> Inicio</a
@@ -34,7 +43,7 @@ import { RouterLink } from "vue-router";
       </RouterLink>
       
       <li class="mx-3">
-        <a class="btn btn-danger" href="#"
+        <a class="btn btn-danger" @click="handleLogout" href="#"
           ><i class="fa fa-user"></i> Cerrar sesión</a
         >
       </li>

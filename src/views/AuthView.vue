@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import { useAuthToken } from "../stores/auth";
 import { useRouter } from "vue-router";
 
@@ -19,7 +19,9 @@ const handleLogin = async () => {
     const response = await store.login(credentials);
     console.log("r: ", response);
     if (response.success) {
-      router.push({ name: "aboutus" });
+      store.setDashboard(true);
+      console.log('Dash: ', store.dashboardActive)
+      router.push({ name: "dashboard" });
     } else {
       showLoginError("Credenciales inválidas");
     }

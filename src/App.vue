@@ -1,29 +1,32 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { RouterView} from "vue-router";
-import { useConsultaStore } from './stores/consulta';
 import Header from '@/components/Header.vue';
 import Footer from "./components/Footer.vue";
 import Modal from './components/Modal.vue';
 import ModalFamily from "./components/ModalFamily.vue";
 import Spinner from './components/Spinner.vue'
 import Dashboard from './views/dashboardviews/DashboardMainView.vue'
-const consulta = useConsultaStore()
+import { useAuthToken } from "./stores/auth";
+import { useConsultaStore } from "./stores/consulta";
+const store = useAuthToken();
+const consulta = useConsultaStore();
 
-const panel = ref(true)
+// Observar cambios en dashboardActive
+const dash = ref(store.dashboardActive);
+watch(() => store.dashboardActive, (newValue) => {
+  dash.value = newValue;
+});
 </script>
 
 <template>
-  <Dashboard v-if="panel"/>
-  <Header v-if="!panel"/>
-   <main v-if="!panel" class="container mx-auto mt-10" >
-    <router-view v-if="!panel" />
+  <Dashboard v-if="dash"/>
+  <Header v-if="!dash.value"/>
+   <main v-if="!dash.value" class="container mx-auto mt-10" >
+    <router-view v-if="!dash.value" />
   </main>
   <Spinner v-if="consulta.cargando"/>
   <Footer  />
   <Modal/>
-  <ModalFamily/>
-  
+  <ModalFamily/>  
 </template>
-
-

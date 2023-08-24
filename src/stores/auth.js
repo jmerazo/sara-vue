@@ -6,6 +6,11 @@ export const useAuthToken = defineStore('authToken',()=>{
     const accessToken = ref(localStorage.getItem('access_token') || null)
     const refreshToken = ref(localStorage.getItem('refresh_token') || null)
     const errorAuth = ref(null)
+    const dashboardActive = ref(false)
+
+    const setDashboard= (value) => {
+        dashboardActive.value = value;
+      };
 
     const login = async (credentials) => {
         try {            
@@ -40,6 +45,8 @@ export const useAuthToken = defineStore('authToken',()=>{
         refreshToken,
         login,
         logout,
-        errorAuth
+        errorAuth,
+        dashboardActive,
+        setDashboard
     }
 })
