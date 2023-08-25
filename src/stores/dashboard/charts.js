@@ -27,7 +27,10 @@ export const useChartsStore = defineStore('charts',()=>{
         chartOneReady.value = true
         consulta.cargando = false
     }
-    
+
+    if (!chartOneReady.value) {
+        chartDepartment();
+    }    
    
     return{
         chartOneReady,

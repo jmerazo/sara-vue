@@ -2,16 +2,13 @@
 import { onMounted } from "vue";
 import { useGeoCandidateTrees } from '../stores/candidate'
 import { useAverageSpecie } from '../stores/average'
-import {useChartsStore} from '@/stores/dashboard/charts'
 
 const geoStore = useGeoCandidateTrees();
 const averageStore = useAverageSpecie()
-const charts = useChartsStore()
 
 onMounted(async () => {
     await geoStore.fetchData();
     await averageStore.fetchData();
-    await  charts.chartDepartment();
 });  
 </script>
 

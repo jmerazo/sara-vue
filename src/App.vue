@@ -21,9 +21,9 @@ watch(() => store.dashboardActive, (newValue) => {
 
 <template>
   <Dashboard v-if="dash"/>
-  <Header v-if="!dash.value"/>
-   <main v-if="!dash.value" class="container mx-auto mt-10" >
-    <router-view v-if="!dash.value" />
+  <Header v-if="!dash"/>
+   <main v-if="!dash" class="container mx-auto mt-10" >
+    <router-view v-if="!dash" />
   </main>
   <Spinner v-if="consulta.cargando"/>
   <Footer  />
