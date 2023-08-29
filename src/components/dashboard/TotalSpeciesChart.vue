@@ -1,12 +1,10 @@
 <script setup>
 import "@/adminlte/plugins/chart/Chart.min.js";
 import { useChartsStore } from "@/stores/dashboard/charts";
-import {ref} from 'vue'
+
 const chartStore = useChartsStore();
 
 const TotalSpecies = chartStore.totalDepartamentos
-
-console.log(`total especies ${TotalSpecies}`)
 
 $(function () {
   var donutChartCanvas = $("#donutChart").get(0).getContext("2d");

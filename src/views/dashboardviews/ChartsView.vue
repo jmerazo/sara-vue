@@ -3,7 +3,7 @@ import "@/adminlte/plugins/chart/Chart.min.js";
 import TotalSpeciesChart from  '@/components/dashboard/TotalSpeciesChart.vue'
 import SpepeciesYearChart from  '@/components/dashboard/SpeciesYearChart.vue'
 import {useChartsStore} from '@/stores/dashboard/charts'
-import { computed,ref } from "vue";
+
 
 const chartStore = useChartsStore();
 

@@ -1,5 +1,9 @@
 <script setup>
 import { RouterLink } from "vue-router";
+import {useAuthToken} from "@/stores/auth"
+
+const storeAuth = useAuthToken()
+
 </script>
 <template>
   <nav class="main-header navbar navbar-expand navbar-white navbar-light">
@@ -34,7 +38,7 @@ import { RouterLink } from "vue-router";
       </RouterLink>
       
       <li class="mx-3">
-        <a class="btn btn-danger" href="#"
+        <a @click="storeAuth.logout()"  class="btn btn-danger" href="#"
           ><i class="fa fa-user"></i> Cerrar sesión</a
         >
       </li>

@@ -19,19 +19,13 @@ const handleLogin = async () => {
     const response = await store.login(credentials);
     console.log("r: ", response);
     if (response.success) {
-      router.push({ name: "aboutus" });
+      router.push({ name: "panel" });
     } else {
       showLoginError("Credenciales inválidas");
     }
   } catch (e) {
     showLoginError(e.message);
   }
-};
-
-const handleLogout = () => {
-  store.logout();
-  // Redirigir a la página de inicio de sesión u otra página adecuada
-  router.push("/");
 };
 
 const showLoginError = (message) => {
