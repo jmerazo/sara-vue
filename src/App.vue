@@ -10,7 +10,7 @@ import Spinner from './components/Spinner.vue'
 import Dashboard from './views/dashboardviews/DashboardMainView.vue'
 const consulta = useConsultaStore()
 
-const panel = ref(true)
+const panel = ref(false)
 </script>
 
 <template>

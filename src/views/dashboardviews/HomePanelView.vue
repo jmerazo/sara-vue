@@ -6,11 +6,7 @@ import {useChartsStore} from '@/stores/dashboard/charts'
 import { onMounted } from "vue";
 
 const charts = useChartsStore()
-
-onMounted(()=>{
-  charts.chartDepartment()
-  
-})
+charts.chartDepartment()
 </script>
 <template>
   <div >
