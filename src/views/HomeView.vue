@@ -8,7 +8,7 @@ const averageStore = useAverageSpecie()
 onMounted(async () => {
     await geoStore.fetchData();
     await averageStore.fetchData();
-});  
+});
 </script>
 
 <template>

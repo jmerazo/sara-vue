@@ -1,5 +1,5 @@
 <script setup>
-import {useEspeciesStore} from '../stores/species'
+import {useEspeciesStore} from '@/stores/species'
 
 const especies = useEspeciesStore()
 
