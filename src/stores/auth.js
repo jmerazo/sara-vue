@@ -61,6 +61,7 @@ export const useAuthToken = defineStore('authToken',()=>{
         refreshToken,
         errorAuth,
         authActive,
+        useAuthToken,
         login,
         logout,
         isAuth,

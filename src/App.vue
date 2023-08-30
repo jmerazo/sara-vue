@@ -2,7 +2,7 @@
 import { ref,onMounted } from 'vue'
 import { RouterView} from "vue-router";
 import { useConsultaStore } from './stores/consulta';
-import {useAuthToken} from '@/stores/auth'
+import { useAuthToken } from '@/stores/auth'
 import Header from '@/components/Header.vue';
 import Footer from "./components/Footer.vue";
 import Modal from './components/Modal.vue';

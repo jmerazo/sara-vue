@@ -49,7 +49,7 @@ const router = createRouter({
       name: 'aboutus',
       component: ()=> import('../views/AboutUsView.vue'),
       meta: {
-        auth: true
+        auth: false
       }
     },
     {
