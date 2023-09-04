@@ -4,6 +4,7 @@ import { useConsultaStore } from '../stores/consulta';
 import { useRouter } from "vue-router";
 import { useGeoCandidateTrees } from '../stores/candidate'
 import { useAverageSpecie } from '../stores/average'
+import APIService from '../services/APIService'
 import * as d3 from 'd3'
 
 import QuoteButton from '../components/QuoteButton.vue'
@@ -15,11 +16,58 @@ const router = useRouter();
 const geoStore = useGeoCandidateTrees();
 const averageStore = useAverageSpecie()
 
+const dateNow = new Date();
+const year = dateNow.getFullYear();
+const month = dateNow.getMonth() + 1; // Los meses comienzan desde 0, por lo que se suma 1
+const day = dateNow.getDate();
+const formatDate = `${day}-${month}-${year}`;
+
 const codigo = especie.especie.cod_especie
+const name_specie = especie.especie.nom_comunes
 const filteredData = ref([]);
 const totalHeightSpecie = ref(0)
 const commercialHeightSpecie = ref(0)
 const averageAltitude = ref(0)
+
+async function downloadDataSpecie() {
+  try {
+    const response = await APIService.getDownloadDataSpecie(codigo);
+    console.log('url data', response.headers)
+
+    if (response.headers['content-type'] === 'application/pdf') {
+      const blob = new Blob([response.data], { type: 'application/pdf' });
+      const url = window.URL.createObjectURL(blob);
+
+      // Obtén el nombre del archivo del encabezado Content-Disposition si está presente
+      const contentDisposition = response.headers['content-disposition'];
+      let fileName = name_specie+"_"+codigo+"_"+formatDate; // Nombre predeterminado
+
+      if (contentDisposition) {
+        const fileNameMatch = contentDisposition.match(/filename="(.+)"/);
+        if (fileNameMatch && fileNameMatch.length > 1) {
+          fileName = fileNameMatch[1];
+        }
+      }
+
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = fileName;
+
+      a.style.display = 'none';
+      document.body.appendChild(a);
+      a.click();
+
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+    } else {
+      console.error('La respuesta no es un archivo PDF.');
+    }
+  } catch (error) {
+    console.error('Error al descargar el archivo PDF:', error);
+    // Manejar errores si es necesario
+  }
+}
+
 
 async function filterGeo(codigo, data) {
     return await data.filter(item => item.codigo === codigo)
@@ -222,6 +270,14 @@ scrollToTop()
             <p class="text-justify">{{ frutos }}</p>
             <img class="px-10 mb-14 rounded-lg mt-3" src="https://img.freepik.com/fotos-premium/fruta-granada-madura-colgando-jardin-espacio-copiar_150101-4103.jpg" alt="">
         </div>
+    </div>
+
+    <div class="mt-10 mb-10">
+      <span class="text-left font-bold">Sección de descargas:</span><br>
+      <a @click="downloadDataSpecie" download class="cursor-pointer text-customGreen">
+        <font-awesome-icon :icon="['fas', 'file-pdf']" class="mr-2" />
+        Exportar ficha técnica de la especie.
+      </a>
     </div>
 
     

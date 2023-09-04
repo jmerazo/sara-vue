@@ -37,7 +37,7 @@ const showLoginError = (message) => {
 </script>
 
 <template>
-  <div class="h-screen flex justify-center items-center mb-8">
+  <div class="flex justify-center items-center mb-8 max-w-md mx-auto h-full">
     <div
       class="w-full max-w-md relative bg-white p-8 rounded-lg shadow-lg backdrop-blur-lg backdrop-opacity-50"
     >
@@ -73,6 +73,10 @@ const showLoginError = (message) => {
         </button>
         <div v-if="error" class="text-red-500 mt-2">{{ error }}</div>
       </form>
+
+      <RouterLink :to="{ name: 'register' }" class="mt-4 text-left block text-blue-500 font-semibold">
+        <span>Solicitud de registro</span>            
+      </RouterLink>
     </div>
   </div>
 </template>

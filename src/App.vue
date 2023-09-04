@@ -27,4 +27,8 @@ const consulta = useConsultaStore()
   
 </template>
 
+<style scoped>
+  
+</style>
+
 

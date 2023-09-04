@@ -80,8 +80,6 @@ export const useConsultaStore = defineStore('consulta',()=>{
         cargando.value = false
     }
 
-
-
     return {
         consulta,
         especie,
