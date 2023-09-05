@@ -1,14 +1,9 @@
 <script setup>
 import { RouterLink } from "vue-router";
-import { useAuthToken } from "../../stores/auth";
-const store = useAuthToken();
+import {useAuthToken} from "@/stores/auth"
 
-const handleLogout = () => {
-  store.logout();
-  // Redirigir a la página de inicio de sesión u otra página adecuada
-  router.push("/");
-};
-const expose = { handleLogout };
+const storeAuth = useAuthToken()
+
 </script>
 <template>
   <nav class="main-header navbar navbar-expand navbar-white navbar-light">
@@ -34,7 +29,7 @@ const expose = { handleLogout };
 
     <!-- Right navbar links -->
     <ul class="navbar-nav ml-auto">
-      <RouterLink :to="{ name: 'dashboard' }">
+      <RouterLink :to="{ name: 'panel' }">
         <li>
         <a class="btn btn-success" href="#"
           ><i class="fa fa-home"></i> Inicio</a
@@ -43,7 +38,7 @@ const expose = { handleLogout };
       </RouterLink>
       
       <li class="mx-3">
-        <a class="btn btn-danger" @click="handleLogout" href="#"
+        <a @click="storeAuth.logout()"  class="btn btn-danger" href="#"
           ><i class="fa fa-user"></i> Cerrar sesión</a
         >
       </li>

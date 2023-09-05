@@ -31,5 +31,20 @@ export default {
     },
     getValuesByDepartment(){
         return api.get('/monitoring/report/general/total')
+    },
+    getPageContent(){
+        return api.get('/page/content')
+    },
+    pageContentGet(pid){
+        return api.get(`/page/content/${pid}`)
+    },
+    pageContentCreate(data){
+        return api.post(`/page/content`, data)
+    },
+    pageContentUpdate(pid){
+        return api.put(`/page/content/${pid}`)
+    },
+    pageContentDelete(pid){
+        return api.delete(`/page/content/${pid}`)
     }
 }

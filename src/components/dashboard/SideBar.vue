@@ -1,5 +1,8 @@
 <script setup>
 import { RouterLink } from "vue-router";
+const mostrarAlerta = ()=>{
+  alert('hola')
+}
 </script>
 <template>
   <aside class="main-sidebar sidebar-dark-primary elevation-4 rounded">
@@ -26,20 +29,22 @@ import { RouterLink } from "vue-router";
         >
           <!-- Add icons to the links using the .nav-icon class
                with font-awesome or any other icon font library -->
-          <RouterLink :to="{ name: 'dashboard' }">
-          <li class="nav-item">
-            <a href="#" class="nav-link">
-              <i class="nav-icon fas fa-tachometer-alt"></i>
-              <p>Panel Principal</p>
-            </a>
-          </li>
-        </RouterLink>
+          <RouterLink :to="{ name: 'panel' }">
+            <li class="nav-item">
+              <a href="#" class="nav-link">
+                <i class="nav-icon fas fa-tachometer-alt"></i>
+                <p>Panel Principal</p>
+              </a>
+            </li>
+          </RouterLink>
+          <RouterLink :to="{ name: 'charts' }">
           <li class="nav-item">
             <a href="#" class="nav-link">
               <i class="nav-icon fas fa-chart-pie"></i>
-              <p>Estadísticas</p>
+              <p>Ver gráficos</p>
             </a>
           </li>
+          </RouterLink>
           <li class="nav-item">
             <a href="#" class="nav-link">
               <i class="nav-icon fas fa-tree"></i>
@@ -65,7 +70,6 @@ import { RouterLink } from "vue-router";
                   </a>
                 </li>
               </RouterLink>
-              
             </ul>
           </li>
           <li class="nav-item">
@@ -84,13 +88,13 @@ import { RouterLink } from "vue-router";
                 </a>
               </li>
               <RouterLink :to="{ name: 'glossary' }">
-              <li class="nav-item">
-                <a href="#" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Glosario</p>
-                </a>
-              </li>
-            </RouterLink>
+                <li class="nav-item">
+                  <a href="#" class="nav-link">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p>Glosario</p>
+                  </a>
+                </li>
+              </RouterLink>
               <li class="nav-item">
                 <a href="#" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>

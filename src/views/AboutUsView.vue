@@ -1,4 +1,13 @@
 <script setup>
+import { onMounted } from "vue";
+import { usePageContent } from '../stores/page'
+
+const pageStore = usePageContent();
+console.log('data about: ', pageStore.fetchData)
+
+onMounted(async () => {
+    await pageStore.fetchData();
+});
 </script>
 
 <template>

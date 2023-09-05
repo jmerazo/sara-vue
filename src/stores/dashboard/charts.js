@@ -11,32 +11,27 @@ export const useChartsStore = defineStore('charts',()=>{
     const departamentos = ref([]);
     const CantidadDepartamento = ref([]);
     const totalDepartamentos = ref(0);
-    const chartOneReady = ref(false)
 
-    async function chartDepartment(){
+    onMounted(async()=>{
         const { data } = await APIService.getValuesByDepartment()
         departamentos.value = Object.keys(data)
+        // se recorre la data con el fin de crear un arreglo para las cantidades de individuos de cada departamento 
+        //los arreglos son un parámetro obligatorio en los componetnes de gráficos.
         for (const departamento in data) {
             CantidadDepartamento.value.push(Number(data[departamento].total));
             totalDepartamentos.value += Number(data[departamento].total)
-
         }
         console.log(departamentos.value) 
         console.log(CantidadDepartamento.value)
         console.log(totalDepartamentos.value);
-        chartOneReady.value = true
         consulta.cargando = false
-    }
-
-    if (!chartOneReady.value) {
-        chartDepartment();
-    }    
+  
+    })
    
     return{
-        chartOneReady,
         departamentos,
         CantidadDepartamento,
         totalDepartamentos,
-        chartDepartment
+        
     }
 })

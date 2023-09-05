@@ -29,21 +29,27 @@ const router = createRouter({
       path: '/busqueda',
       name: 'busqueda',
       component: ()=> import('../views/specieSoughtView.vue')
+      
     },
     {
-      path: '/dashboard',
-      name: 'dashboard',
+      path: '/panel',
+      name: 'panel',
       component: ()=> import('../views/dashboardviews/HomePanelView.vue'),
       meta: {
         auth: true
       }
     },
     {
+      path: '/charts',
+      name: 'charts',
+      component: ()=> import('../views/dashboardviews/ChartsView.vue')
+    },
+    {
       path: '/acercade',
       name: 'aboutus',
       component: ()=> import('../views/AboutUsView.vue'),
       meta: {
-        auth: true
+        auth: false
       }
     },
     {
