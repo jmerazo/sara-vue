@@ -1,0 +1,10 @@
+@font-face {
+    font-family: 'Montserrat';
+    src: url('../src/assets/fonts/Montserrat-Regular.woff2') format('woff2'); /* Asegúrate de que el nombre del archivo coincida con el que has descargado */
+    font-weight: normal;
+    font-style: normal;
+  }
+  
+body {
+    font-family: 'Montserrat', sans-serif; /* Aplicar Montserrat como fuente predeterminada */
+}

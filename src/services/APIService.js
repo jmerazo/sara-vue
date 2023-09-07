@@ -46,5 +46,14 @@ export default {
     },
     pageContentDelete(pid){
         return api.delete(`/page/content/${pid}`)
+    },
+    getDownloadDataSpecie(code){
+        return api.get(`especie_forestal/export/${code}`)
+    },
+    getUsers(){
+        return api.get('/users/')
+    },
+    createUsers(data){
+        return api.post('/users/', data)
     }
 }

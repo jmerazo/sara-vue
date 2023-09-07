@@ -26,3 +26,7 @@ const consulta = useConsultaStore()
   <ModalFamily/>
   
 </template>
+
+<style scoped>
+  
+</style>
