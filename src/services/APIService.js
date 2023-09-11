@@ -55,5 +55,11 @@ export default {
     },
     createUsers(data){
         return api.post('/users/', data)
+    },
+    getDepartments(){
+        return api.get('/departments/')
+    },
+    getCities(){
+        return api.get(`/cities/`)
     }
 }

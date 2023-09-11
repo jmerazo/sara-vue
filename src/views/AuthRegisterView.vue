@@ -1,20 +1,35 @@
 <script setup>
 import { ref, computed } from 'vue';
 import APIService from '../services/APIService'
+import { useAuthToken } from '../stores/auth'
+
+const locates = useAuthToken()
 
 // Datos del formulario
 const formData = ref({
   document_type: "Cédula de ciudadanía",
   document_number: "",
-  nombres: "",
-  apellidos: "",
+  names: "",
+  lastnames: "",
   email: "",
   cellphone: "",
   profession: "",
   entity: "",
   reason: "",
   password: "",
-  confirm_password: ""
+  confirm_password: "",
+  department: '',
+  city: ''
+});
+
+const filteredCities = computed(() => {
+  const selectedDepartament = formData.value.department
+  console.log(selectedDepartament)
+  if (selectedDepartament) {    
+    const filtered = locates.cities.filter(city => city.department_id === selectedDepartament);
+    return filtered;
+  }
+  return [];
 });
 
 const profesiones = [
@@ -44,6 +59,12 @@ const passwordLengthMessage = ref('')
 function validatePasswords() {
   return formData.value.password === formData.value.confirm_password;
 }
+
+function resetForm() {
+  for (let key in formData.value) {
+    formData.value[key] = "";
+  }
+}
 // Función para enviar el formulario
 async function userCreate() {
   if (!validatePasswords()) {
@@ -59,8 +80,15 @@ async function userCreate() {
   try {
     console.log('User: ', formData.value)
     await APIService.createUsers(formData.value);
+    resetForm();
   } catch (error) {
-    console.log('Error al crear el usuario: ', error)
+    if (error.response && error.response.data && error.response.data.error) {
+      // Si hay un mensaje de error en la respuesta, lo puedes mostrar
+      alert(error.response.data.error);
+    } else {
+      // En caso de un error inesperado
+      alert('Ocurrió un error al procesar la solicitud.');
+    }
   }
   
 };
@@ -123,25 +151,101 @@ function getSecurityBarWidth() {
   }
 }
 
-function checkEmail() {
-  const email = formData.email;
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!emailRegex.test(email)) {
-    document.getElementById('email-error').style.display = 'block';
-  } else {
-    document.getElementById('email-error').style.display = 'none';
+document.addEventListener('DOMContentLoaded', function() {
+  const sendData = document.getElementById("saveUser");
+
+  sendData.addEventListener("click", validate);
+
+  function validate(e) {
+    e.preventDefault();
+
+    const names = document.getElementById("names");
+    const lastnames = document.getElementById("lastnames")
+    const email = document.getElementById("email")
+    const cellphone = document.getElementById("cellphone")
+    const profession = document.getElementById("profession")
+    const entity = document.getElementById("entity")
+    const reason = document.getElementById("reason")
+    const password = document.getElementById("password")
+
+    let valido = true;
+
+    const nameError = document.getElementById("nameError")
+
+    if (!names.value) {
+      nameError.classList.add("visible");
+      names.classList.add("invalido");
+      nameError.setAttribute("aria-hidden", false);
+      nameError.setAttribute("aria-invalid", true);
+    }
+
+    if (!lastnames.value) {
+      nameError.classList.add("visible");
+      lastnames.classList.add("invalido");
+      nameError.setAttribute("aria-hidden", false);
+      nameError.setAttribute("aria-invalid", true);
+    }
+
+    if (!email.value) {
+      nameError.classList.add("visible");
+      email.classList.add("invalido");
+      nameError.setAttribute("aria-hidden", false);
+      nameError.setAttribute("aria-invalid", true);
+    }
+
+    if (!cellphone.value) {
+      nameError.classList.add("visible");
+      cellphone.classList.add("invalido");
+      nameError.setAttribute("aria-hidden", false);
+      nameError.setAttribute("aria-invalid", true);
+    }
+
+    if (!profession.value) {
+      nameError.classList.add("visible");
+      profession.classList.add("invalido");
+      nameError.setAttribute("aria-hidden", false);
+      nameError.setAttribute("aria-invalid", true);
+    }
+
+    if (!entity.value) {
+      nameError.classList.add("visible");
+      entity.classList.add("invalido");
+      nameError.setAttribute("aria-hidden", false);
+      nameError.setAttribute("aria-invalid", true);
+    }
+
+    if (!reason.value) {
+      nameError.classList.add("visible");
+      reason.classList.add("invalido");
+      nameError.setAttribute("aria-hidden", false);
+      nameError.setAttribute("aria-invalid", true);
+    }
+
+    if (!password.value) {
+      nameError.classList.add("visible");
+      password.classList.add("invalido");
+      nameError.setAttribute("aria-hidden", false);
+      nameError.setAttribute("aria-invalid", true);
+    }
+    
+    return valido;
   }
+});
+
+function convertToUppercase() {
+  const entityInput = document.getElementById('entity');
+  entityInput.value = entityInput.value.toUpperCase();
 }
 </script>
 
 <template>
     <div class="max-w-md mx-auto">
-      <h2 class="text-2xl font-bold mb-4 text-center">Formulario de Registro</h2>
+      <h2 class="text-2xl font-bold mb-4 text-center">Formulario solicitud de Registro</h2>
       <form @submit.prevent="userCreate" class="space-y-4 mb-20 relative bg-white p-8 rounded-lg shadow-lg backdrop-blur-lg backdrop-opacity-50">
         <!-- Tipo de documento -->
         <div>
           <label for="document_type" class="block font-semibold mb-1">Tipo de documento</label>
-          <select v-model="formData.document_type" id="document_type" class="w-full rounded-lg border px-4 py-2">
+          <select v-model="formData.document_type" id="document_type" class="w-full rounded-lg border px-4 py-2" required>
             <option value="Cédula de ciudadanía">Cédula de ciudadanía</option>
             <option value="Tarjeta de identidad">Tarjeta de identidad</option>
             <option value="NIT">NIT</option>
@@ -157,27 +261,27 @@ function checkEmail() {
   
         <!-- Nombres -->
         <div>
-          <label for="nombres" class="block font-semibold mb-1">Nombres</label>
-          <input v-model="formData.nombres" type="text" id="nombres" class="w-full rounded-lg border px-4 py-2" required>
+          <label for="names" class="block font-semibold mb-1">Nombres</label>
+          <input v-model="formData.names" type="text" id="names" class="w-full rounded-lg border px-4 py-2" required>
         </div>
   
         <!-- Apellidos -->
         <div>
-          <label for="apellidos" class="block font-semibold mb-1">Apellidos</label>
-          <input v-model="formData.apellidos" type="text" id="apellidos" class="w-full rounded-lg border px-4 py-2" required>
+          <label for="lastnames" class="block font-semibold mb-1">Apellidos</label>
+          <input v-model="formData.lastnames" type="text" id="lastnames" class="w-full rounded-lg border px-4 py-2" required>
         </div>
   
         <!-- Correo electrónico -->
         <div>
           <label for="email" class="block font-semibold mb-1">Correo electrónico</label>
-          <input v-model="formData.email" type="email" id="email" class="w-full rounded-lg border px-4 py-2" @input="checkEmail">
-          <span class="error-message" id="email-error" style="display:none;">El correo electrónico debe contener el símbolo '@'</span>
+          <input v-model="formData.email" type="email" id="email" class="w-full rounded-lg border px-4 py-2">
+          <span class="error-message-email" id="email-error" style="color: red;">Por favor, ingresa un correo electrónico válido.</span>
         </div>
-          
+
         <!-- Celular -->
         <div>
           <label for="cellphone" class="block font-semibold mb-1">Celular</label>
-          <input v-model="formData.cellphone" type="tel" id="cellphone" class="w-full rounded-lg border px-4 py-2" required>
+          <input v-model="formData.cellphone" type="number" id="cellphone" class="w-full rounded-lg border px-4 py-2" required>
         </div>
   
         <!-- Profesión -->
@@ -192,13 +296,41 @@ function checkEmail() {
         <!-- Entidad -->
         <div>
           <label for="entity" class="block font-semibold mb-1">Entidad</label>
-          <input v-model="formData.entity" type="text" id="entity" class="w-full rounded-lg border px-4 py-2">
+          <input v-model="formData.entity" type="text" id="entity" class="w-full rounded-lg border px-4 py-2" @input="convertToUppercase">
         </div>
   
         <!-- Motivo -->
         <div>
-          <label for="reason" class="block font-semibold mb-1">Motivo</label>
-          <input v-model="formData.reason" type="text" id="reason" class="w-full rounded-lg border px-4 py-2" required>
+          <label for="reason" class="block font-semibold mb-1">Motivo solicitud</label>
+          <textarea v-model="formData.reason" id="reason" class="w-full rounded-lg border px-4 py-2" required></textarea>
+        </div>
+
+        <div>
+          <label class="block font-bold" for="parametro">Departamento</label>
+          <select
+            id="department"
+            class="w-full rounded-lg border px-4 py-2"
+            v-model="formData.department"
+          >
+            <option value="" disabled selected>Seleccione un departamento...</option>
+            <option v-for="loc in locates.departments" :key="loc.id" :value="loc.code">
+              {{ loc.name }}
+            </option>
+          </select>
+        </div>
+
+        <div v-if="filteredCities.length">
+          <label class="block font-bold" for="parametro">Ciudad</label>
+          <select
+            id="city"
+            class="w-full rounded-lg border px-4 py-2"
+            v-model="formData.city"
+          >
+            <option value="" disabled selected>Seleccione una ciudad...</option>
+            <option v-for="city in filteredCities" :key="city.id" :value="city.id">
+              {{ city.name }}
+            </option>
+          </select>
         </div>
 
         <div :class="{'error': !passwordsMatch}">
@@ -221,8 +353,12 @@ function checkEmail() {
           <p v-if="formData.password.length >= 6">Nivel de Seguridad: {{ getSecurityLevel() }}</p>
           <div :style="{ width: getSecurityBarWidth().percentage }" :class="getSecurityBarWidth().level" class="security-bar"></div>
         </div>
+
+        <span role="alert" id="nameError" aria-hidden="true">
+          Ingrese todos los datos, por favor
+        </span>
   
-        <button type="submit" class="w-full bg-blue-500 text-white font-semibold rounded-lg py-2" @click.prevent="userCreate">
+        <button id="saveUser" type="submit" class="w-full bg-blue-500 text-white font-semibold rounded-lg py-2" @click.prevent="userCreate">
           Registrarse
         </button>
       </form>
@@ -257,5 +393,34 @@ function checkEmail() {
 
 .high-security {
   background-color: rgb(169, 202, 169);
+}
+.border-red-500 {
+  border-color: #EF4444;
+}
+
+.error-message {
+  color: #EF4444;
+  display: none;
+}
+
+.error-message-email {
+  display: none; 
+}
+
+.border-red-500 + .error-message {
+  display: block;
+}
+
+#nameError {
+  display: none;
+  font-size: 0.8em;
+}
+
+#nameError.visible {
+  display: block;
+}
+
+input.invalido {
+  border-color: red;
 }
 </style>

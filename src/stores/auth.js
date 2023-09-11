@@ -11,6 +11,9 @@ export const useAuthToken = defineStore('authToken',()=>{
     const errorAuth = ref(null)
     const authActive = ref(false)
 
+    const departments = ref({})
+    const cities = ref({})
+
 
     const login = async (credentials) => {
         try {            
@@ -44,9 +47,24 @@ export const useAuthToken = defineStore('authToken',()=>{
         router.push("/");
     };
 
-   onMounted(()=>{
-    isAuth()
-   })
+    const departmentsList = async () => {
+        
+    }
+
+    onMounted(async () => {
+        isAuth();
+    
+        try {
+            const departmentsResponse = await APIService.getDepartments();
+            departments.value = departmentsResponse.data;
+            console.log("Departments: ", departments.value);
+    
+            const citiesResponse = await APIService.getCities();
+            cities.value = citiesResponse.data;
+        } catch (error) {
+            console.error("Error al obtener datos: ", error);
+        }
+    });
 
     function isAuth(){
         const auth = accessToken.value
@@ -62,6 +80,8 @@ export const useAuthToken = defineStore('authToken',()=>{
         errorAuth,
         authActive,
         useAuthToken,
+        departments,
+        cities,
         login,
         logout,
         isAuth,
