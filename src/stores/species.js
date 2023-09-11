@@ -14,6 +14,11 @@ export const useEspeciesStore = defineStore('especies', () => {
     const noResultados = computed(() => especies.value.length === 0 );
     const especiesOriginales = ref([]);
 
+    // variables para paginación
+    const currentPage = ref(1); // Página actual
+    const itemsPerPage = ref(12); // Elementos por página
+
+
     onMounted(async () => {
       consulta.cargando = true
       const { data } = await APIService.getSpecies();
@@ -22,6 +27,25 @@ export const useEspeciesStore = defineStore('especies', () => {
       consulta.cargando = false
     });
   
+
+    // Calcula el número total de páginas en función de los datos
+    const totalPages = computed(() => Math.ceil(especies.value.length / itemsPerPage.value));
+
+    // Calcula las especies a mostrar en la página actual
+    const displayedEspecies = computed(() => {
+    const start = (currentPage.value - 1) * itemsPerPage.value;
+    const end = start + itemsPerPage.value;
+    return especies.value.slice(start, end);
+    });
+
+    //función para cambiar de página
+    function changePage(page) {
+      if (page >= 1 && page <= totalPages.value) {
+        currentPage.value = page;
+      }
+    }
+
+   
     async function seleccionarEspecie(nombre_comun) {
       consulta.cargando = true
       const { data } = await APIService.lookSpecie(nombre_comun);
@@ -57,12 +81,17 @@ export const useEspeciesStore = defineStore('especies', () => {
 
     
     return {
+      currentPage,
+      itemsPerPage,
+      totalPages,
+      displayedEspecies,
       especies,
       especie,
       noResultados,
       especiesOriginales,
       seleccionarEspecie,
       buscarTermino,
-      quitarFiltroEspecie
+      quitarFiltroEspecie,
+      changePage,
     };
 });

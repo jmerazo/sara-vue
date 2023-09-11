@@ -36,11 +36,23 @@ onBeforeRouteLeave((to, from, next) => {
       class="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-2 mt-10 gap-10 my-10"
     >
       <Family
-        v-for="familia in familias.familias"
+        v-for="familia in familias.displayedFamilias"
         :key="familia.familia"
         :familia="familia"
       >
       </Family>
+    </div>
+      <!-- paginador -->
+      <div class="flex justify-center mt-5 mb-10">
+      <button
+        v-for="page in familias.totalPages"
+        :key="page"
+        @click="familias.changePage(page)"
+        class="px-3 py-2 mx-1 rounded-lg bg-blue-500 text-white hover:bg-blue-700"
+        :class="{ 'bg-blue-700': page === familias.currentPage }"
+      >
+        {{ page }}
+      </button>
     </div>
   </div>
 </template>

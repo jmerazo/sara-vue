@@ -18,6 +18,7 @@ export const useChartsStore = defineStore('charts',()=>{
         // se recorre la data con el fin de crear un arreglo para las cantidades de individuos de cada departamento 
         //los arreglos son un parámetro obligatorio en los componetnes de gráficos.
         for (const departamento in data) {
+            console.log(data)
             CantidadDepartamento.value.push(Number(data[departamento].total));
             totalDepartamentos.value += Number(data[departamento].total)
         }

@@ -1,11 +1,16 @@
 <script setup>
 import { onBeforeRouteLeave } from "vue-router";
 import { useEspeciesStore } from "../stores/species";
-import Species from "../components/Species.vue";
+
+import { computed } from 'vue'
+import Species from "@/components/Species.vue";
 
 
 const especies = useEspeciesStore();
 
+
+
+//limpiar filtros antes de cambiar de vista
 onBeforeRouteLeave((to, from, next) => {
   especies.quitarFiltroEspecie()
   next();
@@ -31,12 +36,25 @@ onBeforeRouteLeave((to, from, next) => {
       class="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-4 mt-10 gap-10 my-10"
     >
       <Species
-        v-for="especie in especies.especies"
+        v-for="especie in especies.displayedEspecies"
         :key="especie.ShortcutID"
         :especie="especie"
         class="rounded-lg"
       >
       </Species>
+    </div>
+
+     <!-- paginador -->
+    <div class="flex justify-center mt-5 mb-10">
+      <button
+        v-for="page in especies.totalPages"
+        :key="page"
+        @click="especies.changePage(page)"
+        class="px-3 py-2 mx-1 rounded-lg bg-blue-500 text-white hover:bg-blue-700"
+        :class="{ 'bg-blue-700': page === especies.currentPage }"
+      >
+        {{ page }}
+      </button>
     </div>
 
     <h1 v-if="especies.noResultados" class="text-center font-bold text-2xl mt-5 mb-40">

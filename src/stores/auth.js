@@ -47,10 +47,6 @@ export const useAuthToken = defineStore('authToken',()=>{
         router.push("/");
     };
 
-    const departmentsList = async () => {
-        
-    }
-
     onMounted(async () => {
         isAuth();
     
