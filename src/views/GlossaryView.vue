@@ -61,8 +61,8 @@ const searchTerm = computed({
         v-for="page in glossary.totalPages"
         :key="page"
         @click="glossary.changePage(page)"
-        class="px-3 py-2 mx-1 rounded-lg bg-blue-500 text-white hover:bg-blue-700"
-        :class="{ 'bg-blue-700': page === glossary.currentPage }"
+        class="px-3 py-2 mx-1 rounded-lg bg-green-200 text-black hover:bg-green-600"
+        :class="{ 'bg-green-600': page === glossary.currentPage }"
       >
         {{ page }}
       </button>

@@ -48,8 +48,8 @@ onBeforeRouteLeave((to, from, next) => {
         v-for="page in familias.totalPages"
         :key="page"
         @click="familias.changePage(page)"
-        class="px-3 py-2 mx-1 rounded-lg bg-blue-500 text-white hover:bg-blue-700"
-        :class="{ 'bg-blue-700': page === familias.currentPage }"
+        class="px-3 py-2 mx-1 rounded-lg bg-green-200 text-black hover:bg-green-600"
+        :class="{ 'bg-green-600': page === familias.currentPage }"
       >
         {{ page }}
       </button>

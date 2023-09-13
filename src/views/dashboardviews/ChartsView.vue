@@ -10,11 +10,11 @@ const chartStore = useChartsStore();
 </script>
 <template>
     <div>
-        <h1>Información gradicada del trabajo de campo</h1>
+        <h1>Información graficada del trabajo de campo</h1>
     </div>
   <div >
     <TotalSpeciesChart v-if="chartStore.departamentos.length > 0"/>
-    <SpepeciesYearChart/>
+    <SpepeciesYearChart v-if="chartStore.municipios.length > 0 "/>
   </div>
 </template>
 <style scoped>

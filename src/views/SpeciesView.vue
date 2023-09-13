@@ -50,8 +50,8 @@ onBeforeRouteLeave((to, from, next) => {
         v-for="page in especies.totalPages"
         :key="page"
         @click="especies.changePage(page)"
-        class="px-3 py-2 mx-1 rounded-lg bg-blue-500 text-white hover:bg-blue-700"
-        :class="{ 'bg-blue-700': page === especies.currentPage }"
+        class="px-3 py-2 mx-1 rounded-lg bg-green-200 text-black hover:bg-green-600"
+        :class="{ 'bg-green-600': page === especies.currentPage }"
       >
         {{ page }}
       </button>
