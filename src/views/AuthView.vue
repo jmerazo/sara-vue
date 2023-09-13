@@ -19,7 +19,7 @@ const handleLogin = async () => {
     const response = await store.login(credentials);
     console.log("r: ", response);
     if (response.success) {
-      router.push({ name: "panel" });
+      router.push({ name: "panel" }).catch(err => {});
     } else {
       showLoginError("Credenciales inválidas");
     }

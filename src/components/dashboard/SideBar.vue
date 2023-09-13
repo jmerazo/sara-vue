@@ -33,7 +33,7 @@ const mostrarAlerta = ()=>{
             <li class="nav-item">
               <a href="#" class="nav-link">
                 <i class="nav-icon fas fa-tachometer-alt"></i>
-                <p>Panel Principal</p>
+                <p>   Panel Principal</p>
               </a>
             </li>
           </RouterLink>
@@ -41,7 +41,7 @@ const mostrarAlerta = ()=>{
           <li class="nav-item">
             <a href="#" class="nav-link">
               <i class="nav-icon fas fa-chart-pie"></i>
-              <p>Ver gráficos</p>
+              <p>   Ver gráficos</p>
             </a>
           </li>
           </RouterLink>
@@ -225,6 +225,24 @@ const mostrarAlerta = ()=>{
             <a href="#" class="nav-link">
               <i class="nav-icon fas fa-file"></i>
               <p>Promedio Altura</p>
+            </a>
+          </li>
+
+          <li class="nav-header">ADMINISTRACIÓN</li>
+          
+          <RouterLink :to="{ name: 'users' }">
+          <li class="nav-item">
+            <a href="#" class="nav-link">
+              <i class="nav-icon fas fa-file"></i>
+              <p>Usuarios</p>
+            </a>
+          </li>
+        </RouterLink>        
+
+          <li class="nav-item">
+            <a href="#" class="nav-link">
+              <i class="nav-icon fas fa-file"></i>
+              <p>Especies forestales</p>
             </a>
           </li>
         </ul>
