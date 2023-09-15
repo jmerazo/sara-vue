@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed } from "vue";
+import { ref} from "vue";
 import { useAuthToken } from "../stores/auth";
 import { useRouter } from "vue-router";
 
@@ -34,6 +34,8 @@ const showLoginError = (message) => {
     error.value = null;
   }, 3000); // El mensaje de error desaparecerá después de 3 segundos
 };
+
+localStorage.removeItem('hasReloaded');
 </script>
 
 <template>

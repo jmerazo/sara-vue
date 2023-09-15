@@ -4,7 +4,6 @@ import { useChartsStore } from "@/stores/dashboard/charts";
 
 const chartStore = useChartsStore();
 
-const TotalSpecies = chartStore.totalDepartamentos
 
 $(function () {
   var donutChartCanvas = $("#donutChart").get(0).getContext("2d");
@@ -36,8 +35,8 @@ $(function () {
     <div class="card card-success">
       <div class="card-header">
         <h3 class="card-title">
-          Registro de especies amazónicas por departamento -  
-          Total: <span>{{TotalSpecies}}</span>
+          Especies evaluadas por departamento
+          
         </h3>
       </div>
       <div class="card-body">

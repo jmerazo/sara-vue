@@ -40,7 +40,7 @@ export const useChartsStore = defineStore('charts',()=>{
             totalMunicipios.value += Number(data.municipios[municipio])
         }
         
-        console.log(cantidadMunicipio.value)
+       
         totalMunicipios.value =  separarMiles(totalMunicipios.value)
         consulta.cargando = false
 

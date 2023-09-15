@@ -13,7 +13,7 @@ $(function () {
     datasets: [
       
       {
-        label: `Municipios`,
+        label: `Individuos evaluados`,
         backgroundColor: '#009200', //"#00a65a",
         borderColor: "rgba(210, 214, 222, 1)",
         pointRadius: false,
@@ -54,7 +54,7 @@ $(function () {
   <div class="col-md-12">
     <div class="card card-success">
       <div class="card-header">
-        <h3 class="card-title">Especies evaluadas por municipio {{ chartStore.totalMunicipios }}</h3>
+        <h3 class="card-title">Especies evaluadas por municipio</h3>
         
       </div>
       <div class="card-body">

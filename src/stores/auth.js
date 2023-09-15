@@ -39,6 +39,7 @@ export const useAuthToken = defineStore('authToken',()=>{
     }
 
     const logout = () => {
+        localStorage.removeItem('hasReloaded');
         accessToken.value = null;
         refreshToken.value = null;
         localStorage.removeItem('access_token');

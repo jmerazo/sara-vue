@@ -1,8 +1,6 @@
 <script setup>
 import { RouterLink } from "vue-router";
-const mostrarAlerta = ()=>{
-  alert('hola')
-}
+
 </script>
 <template>
   <aside class="main-sidebar sidebar-dark-primary elevation-4 rounded">
@@ -37,14 +35,14 @@ const mostrarAlerta = ()=>{
               </a>
             </li>
           </RouterLink>
-          <RouterLink :to="{ name: 'charts' }">
+          <!-- <RouterLink :to="{ name: 'charts' }">
           <li class="nav-item">
             <a href="#" class="nav-link">
               <i class="nav-icon fas fa-chart-pie"></i>
               <p>Ver gráficos</p>
             </a>
           </li>
-          </RouterLink>
+          </RouterLink> -->
           <li class="nav-item">
             <a href="#" class="nav-link">
               <i class="nav-icon fas fa-tree"></i>
