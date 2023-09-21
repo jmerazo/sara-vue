@@ -2,6 +2,7 @@
 import { ref, computed } from 'vue';
 import APIService from '../services/APIService'
 import { useAuthToken } from '../stores/auth'
+import { VueReCaptcha } from 'vue-recaptcha-v3';
 
 const locates = useAuthToken()
 
@@ -76,6 +77,8 @@ async function userCreate() {
     alert("Por favor complete todos los campos del formulario.");
     return;
   }
+
+  const recaptchaToken = recaptcha.value.getToken();
 
   try {
     console.log('User: ', formData.value)
@@ -357,6 +360,10 @@ function convertToUppercase() {
         <span role="alert" id="nameError" aria-hidden="true">
           Ingrese todos los datos, por favor
         </span>
+
+        <div>
+          <VueReCaptcha></VueReCaptcha>
+        </div>
   
         <button id="saveUser" type="submit" class="w-full bg-blue-500 text-white font-semibold rounded-lg py-2" @click.prevent="userCreate">
           Registrarse
