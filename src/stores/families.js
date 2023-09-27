@@ -40,7 +40,7 @@ export const useFamiliasStore = defineStore('familias',()=>{
 
     //quitar los filtros del motor de busqueda
     function quitarFiltroFamilia(){
-      if(familiasOriginal !==[]){
+      if(familiasOriginal){
           familias.value = familiasOriginal.value
       }
     }

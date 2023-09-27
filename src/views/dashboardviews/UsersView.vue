@@ -1,57 +1,80 @@
 <script setup>
-import { onMounted, ref, computed } from "vue";
-import { useUsersAdmin } from '../../stores/users'
+import { onBeforeRouteLeave } from "vue-router";
+import { useUsersStore } from "@/stores/users";
 
-const usersStore = useUsersAdmin();
-const dataIsLoaded = ref(false);
+const usersStore = useUsersStore();
 
-// Filtrar los datos basados en la propiedad "router"
-const filteredData = computed(() => {
-    return pageStore.pageContentData.filter(item => item.router === 'aboutus');
+//limpiar filtros antes de cambiar de vista
+onBeforeRouteLeave((to, from, next) => {
+  usersStore.quitarFiltroUsuario()
+  next();
 });
 
-onMounted(async () => {
-    await usersStore.fetchData();
-    dataIsLoaded.value = true;
-});
 </script>
 
 <template>
-    <div>
-        <table class="table table table-striped table-hover">
-            <thead class="table-dark">
-                <tr>
-                    <th>Nombres</th>
-                    <th>Email</th>
-                    <th>Rol</th>
-                    <th>Tipo documento</th>
-                    <th>Número</th>
-                    <th>Entidad</th>
-                    <th>Celular</th>
-                    <th>Departamento</th>
-                    <th>Ciudad</th>
-                    <th>Profesión</th>
-                    <th>Estado</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr v-for="(item, key) in usersStore.usersAdminData" :key="key">
-                    <td>{{ item.fullname }}</td>
-                    <td>{{ item.email }}</td>
-                    <td>{{ item.rol }}</td>
-                    <td>{{ item.document_type }}</td>
-                    <td>{{ item.document_number }}</td>
-                    <td>{{ item.entity }}</td>
-                    <td>{{ item.cellphone }}</td>
-                    <td>{{ item.departament }}</td>
-                    <td>{{ item.city }}</td>
-                    <td>{{ item.profession }}</td>
-                    <td>{{ item.active }}</td>
-                </tr>
-            </tbody>
-        </table>
+    <h1 class="text-4xl mb-10 mt-10 text-center font-extrabold">listado de usuarios <span class="text-green-800">SARA</span></h1>
+    <div class="flex justify-end mt-5 mb-5">
+      <label class="p-3 text-lg font-bold rounded-lg mx-3">Buscar</label>
+      <input
+        class="p-3 rounded-lg lg:w-1/4 sm:w-full border-2 border-gray-500 py-2 px-4"
+        type="text"
+        placeholder="Nombre, Emial o rol"
+        @input="usersStore.buscarTermino($event.target.value)"
+      />
     </div>
+    <hr />
+  <div class="w-auto mt-5 mb-10 mx-20">
+  <table class="bg-slate-50 shadow-md border rounded-lg">
+    <thead>
+      <tr>
+        <th class="px-4 py-2 text-gray-600">Nombres</th>
+        <th class="px-4 py-2 text-gray-600">Email</th>
+        <th class="px-4 py-2 text-gray-600">Rol</th>
+        <th class="px-4 py-2 text-gray-600">Entidad</th>
+        <th class="px-4 py-2 text-gray-600">Celular</th>
+        <th class="px-4 py-2 text-gray-600">Departamento</th>
+        <th class="px-4 py-2 text-gray-600">Estado</th>
+        <th class="px-4 py-2 text-gray-600">Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr v-for="user in usersStore.displayedUsers" v-bind:key="user.id">
+        <td class="px-4 py-3 border">{{ user.fullname }}</td>
+        <td class="px-4 py-3 border">{{ user.email }}</td>
+        <td class="px-4 py-3 border">{{ user.rol }}</td>
+        <td class="px-4 py-3 border">{{ user.entity }}</td>
+        <td class="px-4 py-3 border">{{ user.cellphone }}</td>
+        <td class="px-4 py-3 border">{{ user.departament }}</td>
+        <td v-if="user.active = 1 " class="px-4 py-3 border  ">
+           <span class="bg-green-100 text-green-800 p-1 text-sm rounded font-bold"> Activo</span>
+        </td>
+        <td v-else class="px-4 py-3 border  ">
+            <span class="bg-red-100 text-red-800 p-1 text-sm rounded font-bold"> Inactivo</span>
+        </td>
+        <td class="px-4 py-3 border">
+            <a href="#" class="btn  rounded-lg font-bold p-1 text-black bg-green-600 hover:bg-green-500 hover:shadow-lg"><font-awesome-icon :icon="['fas', 'eye']" /> Revisar</a>
+        </td>
+        
+      </tr>
+    </tbody>
+  </table>
+    <!-- paginador -->
+  <div class="flex justify-center mt-5 mb-10">
+      <button
+        v-for="page in usersStore.totalPages"
+        :key="page"
+        @click="usersStore.changePage(page)"
+        class="px-3 py-2 mx-1 rounded-lg bg-green-200 text-black hover:bg-green-600"
+        :class="{ 'bg-green-600': page === usersStore.currentPage }"
+      >
+        {{ page }}
+      </button>
+    </div>
+
+    <h1 v-if="usersStore.noResultados" class="text-center font-bold text-2xl mt-5 mb-40">
+      No hay resultados de búsqueda
+    </h1>
+</div>
+
 </template>
-  
-<style scoped>
-</style>

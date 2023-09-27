@@ -32,6 +32,9 @@ export default {
     getValuesByDepartment(){
         return api.get('/monitoring/report/general/total')
     },
+    getValuesByDepartmentLocates(){
+        return api.get('/monitoring/report/month/locates')
+    },
     getPageContent(){
         return api.get('/page/content')
     },

@@ -1,9 +1,10 @@
 <script setup>
 import { Icon } from '@iconify/vue';
 import {useChartsStore} from '@/stores/dashboard/charts'
-
+import {useUsersStore} from '@/stores/users'
 
 const charts = useChartsStore()
+const users = useUsersStore()
 
 </script>
 <template>
@@ -46,7 +47,7 @@ const charts = useChartsStore()
           <!-- small box -->
           <div class="small-box bg-yellow">
             <div class="inner">
-              <h3>44</h3>
+              <h3>{{ users.totalUsers }}</h3>
 
               <p>Usuarios <span class="text-green-800">Sara</span> registrados</p>
             </div>
