@@ -17,9 +17,13 @@ const handleLogin = async () => {
   };
   try {
     const response = await store.login(credentials);
-    console.log("r: ", response);
+    
     if (response.success) {
-      router.push({ name: "panel" }).catch(err => {});
+      const user = response.user;
+      router.push({
+        name: "panel", // Nombre de la ruta de la vista del panel
+        params: response.user // Envía response.data como parámetros
+      }).catch(err => {});
     } else {
       showLoginError("Credenciales inválidas");
     }
@@ -46,7 +50,7 @@ localStorage.removeItem('hasReloaded');
       <h2 class="text-2xl font-bold mb-4 text-center">Iniciar sesión</h2>
       <form @submit.prevent="handleLogin" class="space-y-4">
         <div>
-          <label for="email" class="block font-semibold mb-1">Usuario</label>
+          <label for="username" class="block font-semibold mb-1">Usuario</label>
           <input
             v-model="username"
             type="text"
