@@ -2,7 +2,6 @@
 import { ref, computed } from 'vue';
 import APIService from '../services/APIService'
 import { useAuthToken } from '../stores/auth'
-import { VueReCaptcha } from 'vue-recaptcha-v3';
 
 const locates = useAuthToken()
 
@@ -10,8 +9,8 @@ const locates = useAuthToken()
 const formData = ref({
   document_type: "Cédula de ciudadanía",
   document_number: "",
-  names: "",
-  lastnames: "",
+  first_name: "",
+  last_name: "",
   email: "",
   cellphone: "",
   profession: "",
@@ -77,8 +76,6 @@ async function userCreate() {
     alert("Por favor complete todos los campos del formulario.");
     return;
   }
-
-  const recaptchaToken = recaptcha.value.getToken();
 
   try {
     console.log('User: ', formData.value)
@@ -264,14 +261,14 @@ function convertToUppercase() {
   
         <!-- Nombres -->
         <div>
-          <label for="names" class="block font-semibold mb-1">Nombres</label>
-          <input v-model="formData.names" type="text" id="names" class="w-full rounded-lg border px-4 py-2" required>
+          <label for="first_name" class="block font-semibold mb-1">Nombres</label>
+          <input v-model="formData.first_name" type="text" id="first_name" class="w-full rounded-lg border px-4 py-2" required>
         </div>
   
         <!-- Apellidos -->
         <div>
-          <label for="lastnames" class="block font-semibold mb-1">Apellidos</label>
-          <input v-model="formData.lastnames" type="text" id="lastnames" class="w-full rounded-lg border px-4 py-2" required>
+          <label for="last_name" class="block font-semibold mb-1">Apellidos</label>
+          <input v-model="formData.last_name" type="text" id="last_name" class="w-full rounded-lg border px-4 py-2" required>
         </div>
   
         <!-- Correo electrónico -->
@@ -360,10 +357,6 @@ function convertToUppercase() {
         <span role="alert" id="nameError" aria-hidden="true">
           Ingrese todos los datos, por favor
         </span>
-
-        <div>
-          <VueReCaptcha></VueReCaptcha>
-        </div>
   
         <button id="saveUser" type="submit" class="w-full bg-blue-500 text-white font-semibold rounded-lg py-2" @click.prevent="userCreate">
           Registrarse
