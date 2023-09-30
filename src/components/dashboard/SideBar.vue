@@ -231,8 +231,8 @@ import { RouterLink } from "vue-router";
           <RouterLink :to="{ name: 'users' }">
           <li class="nav-item">
             <a href="#" class="nav-link">
-              <i class="nav-icon fas fa-file"></i>
-              <p>Usuarios</p>
+              <i class="nav-icon fas fa-user"></i>
+              <p> Usuarios</p>
             </a>
           </li>
         </RouterLink>        

@@ -2,7 +2,7 @@
 import { onBeforeRouteLeave } from "vue-router";
 import { useEspeciesStore } from "../stores/species";
 
-import { computed } from 'vue'
+
 import Species from "@/components/Species.vue";
 
 

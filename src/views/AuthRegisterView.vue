@@ -77,8 +77,6 @@ async function userCreate() {
     return;
   }
 
-  const recaptchaToken = recaptcha.value.getToken();
-
   try {
     await APIService.createUsers(formData.value);
     resetForm();
@@ -358,10 +356,6 @@ function convertToUppercase() {
         <span role="alert" id="nameError" aria-hidden="true">
           Ingrese todos los datos, por favor
         </span>
-
-        <div>
-          <VueReCaptcha></VueReCaptcha>
-        </div>
   
         <button id="saveUser" type="submit" class="w-full bg-blue-500 text-white font-semibold rounded-lg py-2" @click.prevent="userCreate">
           Registrarse

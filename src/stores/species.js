@@ -57,7 +57,7 @@ export const useEspeciesStore = defineStore('especies', () => {
 
     //quitar los filtros del motor de busqueda
     function quitarFiltroEspecie(){
-      if(especiesOriginales.value !==[]){
+      if(especiesOriginales.value){
         especies.value = especiesOriginales.value
       }
     }

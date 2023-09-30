@@ -8,10 +8,11 @@ import TotalSpeciesChart from  '@/components/dashboard/TotalSpeciesChart.vue'
 import SpepeciesYearChart from  '@/components/dashboard/SpeciesYearChart.vue'
 import CardsHome from "@/components/dashboard/CardsHome.vue";
 import MunicipalitiesChart from "@/components/dashboard/MunicipalitiesChart.vue";
-
-
+import DepartmentLocatesChart from "@/components/dashboard/DepartmentLocatesChart.vue";
+import { useChartLocateStore } from "@/stores/dashboard/chartLocate";
 
 const chartStore = useChartsStore();
+const chartLocateStore = useChartLocateStore();
 
 //para asegurar que el panel cargue correctamente se recarga la página una vez entre al dashborad
 onMounted(() => {
@@ -34,6 +35,7 @@ onMounted(() => {
     <TotalSpeciesChart v-if="chartStore.departamentos.length > 0"/>
     <!-- <SpepeciesYearChart v-if="chartStore.municipios.length > 0 "/> -->
     <MunicipalitiesChart v-if="chartStore.municipios.length > 0 " />
+    <DepartmentLocatesChart v-if="chartLocateStore.todosMunicipios.length > 0" />
   </div>
  
 </template>
