@@ -5,14 +5,14 @@ import { useRouter } from "vue-router";
 
 const store = useAuthToken();
 const router = useRouter();
-const username = ref("");
+const email = ref("");
 const password = ref("");
 
 const error = ref(null);
 
 const handleLogin = async () => {
   const credentials = {
-    username: username.value,
+    email: email.value,
     password: password.value,
   };
   try {
@@ -50,11 +50,11 @@ localStorage.removeItem('hasReloaded');
       <h2 class="text-2xl font-bold mb-4 text-center">Iniciar sesión</h2>
       <form @submit.prevent="handleLogin" class="space-y-4">
         <div>
-          <label for="username" class="block font-semibold mb-1">Usuario</label>
+          <label for="email" class="block font-semibold mb-1">Email</label>
           <input
-            v-model="username"
+            v-model="email"
             type="text"
-            id="username"
+            id="email"
             class="w-full rounded-lg border px-4 py-2"
             required
           />

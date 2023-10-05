@@ -67,7 +67,8 @@ const router = createRouter({
       name: 'users',
       component: ()=> import('../views/dashboardviews/UsersView.vue'),
       meta: {
-        auth: true
+        auth: true,
+        roles: ['ADMINISTRADOR', 'is_superuser', 'is_staff']
       }
     }
     

@@ -40,12 +40,12 @@ onBeforeRouteLeave((to, from, next) => {
     </thead>
     <tbody>
       <tr v-for="user in usersStore.displayedUsers" v-bind:key="user.id">
-        <td class="px-4 py-3 border">{{ user.fullname }}</td>
+        <td class="px-4 py-3 border">{{ user.first_name + " " +user.last_name }}</td>
         <td class="px-4 py-3 border">{{ user.email }}</td>
         <td class="px-4 py-3 border">{{ user.rol }}</td>
         <td class="px-4 py-3 border">{{ user.entity }}</td>
         <td class="px-4 py-3 border">{{ user.cellphone }}</td>
-        <td class="px-4 py-3 border">{{ user.departament }}</td>
+        <td class="px-4 py-3 border">{{ user.name }}</td>
         <td v-if="user.active = 1 " class="px-4 py-3 border  ">
            <span class="bg-green-100 text-green-800 p-1 text-sm rounded font-bold"> Activo</span>
         </td>

@@ -7,6 +7,7 @@ export const useAuthToken = defineStore("authToken", () => {
   const router = useRouter();
   const accessToken = ref(localStorage.getItem("access_token") || null);
   const refreshToken = ref(localStorage.getItem("refresh_token") || null);
+  const userData = ref();
   const errorAuth = ref(null);
   const authActive = ref(false);
 
@@ -16,11 +17,13 @@ export const useAuthToken = defineStore("authToken", () => {
   const login = async (credentials) => {
     try {
       const response = await APIService.getAuthToken(credentials);
+      console.log('User data: ', response.data)
       if (response.status === 200) {
         accessToken.value = response.data.access;
         refreshToken.value = response.data.refresh;
         localStorage.setItem("access_token", response.data.access);
         localStorage.setItem("refresh_token", response.data.refresh);
+        userData.value = response.data.user_data;
         authActive.value = true;
         errorAuth.value = null;
         return { success: true };
@@ -70,6 +73,7 @@ export const useAuthToken = defineStore("authToken", () => {
   return {
     accessToken,
     refreshToken,
+    userData,
     errorAuth,
     authActive,
     useAuthToken,
