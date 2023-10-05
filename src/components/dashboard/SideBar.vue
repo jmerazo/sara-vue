@@ -4,34 +4,8 @@ import { computed } from 'vue';
 import { useAuthToken } from "../../stores/auth";
 
 const store = useAuthToken();
-
-// Computed property para verificar si el usuario tiene los permisos adecuados
-const hasPermissions = computed(() => {
-  if (store.userData) {
-    const userData = store.userData;
-
-    if (!userData) {
-      return false; // No hay datos de usuario, tal vez aún se están cargando
-    }
-
-    const { rol, is_superuser, is_staff } = userData;
-
-    // Verifica si el usuario tiene el rol 'ADMINISTRADOR' y 'is_superuser' y 'is_staff' igual a 1
-    return rol === 'ADMINISTRADOR' && is_superuser === 1 && is_staff === 1;
-  } else {
-      return 'Cargando...'; // Otra opción mientras los datos se cargan
-  }
-
-});
-
-const getFirstName = () => {
-  // Verifica si store.userData está definido antes de acceder a first_name
-  if (store.userData) {
-    return store.userData.first_name + " " + store.userData.last_name || 'Nombre no disponible';
-  } else {
-    return 'Cargando...'; // Otra opción mientras los datos se cargan
-  }
-};
+const userDataString = localStorage.getItem("user_data");
+const userData = JSON.parse(userDataString);
 </script>
 <template>
   <aside class="main-sidebar sidebar-dark-primary elevation-4 rounded">
@@ -43,7 +17,7 @@ const getFirstName = () => {
         class="brand-image img-circle elevation-3"
         style="opacity: 0.8"
       />
-      <span class="brand-text font-weight-light">{{ getFirstName() }}</span>
+      <span class="brand-text font-weight-light">{{ userData.first_name + " " + userData.last_name }}</span>
     </a>
 
     <!-- Sidebar -->
@@ -257,10 +231,10 @@ const getFirstName = () => {
             </a>
           </li>
 
-          <li class="nav-header">ADMINISTRACIÓN</li>
+          <li v-if="userData.rol == 'ADMINISTRADOR' && userData.is_superuser == 1 && userData.is_staff == 1" class="nav-header">ADMINISTRACIÓN</li>
           
           <RouterLink :to="{ name: 'users' }">
-          <li class="nav-item">
+          <li v-if="userData.rol == 'ADMINISTRADOR' && userData.is_superuser == 1 && userData.is_staff == 1" class="nav-item">
             <a href="#" class="nav-link">
               <i class="nav-icon fas fa-user"></i>
               <p> Usuarios</p>
@@ -269,7 +243,7 @@ const getFirstName = () => {
         </RouterLink>
         <!-- v-if="store.userData.rol == 'ADMINISTRADOR' && store.userData.is_superuser == 1 && store.userData.is_staff == 1"  -->   
 
-          <li class="nav-item">
+          <li v-if="userData.rol == 'ADMINISTRADOR' && userData.is_superuser == 1 && userData.is_staff == 1" class="nav-item">
             <a href="#" class="nav-link">
               <i class="nav-icon fas fa-file"></i>
               <p>Especies forestales</p>

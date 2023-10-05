@@ -23,6 +23,7 @@ export const useAuthToken = defineStore("authToken", () => {
         refreshToken.value = response.data.refresh;
         localStorage.setItem("access_token", response.data.access);
         localStorage.setItem("refresh_token", response.data.refresh);
+        localStorage.setItem("user_data", JSON.stringify(response.data.user_data));
         userData.value = response.data.user_data;
         authActive.value = true;
         errorAuth.value = null;
