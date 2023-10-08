@@ -4,11 +4,12 @@ import { RouterView} from "vue-router";
 import { useConsultaStore } from './stores/consulta';
 import { useAuthToken } from '@/stores/auth'
 import Header from '@/components/Header.vue';
-import Footer from "./components/Footer.vue";
-import Modal from './components/Modal.vue';
-import ModalFamily from "./components/ModalFamily.vue";
+import Footer from "@/components/Footer.vue";
+import Modal from '@/components/Modal.vue';
+import ModalFamily from "@/components/ModalFamily.vue";
+import ModalUser from '@/components/dashboard/ModalUser.vue';
 import Spinner from '@/components/Spinner.vue'
-import Dashboard from './views/dashboardviews/DashboardMainView.vue'
+import Dashboard from '@/views/dashboardviews/DashboardMainView.vue'
 
 const store = useAuthToken()
 const consulta = useConsultaStore()
@@ -24,6 +25,7 @@ const consulta = useConsultaStore()
   <Footer/>
   <Modal/>
   <ModalFamily/>
+  <ModalUser/>
   
 </template>
 

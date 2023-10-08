@@ -1,10 +1,13 @@
 import { ref, onMounted,computed } from "vue";
 import { defineStore } from "pinia";
 import APIService from "@/services/APIService";
+import {useModalStore} from '@/stores/modal'
 
 export const useUsersStore = defineStore("useUsersStore", () => {
+  const modal = useModalStore();
   const users = ref([]);
   const usersOriginal = ref([]);
+  const userSelected = ref([]);
   const totalUsers = ref(0);
   const noResultados = computed(() => users.value.length === 0 );
   // variables para paginación
@@ -17,6 +20,13 @@ export const useUsersStore = defineStore("useUsersStore", () => {
     usersOriginal.value = data;
     totalUsers.value = usersOriginal.value.length;
   });
+
+  //seleccionar un usuario para mostrar en el modal
+  function seleccionarUsuario(id) {
+    userSelected.value =  usersOriginal.value.filter(user => user.id === id)
+    modal.handleClickModalUser();
+    
+  }
 
   // Calcula el número total de páginas en función de los datos
   const totalPages = computed(() =>
@@ -65,10 +75,12 @@ export const useUsersStore = defineStore("useUsersStore", () => {
     totalPages,
     displayedUsers,
     users,
+    userSelected,
     totalUsers,
     noResultados,
     buscarTermino,
     quitarFiltroUsuario,
     changePage,
+    seleccionarUsuario,
   };
 });

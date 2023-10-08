@@ -31,11 +31,11 @@ $(function () {
 });
 </script>
 <template>
-  <div class="p-4 mt-10" >
+  <div class="p-4" >
     <div class="card card-success">
       <div class="card-header">
         <h3 class="card-title">
-          Especies evaluadas por departamento
+          Total de monitoreos por departamento
           
         </h3>
       </div>
