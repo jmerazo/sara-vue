@@ -78,7 +78,6 @@ async function userCreate() {
   }
 
   try {
-    console.log('User: ', formData.value)
     await APIService.createUsers(formData.value);
     resetForm();
   } catch (error) {

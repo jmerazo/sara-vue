@@ -1,6 +1,11 @@
 <script setup>
 import { RouterLink } from "vue-router";
+import { computed } from 'vue';
+import { useAuthToken } from "../../stores/auth";
 
+const store = useAuthToken();
+const userDataString = localStorage.getItem("user_data");
+const userData = JSON.parse(userDataString);
 </script>
 <template>
   <aside class="main-sidebar sidebar-dark-primary elevation-4 rounded">
@@ -12,7 +17,7 @@ import { RouterLink } from "vue-router";
         class="brand-image img-circle elevation-3"
         style="opacity: 0.8"
       />
-      <span class="brand-text font-weight-light">Usuario</span>
+      <span class="brand-text font-weight-light">{{ userData.first_name + " " + userData.last_name }}</span>
     </a>
 
     <!-- Sidebar -->
@@ -226,18 +231,19 @@ import { RouterLink } from "vue-router";
             </a>
           </li>
 
-          <li class="nav-header">ADMINISTRACIÓN</li>
+          <li v-if="userData.rol == 'ADMINISTRADOR' && userData.is_superuser == 1 && userData.is_staff == 1" class="nav-header">ADMINISTRACIÓN</li>
           
           <RouterLink :to="{ name: 'users' }">
-          <li class="nav-item">
+          <li v-if="userData.rol == 'ADMINISTRADOR' && userData.is_superuser == 1 && userData.is_staff == 1" class="nav-item">
             <a href="#" class="nav-link">
               <i class="nav-icon fas fa-user"></i>
               <p> Usuarios</p>
             </a>
           </li>
-        </RouterLink>        
+        </RouterLink>
+        <!-- v-if="store.userData.rol == 'ADMINISTRADOR' && store.userData.is_superuser == 1 && store.userData.is_staff == 1"  -->   
 
-          <li class="nav-item">
+          <li v-if="userData.rol == 'ADMINISTRADOR' && userData.is_superuser == 1 && userData.is_staff == 1" class="nav-item">
             <a href="#" class="nav-link">
               <i class="nav-icon fas fa-file"></i>
               <p>Especies forestales</p>

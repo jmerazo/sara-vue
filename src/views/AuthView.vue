@@ -17,9 +17,13 @@ const handleLogin = async () => {
   };
   try {
     const response = await store.login(credentials);
-    console.log("r: ", response);
+    
     if (response.success) {
-      router.push({ name: "panel" }).catch(err => {});
+      const user = response.user;
+      router.push({
+        name: "panel", // Nombre de la ruta de la vista del panel
+        params: response.user // Envía response.data como parámetros
+      }).catch(err => {});
     } else {
       showLoginError("Credenciales inválidas");
     }
