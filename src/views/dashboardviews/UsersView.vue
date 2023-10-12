@@ -40,7 +40,7 @@ onBeforeRouteLeave((to, from, next) => {
     </thead>
     <tbody>
       <tr v-for="user in usersStore.displayedUsers" v-bind:key="user.id">
-        <td class="px-4 py-3 border">{{ user.first_name + " " +user.last_name }}</td>
+        <td class="px-4 py-3 border">{{ user.first_name + " " + user.last_name }}</td>
         <td class="px-4 py-3 border">{{ user.email }}</td>
         <td class="px-4 py-3 border">{{ user.rol }}</td>
         <td class="px-4 py-3 border">{{ user.entity }}</td>
@@ -53,7 +53,7 @@ onBeforeRouteLeave((to, from, next) => {
             <span class="bg-red-100 text-red-800 p-1 text-sm rounded font-bold"> Inactivo</span>
         </td>
         <td class="px-4 py-3 border">
-            <a href="#" class="btn  rounded-lg font-bold p-1 text-black bg-green-600 hover:bg-green-500 hover:shadow-lg"><font-awesome-icon :icon="['fas', 'eye']" /> Revisar</a>
+            <button @click="usersStore.seleccionarUsuario(user.id)" class="btn  rounded-lg font-bold p-1 text-black bg-green-600 hover:bg-green-500 hover:shadow-lg"><font-awesome-icon :icon="['fas', 'eye']" /> Revisar</button>
         </td>
         
       </tr>

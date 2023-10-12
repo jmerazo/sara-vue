@@ -35,6 +35,9 @@ export default {
     getValuesByDepartmentLocates(){
         return api.get('/monitoring/report/month/locates')
     },
+    getSamplesReport(){
+        return api.get('/samples/report/general')
+    },
     getPageContent(){
         return api.get('/page/content')
     },

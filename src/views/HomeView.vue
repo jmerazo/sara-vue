@@ -75,7 +75,7 @@ onMounted(async () => {
         </p>
       </div>
     </div>
-
+  
     <div class="colaborators flex flex-row">
         <a href="https://minciencias.gov.co/"><img src="../assets/logos/mc-vida.png" class="log-minciencia fixed-between hover:scale-110"></a>
         <a href="https://www.corpoamazonia.gov.co/"><img src="../assets/logos/corpoamazonia.png" class="log-corpoamazonia fixed-between hover:scale-110"></a>
