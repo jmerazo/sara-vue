@@ -31,6 +31,9 @@ onMounted(() => {
             <li class="glide__slide">
               <img src="../assets/media/pi4.jpg" />
             </li>
+            <li class="glide__slide">
+              <img src="../assets/media/P001.jpg" />
+            </li>
           </ul>
         </div>
         <div class="glide__bullets" data-glide-el="controls[nav]">

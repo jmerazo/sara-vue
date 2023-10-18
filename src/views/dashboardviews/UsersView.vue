@@ -19,7 +19,7 @@ onBeforeRouteLeave((to, from, next) => {
       <input
         class="p-3 rounded-lg lg:w-1/4 sm:w-full border-2 border-gray-500 py-2 px-4"
         type="text"
-        placeholder="Nombre, Emial o rol"
+        placeholder="Nombre, Email o rol"
         @input="usersStore.buscarTermino($event.target.value)"
       />
     </div>
@@ -53,7 +53,8 @@ onBeforeRouteLeave((to, from, next) => {
             <span class="bg-red-100 text-red-800 p-1 text-sm rounded font-bold"> Inactivo</span>
         </td>
         <td class="px-4 py-3 border">
-            <button @click="usersStore.seleccionarUsuario(user.id)" class="btn  rounded-lg font-bold p-1 text-black bg-green-600 hover:bg-green-500 hover:shadow-lg"><font-awesome-icon :icon="['fas', 'eye']" /> Revisar</button>
+            <button @click="usersStore.seleccionarUsuario(user.id)" class="btn  rounded-lg font-bold p-1 text-white bg-customGreen hover:bg-green-500 hover:shadow-lg"><font-awesome-icon :icon="['fas', 'eye']" /> Revisar</button>
+            <button @click="usersStore.selectedUserUpdate(user.id)" class="btn  rounded-lg font-bold p-1 text-white bg-customGreen hover:bg-green-500 hover:shadow-lg ml-2"><font-awesome-icon :icon="['fas', 'user-pen']" /> Editar</button>
         </td>
         
       </tr>
@@ -65,8 +66,8 @@ onBeforeRouteLeave((to, from, next) => {
         v-for="page in usersStore.totalPages"
         :key="page"
         @click="usersStore.changePage(page)"
-        class="px-3 py-2 mx-1 rounded-lg bg-green-200 text-black hover:bg-green-600"
-        :class="{ 'bg-green-600': page === usersStore.currentPage }"
+        class="px-3 py-2 mx-1 rounded-lg bg-customGreen text-white hover:bg-green-600"
+        :class="{ 'bg-customGreen': page === usersStore.currentPage }"
       >
         {{ page }}
       </button>
