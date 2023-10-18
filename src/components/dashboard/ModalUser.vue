@@ -152,6 +152,13 @@ const usersStore = useUsersStore();
                 >
                   Actualizar
                 </button>
+                <!-- <button 
+                  @click="usersStore.selectUserUpdate(user.id)"
+                  type="button" 
+                  class="shadow p-1 w-full rounded-lg bg-green-600 hover:bg-green-700 text-white uppercase font-bold">
+                  <font-awesome-icon :icon="['fas', 'user-pen']" />
+                  Editar
+                </button> -->
               </div>
             </DialogPanel>
           </TransitionChild>
