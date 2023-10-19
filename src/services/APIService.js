@@ -62,6 +62,9 @@ export default {
     createUsers(data){
         return api.post('/users/', data)
     },
+    updateUsers(uid, data){
+        return api.put(`/users/${uid}`, data)
+    },
     getDepartments(){
         return api.get('/departments/')
     },

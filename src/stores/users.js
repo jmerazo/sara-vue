@@ -30,7 +30,9 @@ export const useUsersStore = defineStore("useUsersStore", () => {
   //seleccionar un usuario para mostrar en el modal
   function selectedUserUpdate(id) {
     userSelected.value =  usersOriginal.value.filter(user => user.id === id)
-    modal.handleClickModalUserUpdate(); 
+    console.log('user id', id)
+    console.log('user select ', userSelected.value)
+    modal.handleClickModalUserUpdate(userSelected.value); 
   }
 
   // Calcula el número total de páginas en función de los datos

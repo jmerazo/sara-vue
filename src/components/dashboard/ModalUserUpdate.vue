@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, computed, ref } from "vue";
+import { watch, computed, ref } from "vue";
 import {
   Dialog,
   DialogPanel,
@@ -9,31 +9,31 @@ import {
 } from "@headlessui/vue";
 import { useModalStore } from "@/stores/modal";
 import { useUsersStore } from "@/stores/users";
-import { useAuthToken } from '@/stores/auth'
+import { useAuthToken } from '@/stores/auth';
+import APIService from '../../services/APIService';
+import { useRouter } from "vue-router";
 
+const router = useRouter();
 const locates = useAuthToken()
 const modal = useModalStore();
 const usersStore = useUsersStore();
 
 const formData = ref({
-  document_type: "Cédula de ciudadanía",
+  document_type: "",
   document_number: "",
   first_name: "",
   last_name: "",
   email: "",
   cellphone: "",
+  rol: "",
   profession: "",
   entity: "",
-  reason: "",
-  password: "",
-  confirm_password: "",
-  department: '',
-  city: ''
+  department: "",
+  city: ""
 });
 
 const filteredCities = computed(() => {
   const selectedDepartament = formData.value.department
-  console.log(selectedDepartament)
   if (selectedDepartament) {    
     const filtered = locates.cities.filter(city => city.department_id === selectedDepartament);
     return filtered;
@@ -41,6 +41,60 @@ const filteredCities = computed(() => {
   return [];
 });
 
+async function userUpdate() {
+  if (!validateForm()) {
+    alert("Por favor complete todos los campos del formulario.");
+    return;
+  }
+
+  try {
+    await APIService.updateUsers(usersStore.userSelected[0].id, formData.value);
+    /* $toaster.success(`Usuario ${usersStore.userSelected[0].email} actualizado`); */
+    alert(`Usuario ${usersStore.userSelected[0].email} actualizado`);
+    router.go();
+  } catch (error) {
+    if (error.response && error.response.data && error.response.data.error) {
+      // Si hay un mensaje de error en la respuesta, lo puedes mostrar
+      alert(error.response.data.error);
+    } else {
+      // En caso de un error inesperado
+      alert('Ocurrió un error al procesar la solicitud.');
+    }
+  }  
+};
+
+function validateForm() {
+  const formKeys = Object.keys(formData.value);
+  for (const key of formKeys) {
+    if (!formData.value[key]) {
+      return false;
+    }
+  }
+  return true;
+}
+
+const initializeFormData = () => {
+  const selectedUser = usersStore.userSelected[0];
+  if (selectedUser) {
+    formData.value = {
+      document_type: selectedUser.document_type || "",
+      document_number: selectedUser.document_number || "",
+      first_name: selectedUser.first_name || "",
+      last_name: selectedUser.last_name || "",
+      email: selectedUser.email || "",
+      cellphone: selectedUser.cellphone || "",
+      rol: selectedUser.rol || "",
+      profession: selectedUser.profession || "",
+      entity: selectedUser.entity || "",
+      department: selectedUser.department || "",
+      city: selectedUser.city || ""
+    };
+  }
+};
+
+watch(() => usersStore.userSelected, () => {
+      initializeFormData();
+    });
 </script>
 
 <template>
@@ -115,9 +169,10 @@ const filteredCities = computed(() => {
                     {{ usersStore.userSelected[0].document_number }}
                   </DialogTitle>
                   <hr />
+                  <form @submit.prevent="userUpdate">
                   <DialogTitle as="h3" class="text-gray-900 text-lg my-5">
                     <font-awesome-icon :icon="['fas', 'address-card']" /> Tipo de documento :
-                    <select name="rol" id="state" class=" rounded-lg shadow-lg font-bold mx-3">
+                    <select name="rol" id="state" class=" rounded-lg shadow-lg font-bold mx-3" v-model="formData.document_type">
                       <option value="null" selected disabled>{{ usersStore.userSelected[0].document_type }}</option>
                       <option value="Cédula de ciudadania" class="font-bold">Cédula de ciudadania</option>
                       <option value="Número de identificación tributaria" class="font-bold">Número de identificación tributaria</option>
@@ -126,40 +181,41 @@ const filteredCities = computed(() => {
                   </DialogTitle>
                   <DialogTitle as="h3" class="text-gray-900 text-lg my-5">
                     <font-awesome-icon :icon="['fas', 'id-card']" /> Número de documento :
-                    <input type="number" class="w-80" v-model="usersStore.userSelected[0].document_number"/>
+                    <input type="number" class="w-80" v-model="formData.document_number"/>
+                    <!-- usersStore.userSelected[0].document_number -->
                   </DialogTitle>
                   <DialogTitle as="h3" class="text-gray-900 text-lg my-5">
                     <font-awesome-icon :icon="['fas', 'signature']" /> Nombres :
-                    <input type="text" class="w-80" v-model="usersStore.userSelected[0].first_name"/>
+                    <input type="text" class="w-80" v-model="formData.first_name"/>
                   </DialogTitle>
                   <DialogTitle as="h3" class="text-gray-900 text-lg my-5">
                     <font-awesome-icon :icon="['fas', 'signature']" /> Apellidos :
-                    <input type="text" class="w-80" v-model="usersStore.userSelected[0].last_name"/>
+                    <input type="text" class="w-80" v-model="formData.last_name"/>
                   </DialogTitle>
                   <DialogTitle as="h3" class="text-gray-900 text-lg my-5">
                     <font-awesome-icon :icon="['fas', 'envelope']" /> correo :
-                    <input type="text" class="w-80" v-model="usersStore.userSelected[0].email"/>
+                    <input type="email" class="w-80" v-model="formData.email"/>
                   </DialogTitle>
                   <DialogTitle as="h3" class="text-gray-900 text-lg my-5">
                     <font-awesome-icon :icon="['fas', 'square-phone']" /> contacto :
-                    <input type="text" class="w-80" v-model="usersStore.userSelected[0].cellphone"/>
+                    <input type="text" class="w-80" v-model="formData.cellphone"/>
                   </DialogTitle>
                   <DialogTitle as="h3" class="text-gray-900 text-lg my-5">
                     <font-awesome-icon :icon="['fas', 'building']" /> Entidad :
-                    <input type="text" class="w-80" v-model="usersStore.userSelected[0].entity"/>
+                    <input type="text" class="w-80" v-model="formData.entity"/>
                   </DialogTitle>
                   <DialogTitle as="h3" class="text-gray-900 text-lg my-5">
                     <font-awesome-icon :icon="['fas', 'briefcase']" /> Rol :
-                    <select name="rol" id="state" class=" rounded-lg shadow-lg font-bold mx-3">
-                      <option value="null" selected disabled>{{ usersStore.userSelected[0].rol }}</option>
+                    <select name="rol" id="rol" class="rounded-lg shadow-lg font-bold mx-3" v-model="formData.rol">
+                      <option value="null" selected>{{ usersStore.userSelected[0].rol }}</option>
                       <option value="DEFAULT" class="font-bold">DEFAULT</option>
                       <option value="ADMINISTRADOR" class="font-bold">ADMINISTRADOR</option>
                     </select>
                   </DialogTitle>
                   <DialogTitle as="h3" class="text-gray-900 text-lg my-5">
                     <font-awesome-icon :icon="['fas', 'briefcase']" /> Profesión :
-                    <select name="rol" id="state" class=" rounded-lg shadow-lg font-bold mx-3">
-                      <option value="null" selected disabled>{{ usersStore.userSelected[0].profession }}</option>
+                    <select name="rol" id="state" class=" rounded-lg shadow-lg font-bold mx-3" v-model="formData.profession">
+                      <option value="null" selected>{{ usersStore.userSelected[0].profession }}</option>
                       <option value="BIÓLOGO" class="font-bold">BIÓLOGO</option>
                       <option value="INGENIERO" class="font-bold">INGENIERO</option>
                       <option value="ESTUDIANTE" class="font-bold">ESTUDIANTE</option>
@@ -169,8 +225,8 @@ const filteredCities = computed(() => {
                   <DialogTitle as="h3" class="text-gray-900 text-lg my-5">
                     <font-awesome-icon :icon="['fas', 'briefcase']" /> Departamento :
                     <select name="department" id="department" class=" rounded-lg shadow-lg font-bold mx-3" v-model="formData.department">
-                      <option value="null" selected disabled>{{ usersStore.userSelected[0].department }}</option>
-                      <option v-for="loc in locates.departments" :key="loc.id" :value="loc.code">
+                      <option value="null" selected disabled>Seleccione un departamento...</option>
+                      <option v-for="loc in locates.departments" :key="loc.code" :value="loc.code">
                         {{ loc.name }}
                       </option>
                     </select>
@@ -178,12 +234,19 @@ const filteredCities = computed(() => {
                   <DialogTitle as="h3" class="text-gray-900 text-lg my-5">
                     <font-awesome-icon :icon="['fas', 'briefcase']" /> Ciudad :
                     <select name="city" id="city" class=" rounded-lg shadow-lg font-bold mx-3" v-model="formData.city">
-                      <option value="null" selected disabled>{{ usersStore.userSelected[0].city }}</option>
+                      <option value="null" selected disabled>Seleccione un municipio...</option>
                       <option v-for="city in filteredCities" :key="city.id" :value="city.id">
                         {{ city.name }}
                       </option>
                     </select>
                   </DialogTitle>
+                  <button
+                    type="submit"
+                    class="shadow p-1 w-full rounded-lg bg-green-600 hover:bg-green-700 text-white uppercase font-bold"
+                  >
+                    Actualizar
+                  </button>
+                </form>
                   <hr />
               
                 </div>
@@ -195,18 +258,6 @@ const filteredCities = computed(() => {
                   @click="modal.handleClickModalUserUpdate()"
                 >
                   Cerrar
-                </button>
-                <button
-                  type="button"
-                  class="shadow p-1 w-full rounded-lg bg-green-600 hover:bg-green-700 text-white uppercase font-bold"
-                >
-                  Actualizar
-                </button>
-                <button
-                  type="button"
-                  class="shadow p-1 w-full rounded-lg bg-green-600 hover:bg-green-700 text-white uppercase font-bold"
-                >
-                  Editar
                 </button>
               </div>
             </DialogPanel>

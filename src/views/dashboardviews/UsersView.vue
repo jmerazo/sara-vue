@@ -1,8 +1,11 @@
 <script setup>
 import { onBeforeRouteLeave } from "vue-router";
+import { defineProps } from "vue";
 import { useUsersStore } from "@/stores/users";
+import ModalUserUpdate from "../../components/dashboard/ModalUserUpdate.vue";
 
 const usersStore = useUsersStore();
+const props = defineProps(["userId"]);
 
 //limpiar filtros antes de cambiar de vista
 onBeforeRouteLeave((to, from, next) => {
@@ -76,6 +79,7 @@ onBeforeRouteLeave((to, from, next) => {
     <h1 v-if="usersStore.noResultados" class="text-center font-bold text-2xl mt-5 mb-40">
       No hay resultados de búsqueda
     </h1>
+    <ModalUserUpdate/>
 </div>
 
 </template>
