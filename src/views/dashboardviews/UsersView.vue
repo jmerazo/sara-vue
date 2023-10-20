@@ -1,17 +1,64 @@
 <script setup>
 import { onBeforeRouteLeave } from "vue-router";
-import { defineProps } from "vue";
 import { useUsersStore } from "@/stores/users";
 import ModalUserUpdate from "../../components/dashboard/ModalUserUpdate.vue";
+import APIService from '../../services/APIService';
 
 const usersStore = useUsersStore();
-const props = defineProps(["userId"]);
 
 //limpiar filtros antes de cambiar de vista
 onBeforeRouteLeave((to, from, next) => {
   usersStore.quitarFiltroUsuario()
   next();
 });
+
+async function userDelete(id) {
+  const confirmDelete = window.confirm('¿Estás seguro de que deseas eliminar este usuario?');
+  if (!confirmDelete) {
+    return; // Si el usuario cancela, no hagas nada
+  }
+  try {   
+    await APIService.deleteUsers(id);
+    /* $toaster.success(`Usuario ${usersStore.userSelected[0].email} actualizado`); */
+    router.go();
+  } catch (error) {
+    if (error.response && error.response.data && error.response.data.error) {
+      // Si hay un mensaje de error en la respuesta, lo puedes mostrar
+      alert(error.response.data.error);
+    } else {
+      // En caso de un error inesperado
+      alert('Ocurrió un error al procesar la solicitud.');
+    }
+  }  
+};
+
+async function toggleUserState(user) {
+  const newState = user.is_active === 1 ? 0 : 1;
+  const confirmState = window.confirm(`¿Estás seguro de que deseas ${newState === 1 ? 'activar' : 'desactivar'} a este usuario?`);
+  if (!confirmState) {
+    // Si el usuario cancela, restaura el valor del switch
+    return;
+  }
+
+  try {
+    console.log('state', newState)
+    const response = await APIService.stateUsers(user.id, newState);
+    if (response.success) {
+      user.is_active = newState; // Actualiza el estado del usuario si la solicitud es exitosa
+    } else {
+      alert('Error al cambiar el estado del usuario.');
+    }
+  } catch (error) {
+    if (error.response && error.response.data && error.response.data.error) {
+      // Si hay un mensaje de error en la respuesta, lo puedes mostrar
+      alert(error.response.data.error);
+    } else {
+      // En caso de un error inesperado
+      alert('Ocurrió un error al procesar la solicitud.');
+    }
+  }
+}
+
 
 </script>
 
@@ -56,8 +103,13 @@ onBeforeRouteLeave((to, from, next) => {
             <span class="bg-red-100 text-red-800 p-1 text-sm rounded font-bold"> Inactivo</span>
         </td>
         <td class="px-4 py-3 border">
-            <button @click="usersStore.seleccionarUsuario(user.id)" class="btn  rounded-lg font-bold p-1 text-white bg-customGreen hover:bg-green-500 hover:shadow-lg"><font-awesome-icon :icon="['fas', 'eye']" /> Revisar</button>
-            <button @click="usersStore.selectedUserUpdate(user.id)" class="btn  rounded-lg font-bold p-1 text-white bg-customGreen hover:bg-green-500 hover:shadow-lg ml-2"><font-awesome-icon :icon="['fas', 'user-pen']" /> Editar</button>
+            <button @click="usersStore.seleccionarUsuario(user.id)" class="btn  rounded-lg font-bold p-1 text-white bg-customGreen hover:bg-green-500 hover:shadow-lg"><font-awesome-icon :icon="['fas', 'eye']" /></button>
+            <button @click="usersStore.selectedUserUpdate(user.id)" class="btn  rounded-lg font-bold p-1 text-white bg-customGreen hover:bg-green-500 hover:shadow-lg ml-2"><font-awesome-icon :icon="['fas', 'user-pen']" /> </button>
+            <button @click="userDelete(user.id)" class="btn  rounded-lg font-bold p-1 text-white bg-customGreen hover:bg-green-500 hover:shadow-lg ml-2"><font-awesome-icon :icon="['fas', 'user-minus']" /> </button>
+            <label class="switch">
+              <input type="checkbox" :checked="user.is_active === 1" @change="toggleUserState(user)">
+              <span class="slider round"></span>
+            </label>
         </td>
         
       </tr>
@@ -83,3 +135,59 @@ onBeforeRouteLeave((to, from, next) => {
 </div>
 
 </template>
+
+<style>
+  .switch {
+    position: relative;
+    display: inline-block;
+    width: 40px;
+    height: 24px;
+    margin-left: 4px;
+  }
+
+  .switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    -webkit-transition: .4s;
+    transition: .4s;
+    border-radius: 34px;
+  }
+
+  .slider:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    -webkit-transition: .4s;
+    transition: .4s;
+    border-radius: 50%;
+  }
+
+  input:checked + .slider {
+    background-color: #2196F3;
+  }
+
+  input:focus + .slider {
+    box-shadow: 0 0 1px #2196F3;
+  }
+
+  input:checked + .slider:before {
+    -webkit-transform: translateX(16px);
+    -ms-transform: translateX(16px);
+    transform: translateX(16px);
+  }
+</style>

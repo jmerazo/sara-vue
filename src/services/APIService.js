@@ -65,6 +65,12 @@ export default {
     updateUsers(uid, data){
         return api.put(`/users/${uid}`, data)
     },
+    deleteUsers(uid){
+        return api.delete(`/users/${uid}`)
+    },
+    stateUsers(uid, state){
+        return api.put(`/users/state/${uid}`, state)
+    },
     getDepartments(){
         return api.get('/departments/')
     },
