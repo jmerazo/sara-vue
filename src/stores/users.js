@@ -1,4 +1,4 @@
-import { ref, onMounted,computed } from "vue";
+import { ref, onMounted,computed, watch } from "vue";
 import { defineStore } from "pinia";
 import APIService from "@/services/APIService";
 import {useModalStore} from '@/stores/modal'
@@ -9,6 +9,8 @@ export const useUsersStore = defineStore("useUsersStore", () => {
   const usersOriginal = ref([]);
   const userSelected = ref([]);
   const totalUsers = ref(0);
+  const idUser = ref();
+  const newState = ref();
   const noResultados = computed(() => users.value.length === 0 );
   // variables para paginación
   const currentPage = ref(1); // Página actual
@@ -34,6 +36,20 @@ export const useUsersStore = defineStore("useUsersStore", () => {
     console.log('user select ', userSelected.value)
     modal.handleClickModalUserUpdate(userSelected.value); 
   }
+
+  const changeStateUser = async (id, nuevoEstado) => {
+      console.log(id, nuevoEstado)
+      // Encuentra el índice del usuario en el array basado en su ID
+      const userIndex = users.value.findIndex((usuario) => usuario.id === id);
+      if (userIndex !== -1) {
+          // Si el usuario se encontró en el array, actualiza su estado
+          users.value[userIndex].is_active = nuevoEstado;
+          await APIService.stateUsers(id, {nuevoEstado})
+      } else {
+          // Maneja el caso en el que el usuario no se encontró
+          console.error(`Usuario con ID ${id} no encontrado.`);
+      }
+  };
 
   // Calcula el número total de páginas en función de los datos
   const totalPages = computed(() =>
@@ -89,6 +105,9 @@ export const useUsersStore = defineStore("useUsersStore", () => {
     quitarFiltroUsuario,
     changePage,
     seleccionarUsuario,
-    selectedUserUpdate
+    selectedUserUpdate,
+    changeStateUser,
+    idUser,
+    newState
   };
 });

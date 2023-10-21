@@ -3,6 +3,7 @@ import { onBeforeRouteLeave } from "vue-router";
 import { useUsersStore } from "@/stores/users";
 import ModalUserUpdate from "../../components/dashboard/ModalUserUpdate.vue";
 import APIService from '../../services/APIService';
+import { watch, ref } from "vue";
 
 const usersStore = useUsersStore();
 
@@ -32,34 +33,17 @@ async function userDelete(id) {
   }  
 };
 
-async function toggleUserState(user) {
-  const newState = user.is_active === 1 ? 0 : 1;
-  const confirmState = window.confirm(`¿Estás seguro de que deseas ${newState === 1 ? 'activar' : 'desactivar'} a este usuario?`);
+function changeUserState(id, state) {
+  const confirmState = window.confirm(`¿Estás seguro de que deseas ${state === 0 ? 'activar' : 'desactivar'} a este usuario?`);
   if (!confirmState) {
-    // Si el usuario cancela, restaura el valor del switch
-    return;
+    return
   }
-
-  try {
-    console.log('state', newState)
-    const response = await APIService.stateUsers(user.id, newState);
-    if (response.success) {
-      user.is_active = newState; // Actualiza el estado del usuario si la solicitud es exitosa
-    } else {
-      alert('Error al cambiar el estado del usuario.');
-    }
-  } catch (error) {
-    if (error.response && error.response.data && error.response.data.error) {
-      // Si hay un mensaje de error en la respuesta, lo puedes mostrar
-      alert(error.response.data.error);
-    } else {
-      // En caso de un error inesperado
-      alert('Ocurrió un error al procesar la solicitud.');
-    }
+  if (state === 1) {
+    usersStore.changeStateUser(id, 0);
+  } else {
+    usersStore.changeStateUser(id, 1);
   }
 }
-
-
 </script>
 
 <template>
@@ -107,7 +91,11 @@ async function toggleUserState(user) {
             <button @click="usersStore.selectedUserUpdate(user.id)" class="btn  rounded-lg font-bold p-1 text-white bg-customGreen hover:bg-green-500 hover:shadow-lg ml-2"><font-awesome-icon :icon="['fas', 'user-pen']" /> </button>
             <button @click="userDelete(user.id)" class="btn  rounded-lg font-bold p-1 text-white bg-customGreen hover:bg-green-500 hover:shadow-lg ml-2"><font-awesome-icon :icon="['fas', 'user-minus']" /> </button>
             <label class="switch">
-              <input type="checkbox" :checked="user.is_active === 1" @change="toggleUserState(user)">
+              <input
+                type="checkbox"
+                :checked="user.is_active === 1"
+                @change="askToChangeUserState(user.id, user.is_active)"
+              />
               <span class="slider round"></span>
             </label>
         </td>
@@ -178,11 +166,11 @@ async function toggleUserState(user) {
   }
 
   input:checked + .slider {
-    background-color: #2196F3;
+    background-color: #262f21;
   }
 
   input:focus + .slider {
-    box-shadow: 0 0 1px #2196F3;
+    box-shadow: 0 0 1px #262f21;
   }
 
   input:checked + .slider:before {
