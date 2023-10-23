@@ -8,8 +8,11 @@ export default {
     getSpecies(){
         return api.get('/especie_forestal')
     },
+    deleteSpecies(pk){
+        return api.delete(`/especie_forestal/${pk}`)
+    },
     getFamilies(){
-        return api.get('/especie_forestal/familia')
+        return api.get('especie_forestal/familia/filter')
     },
     lookSpecie(nombre_comun){
         return api.get(`/especie_forestal/search/nombre_comun/${nombre_comun}`)

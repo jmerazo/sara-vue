@@ -2,8 +2,6 @@
 import { onBeforeRouteLeave } from "vue-router";
 import { useUsersStore } from "@/stores/users";
 import ModalUserUpdate from "../../components/dashboard/ModalUserUpdate.vue";
-import APIService from '../../services/APIService';
-import { watch, ref } from "vue";
 
 const usersStore = useUsersStore();
 
@@ -13,24 +11,13 @@ onBeforeRouteLeave((to, from, next) => {
   next();
 });
 
-async function userDelete(id) {
-  const confirmDelete = window.confirm('¿Estás seguro de que deseas eliminar este usuario?');
+async function delUser(id, nu) {
+  console.log(id)
+  const confirmDelete = window.confirm(`¿Estás seguro de que desea eliminar el usuario ${nu}?`);
   if (!confirmDelete) {
-    return; // Si el usuario cancela, no hagas nada
+    return;
   }
-  try {   
-    await APIService.deleteUsers(id);
-    /* $toaster.success(`Usuario ${usersStore.userSelected[0].email} actualizado`); */
-    router.go();
-  } catch (error) {
-    if (error.response && error.response.data && error.response.data.error) {
-      // Si hay un mensaje de error en la respuesta, lo puedes mostrar
-      alert(error.response.data.error);
-    } else {
-      // En caso de un error inesperado
-      alert('Ocurrió un error al procesar la solicitud.');
-    }
-  }  
+  usersStore.deleteUser(id)
 };
 
 function changeUserState(id, state) {
@@ -47,7 +34,7 @@ function changeUserState(id, state) {
 </script>
 
 <template>
-    <h1 class="text-4xl mb-10 mt-10 text-center font-extrabold">listado de usuarios <span class="text-green-800">SARA</span></h1>
+    <h1 class="text-4xl mb-10 mt-10 text-center font-extrabold">listado de usuarios <span class="text-customGreen">SARA</span></h1>
     <div class="flex justify-end mt-5 mb-5">
       <label class="p-3 text-lg font-bold rounded-lg mx-3">Buscar</label>
       <input
@@ -89,12 +76,12 @@ function changeUserState(id, state) {
         <td class="px-4 py-3 border">
             <button @click="usersStore.seleccionarUsuario(user.id)" class="btn  rounded-lg font-bold p-1 text-white bg-customGreen hover:bg-green-500 hover:shadow-lg"><font-awesome-icon :icon="['fas', 'eye']" /></button>
             <button @click="usersStore.selectedUserUpdate(user.id)" class="btn  rounded-lg font-bold p-1 text-white bg-customGreen hover:bg-green-500 hover:shadow-lg ml-2"><font-awesome-icon :icon="['fas', 'user-pen']" /> </button>
-            <button @click="userDelete(user.id)" class="btn  rounded-lg font-bold p-1 text-white bg-customGreen hover:bg-green-500 hover:shadow-lg ml-2"><font-awesome-icon :icon="['fas', 'user-minus']" /> </button>
+            <button @click="delUser(user.id, user.first_name)" class="btn  rounded-lg font-bold p-1 text-white bg-customGreen hover:bg-green-500 hover:shadow-lg ml-2"><font-awesome-icon :icon="['fas', 'user-minus']" /> </button>
             <label class="switch">
               <input
                 type="checkbox"
                 :checked="user.is_active === 1"
-                @change="askToChangeUserState(user.id, user.is_active)"
+                @change="changeUserState(user.id, user.is_active)"
               />
               <span class="slider round"></span>
             </label>

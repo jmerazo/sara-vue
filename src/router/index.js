@@ -70,6 +70,15 @@ const router = createRouter({
         auth: true,
         roles: ['ADMINISTRADOR', 'is_superuser', 'is_staff']
       }
+    },
+    {
+      path: '/species',
+      name: 'species',
+      component: ()=> import('../views/dashboardviews/ForestSpeciesView.vue'),
+      meta: {
+        auth: true,
+        roles: ['ADMINISTRADOR', 'is_superuser', 'is_staff']
+      }
     }
     
   ]

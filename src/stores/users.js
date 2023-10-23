@@ -92,6 +92,19 @@ export const useUsersStore = defineStore("useUsersStore", () => {
     });
   }
 
+  async function deleteUser(pk) {
+    const indexToDelete = users.value.findIndex(item => item.id === pk);
+  
+    if (indexToDelete === -1) {
+      return { message: "Usuario no encontrado" };
+    }
+  
+    users.value.splice(indexToDelete, 1);
+    await APIService.deleteUsers(pk);
+  
+    return { message: "Usuario eliminado con éxito" };
+  }
+
   return {
     currentPage,
     itemsPerPage,
@@ -108,6 +121,7 @@ export const useUsersStore = defineStore("useUsersStore", () => {
     selectedUserUpdate,
     changeStateUser,
     idUser,
-    newState
+    newState,
+    deleteUser
   };
 });

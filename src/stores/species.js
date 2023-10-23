@@ -61,10 +61,8 @@ export const useEspeciesStore = defineStore('especies', () => {
         especies.value = especiesOriginales.value
       }
     }
-
     
-    function buscarTermino(termino) {
-      
+    function buscarTermino(termino) {      
       especies.value = especiesOriginales.value.filter(term => {
         const lowerTermino = termino.toLowerCase();
         const lowerNomComunes = term.nom_comunes ? term.nom_comunes.toLowerCase() : '';
@@ -77,6 +75,19 @@ export const useEspeciesStore = defineStore('especies', () => {
           lowerCientifico.includes(lowerTermino)
         );
       });
+    }
+
+    async function deleteForestSpecie(pk) {
+      const indexToDelete = especies.value.findIndex(item => item.ShortcutID === pk);
+    
+      if (indexToDelete === -1) {
+        return { message: "Especie no encontrada" };
+      }
+    
+      especies.value.splice(indexToDelete, 1);
+      await APIService.deleteSpecies(pk);
+    
+      return { message: "Especie eliminada con éxito" };
     }
 
     
@@ -93,5 +104,6 @@ export const useEspeciesStore = defineStore('especies', () => {
       buscarTermino,
       quitarFiltroEspecie,
       changePage,
+      deleteForestSpecie
     };
 });
