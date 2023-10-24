@@ -230,6 +230,14 @@ const userData = JSON.parse(userDataString);
               <p>Promedio Altura</p>
             </a>
           </li>
+          <RouterLink :to="{ name: 'list-species' }">
+          <li v-if="userData.rol == 'ADMINISTRADOR' && userData.is_superuser == 1 && userData.is_staff == 1" class="nav-item">
+            <a href="#" class="nav-link">
+              <font-awesome-icon :icon="['fab', 'pagelines']" />
+              <p> Especies forestales</p>
+            </a>
+          </li>
+        </RouterLink>
 
           <li v-if="userData.rol == 'ADMINISTRADOR' && userData.is_superuser == 1 && userData.is_staff == 1" class="nav-header">ADMINISTRACIÓN</li>
           
@@ -242,13 +250,7 @@ const userData = JSON.parse(userDataString);
           </li>
         </RouterLink>
         <!-- v-if="store.userData.rol == 'ADMINISTRADOR' && store.userData.is_superuser == 1 && store.userData.is_staff == 1"  -->   
-
-          <li v-if="userData.rol == 'ADMINISTRADOR' && userData.is_superuser == 1 && userData.is_staff == 1" class="nav-item">
-            <a href="#" class="nav-link">
-              <i class="nav-icon fas fa-file"></i>
-              <p>Especies forestales</p>
-            </a>
-          </li>
+        
         </ul>
       </nav>
     </div>

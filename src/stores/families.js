@@ -46,7 +46,7 @@ export const useFamiliasStore = defineStore('familias',()=>{
     }
 
     function buscarTermino(termino) {
-      
+        changePage(1)
         familias.value = familiasOriginal.value.filter(term => {
           const lowerTermino = termino.toLowerCase();
           const lowerFamilia = term.familia ? term.familia.toLowerCase(): '';

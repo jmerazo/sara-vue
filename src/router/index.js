@@ -70,7 +70,34 @@ const router = createRouter({
         auth: true,
         roles: ['ADMINISTRADOR', 'is_superuser', 'is_staff']
       }
-    }
+    },
+    {
+      path:'/list-species',
+      name:'list-species',
+      component: () => import('../views/dashboardviews/ListSpeciesView.vue'),
+      meta: {
+        auth: true,
+        roles: ['ADMINISTRADOR', 'is_superuser', 'is_staff']
+      }
+    },
+    {
+      path:'/monitoring-species',
+      name:'monitoring-species',
+      component: () => import('../views/dashboardviews/MonitoringSpecieView.vue'),
+      meta: {
+        auth: true,
+        roles: ['ADMINISTRADOR', 'is_superuser', 'is_staff']
+      }
+    },
+    {
+      path:'/candidates-species',
+      name:'candidates-species',
+      component: () => import('../views/dashboardviews/ListCandidatesSpecie.vue'),
+      meta: {
+        auth: true,
+        roles: ['ADMINISTRADOR', 'is_superuser', 'is_staff']
+      }
+    },
     
   ]
 })

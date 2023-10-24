@@ -7,6 +7,7 @@ export const useModalStore = defineStore('modal',()=>{
     const modal = ref(false)
     const modalFamily = ref(false)
     const modalUser = ref(false)
+    const modalCandidates = ref(false)
     
     //modal especie
     function handleClickModal(){
@@ -23,13 +24,20 @@ export const useModalStore = defineStore('modal',()=>{
         modalUser.value = !modalUser.value
     }
 
+    //modal candidatos por especie dashboard
+    function handleClickModalCandidate(){
+        modalCandidates.value = !modalCandidates.value
+    }
+
     return {
         modal,
         modalFamily,
         modalUser,
+        modalCandidates,
         handleClickModal,
         handleClickModalFamily,
-        handleClickModalUser
+        handleClickModalUser,
+        handleClickModalCandidate
         
     }
 })
