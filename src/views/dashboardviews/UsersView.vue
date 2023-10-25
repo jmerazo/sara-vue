@@ -13,9 +13,9 @@ onBeforeRouteLeave((to, from, next) => {
 </script>
 
 <template>
-    <h1 class="text-4xl mb-10 mt-10 text-center font-extrabold">listado de usuarios <span class="text-green-800">SARA</span></h1>
+    <h1 class="text-4xl mb-10 mt-10 text-center font-extrabold"> listado de usuarios <span class="text-green-800">SARA</span></h1>
     <div class="flex justify-end mt-5 mb-5">
-      <label class="p-3 text-lg font-bold rounded-lg mx-3">Buscar</label>
+      <label class="p-3 text-lg font-bold rounded-lg mx-3">Buscar </label>
       <input
         class="p-3 rounded-lg lg:w-1/4 sm:w-full border-2 border-gray-500 py-2 px-4"
         type="text"
@@ -56,7 +56,9 @@ onBeforeRouteLeave((to, from, next) => {
             <button @click="usersStore.seleccionarUsuario(user.id)" class="btn  rounded-lg font-bold p-1 text-white bg-customGreen hover:bg-green-500 hover:shadow-lg"><font-awesome-icon :icon="['fas', 'eye']" /> Revisar</button>
             <button @click="usersStore.selectedUserUpdate(user.id)" class="btn  rounded-lg font-bold p-1 text-white bg-customGreen hover:bg-green-500 hover:shadow-lg ml-2"><font-awesome-icon :icon="['fas', 'user-pen']" /> Editar</button>
         </td>
-        
+        <td>
+          <input @change="usersStore.seleccionarUsuario(user.id, $event.target.value)" type="check" name="" id="">
+        </td>
       </tr>
     </tbody>
   </table>

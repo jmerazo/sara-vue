@@ -1,4 +1,3 @@
-import { approximatelyEquals } from 'ol/extent';
 import api from '../api/axios';
 
 export default {
@@ -16,6 +15,15 @@ export default {
     },
     lookScientificName(scientific_name){
         return api.get(`/especie_forestal/search/scientificname/${scientific_name}`)
+    },
+    lookMonitoringSpecie(cod_especie){
+        return api.get(`monitoring/search/specie/${cod_especie}`)
+    },
+    lookCandidateSpecie(nombre_comun){
+        return api.get(`specie/search/candidates/${nombre_comun}`)
+    },
+    lookMonitoringCandidate(id){
+        return api.get(`candidates/search/monitorings/${id}`)
     },
     lookFamily(n_familia){
         return api.get(`/especie_forestal/search/familia/${n_familia}`)
