@@ -11,6 +11,7 @@ export const useEspeciesStore = defineStore('especies', () => {
     const consulta = useConsultaStore()
     const especies = ref([]);
     const especie = ref({});
+    const monitoreosEspecie = ref({})
     const noResultados = computed(() => especies.value.length === 0 );
     const especiesOriginales = ref([]);
 
@@ -62,7 +63,8 @@ export const useEspeciesStore = defineStore('especies', () => {
       }
     }
     
-    function buscarTermino(termino) {      
+    function buscarTermino(termino) {
+      changePage(1)
       especies.value = especiesOriginales.value.filter(term => {
         const lowerTermino = termino.toLowerCase();
         const lowerNomComunes = term.nom_comunes ? term.nom_comunes.toLowerCase() : '';

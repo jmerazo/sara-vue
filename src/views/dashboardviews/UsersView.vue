@@ -36,7 +36,7 @@ function changeUserState(id, state) {
 <template>
     <h1 class="text-4xl mb-10 mt-10 text-center font-extrabold">listado de usuarios <span class="text-customGreen">SARA</span></h1>
     <div class="flex justify-end mt-5 mb-5">
-      <label class="p-3 text-lg font-bold rounded-lg mx-3">Buscar</label>
+      <label class="p-3 text-lg font-bold rounded-lg mx-3">Buscar </label>
       <input
         class="p-3 rounded-lg lg:w-1/4 sm:w-full border-2 border-gray-500 py-2 px-4"
         type="text"
@@ -86,7 +86,9 @@ function changeUserState(id, state) {
               <span class="slider round"></span>
             </label>
         </td>
-        
+        <td>
+          <input @change="usersStore.seleccionarUsuario(user.id, $event.target.value)" type="check" name="" id="">
+        </td>
       </tr>
     </tbody>
   </table>

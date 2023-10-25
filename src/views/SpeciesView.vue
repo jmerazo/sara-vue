@@ -23,7 +23,7 @@ onBeforeRouteLeave((to, from, next) => {
     </h1>
 
     <div class="flex justify-end mt-5 mb-5">
-      <label class="p-3 text-lg font-bold rounded-lg mx-3">Buscar</label>
+      <label class="p-3 text-lg font-bold rounded-lg mx-3">Buscar </label>
       <input
         class="p-3 rounded-lg lg:w-1/4 sm:w-full border-2 border-gray-500 py-2 px-4"
         type="text"

@@ -5,13 +5,14 @@ import {useModalStore} from '@/stores/modal'
 
 export const useUsersStore = defineStore("useUsersStore", () => {
   const modal = useModalStore();
-  const users = ref([]);
+  const users = ref({});
   const usersOriginal = ref([]);
   const userSelected = ref([]);
   const totalUsers = ref(0);
   const idUser = ref();
   const newState = ref();
   const noResultados = computed(() => users.value.length === 0 );
+
   // variables para paginación
   const currentPage = ref(1); // Página actual
   const itemsPerPage = ref(12); // Elementos por página
@@ -22,6 +23,8 @@ export const useUsersStore = defineStore("useUsersStore", () => {
     usersOriginal.value = data;
     totalUsers.value = usersOriginal.value.length;
   });
+
+  
 
   //seleccionar un usuario para mostrar en el modal
   function seleccionarUsuario(id) {

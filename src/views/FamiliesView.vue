@@ -6,7 +6,7 @@ import Family from "@/components/Family.vue";
 
 const familias = useFamiliasStore();
 onBeforeRouteLeave((to, from, next) => {
-  familias.quitarFiltroFamilia()
+  familias.quitarFiltroFamilia();
   next();
 });
 </script>
@@ -16,7 +16,7 @@ onBeforeRouteLeave((to, from, next) => {
       Listado de familias
     </h1>
     <div class="flex justify-end mt-5 mb-5">
-      <label class="p-3 text-lg font-bold rounded-lg mx-3">Buscar</label>
+      <label class="p-3 text-lg font-bold rounded-lg mx-3">Buscar </label>
       <input
         class="p-3 rounded-lg lg:w-1/4 sm:w-full border-2 border-gray-500 py-2 px-4"
         type="text"
@@ -26,7 +26,7 @@ onBeforeRouteLeave((to, from, next) => {
     </div>
     <hr />
 
-    <h3 class="text-justify text-2xl my-10">
+    <h3 v-if="familias.familias.length != 0" class="text-justify text-2xl my-10">
       En el contexto de las especies forestales y la taxonomía biológica, una
       "familia" es una categoría de clasificación que agrupa a un conjunto de
       plantas que comparten ciertas características similares y están
@@ -42,8 +42,8 @@ onBeforeRouteLeave((to, from, next) => {
       >
       </Family>
     </div>
-      <!-- paginador -->
-      <div class="flex justify-center mt-5 mb-10">
+    <!-- paginador -->
+    <div class="flex justify-center mt-5 mb-10">
       <button
         v-for="page in familias.totalPages"
         :key="page"
@@ -54,5 +54,8 @@ onBeforeRouteLeave((to, from, next) => {
         {{ page }}
       </button>
     </div>
+    <h1 v-if="familias.familias.length == 0" class="text-center font-bold text-2xl mt-5 mb-40">
+      No hay resultados de búsqueda
+    </h1>
   </div>
 </template>
