@@ -7,6 +7,9 @@ export default {
     getSpecies(){
         return api.get('/especie_forestal')
     },
+    updateForestSpecies(sid, data){
+        return api.put(`/especie_forestal/${sid}`, data)
+    },
     deleteSpecies(pk){
         return api.delete(`/especie_forestal/${pk}`)
     },

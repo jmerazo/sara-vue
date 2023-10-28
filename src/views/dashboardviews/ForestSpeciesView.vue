@@ -1,7 +1,6 @@
 <script setup>
 import { onBeforeRouteLeave } from "vue-router";
-import ModalUserUpdate from "../../components/dashboard/ModalUserUpdate.vue";
-import APIService from '../../services/APIService';
+import ModalForestSpecieUpdate from "../../components/dashboard/ModalForestSpecieUpdate.vue";
 import { useEspeciesStore } from "../../stores/species";
 
 const especies = useEspeciesStore();
@@ -71,6 +70,7 @@ defineProps({
         <td class="px-4 py-3 border">{{ especie.familia }}</td>
         <td class="px-4 py-3 border">{{ especie.ShortcutID }}</td>
         <td class="px-4 py-3 border">
+          <button @click="especies.selectedForestSpecieUpdate(especie.ShortcutID)" class="btn  rounded-lg font-bold p-1 text-white bg-customGreen hover:bg-green-500 hover:shadow-lg ml-2"><font-awesome-icon :icon="['fas', 'pen-to-square']" /> </button>
           <button @click="delForestSpecie(especie.ShortcutID, especie.nom_comunes)" class="btn  rounded-lg font-bold p-1 text-white bg-customGreen hover:bg-green-500 hover:shadow-lg ml-2"><font-awesome-icon :icon="['fas', 'trash']" /> </button>
         </td>
       </tr>
@@ -93,7 +93,7 @@ defineProps({
     <h1 v-if="especies.noResultados" class="text-center font-bold text-2xl mt-5 mb-40">
       No hay resultados de búsqueda
     </h1>
-    <ModalUserUpdate/>
+    <ModalForestSpecieUpdate/>
 </div>
 
 </template>
