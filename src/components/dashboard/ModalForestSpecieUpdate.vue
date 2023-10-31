@@ -189,7 +189,7 @@ watch(() => speciesStore.specieSelected, () => {
                   </DialogTitle>
                   <DialogTitle as="h3" class="text-gray-900 text-lg my-5">
                     <font-awesome-icon :icon="['fab', 'hashnode']" /> <span class="font-bold"> Sinonimos: </span>
-                    <input type="email" class="w-80" v-model="formData.sinonimos"/>
+                    <input type="text" class="w-80" v-model="formData.sinonimos"/>
                   </DialogTitle>
                   <DialogTitle as="h3" class="text-gray-900 text-lg my-5">
                     <font-awesome-icon :icon="['fab', 'pagelines']" /> <span class="font-bold"> Familia: </span>
