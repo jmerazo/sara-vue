@@ -2,9 +2,10 @@
 import { onBeforeRouteLeave } from "vue-router";
 import ModalForestSpecieUpdate from "../../components/dashboard/ModalForestSpecieUpdate.vue";
 import { useEspeciesStore } from "../../stores/species";
+import { useModalStore } from "@/stores/modal";
 
 const especies = useEspeciesStore();
-
+const modal = useModalStore();
 //limpiar filtros antes de cambiar de vista
 onBeforeRouteLeave((to, from, next) => {
   especies.quitarFiltroEspecie()
@@ -37,11 +38,18 @@ defineProps({
         type:Object
     }
  })
+
+function modalClick() {
+  modal.handleClickModalForestSpecieAdd()
+}
 </script>
 
 <template>
     <h1 class="text-4xl mb-10 mt-10 text-center font-extrabold">Especies Forestales<span class="text-customGreen"> SARA</span></h1>
     <div class="flex justify-end mt-5 mb-5">
+      <div>          
+        <button @click="modal.handleClickModalForestSpecieAdd()" class="btn  rounded-lg font-bold p-1 text-white bg-customGreen hover:bg-green-500 hover:shadow-lg ml-2"><font-awesome-icon :icon="['fas', 'file-circle-plus']" /> </button>
+      </div>
       <label class="p-3 text-lg font-bold rounded-lg mx-3">Buscar</label>
       <input
         class="p-3 rounded-lg lg:w-1/4 sm:w-full border-2 border-gray-500 py-2 px-4"

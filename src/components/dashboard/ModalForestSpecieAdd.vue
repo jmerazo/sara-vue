@@ -36,7 +36,7 @@ const formData = ref({
 
 async function forestSpecieUpdate() {
   speciesStore.updateForestSpecie(speciesStore.specieSelected[0].ShortcutID, formData.value);
-  modal.handleClickModalForestSpecieUpdate()
+  modal.handleClickModalForestSpecieAdd()
 }
 
 const adjustTextareaHeight = (event) => {
@@ -85,11 +85,11 @@ watch(() => speciesStore.specieSelected, () => {
 </script>
 
 <template>
-  <TransitionRoot as="template" :show="modal.modalForestSpecieUpdate">
+  <TransitionRoot as="template" :show="modal.modalForestSpecieAdd">
     <Dialog
       as="div"
       class="relative z-10"
-      @close="modal.handleClickModalUserUpdate()"
+      @close="modal.handleClickModalForestSpecieAdd()"
     >
       <TransitionChild
         as="template"
@@ -244,7 +244,7 @@ watch(() => speciesStore.specieSelected, () => {
                 <button
                   type="button"
                   class="shadow p-1 w-full rounded-lg bg-gray-700 hover:bg-gray-800 text-white uppercase font-bold"
-                  @click="modal.handleClickModalForestSpecieUpdate()"
+                  @click="modal.handleClickModalForestSpecieAdd()"
                 >
                   Cerrar
                 </button>

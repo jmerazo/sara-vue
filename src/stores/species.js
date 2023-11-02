@@ -102,12 +102,12 @@ export const useEspeciesStore = defineStore('especies', () => {
 
     const updateForestSpecie = async (sid, data) => {
       console.log(sid, data)
-      const specieIndex = especies.value.findIndex((specie) => specie.id === sid);
+      const specieIndex = especies.value.findIndex((specie) => specie.ShortcutID === sid);
       if (specieIndex !== -1) {
           Object.assign(especies.value[specieIndex], data);
           await APIService.updateForestSpecies(sid, data)
       } else {
-          console.error(`Especie con ID ${id} no encontrada.`);
+          console.error(`Especie con ID ${sid} no encontrada.`);
       }
     };
 
