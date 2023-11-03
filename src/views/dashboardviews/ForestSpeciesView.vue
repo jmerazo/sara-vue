@@ -1,11 +1,12 @@
 <script setup>
 import { onBeforeRouteLeave } from "vue-router";
-import ModalForestSpecieUpdate from "../../components/dashboard/ModalForestSpecieUpdate.vue";
+import ModalForestSpecieAdd from "../../components/dashboard/ModalForestSpecieAdd.vue";
 import { useEspeciesStore } from "../../stores/species";
 import { useModalStore } from "@/stores/modal";
 
 const especies = useEspeciesStore();
 const modal = useModalStore();
+
 //limpiar filtros antes de cambiar de vista
 onBeforeRouteLeave((to, from, next) => {
   especies.quitarFiltroEspecie()
@@ -101,7 +102,7 @@ function modalClick() {
     <h1 v-if="especies.noResultados" class="text-center font-bold text-2xl mt-5 mb-40">
       No hay resultados de búsqueda
     </h1>
-    <ModalForestSpecieUpdate/>
+    <ModalForestSpecieAdd/>
 </div>
 
 </template>

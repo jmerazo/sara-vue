@@ -31,8 +31,53 @@ const formData = ref({
   frutos: "",
   semillas: "",
   tallo: "",
-  raiz: ""
+  raiz: "",
+  imgLeaf: "",
+  imgFlower: "",
+  imgFruit: "",
+  imgSeed: "",
+  imgStem: ""
 });
+
+const imageInputLeaf = ref(null);
+const imageInputFlower = ref(null);
+const imageInputFruit = ref(null);
+const imageInputSeed = ref(null);
+const imageInputStem = ref(null);
+
+const handleImageUpload = (fieldName) => {
+  let imageInput;
+
+  // Selecciona el campo de entrada de imagen según el nombre del campo
+  switch (fieldName) {
+    case 'imgLeaf':
+      imageInput = imageInputLeaf.value;
+      break;
+    case 'imgFlower':
+      imageInput = imageInputFlower.value;
+      break;
+    case 'imgFruit':
+      imageInput = imageInputFruit.value; // Corregir el campo de entrada de imagen para imgFruit
+      break;
+    case 'imgSeed':
+      imageInput = imageInputSeed.value; // Corregir el campo de entrada de imagen para imgSeed
+      break;
+    case 'imgStem':
+      imageInput = imageInputStem.value; // Corregir el campo de entrada de imagen para imgStem
+      break;
+  }
+
+  if (imageInput) {
+    const file = imageInput.files[0];
+    const reader = new FileReader();
+
+    reader.onload = (e) => {
+      formData.value[fieldName] = e.target.result; // Almacena la imagen en el campo correspondiente del formulario
+    };
+
+    reader.readAsDataURL(file);
+  }
+};
 
 async function forestSpecieUpdate() {
   speciesStore.updateForestSpecie(speciesStore.specieSelected[0].ShortcutID, formData.value);
@@ -205,35 +250,62 @@ watch(() => speciesStore.specieSelected, () => {
                     <font-awesome-icon :icon="['fas', 'seedling']" /> <span class="font-bold"> Disposición de las hojas: </span>
                     <input type="text" class="w-80" v-model="formData.disposicion_hojas"/>
                   </DialogTitle>
+
                   <DialogTitle as="h3" class="text-gray-900 text-lg my-5">
                     <font-awesome-icon :icon="['fab', 'envira']" /> <span class="font-bold"> Información de las hojas: </span>
                     <textarea class="w-full auto-resize-textarea" v-model="formData.hojas"></textarea>
                   </DialogTitle>
                   <DialogTitle as="h3" class="text-gray-900 text-lg my-5">
+                    <font-awesome-icon :icon="['fas', 'image']" /> <span class="font-bold"> Imagen de las hojas: </span><br>
+                    <input type="file" ref="imageInputLeaf" accept="image/*" @change="handleImageUpload" />
+                  </DialogTitle>
+
+                  <DialogTitle as="h3" class="text-gray-900 text-lg my-5">
                     <font-awesome-icon :icon="['fas', 'spa']" /> <span class="font-bold"> Información de la flor: </span>
                     <textarea type="text" class="w-full auto-resize-textarea" v-model="formData.flor"></textarea>
                   </DialogTitle>
+                  <DialogTitle as="h3" class="text-gray-900 text-lg my-5">
+                    <font-awesome-icon :icon="['fas', 'image']" /> <span class="font-bold"> Imagen de las flores: </span><br>
+                    <input type="file" ref="imageInputFlower" accept="image/*" @change="handleImageUpload" />
+                  </DialogTitle>
+
                   <DialogTitle as="h3" class="text-gray-900 text-lg my-5">
                     <font-awesome-icon :icon="['fab', 'apple']" /> <span class="font-bold"> Información de los frutos: </span>
                     <textarea type="text" class="w-full auto-resize-textarea" v-model="formData.frutos"></textarea>
                   </DialogTitle>
                   <DialogTitle as="h3" class="text-gray-900 text-lg my-5">
+                    <font-awesome-icon :icon="['fas', 'image']" /> <span class="font-bold"> Imagen de los frutos: </span><br>
+                    <input type="file" ref="imageInputFruit" accept="image/*" @change="handleImageUpload" />
+                  </DialogTitle>
+
+                  <DialogTitle as="h3" class="text-gray-900 text-lg my-5">
                     <font-awesome-icon :icon="['fas', 'seedling']" /> <span class="font-bold"> Información de las semillas: </span>
                     <textarea type="text" class="w-full auto-resize-textarea" v-model="formData.semillas"></textarea>
                   </DialogTitle>
+                  <DialogTitle as="h3" class="text-gray-900 text-lg my-5">
+                    <font-awesome-icon :icon="['fas', 'image']" /> <span class="font-bold"> Imagen de las semillas: </span><br>
+                    <input type="file" ref="imageInputSeed" accept="image/*" @change="handleImageUpload" />
+                  </DialogTitle>
+
                   <DialogTitle as="h3" class="text-gray-900 text-lg my-5">
                     <font-awesome-icon :icon="['fas', 'ticket-simple']" /> <span class="font-bold"> Información del tallo: </span>
                     <textarea type="text" class="w-full auto-resize-textarea" v-model="formData.tallo"></textarea>
                   </DialogTitle>
                   <DialogTitle as="h3" class="text-gray-900 text-lg my-5">
+                    <font-awesome-icon :icon="['fas', 'image']" /> <span class="font-bold"> Imagen del tallo: </span><br>
+                    <input type="file" ref="imageInputStem" accept="image/*" @change="handleImageUpload" />
+                  </DialogTitle>
+
+                  <DialogTitle as="h3" class="text-gray-900 text-lg my-5">
                     <font-awesome-icon :icon="['fas', 'mound']" /> <span class="font-bold"> Información de la raíz: </span>
                     <textarea type="text" class="w-full auto-resize-textarea" v-model="formData.raiz"></textarea>
                   </DialogTitle>
+
                   <button
                     type="submit"
                     class="shadow p-1 w-full rounded-lg bg-green-600 hover:bg-green-700 text-white uppercase font-bold"
                   >
-                    Actualizar
+                    Guardar
                   </button>
                 </form>
                   <hr />
