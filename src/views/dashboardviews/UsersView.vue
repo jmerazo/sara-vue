@@ -1,6 +1,7 @@
 <script setup>
 import { onBeforeRouteLeave } from "vue-router";
 import { useUsersStore } from "@/stores/users";
+import ModalUserUpdate from "../../components/dashboard/ModalUserUpdate.vue";
 
 const usersStore = useUsersStore();
 
@@ -10,10 +11,30 @@ onBeforeRouteLeave((to, from, next) => {
   next();
 });
 
+async function delUser(id, nu) {
+  console.log(id)
+  const confirmDelete = window.confirm(`¿Estás seguro de que desea eliminar el usuario ${nu}?`);
+  if (!confirmDelete) {
+    return;
+  }
+  usersStore.deleteUser(id)
+};
+
+function changeUserState(id, state) {
+  const confirmState = window.confirm(`¿Estás seguro de que deseas ${state === 0 ? 'activar' : 'desactivar'} a este usuario?`);
+  if (!confirmState) {
+    return
+  }
+  if (state === 1) {
+    usersStore.changeStateUser(id, 0);
+  } else {
+    usersStore.changeStateUser(id, 1);
+  }
+}
 </script>
 
 <template>
-    <h1 class="text-4xl mb-10 mt-10 text-center font-extrabold"> listado de usuarios <span class="text-green-800">SARA</span></h1>
+    <h1 class="text-4xl mb-10 mt-10 text-center font-extrabold">listado de usuarios <span class="text-customGreen">SARA</span></h1>
     <div class="flex justify-end mt-5 mb-5">
       <label class="p-3 text-lg font-bold rounded-lg mx-3">Buscar </label>
       <input
@@ -53,8 +74,17 @@ onBeforeRouteLeave((to, from, next) => {
             <span class="bg-red-100 text-red-800 p-1 text-sm rounded font-bold"> Inactivo</span>
         </td>
         <td class="px-4 py-3 border">
-            <button @click="usersStore.seleccionarUsuario(user.id)" class="btn  rounded-lg font-bold p-1 text-white bg-customGreen hover:bg-green-500 hover:shadow-lg"><font-awesome-icon :icon="['fas', 'eye']" /> Revisar</button>
-            <button @click="usersStore.selectedUserUpdate(user.id)" class="btn  rounded-lg font-bold p-1 text-white bg-customGreen hover:bg-green-500 hover:shadow-lg ml-2"><font-awesome-icon :icon="['fas', 'user-pen']" /> Editar</button>
+            <button @click="usersStore.seleccionarUsuario(user.id)" class="btn  rounded-lg font-bold p-1 text-white bg-customGreen hover:bg-green-500 hover:shadow-lg"><font-awesome-icon :icon="['fas', 'eye']" /></button>
+            <button @click="usersStore.selectedUserUpdate(user.id)" class="btn  rounded-lg font-bold p-1 text-white bg-customGreen hover:bg-green-500 hover:shadow-lg ml-2"><font-awesome-icon :icon="['fas', 'user-pen']" /> </button>
+            <button @click="delUser(user.id, user.first_name)" class="btn  rounded-lg font-bold p-1 text-white bg-customGreen hover:bg-green-500 hover:shadow-lg ml-2"><font-awesome-icon :icon="['fas', 'user-minus']" /> </button>
+            <label class="switch">
+              <input
+                type="checkbox"
+                :checked="user.is_active === 1"
+                @change="changeUserState(user.id, user.is_active)"
+              />
+              <span class="slider round"></span>
+            </label>
         </td>
         <td>
           <input @change="usersStore.seleccionarUsuario(user.id, $event.target.value)" type="check" name="" id="">
@@ -78,6 +108,63 @@ onBeforeRouteLeave((to, from, next) => {
     <h1 v-if="usersStore.noResultados" class="text-center font-bold text-2xl mt-5 mb-40">
       No hay resultados de búsqueda
     </h1>
+    <ModalUserUpdate/>
 </div>
 
 </template>
+
+<style>
+  .switch {
+    position: relative;
+    display: inline-block;
+    width: 40px;
+    height: 24px;
+    margin-left: 4px;
+  }
+
+  .switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    -webkit-transition: .4s;
+    transition: .4s;
+    border-radius: 34px;
+  }
+
+  .slider:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    -webkit-transition: .4s;
+    transition: .4s;
+    border-radius: 50%;
+  }
+
+  input:checked + .slider {
+    background-color: #262f21;
+  }
+
+  input:focus + .slider {
+    box-shadow: 0 0 1px #262f21;
+  }
+
+  input:checked + .slider:before {
+    -webkit-transform: translateX(16px);
+    -ms-transform: translateX(16px);
+    transform: translateX(16px);
+  }
+</style>

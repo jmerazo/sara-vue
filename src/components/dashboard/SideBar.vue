@@ -249,8 +249,14 @@ const userData = JSON.parse(userDataString);
             </a>
           </li>
         </RouterLink>
-        <!-- v-if="store.userData.rol == 'ADMINISTRADOR' && store.userData.is_superuser == 1 && store.userData.is_staff == 1"  -->   
-        
+        <RouterLink :to="{ name: 'species' }">
+          <li v-if="userData.rol == 'ADMINISTRADOR' && userData.is_superuser == 1 && userData.is_staff == 1" class="nav-item">
+            <a href="#" class="nav-link">
+              <i class="nav-icon fas fa-file"></i>
+              <p> Especies forestales</p>
+            </a>
+          </li>
+        </RouterLink>
         </ul>
       </nav>
     </div>

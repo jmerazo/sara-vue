@@ -8,6 +8,7 @@ import Footer from "@/components/Footer.vue";
 import Modal from '@/components/Modal.vue';
 import ModalFamily from "@/components/ModalFamily.vue";
 import ModalUser from '@/components/dashboard/ModalUser.vue';
+import ModalCandidate from '@/components/dashboard/ModalCandidates.vue'
 import Spinner from '@/components/Spinner.vue'
 import Dashboard from '@/views/dashboardviews/DashboardMainView.vue'
 

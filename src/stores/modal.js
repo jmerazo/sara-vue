@@ -29,6 +29,7 @@ export const useModalStore = defineStore('modal',()=>{
     function handleClickModalUserUpdate(){
         modalUserUpdate.value = !modalUserUpdate.value
     }
+
     //modal candidatos por especie dashboard
     function handleClickModalCandidate(){
         modalCandidates.value = !modalCandidates.value
@@ -42,7 +43,7 @@ export const useModalStore = defineStore('modal',()=>{
         handleClickModal,
         handleClickModalFamily,
         handleClickModalUser,
-        handleClickModalUserUpdate,       
+        handleClickModalUserUpdate,        
         modalCandidates,
         handleClickModal,
         handleClickModalFamily,

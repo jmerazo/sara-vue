@@ -62,7 +62,6 @@ export const useEspeciesStore = defineStore('especies', () => {
         especies.value = especiesOriginales.value
       }
     }
-
     
     function buscarTermino(termino) {
       changePage(1)
@@ -80,6 +79,19 @@ export const useEspeciesStore = defineStore('especies', () => {
       });
     }
 
+    async function deleteForestSpecie(pk) {
+      const indexToDelete = especies.value.findIndex(item => item.ShortcutID === pk);
+    
+      if (indexToDelete === -1) {
+        return { message: "Especie no encontrada" };
+      }
+    
+      especies.value.splice(indexToDelete, 1);
+      await APIService.deleteSpecies(pk);
+    
+      return { message: "Especie eliminada con éxito" };
+    }
+
     
     return {
       currentPage,
@@ -94,5 +106,6 @@ export const useEspeciesStore = defineStore('especies', () => {
       buscarTermino,
       quitarFiltroEspecie,
       changePage,
+      deleteForestSpecie
     };
 });
