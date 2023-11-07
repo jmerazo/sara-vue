@@ -1,10 +1,10 @@
 import { ref, onMounted } from 'vue'
 import { defineStore } from 'pinia'
 import APIService from '@/services/APIService'
-import { useConsultaStore } from '@/stores/consulta'
+
 
 export const useChartSamples = defineStore('samples', () => {
-    const consulta = useConsultaStore()
+    
 
     // Departamentos
     const departamentos = ref([]);

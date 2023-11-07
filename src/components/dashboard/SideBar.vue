@@ -238,6 +238,14 @@ const userData = JSON.parse(userDataString);
             </a>
           </li>
         </RouterLink>
+          <RouterLink :to="{ name: 'species-data' }">
+          <li v-if="userData.rol == 'ADMINISTRADOR' && userData.is_superuser == 1 && userData.is_staff == 1" class="nav-item">
+            <a href="#" class="nav-link">
+              <font-awesome-icon :icon="['fab', 'pagelines']" />
+              <p> Datos especies</p>
+            </a>
+          </li>
+        </RouterLink>
 
           <li v-if="userData.rol == 'ADMINISTRADOR' && userData.is_superuser == 1 && userData.is_staff == 1" class="nav-header">ADMINISTRACIÓN</li>
           

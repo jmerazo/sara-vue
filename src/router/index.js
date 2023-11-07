@@ -98,6 +98,15 @@ const router = createRouter({
         roles: ['ADMINISTRADOR', 'is_superuser', 'is_staff']
       }
     },
+    {
+      path:'/species-data',
+      name:'species-data',
+      component: () => import('../views/dashboardviews/SpeciesDataView.vue'),
+      meta: {
+        auth: true,
+        roles: ['ADMINISTRADOR', 'is_superuser', 'is_staff']
+      }
+    },
     
   ]
 })

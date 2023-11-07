@@ -10,6 +10,9 @@ export default {
     getFamilies(){
         return api.get('/especie_forestal/familia')
     },
+    getSpeciesData(){
+        return api.get('/specie/report/data')
+    },
     lookSpecie(nombre_comun){
         return api.get(`/especie_forestal/search/nombre_comun/${nombre_comun}`)
     },

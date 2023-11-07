@@ -75,6 +75,7 @@ onMounted(async () => {
         </p>
       </div>
     </div>
+
   
     <div class="colaborators flex flex-row">
         <a href="https://minciencias.gov.co/"><img src="../assets/logos/mc-vida.png" class="log-minciencia fixed-between hover:scale-110"></a>
@@ -84,7 +85,9 @@ onMounted(async () => {
         <a href="https://itp.edu.co/ITP2022/"><img src="../assets/logos/itp.png" class="log-itp fixed-between hover:scale-110"></a>
     </div>
   </div>
-  
+ 
+ 
+
 </template>
 
 <style scoped>
