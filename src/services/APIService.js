@@ -7,8 +7,17 @@ export default {
     getSpecies(){
         return api.get('/especie_forestal')
     },
+    addForestSpecies(data){
+        return api.post(`/especie_forestal/`, data)
+    },
+    updateForestSpecies(sid, data){
+        return api.put(`/especie_forestal/${sid}`, data)
+    },
+    deleteSpecies(pk){
+        return api.delete(`/especie_forestal/${pk}`)
+    },
     getFamilies(){
-        return api.get('/especie_forestal/familia')
+        return api.get('especie_forestal/familia/filter')
     },
     getSpeciesData(){
         return api.get('/specie/report/data')
@@ -72,6 +81,15 @@ export default {
     },
     createUsers(data){
         return api.post('/users/', data)
+    },
+    updateUsers(uid, data){
+        return api.put(`/users/${uid}`, data)
+    },
+    deleteUsers(uid){
+        return api.delete(`/users/${uid}`)
+    },
+    stateUsers(uid, state){
+        return api.put(`/users/state/${uid}`, state)
     },
     getDepartments(){
         return api.get('/departments/')
