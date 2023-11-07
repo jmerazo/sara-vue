@@ -11,6 +11,7 @@ export const useEspeciesStore = defineStore('especies', () => {
     const consulta = useConsultaStore()
     const especies = ref([]);
     const especie = ref({});
+    const specieSelected = ref([])
     const monitoreosEspecie = ref({})
     const noResultados = computed(() => especies.value.length === 0 );
     const especiesOriginales = ref([]);
@@ -92,6 +93,39 @@ export const useEspeciesStore = defineStore('especies', () => {
       return { message: "Especie eliminada con éxito" };
     }
 
+    function selectedForestSpecieUpdate(id) {
+      console.log('shortcut id: ', id)
+      specieSelected.value =  especies.value.filter(especie => especie.ShortcutID === id)
+      console.log('data specie: ', specieSelected.value)
+      modal.handleClickModalForestSpecieUpdate(specieSelected.value); 
+    }
+
+    const updateForestSpecie = async (sid, data) => {
+      console.log(sid, data)
+      const specieIndex = especies.value.findIndex((specie) => specie.ShortcutID === sid);
+      if (specieIndex !== -1) {
+          Object.assign(especies.value[specieIndex], data);
+          await APIService.updateForestSpecies(sid, data)
+      } else {
+          console.error(`Especie con ID ${sid} no encontrada.`);
+      }
+    };
+
+    const addForestSpecie = async (data) => {
+      try {
+        const response = await APIService.addForestSpecies(data);
+    
+        if (response.status === 200) {
+          // La respuesta del APIService fue satisfactoria
+          especies.value.push(data); // Agrega el nuevo objeto al array
+          console.log('Especie agregada con éxito.');
+        } else {
+          console.error('Error al agregar la especie: ', response.statusText);
+        }
+      } catch (error) {
+        console.error('Error al comunicarse con el servidor: ', error);
+      }
+    };  
     
     return {
       currentPage,
@@ -106,6 +140,10 @@ export const useEspeciesStore = defineStore('especies', () => {
       buscarTermino,
       quitarFiltroEspecie,
       changePage,
-      deleteForestSpecie
+      deleteForestSpecie,
+      selectedForestSpecieUpdate,
+      specieSelected,
+      updateForestSpecie,
+      addForestSpecie
     };
 });
