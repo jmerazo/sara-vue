@@ -111,6 +111,21 @@ export const useEspeciesStore = defineStore('especies', () => {
       }
     };
 
+    const addForestSpecie = async (data) => {
+      try {
+        const response = await APIService.addForestSpecies(data);
+    
+        if (response.status === 200) {
+          // La respuesta del APIService fue satisfactoria
+          especies.value.push(data); // Agrega el nuevo objeto al array
+          console.log('Especie agregada con éxito.');
+        } else {
+          console.error('Error al agregar la especie: ', response.statusText);
+        }
+      } catch (error) {
+        console.error('Error al comunicarse con el servidor: ', error);
+      }
+    };  
     
     return {
       currentPage,
@@ -128,6 +143,7 @@ export const useEspeciesStore = defineStore('especies', () => {
       deleteForestSpecie,
       selectedForestSpecieUpdate,
       specieSelected,
-      updateForestSpecie
+      updateForestSpecie,
+      addForestSpecie
     };
 });

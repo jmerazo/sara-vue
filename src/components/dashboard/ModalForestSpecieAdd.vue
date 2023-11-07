@@ -32,38 +32,60 @@ const formData = ref({
   semillas: "",
   tallo: "",
   raiz: "",
-  imgLeaf: "",
-  imgFlower: "",
-  imgFruit: "",
-  imgSeed: "",
-  imgStem: ""
+  imageInputGeneral: "",
+  imageInputLeaf: "",
+  imageInputFlower: "",
+  imageInputFruit: "",
+  imageInputSeed: "",
+  imageInputStem: "",
+  imageInputLandScapeOne: "",
+  imageInputLandScapeTwo: "",
+  imageInputLandScapeThree: ""
 });
 
+const imageInputGeneral = ref(null);
 const imageInputLeaf = ref(null);
 const imageInputFlower = ref(null);
 const imageInputFruit = ref(null);
 const imageInputSeed = ref(null);
 const imageInputStem = ref(null);
+const imageInputLandScapeOne = ref(null);
+const imageInputLandScapeTwo = ref(null);
+const imageInputLandScapeThree = ref(null);
 
-const handleImageUpload = (fieldName) => {
+const handleImageUpload = (event, fieldName) => {
+  console.log('fieldName: ',event, fieldName)
   let imageInput;
 
   // Selecciona el campo de entrada de imagen según el nombre del campo
   switch (fieldName) {
-    case 'imgLeaf':
+    case 'imageInputGeneral':
+      imageInput = imageInputGeneral.value;
+      console.log('imageInputGeneral: ', imageInput)
+      break;
+    case 'imageInputLeaf':
       imageInput = imageInputLeaf.value;
       break;
-    case 'imgFlower':
+    case 'imageInputFlower':
       imageInput = imageInputFlower.value;
       break;
-    case 'imgFruit':
-      imageInput = imageInputFruit.value; // Corregir el campo de entrada de imagen para imgFruit
+    case 'imageInputFruit':
+      imageInput = imageInputFruit.value;
       break;
-    case 'imgSeed':
-      imageInput = imageInputSeed.value; // Corregir el campo de entrada de imagen para imgSeed
+    case 'imageInputSeed':
+      imageInput = imageInputSeed.value;
       break;
-    case 'imgStem':
-      imageInput = imageInputStem.value; // Corregir el campo de entrada de imagen para imgStem
+    case 'imageInputStem':
+      imageInput = imageInputStem.value;
+      break;
+    case 'imageInputLandScapeOne':
+      imageInput = imageInputLandScapeOne.value;
+      break;
+    case 'imageInputLandScapeTwo':
+      imageInput = imageInputLandScapeTwo.value;
+      break;
+    case 'imageInputLandScapeThree':
+      imageInput = imageInputLandScapeThree.value;
       break;
   }
 
@@ -79,8 +101,9 @@ const handleImageUpload = (fieldName) => {
   }
 };
 
-async function forestSpecieUpdate() {
-  speciesStore.updateForestSpecie(speciesStore.specieSelected[0].ShortcutID, formData.value);
+async function forestSpecieAdd() {
+  speciesStore.addForestSpecie(formData.value);
+  console.log('formData: ', formData.value)
   modal.handleClickModalForestSpecieAdd()
 }
 
@@ -201,7 +224,7 @@ watch(() => speciesStore.specieSelected, () => {
                     {{ speciesStore.especies[0].cod_especie }}
                   </DialogTitle>
                   <hr />
-                  <form @submit.prevent="forestSpecieUpdate">
+                  <form @submit.prevent="forestSpecieAdd">
                   <DialogTitle as="h3" class="text-gray-900 text-lg my-5">
                     <font-awesome-icon :icon="['fas', 'list-ol']" /> <span class="font-bold"> Código especie: </span>
                     <input type="number" class="w-80" v-model="formData.cod_especie" required/>
@@ -226,6 +249,12 @@ watch(() => speciesStore.specieSelected, () => {
                     <font-awesome-icon :icon="['fab', 'pagelines']" /> <span class="font-bold"> Familia: </span>
                     <input type="text" class="w-80" v-model="formData.familia"/>
                   </DialogTitle>
+
+                  <DialogTitle as="h3" class="text-gray-900 text-lg my-5">
+                    <font-awesome-icon :icon="['fas', 'image']" /> <span class="font-bold"> Imagen especie: </span><br>
+                    <input type="file" ref="imageInputGeneral" accept="image/*" @change="e => handleImageUpload(e, 'imageInputGeneral')" />
+                  </DialogTitle>
+
                   <DialogTitle as="h3" class="text-gray-900 text-lg my-5">
                     <font-awesome-icon :icon="['fas', 'earth-americas']" /> <span class="font-bold"> Distribución: </span>
                     <input type="text" class="w-80" v-model="formData.distribucion"/>
@@ -257,7 +286,7 @@ watch(() => speciesStore.specieSelected, () => {
                   </DialogTitle>
                   <DialogTitle as="h3" class="text-gray-900 text-lg my-5">
                     <font-awesome-icon :icon="['fas', 'image']" /> <span class="font-bold"> Imagen de las hojas: </span><br>
-                    <input type="file" ref="imageInputLeaf" accept="image/*" @change="handleImageUpload" />
+                    <input type="file" ref="imageInputLeaf" accept="image/*" @change="handleImageUpload(e, 'imageInputLeaf')" />
                   </DialogTitle>
 
                   <DialogTitle as="h3" class="text-gray-900 text-lg my-5">
@@ -266,7 +295,7 @@ watch(() => speciesStore.specieSelected, () => {
                   </DialogTitle>
                   <DialogTitle as="h3" class="text-gray-900 text-lg my-5">
                     <font-awesome-icon :icon="['fas', 'image']" /> <span class="font-bold"> Imagen de las flores: </span><br>
-                    <input type="file" ref="imageInputFlower" accept="image/*" @change="handleImageUpload" />
+                    <input type="file" ref="imageInputFlower" accept="image/*" @change="handleImageUpload(e, 'imageInputFlower')" />
                   </DialogTitle>
 
                   <DialogTitle as="h3" class="text-gray-900 text-lg my-5">
@@ -275,7 +304,7 @@ watch(() => speciesStore.specieSelected, () => {
                   </DialogTitle>
                   <DialogTitle as="h3" class="text-gray-900 text-lg my-5">
                     <font-awesome-icon :icon="['fas', 'image']" /> <span class="font-bold"> Imagen de los frutos: </span><br>
-                    <input type="file" ref="imageInputFruit" accept="image/*" @change="handleImageUpload" />
+                    <input type="file" ref="imageInputFruit" accept="image/*" @change="handleImageUpload(e, 'imageInputFruit')" />
                   </DialogTitle>
 
                   <DialogTitle as="h3" class="text-gray-900 text-lg my-5">
@@ -284,7 +313,7 @@ watch(() => speciesStore.specieSelected, () => {
                   </DialogTitle>
                   <DialogTitle as="h3" class="text-gray-900 text-lg my-5">
                     <font-awesome-icon :icon="['fas', 'image']" /> <span class="font-bold"> Imagen de las semillas: </span><br>
-                    <input type="file" ref="imageInputSeed" accept="image/*" @change="handleImageUpload" />
+                    <input type="file" ref="imageInputSeed" accept="image/*" @change="handleImageUpload(e, 'imageInputSeed')" />
                   </DialogTitle>
 
                   <DialogTitle as="h3" class="text-gray-900 text-lg my-5">
@@ -293,12 +322,25 @@ watch(() => speciesStore.specieSelected, () => {
                   </DialogTitle>
                   <DialogTitle as="h3" class="text-gray-900 text-lg my-5">
                     <font-awesome-icon :icon="['fas', 'image']" /> <span class="font-bold"> Imagen del tallo: </span><br>
-                    <input type="file" ref="imageInputStem" accept="image/*" @change="handleImageUpload" />
+                    <input type="file" ref="imageInputStem" accept="image/*" @change="handleImageUpload(e, 'imageInputStem')" />
                   </DialogTitle>
 
                   <DialogTitle as="h3" class="text-gray-900 text-lg my-5">
                     <font-awesome-icon :icon="['fas', 'mound']" /> <span class="font-bold"> Información de la raíz: </span>
                     <textarea type="text" class="w-full auto-resize-textarea" v-model="formData.raiz"></textarea>
+                  </DialogTitle>
+
+                  <DialogTitle as="h3" class="text-gray-900 text-lg my-5">
+                    <font-awesome-icon :icon="['fas', 'image']" /> <span class="font-bold"> Imagen paisajística[1]: </span><br>
+                    <input type="file" ref="imageInputLandScapeOne" accept="image/*" @change="handleImageUpload(e, 'imageInputLandScapeOne')" />
+                  </DialogTitle>
+                  <DialogTitle as="h3" class="text-gray-900 text-lg my-5">
+                    <font-awesome-icon :icon="['fas', 'image']" /> <span class="font-bold"> Imagen paisajística[2]: </span><br>
+                    <input type="file" ref="imageInputLandScapeTwo" accept="image/*" @change="handleImageUpload(e, 'imageInputLandScapeTwo')" />
+                  </DialogTitle>
+                  <DialogTitle as="h3" class="text-gray-900 text-lg my-5">
+                    <font-awesome-icon :icon="['fas', 'image']" /> <span class="font-bold"> Imagen paisajística[3]: </span><br>
+                    <input type="file" ref="imageInputLandScapeThree" accept="image/*" @change="handleImageUpload(e, 'imageInputLandScapeThree')" />
                   </DialogTitle>
 
                   <button

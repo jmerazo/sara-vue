@@ -7,6 +7,9 @@ export default {
     getSpecies(){
         return api.get('/especie_forestal')
     },
+    addForestSpecies(data){
+        return api.post(`/especie_forestal/`, data)
+    },
     updateForestSpecies(sid, data){
         return api.put(`/especie_forestal/${sid}`, data)
     },
