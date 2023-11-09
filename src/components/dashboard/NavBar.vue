@@ -38,7 +38,7 @@ const storeAuth = useAuthToken()
       </RouterLink>
       
       <li class="mx-3">
-        <a @click="storeAuth.logout()"  class="btn btn-danger" href="#"
+        <a @click="storeAuth.logout()"  class="btn btn-secondary" href="#"
           ><i class="fa fa-user"></i> Cerrar sesión</a
         >
       </li>

@@ -14,7 +14,7 @@ onBeforeRouteLeave((to, from, next) => {
 </script>
 <template>
   <h1 class="text-4xl mb-10 mt-10 text-center font-extrabold">
-    Listado de Especies Forestales
+    Reporte de Especies Forestales
   </h1>
   <div class="flex justify-end mt-5 mb-5">
     <label class="p-3 text-lg font-bold rounded-lg mx-3">Buscar </label>
@@ -57,7 +57,7 @@ onBeforeRouteLeave((to, from, next) => {
             </div>
             <div class="space-y-2" >
               <button
-                class="w-full btn rounded-lg font-bold p-1 text-gray-900 bg-green-600 hover:bg-green-500 hover:shadow-lg"
+                class="w-full btn rounded-lg font-bold p-1 bg-green-800 hover:bg-green-900 text-white hover:shadow-lg"
                 @click="consulta.verCandidatosEspecie(especie.nom_comunes)"
               >
                 <font-awesome-icon :icon="['fas', 'leaf']" /> Ver candidatos
@@ -69,7 +69,7 @@ onBeforeRouteLeave((to, from, next) => {
                     especie.nom_comunes
                   )
                 "
-                class="w-full btn rounded-lg font-bold p-1 text-gray-900 bg-red-600 hover:bg-red-500 hover:shadow-lg"
+                class="w-full btn rounded-lg font-bold p-1 bg-gray-700 hover:bg-gray-800 text-white hover:shadow-lg"
               >
                 <font-awesome-icon :icon="['fas', 'eye']" /> Ver Monitoreos
               </button>

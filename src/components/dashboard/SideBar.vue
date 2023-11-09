@@ -224,12 +224,7 @@ const userData = JSON.parse(userDataString);
 
           <li class="nav-header">REPORTES</li>
 
-          <li class="nav-item">
-            <a href="#" class="nav-link">
-              <i class="nav-icon fas fa-file"></i>
-              <p>Promedio Altura</p>
-            </a>
-          </li>
+          
           <RouterLink :to="{ name: 'list-species' }">
           <li v-if="userData.rol == 'ADMINISTRADOR' && userData.is_superuser == 1 && userData.is_staff == 1" class="nav-item">
             <a href="#" class="nav-link">
@@ -242,7 +237,7 @@ const userData = JSON.parse(userDataString);
           <li v-if="userData.rol == 'ADMINISTRADOR' && userData.is_superuser == 1 && userData.is_staff == 1" class="nav-item">
             <a href="#" class="nav-link">
               <font-awesome-icon :icon="['fab', 'pagelines']" />
-              <p> Datos especies</p>
+              <p> Datos generales especies</p>
             </a>
           </li>
         </RouterLink>
@@ -260,7 +255,7 @@ const userData = JSON.parse(userDataString);
         <RouterLink :to="{ name: 'species' }">
           <li v-if="userData.rol == 'ADMINISTRADOR' && userData.is_superuser == 1 && userData.is_staff == 1" class="nav-item">
             <a href="#" class="nav-link">
-              <i class="nav-icon fas fa-file"></i>
+              <font-awesome-icon :icon="['fab', 'pagelines']" />
               <p> Especies forestales</p>
             </a>
           </li>

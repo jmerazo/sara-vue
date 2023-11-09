@@ -19,7 +19,6 @@ const router = createRouter({
       name: 'familias',
       component: ()=> import('../views/FamiliesView.vue')
     },
-    ,
     {
       path: '/glossary',
       name: 'glossary',
@@ -106,7 +105,6 @@ const router = createRouter({
         auth: true,
         roles: ['ADMINISTRADOR', 'is_superuser', 'is_staff']
       }
-<<<<<<< HEAD
     },
     {
       path:'/species-data',
@@ -116,11 +114,7 @@ const router = createRouter({
         auth: true,
         roles: ['ADMINISTRADOR', 'is_superuser', 'is_staff']
       }
-    },
-    
-=======
-    },    
->>>>>>> 43e04cad61c5ab3fb2125530548a21a3199afd9c
+    },   
   ]
 })
 

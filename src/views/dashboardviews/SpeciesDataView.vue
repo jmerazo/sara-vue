@@ -8,7 +8,7 @@ const especies = useEspeciesData();
 <template>
   <div>
     <h1 class="text-4xl mb-10 mt-20 text-center font-extrabold">
-      Datos de especies
+      Reporte datos generales de especies
     </h1>
 
     <div class="flex justify-end mt-5 mb-5">
