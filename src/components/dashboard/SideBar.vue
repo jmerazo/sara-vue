@@ -226,8 +226,8 @@ const userData = JSON.parse(userDataString);
 
           <li class="nav-item">
             <a href="#" class="nav-link">
-              <i class="nav-icon fas fa-file"></i>
-              <p>Promedio Altura</p>
+              <font-awesome-icon :icon="['fas', 'up-right-and-down-left-from-center']" />
+              <p> Promedio Altura</p>
             </a>
           </li>
           <RouterLink :to="{ name: 'list-species' }">
@@ -244,7 +244,7 @@ const userData = JSON.parse(userDataString);
           <RouterLink :to="{ name: 'users' }">
           <li v-if="userData.rol == 'ADMINISTRADOR' && userData.is_superuser == 1 && userData.is_staff == 1" class="nav-item">
             <a href="#" class="nav-link">
-              <i class="nav-icon fas fa-user"></i>
+              <font-awesome-icon :icon="['fas', 'users-gear']" />
               <p> Usuarios</p>
             </a>
           </li>
@@ -252,7 +252,7 @@ const userData = JSON.parse(userDataString);
         <RouterLink :to="{ name: 'species' }">
           <li v-if="userData.rol == 'ADMINISTRADOR' && userData.is_superuser == 1 && userData.is_staff == 1" class="nav-item">
             <a href="#" class="nav-link">
-              <i class="nav-icon fas fa-file"></i>
+              <font-awesome-icon :icon="['fas', 'clipboard-check']" />
               <p> Especies forestales</p>
             </a>
           </li>
