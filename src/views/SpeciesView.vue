@@ -2,17 +2,13 @@
 import { onBeforeRouteLeave } from "vue-router";
 import { useEspeciesStore } from "../stores/species";
 
-
 import Species from "@/components/Species.vue";
-
 
 const especies = useEspeciesStore();
 
-
-
 //limpiar filtros antes de cambiar de vista
 onBeforeRouteLeave((to, from, next) => {
-  especies.quitarFiltroEspecie()
+  especies.quitarFiltroEspecie();
   next();
 });
 </script>
@@ -44,7 +40,7 @@ onBeforeRouteLeave((to, from, next) => {
       </Species>
     </div>
 
-     <!-- paginador -->
+    <!-- paginador -->
     <div class="flex justify-center mt-5 mb-10">
       <button
         v-for="page in especies.totalPages"
@@ -57,9 +53,13 @@ onBeforeRouteLeave((to, from, next) => {
       </button>
     </div>
 
-    <h1 v-if="especies.noResultados" class="text-center font-bold text-2xl mt-5 mb-40">
+    <h1
+      v-if="especies.noResultados"
+      class="text-center font-bold text-2xl mt-5 mb-40"
+    >
       No hay resultados de búsqueda
     </h1>
+
 
   </div>
 </template>

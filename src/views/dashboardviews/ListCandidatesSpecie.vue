@@ -7,7 +7,15 @@ const consulta = useConsultaStore();
   <h1 class="text-4xl mb-10 mt-10 text-center font-extrabold">
     Candidatos de la especie {{ consulta.nombreEspecie }}
   </h1>
-
+  <div class="flex justify-end mt-5 mb-5">
+      <label class="p-3 text-lg font-bold rounded-lg mx-3">Buscar </label>
+      <input
+        class="p-3 rounded-lg lg:w-1/4 sm:w-full border-2 border-gray-500 py-2 px-4"
+        type="text"
+        placeholder="Placa, expediente, Departamento o Municipio"
+        @input="consulta.buscarTermino($event.target.value)"
+      />
+    </div>
   <hr />
   <table class="bg-slate-50 shadow-md border rounded-lg mx-auto mt-5 table custom-table">
     <thead>
@@ -17,9 +25,7 @@ const consulta = useConsultaStore();
         <th class="px-4 py-2 text-gray-600">Código expediente</th>
         <th class="px-4 py-2 text-gray-600">Departamento</th>
         <th class="px-4 py-2 text-gray-600">Municipio</th>
-        <th class="px-4 py-2 text-gray-600">Altura comercial</th>
-        <th class="px-4 py-2 text-gray-600">Altura total</th>
-        <th class="px-4 py-2 text-gray-600">Evaluación</th>
+
         <th class="px-4 py-2 text-gray-600">Acciones</th>
       </tr>
     </thead>
@@ -40,17 +46,22 @@ const consulta = useConsultaStore();
         <td class="px-4 py-3 border">{{ candidato.cod_expediente }}</td>
         <td class="px-4 py-3 border">{{ candidato.departamento }}</td>
         <td class="px-4 py-3 border">{{ candidato.municipio }}</td>
-        <td class="px-4 py-3 border">{{ candidato.altura_comercial }}</td>
-        <td class="px-4 py-3 border">{{ candidato.altura_total }}</td>
-        <td class="px-4 py-3 border">{{ candidato.evaluacion }}</td>
-        <td class="px-4 py-3 border">
+
+        <td class="px-4 py-3 border space-y-2">
           <button
             @click="consulta.verMonitoreosCandidato(candidato.ShortcutIDEV)"
-            class="w-full btn rounded-lg font-bold p-1 text-gray-900 bg-green-600 hover:bg-green-500 hover:shadow-lg"
+            class="w-full btn rounded-lg font-bold p-1  bg-green-800 hover:bg-green-900 text-white hover:shadow-lg"
           >
             <font-awesome-icon :icon="['fas', 'eye']" /> Ver Monitoreos
           </button>
+          <button
+            @click="consulta.mostrarInfoCandidato(candidato)"
+            class="w-full btn rounded-lg font-bold p-1 bg-gray-700 hover:bg-gray-800 text-white hover:shadow-lg"
+          >
+          <font-awesome-icon :icon="['fas', 'angles-right']" /> Info Candidato
+          </button>
         </td>
+       
       </tr>
     </tbody>
   </table>
@@ -71,7 +82,7 @@ const consulta = useConsultaStore();
     v-if="consulta.candidatosEpecie.length == 0"
     class="text-center font-bold text-2xl mt-5 mb-40"
   >
-    No hay monitoreos para la especie
+    No hay resultados de búsqueda
     <span class="text-green-900">{{ consulta.nombreEspecie }}</span>
   </h1>
 </template>

@@ -21,6 +21,8 @@ export const useConsultaStore = defineStore("consulta", () => {
 
   //candidatos especie
   const candidatosEpecie = ref({})
+  const canditadosEspecieOriginal = ref({})
+  const infoCandidato = ref({})
   // variables para paginación
   const currentPage = ref(1); // Página actual
   const itemsPerPage = ref(12); // Elementos por página
@@ -117,6 +119,7 @@ export const useConsultaStore = defineStore("consulta", () => {
     nombreEspecie.value = nombre_comun
     const {data} = await APIService.lookCandidateSpecie(nombre_comun)
     candidatosEpecie.value = data
+    canditadosEspecieOriginal.value = data
     router.push("/candidates-species");
     cargando.value = false
   }
@@ -161,6 +164,7 @@ export const useConsultaStore = defineStore("consulta", () => {
     }
   }
 
+  //filtrar fechas monitoreos especie
   function filtrarFecha(fechaInicio, fechaFin){
     fechaInicio = new Date(fechaInicio);
     fechaFin = new Date(fechaFin);
@@ -175,8 +179,37 @@ export const useConsultaStore = defineStore("consulta", () => {
     return monitoreosEspecie.value = resultadoFiltrado;
   }
 
+  //resetear la tabla monitoreos especie
   function limpiarFiltroFecha(){
     monitoreosEspecie.value = monitoreosEspecieOriginal.value
+  }
+
+  //enviar objeto al modal info candidato
+  function mostrarInfoCandidato(candidato){
+    infoCandidato.value = candidato
+    modal.handleClickModalInfoCandidate()
+    
+  }
+
+  //motor de busqueda para tabla candidatos especie
+  function buscarTermino(termino) {
+    changePageCandidates(1)
+    candidatosEpecie.value = canditadosEspecieOriginal.value.filter(term => {
+      const lowerTermino = termino.toLowerCase();
+      const lowerExpediente = term.cod_expediente ? term.cod_expediente.toLowerCase() : '';
+      const lowerDepartamento = term.departamento ? term.departamento.toLowerCase(): '';
+      const lowerMunicipio = term.municipio ? term.municipio.toLowerCase(): '';
+      // Verifica si la placa es igual al término (ya sea número o cadena)
+      const termPlaca = term.numero_placa != null ? term.numero_placa.toString(): ''; // Convierte el número a cadena
+      
+      return (
+        lowerExpediente.includes(lowerTermino) ||
+        lowerDepartamento.includes(lowerTermino) ||
+        lowerMunicipio.includes(lowerTermino) ||
+        termPlaca === termino  // Compara término y numero placa
+        
+      );
+    });
   }
 
   return {
@@ -192,6 +225,7 @@ export const useConsultaStore = defineStore("consulta", () => {
     monitoreosEspecie,
     monitoreosCandidato,
     candidatosEpecie,
+    infoCandidato,
     displayedMonitoring,
     displayedCandidates,
     cargando,
@@ -202,6 +236,8 @@ export const useConsultaStore = defineStore("consulta", () => {
     changePage,
     changePageCandidates,
     filtrarFecha,
-    limpiarFiltroFecha
+    limpiarFiltroFecha,
+    mostrarInfoCandidato,
+    buscarTermino
   };
 });

@@ -230,6 +230,7 @@ const userData = JSON.parse(userDataString);
               <p> Promedio Altura</p>
             </a>
           </li>
+
           <RouterLink :to="{ name: 'list-species' }">
           <li v-if="userData.rol == 'ADMINISTRADOR' && userData.is_superuser == 1 && userData.is_staff == 1" class="nav-item">
             <a href="#" class="nav-link">
@@ -237,7 +238,15 @@ const userData = JSON.parse(userDataString);
               <p> Especies forestales</p>
             </a>
           </li>
-        </RouterLink>
+          </RouterLink>
+          <RouterLink :to="{ name: 'species-data' }">
+          <li v-if="userData.rol == 'ADMINISTRADOR' && userData.is_superuser == 1 && userData.is_staff == 1" class="nav-item">
+            <a href="#" class="nav-link">
+              <font-awesome-icon :icon="['fab', 'pagelines']" />
+              <p> Datos generales especies</p>
+            </a>
+          </li>
+          </RouterLink>
 
           <li v-if="userData.rol == 'ADMINISTRADOR' && userData.is_superuser == 1 && userData.is_staff == 1" class="nav-header">ADMINISTRACIÓN</li>
           
@@ -248,15 +257,15 @@ const userData = JSON.parse(userDataString);
               <p> Usuarios</p>
             </a>
           </li>
-        </RouterLink>
-        <RouterLink :to="{ name: 'species' }">
-          <li v-if="userData.rol == 'ADMINISTRADOR' && userData.is_superuser == 1 && userData.is_staff == 1" class="nav-item">
-            <a href="#" class="nav-link">
-              <font-awesome-icon :icon="['fas', 'clipboard-check']" />
-              <p> Especies forestales</p>
-            </a>
-          </li>
-        </RouterLink>
+          </RouterLink>
+          <RouterLink :to="{ name: 'species' }">
+            <li v-if="userData.rol == 'ADMINISTRADOR' && userData.is_superuser == 1 && userData.is_staff == 1" class="nav-item">
+              <a href="#" class="nav-link">
+                <font-awesome-icon :icon="['fas', 'clipboard-check']" />
+                <p> Especies forestales</p>
+              </a>
+            </li>
+          </RouterLink>
         </ul>
       </nav>
     </div>
