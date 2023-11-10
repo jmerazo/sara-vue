@@ -247,6 +247,12 @@ const userData = JSON.parse(userDataString);
             </a>
           </li>
           </RouterLink>
+          <li class="nav-item">
+            <a href="#" class="nav-link">
+              <font-awesome-icon :icon="['fas', 'map-location']" />
+              <p> Mapa General</p>
+            </a>
+          </li>
 
           <li v-if="userData.rol == 'ADMINISTRADOR' && userData.is_superuser == 1 && userData.is_staff == 1" class="nav-header">ADMINISTRACIÓN</li>
           

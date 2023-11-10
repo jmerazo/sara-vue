@@ -3,7 +3,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed, watch, onActivated  } from 'vue';
+import { ref, onMounted } from 'vue';
 import Map from 'ol/Map';
 import View from 'ol/View';
 import TileLayer from 'ol/layer/Tile';
