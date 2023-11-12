@@ -9,6 +9,7 @@ import Modal from '@/components/Modal.vue';
 import ModalFamily from "@/components/ModalFamily.vue";
 import ModalUser from '@/components/dashboard/ModalUser.vue';
 import ModalCandidate from '@/components/dashboard/ModalCandidates.vue'
+import ModalInfoCandidate from '@/components/dashboard/ModalInfoCandidate.vue';
 import Spinner from '@/components/Spinner.vue'
 import Dashboard from '@/views/dashboardviews/DashboardMainView.vue'
 
@@ -28,6 +29,7 @@ const consulta = useConsultaStore()
   <ModalFamily/>
   <ModalUser/>
   <ModalCandidate/>
+  <ModalInfoCandidate/>
   
 </template>
 

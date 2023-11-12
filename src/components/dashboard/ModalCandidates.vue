@@ -10,10 +10,8 @@ import {
 import { useModalStore } from "@/stores/modal";
 import { useConsultaStore } from "@/stores/consulta";
 
-
 const modal = useModalStore();
 const consulta = useConsultaStore();
-
 </script>
 
 <template>
@@ -36,8 +34,8 @@ const consulta = useConsultaStore();
           class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"
         />
       </TransitionChild>
-      
-      <div  class="fixed inset-0 z-10 overflow-y-auto">
+
+      <div class="fixed inset-0 z-10 overflow-y-auto">
         <div
           class="flex min-h-full items-end justify-center p-2 text-center sm:items-center sm:p-0"
         >
@@ -53,50 +51,116 @@ const consulta = useConsultaStore();
             <DialogPanel
               class="relative transform overflow-hidden rounded-lg bg-white px-2 pt-2 pb-2 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-3xl sm:p-6"
             >
-              <div v-if="consulta.monitoreosCandidato.length === 0" class="card mt-5">
-                <h2 class="w-full text-center font-bold"><font-awesome-icon :icon="['fas', 'circle-exclamation']" /> No se han realizado monitoreos para este candidato</h2>
+              <div
+                v-if="consulta.monitoreosCandidato.length === 0"
+                class="card mt-5"
+              >
+                <h2 class="w-full text-center font-bold">
+                  <font-awesome-icon :icon="['fas', 'circle-exclamation']" /> No
+                  se han realizado monitoreos para este candidato
+                </h2>
               </div>
-              <div v-else >
+              <div v-else>
                 <div>
                   <!-- llenar la info dinámica -->
 
                   <DialogTitle
                     as="h4"
-                    class="text-gray-900 text-lg text-center font-extrabold"
+                    class="text-gray-900 text-lg text-center font-extrabold mb-3"
                   >
                     Especie: {{ consulta.nombreEspecie }}
                   </DialogTitle>
+                  <hr />
                   <DialogTitle
                     as="h3"
-                    class="text-gray-900 text-lg font-bold my-5"
+                    class="text-gray-900 font-bold my-5 text-center"
                   >
                     Datos del monitoreo
                   </DialogTitle>
+
                   <!-- iterar las especies -->
-                  <div
-                    class="bg-green-100 rounded-lg shadow-lg"
-                  >
-                    <!-- tabla -->
-                  <table 
-                    class="w-full"
-                    v-for="candidato in consulta.monitoreosCandidato"
-                    :key="candidato.ShortcutIDEV"
-                  >
-                    <tr>
-                      <td class="w-3/5 p-4">
-                        <p class="font-bold">
-                          Feha: {{ candidato.fecha_monitoreo }}
-                        </p>
-                        <p class="text-slate-600" >
-                          precipitacion: {{ candidato.precipitacion }}
-                        </p>
-                      </td>
-                      
-                    </tr>
-                  </table>
-                  <!-- fin de la tabla -->
+
+                  <div>
+                    <div>
+                      <div
+                        v-for="candidato in consulta.monitoreosCandidato"
+                        :key="candidato.ShortcutIDEV"
+                      >
+                        <div class="bg-gray-100 rounded-lg shadow-lg mb-3">
+                          <p class="font-bold text-center p-2 bg-gray-200">
+                            Feha: {{ candidato.fecha_monitoreo }}
+                          </p>
+                          <div class="flex gap-2 justify-evenly p-3">
+                            <div>
+                              <p class="font-bold text-slate-700">
+                                precipitacion: <span class="text-slate-900">{{ candidato.precipitacion }} </span>
+                              </p>
+                              <p class="font-bold text-slate-700">
+                                temperatura: {{ candidato.temperatura }}
+                              </p>
+                              <p class="font-bold text-slate-700">
+                                humedad: {{ candidato.humedad }}
+                              </p>
+                              <p class="font-bold text-slate-700">
+                                cap: {{ candidato.ShortcutIDEV }}
+                              </p>
+                              <p class="font-bold text-slate-700">
+                                Altura comercial:
+                                {{ candidato.altura_comercial }}
+                              </p>
+                              <p class="font-bold text-slate-700">
+                                Altura Total: {{ candidato.altura_total }}
+                              </p>
+                              <p class="font-bold text-slate-700">
+                                Eje X: {{ candidato.eje_x }}
+                              </p>
+                              <p class="font-bold text-slate-700">
+                                Eje y: {{ candidato.eje_y }}
+                              </p>
+                              <p class="font-bold text-slate-700">
+                                Eje Z: {{ candidato.eje_z }}
+                              </p>
+                            </div>
+
+                            <div>
+                              <p class="font-bold text-slate-700">
+                                Fitosanitario: {{ candidato.fitosanitario }}
+                              </p>
+                              <p class="font-bold text-slate-700">
+                                Afectacion: {{ candidato.afectacion }}
+                              </p>
+                              <p class="font-bold text-slate-700">
+                                Follaje: {{ candidato.follaje }}
+                              </p>
+                              <p class="font-bold text-slate-700">
+                                Follaje porcentaje:
+                                {{ candidato.follaje_porcentaje }}
+                              </p>
+                              <p class="font-bold text-slate-700">
+                                Observaciones flor:
+                                {{ candidato.observaciones_flor }}
+                              </p>
+                              <p class="font-bold text-slate-700">
+                                Frutos verdes: {{ candidato.frutos_verdes }}
+                              </p>
+                              <p class="font-bold text-slate-700">
+                                Estado madurez: {{ candidato.estado_madurez }}
+                              </p>
+                              <p class="font-bold text-slate-700">
+                                Cantidad frutos: {{ candidato.cant_frutos }}
+                              </p>
+                              <p class="font-bold text-slate-700">
+                                Medida - Peso frutos:
+                                {{ candidato.medida_peso_frutos }}
+                              </p>
+                            </div>
+                          </div>
+
+                          <!-- desde aqui otra columna -->
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                  
                 </div>
               </div>
               <div class="mt-8 sm:mt-6 flex justify-between gap-4">

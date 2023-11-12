@@ -214,14 +214,12 @@ watch(() => speciesStore.specieSelected, () => {
                     as="h4"
                     class="text-gray-900 text-lg text-center font-extrabold"
                   >
-                    {{ speciesStore.especies[0].nom_comunes }}
-                    {{ speciesStore.especies[0].nombre_cientifico }}
+
                   </DialogTitle>
                   <DialogTitle
                     as="h4"
                     class="text-gray-900 text-lg text-center font-extrabold mb-5"
                   >
-                    {{ speciesStore.especies[0].cod_especie }}
                   </DialogTitle>
                   <hr />
                   <form @submit.prevent="forestSpecieAdd">
