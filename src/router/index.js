@@ -114,6 +114,15 @@ const router = createRouter({
         auth: true,
         roles: ['ADMINISTRADOR', 'is_superuser', 'is_staff']
       }
+    },
+    {
+      path:'/map-general',
+      name:'map-general',
+      component: () => import('../views/dashboardviews/MapGeneralView.vue'),
+      meta: {
+        auth: true,
+        roles: ['ADMINISTRADOR', 'is_superuser', 'is_staff']
+      }
     },   
   ]
 })

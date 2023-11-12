@@ -158,6 +158,7 @@ function createChart() {
 }
 
 onMounted(async () => {
+    await geoStore.fetchData();  // Llama a fetchData para cargar los datos
     filteredData.value = await filterGeo(codigo, geoStore.geoCandidateData);
     const { totalHeightSpecie: totalHeight, commercialHeightSpecie: commercialHeight, averageAltitude: average } = await filterDataAverage(codigo, averageStore.averageCandidateData);
     totalHeightSpecie.value = totalHeight;

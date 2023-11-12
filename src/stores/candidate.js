@@ -10,6 +10,7 @@ export const useGeoCandidateTrees = defineStore('geoCandidateTrees', () => {
         if (!isDataLoaded) {
             const { data } = await APIService.getGeoCandidateTrees()
             geoCandidateData.value = data
+            /* console.log('geoStore: ', geoCandidateData.value) */
             isDataLoaded = true
         }
     }
