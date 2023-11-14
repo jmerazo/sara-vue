@@ -2,30 +2,21 @@
 import { onMounted, ref } from 'vue';
 import RenderGeo from '../../components/RenderGeoMap.vue'
 import { useGeoCandidateTrees } from '../../stores/candidate'
+import { useEspeciesStore } from '../../stores/species'
 
 const geoStore = useGeoCandidateTrees();
-const filteredData = ref([]);
 
-async function filterGeo(data) {
-  return await data.map(item => ({
-    lon: item.lon,
-    lat: item.lat,
-    nombre_comun: item.nom_comunes,
-    codigo: item.codigo,
-    numero_placa: item.numero_placa,
-    nombre_cientifico: item.nombre_cientifico,
-    vereda: item.vereda,
-    coordenadas: item.coordenadas,
-    nombre_del_predio: item.nombre_del_predio,
-    resultado: item.resultado
-  }));
-}
+const especies = useEspeciesStore();
+const codeFind = ref();
 
 onMounted(async () => {
   await geoStore.fetchData();
-  filteredData.value = await filterGeo(geoStore.geoCandidateData);
-  /* console.log('filteredData: ', filteredData.value) */
 });
+
+const filterGeoData = () => {
+  console.log('code view to find: ', codeFind.value)
+  geoStore.filterGeo(codeFind.value)
+}
 </script>
 
 <template>
@@ -33,8 +24,17 @@ onMounted(async () => {
         <div class="text-center">
             <h1 class="font-bold text-lg my-auto mb-3">MAPA GENERAL DE LAS ESPECIES FORESTALES</h1>
         </div>
-        <template v-if="filteredData && filteredData.length > 0">
-            <RenderGeo :filteredData="filteredData" />
-        </template>
+        <div class="space-y-4">
+          <label class="block text-black uppercase font-bold " for="parametro"><font-awesome-icon :icon="['fas', 'filter']" class="mr-2 ml-2" />Filtrar especie</label>
+          
+          <select id="especie" class="text-lg p-3 w-full rounded-lg focus:outline-none font-bold"
+            @change="filterGeoData"
+            v-model="codeFind"
+          >            
+            <option value="" selected disabled> Seleccione una especie... </option>
+            <option v-for="especie in especies.especies" :key="especie.cod_especie" :value="especie.cod_especie"> {{ especie.nom_comunes + "    |   " + especie.nombre_cientifico }}</option>
+          </select>
+        </div>
+        <RenderGeo />
     </div>   
 </template>

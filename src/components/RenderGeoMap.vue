@@ -15,7 +15,7 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, watch, watchEffect  } from 'vue';
 import Map from 'ol/Map';
 import View from 'ol/View';
 import TileLayer from 'ol/layer/Tile';
@@ -27,20 +27,58 @@ import { fromLonLat } from 'ol/proj';
 import Point from 'ol/geom/Point';
 import Feature from 'ol/Feature';
 import treeIconPath from '../assets/icons/icon_tree_cg.png';
+import { useGeoCandidateTrees } from '../stores/candidate'
+
+const geoStore = useGeoCandidateTrees();
 
 const mapContainer = ref(null);
 const infoContainer = ref(null);
 const selectedFeature = ref(null);
-const { filteredData } = defineProps(['filteredData']);
 
-onMounted(() => {
-  if (filteredData.length > 0) {
-    const firstCoordinate = [filteredData[0].lon, filteredData[0].lat];
-    drawMap(firstCoordinate);
-  }
+const vectorSource = new VectorSource({
+  features: [],
 });
 
-function drawMap(centerCoordinate) {
+onMounted(() => {
+  updateMap(); // Llamar a la función de actualización al inicio
+});
+
+// Observar cambios en geoCandidateData
+watch(() => geoStore.geoDataNew, () => {
+  console.log('i am detect changes')
+  updateVectorSource();
+  updateMap();
+});
+
+function updateVectorSource() {
+  const newFeatures = geoStore.geoDataNew.map((point) => {
+    const geometry = new Point(fromLonLat([point.lon, point.lat]));
+    const feature = new Feature(geometry);
+    feature.setProperties({
+      codigo: point.codigo,
+      nombre_comun: point.nombre_comun,
+      nombre_cientifico: point.nombre_cientifico,
+      numero_placa: point.numero_placa,
+      coordenadas: point.coordenadas,
+      vereda: point.vereda,
+      nombre_del_predio: point.nombre_del_predio,
+      resultado: point.resultado,
+    });
+    return feature;
+  });
+
+  vectorSource.clear();
+  vectorSource.addFeatures(newFeatures);
+}
+
+function updateMap() {
+  if (geoStore.geoDataNew.length > 0) {
+    const firstCoordinate = geoStore.calculatePerimeterCoordinates();
+    drawMap(firstCoordinate, vectorSource);
+  }
+}
+
+function drawMap(centerCoordinate, vectorSource) {
   const map = new Map({
     target: mapContainer.value,
     layers: [
@@ -59,24 +97,6 @@ function drawMap(centerCoordinate) {
   });
 
   map.getViewport().style.cursor = 'pointer';
-
-  const vectorSource = new VectorSource({
-    features: filteredData.map((point) => {
-      const geometry = new Point(fromLonLat([point.lon, point.lat]));
-      const feature = new Feature(geometry);
-      feature.setProperties({
-        codigo: point.codigo,
-        nombre_comun: point.nombre_comun,
-        nombre_cientifico: point.nombre_cientifico,
-        numero_placa: point.numero_placa,
-        coordenadas: point.coordenadas,
-        vereda: point.vereda,
-        nombre_del_predio: point.nombre_del_predio,
-        resultado: point.resultado,
-      });
-      return feature;
-    }),
-  });
 
   const treeIcon = new Icon({
     src: treeIconPath,
