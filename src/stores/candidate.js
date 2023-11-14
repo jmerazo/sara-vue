@@ -26,7 +26,13 @@ export const useGeoCandidateTrees = defineStore('geoCandidateTrees', () => {
       const maxLon = Math.max(...geoDataNew.value.map(item => item.lon));
       const maxLat = Math.max(...geoDataNew.value.map(item => item.lat));
 
-      return [minLon, minLat, maxLon, maxLat];
+      return [
+        [minLon, minLat],
+        [minLon, maxLat],
+        [maxLon, maxLat],
+        [maxLon, minLat],
+        [minLon, minLat],  // cerrar el polígono
+      ];
     };
 
     function filterGeo(codeFilter) {
@@ -39,7 +45,7 @@ export const useGeoCandidateTrees = defineStore('geoCandidateTrees', () => {
               .map((item) => ({
                   lon: item.lon,
                   lat: item.lat,
-                  nombre_comun: item.nom_comunes,
+                  nombre_comun: item.nombre_comun,
                   codigo: item.codigo,
                   numero_placa: item.numero_placa,
                   nombre_cientifico: item.nombre_cientifico,
@@ -54,7 +60,7 @@ export const useGeoCandidateTrees = defineStore('geoCandidateTrees', () => {
           geoDataNew.value = geoCandidateData.value.map((item) => ({
               lon: item.lon,
               lat: item.lat,
-              nombre_comun: item.nom_comunes,
+              nombre_comun: item.nombre_comun,
               codigo: item.codigo,
               numero_placa: item.numero_placa,
               nombre_cientifico: item.nombre_cientifico,
@@ -65,13 +71,17 @@ export const useGeoCandidateTrees = defineStore('geoCandidateTrees', () => {
           }));
       }
     }
-  
+    
+    function deleteFilterGeo() {
+      geoDataNew.value = geoCandidateData.value;
+    }
 
     return {
         geoCandidateData,
         geoDataNew,
         fetchData,
         filterGeo,
-        calculatePerimeterCoordinates
+        calculatePerimeterCoordinates,
+        deleteFilterGeo
     }
 })

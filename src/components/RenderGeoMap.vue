@@ -15,7 +15,7 @@
 </template>
 
 <script setup>
-import { onMounted, ref, watch, watchEffect  } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 import Map from 'ol/Map';
 import View from 'ol/View';
 import TileLayer from 'ol/layer/Tile';
@@ -26,14 +26,16 @@ import { Style, Icon } from 'ol/style';
 import { fromLonLat } from 'ol/proj';
 import Point from 'ol/geom/Point';
 import Feature from 'ol/Feature';
+import { Polygon } from 'ol/geom';  // Agrega esta línea
 import treeIconPath from '../assets/icons/icon_tree_cg.png';
-import { useGeoCandidateTrees } from '../stores/candidate'
+import { useGeoCandidateTrees } from '../stores/candidate';
 
 const geoStore = useGeoCandidateTrees();
 
 const mapContainer = ref(null);
 const infoContainer = ref(null);
 const selectedFeature = ref(null);
+let mapInstance = null;
 
 const vectorSource = new VectorSource({
   features: [],
@@ -45,7 +47,7 @@ onMounted(() => {
 
 // Observar cambios en geoCandidateData
 watch(() => geoStore.geoDataNew, () => {
-  console.log('i am detect changes')
+  console.log('i am detect changes');
   updateVectorSource();
   updateMap();
 });
@@ -73,13 +75,18 @@ function updateVectorSource() {
 
 function updateMap() {
   if (geoStore.geoDataNew.length > 0) {
-    const firstCoordinate = geoStore.calculatePerimeterCoordinates();
-    drawMap(firstCoordinate, vectorSource);
+    // Destruir el mapa existente si hay uno
+    if (mapInstance) {
+      mapInstance.dispose();
+    }
+
+    const perimeterCoordinates = geoStore.calculatePerimeterCoordinates();
+    drawMap(perimeterCoordinates, vectorSource);
   }
 }
 
-function drawMap(centerCoordinate, vectorSource) {
-  const map = new Map({
+function drawMap(perimeterCoordinates, vectorSource) {
+  mapInstance = new Map({
     target: mapContainer.value,
     layers: [
       new TileLayer({
@@ -89,14 +96,14 @@ function drawMap(centerCoordinate, vectorSource) {
       }),
     ],
     view: new View({
-      center: fromLonLat(centerCoordinate),
+      center: fromLonLat([perimeterCoordinates[0][0], perimeterCoordinates[0][1]]),
       zoom: 9,
       minZoom: 7,
       maxZoom: 30,
     }),
   });
 
-  map.getViewport().style.cursor = 'pointer';
+  mapInstance.getViewport().style.cursor = 'pointer';
 
   const treeIcon = new Icon({
     src: treeIconPath,
@@ -113,20 +120,23 @@ function drawMap(centerCoordinate, vectorSource) {
 
   vectorLayer.set('pointerEvents', 'visible');
 
-  map.on('pointermove', (event) => {
-    map.getView().setZoom(map.getView().getZoom());
-    const feature = map.forEachFeatureAtPixel(event.pixel, (f) => f);
+  const polygon = new Feature(new Polygon([perimeterCoordinates]));
+  vectorSource.addFeature(polygon);
+
+  mapInstance.on('pointermove', (event) => {
+    mapInstance.getView().setZoom(mapInstance.getView().getZoom());
+    const feature = mapInstance.forEachFeatureAtPixel(event.pixel, (f) => f);
     if (feature) {
-      map.getViewport().style.cursor = 'pointer';
+      mapInstance.getViewport().style.cursor = 'pointer';
       selectedFeature.value = feature;
       infoContainer.value.style.display = 'block';
     } else {
-      map.getViewport().style.cursor = ''; // Restaurar el estilo del cursor
+      mapInstance.getViewport().style.cursor = ''; // Restaurar el estilo del cursor
       infoContainer.value.style.display = 'none';
     }
   });
 
-  map.addLayer(vectorLayer);
+  mapInstance.addLayer(vectorLayer);
 }
 </script>
 
