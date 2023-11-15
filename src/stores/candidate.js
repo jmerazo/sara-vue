@@ -39,13 +39,13 @@ export const useGeoCandidateTrees = defineStore('geoCandidateTrees', () => {
       console.log('code store filter: ', codeFilter);
   
       if (codeFilter) {
-          console.log('estoy con codeFilter');
+          console.log('estoy con codeFilter', geoCandidateData);
           geoDataNew.value = geoCandidateData.value
               .filter((item) => item.codigo === codeFilter)
               .map((item) => ({
                   lon: item.lon,
                   lat: item.lat,
-                  nombre_comun: item.nombre_comun,
+                  nombre_comun: item.nom_comunes,
                   codigo: item.codigo,
                   numero_placa: item.numero_placa,
                   nombre_cientifico: item.nombre_cientifico,
@@ -60,7 +60,7 @@ export const useGeoCandidateTrees = defineStore('geoCandidateTrees', () => {
           geoDataNew.value = geoCandidateData.value.map((item) => ({
               lon: item.lon,
               lat: item.lat,
-              nombre_comun: item.nombre_comun,
+              nombre_comun: item.nom_comunes,
               codigo: item.codigo,
               numero_placa: item.numero_placa,
               nombre_cientifico: item.nombre_cientifico,
@@ -73,7 +73,18 @@ export const useGeoCandidateTrees = defineStore('geoCandidateTrees', () => {
     }
     
     function deleteFilterGeo() {
-      geoDataNew.value = geoCandidateData.value;
+      geoDataNew.value = geoCandidateData.value.map((item) => ({
+          lon: item.lon,
+          lat: item.lat,
+          nombre_comun: item.nom_comunes,
+          codigo: item.codigo,
+          numero_placa: item.numero_placa,
+          nombre_cientifico: item.nombre_cientifico,
+          vereda: item.vereda,
+          coordenadas: item.coordenadas,
+          nombre_del_predio: item.nombre_del_predio,
+          resultado: item.resultado
+      }));
     }
 
     return {
