@@ -16,6 +16,7 @@ onMounted(async () => {
 const filterGeoData = () => {
   console.log('code view to find: ', codeFind.value)
   geoStore.filterGeo(codeFind.value)
+  geoStore.calculatePerimeterCoordinates(codeFind.value)
 }
 </script>
 

@@ -6,34 +6,64 @@ export const useGeoCandidateTrees = defineStore('geoCandidateTrees', () => {
     const geoCandidateData = ref([])
     const geoDataNew = ref([])
     let isDataLoaded = false
+    const coordinatesPolygon = ref([])
 
     const fetchData = async () => {
         if (!isDataLoaded) {
             const { data } = await APIService.getGeoCandidateTrees()
             geoCandidateData.value = data
             geoDataNew.value = data
-            /* console.log('geoStore: ', geoCandidateData.value) */
+            console.log('geoStore: ', geoCandidateData.value)
             isDataLoaded = true
         }
     }
 
     // Función para calcular las coordenadas del perímetro
-    const calculatePerimeterCoordinates = () => {
-      // Lógica para calcular las coordenadas del perímetro según tus datos
-      // Supongamos que cada elemento en geoCandidateData tiene propiedades lon y lat
-      const minLon = Math.min(...geoDataNew.value.map(item => item.lon));
-      const minLat = Math.min(...geoDataNew.value.map(item => item.lat));
-      const maxLon = Math.max(...geoDataNew.value.map(item => item.lon));
-      const maxLat = Math.max(...geoDataNew.value.map(item => item.lat));
-
-      return [
-        [minLon, minLat],
-        [minLon, maxLat],
-        [maxLon, maxLat],
-        [maxLon, minLat],
-        [minLon, minLat],  // cerrar el polígono
-      ];
-    };
+    const calculatePerimeterCoordinates = (code) => {
+        console.log('code calculate: ', code)
+        if(code){
+            const filteredPoints = geoDataNew.value.filter((point) => point.codigo === code);
+      
+            const lonArray = filteredPoints.map((point) => point.lon);
+            const latArray = filteredPoints.map((point) => point.lat);
+        
+            if (lonArray.length === 0 || latArray.length === 0) {
+            // No hay puntos para el código de especie proporcionado
+            return [];
+            }
+        
+            const minLon = Math.min(...lonArray);
+            const maxLon = Math.max(...lonArray);
+            const minLat = Math.min(...latArray);
+            const maxLat = Math.max(...latArray);
+        
+            coordinatesPolygon.value = [
+            [minLon, minLat],
+            [minLon, maxLat],
+            [maxLon, maxLat],
+            [maxLon, minLat],
+            [minLon, minLat], // Cerrar el polígono
+            ];
+        }else{
+            const lonArray = geoDataNew.value.map((point) => point.lon);
+            const latArray = geoDataNew.value.map((point) => point.lat);
+            
+            const minLon = Math.min(...lonArray);
+            const maxLon = Math.max(...lonArray);
+            const minLat = Math.min(...latArray);
+            const maxLat = Math.max(...latArray);
+            
+            coordinatesPolygon.value = [
+                [minLon, minLat],
+                [minLon, maxLat],
+                [maxLon, maxLat],
+                [maxLon, minLat],
+                [minLon, minLat], // Cerrar el polígono
+            ];
+            
+        }
+        
+    };      
 
     function filterGeo(codeFilter) {
       console.log('code store filter: ', codeFilter);
@@ -45,7 +75,7 @@ export const useGeoCandidateTrees = defineStore('geoCandidateTrees', () => {
               .map((item) => ({
                   lon: item.lon,
                   lat: item.lat,
-                  nombre_comun: item.nom_comunes,
+                  nombre_comun: item.nombre_comun,
                   codigo: item.codigo,
                   numero_placa: item.numero_placa,
                   nombre_cientifico: item.nombre_cientifico,
@@ -55,12 +85,11 @@ export const useGeoCandidateTrees = defineStore('geoCandidateTrees', () => {
                   resultado: item.resultado
               }));
       } else {
-          console.log('estoy sin codeFilter');
           // Si no hay especie seleccionada, retornar todos los datos sin filtrar
           geoDataNew.value = geoCandidateData.value.map((item) => ({
               lon: item.lon,
               lat: item.lat,
-              nombre_comun: item.nom_comunes,
+              nombre_comun: item.nombre_comun,
               codigo: item.codigo,
               numero_placa: item.numero_placa,
               nombre_cientifico: item.nombre_cientifico,
@@ -69,6 +98,7 @@ export const useGeoCandidateTrees = defineStore('geoCandidateTrees', () => {
               nombre_del_predio: item.nombre_del_predio,
               resultado: item.resultado
           }));
+          console.log('estoy sin codeFilter', geoDataNew.value);
       }
     }
     
@@ -76,7 +106,7 @@ export const useGeoCandidateTrees = defineStore('geoCandidateTrees', () => {
       geoDataNew.value = geoCandidateData.value.map((item) => ({
           lon: item.lon,
           lat: item.lat,
-          nombre_comun: item.nom_comunes,
+          nombre_comun: item.nombre_comun,
           codigo: item.codigo,
           numero_placa: item.numero_placa,
           nombre_cientifico: item.nombre_cientifico,
@@ -90,6 +120,7 @@ export const useGeoCandidateTrees = defineStore('geoCandidateTrees', () => {
     return {
         geoCandidateData,
         geoDataNew,
+        coordinatesPolygon,
         fetchData,
         filterGeo,
         calculatePerimeterCoordinates,

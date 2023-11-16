@@ -22,11 +22,11 @@ import TileLayer from 'ol/layer/Tile';
 import OSM from 'ol/source/OSM';
 import VectorLayer from 'ol/layer/Vector';
 import VectorSource from 'ol/source/Vector';
-import { Style, Icon } from 'ol/style';
+import { Style, Icon, Stroke, Fill } from 'ol/style';
 import { fromLonLat } from 'ol/proj';
 import Point from 'ol/geom/Point';
 import Feature from 'ol/Feature';
-import { Polygon } from 'ol/geom';  // Agrega esta línea
+import Polygon from 'ol/geom/Polygon.js';
 import treeIconPath from '../assets/icons/icon_tree_cg.png';
 import { useGeoCandidateTrees } from '../stores/candidate';
 
@@ -42,12 +42,10 @@ const vectorSource = new VectorSource({
 });
 
 onMounted(() => {
-  updateMap(); // Llamar a la función de actualización al inicio
+  updateMap();
 });
 
-// Observar cambios en geoCandidateData
 watch(() => geoStore.geoDataNew, () => {
-  console.log('i am detect changes');
   updateVectorSource();
   updateMap();
 });
@@ -57,6 +55,7 @@ function updateVectorSource() {
     const geometry = new Point(fromLonLat([point.lon, point.lat]));
     const feature = new Feature(geometry);
     feature.setProperties({
+      // Asigna las propiedades según tu estructura de datos
       codigo: point.codigo,
       nombre_comun: point.nombre_comun,
       nombre_cientifico: point.nombre_cientifico,
@@ -75,12 +74,14 @@ function updateVectorSource() {
 
 function updateMap() {
   if (geoStore.geoDataNew.length > 0) {
-    // Destruir el mapa existente si hay uno
     if (mapInstance) {
-      mapInstance.dispose();
+      mapInstance.setTarget(null);
+      mapInstance = null;
     }
-
-    const perimeterCoordinates = geoStore.calculatePerimeterCoordinates();
+    updateVectorSource();
+    geoStore.calculatePerimeterCoordinates()
+    const perimeterCoordinates = geoStore.coordinatesPolygon;
+    console.log('perimeterCoor: ', perimeterCoordinates)
     drawMap(perimeterCoordinates, vectorSource);
   }
 }
@@ -118,10 +119,26 @@ function drawMap(perimeterCoordinates, vectorSource) {
     }),
   });
 
-  vectorLayer.set('pointerEvents', 'visible');
+  const perimeterFeature = new Feature({
+    geometry: new Polygon([perimeterCoordinates]),
+  });
 
-  const polygon = new Feature(new Polygon([perimeterCoordinates]));
-  vectorSource.addFeature(polygon);
+  // Definir estilo para el polígono
+  perimeterFeature.setStyle(
+    new Style({
+      stroke: new Stroke({
+        color: 'red',
+        width: 2,
+      }),
+      fill: new Fill({
+        color: 'rgba(255, 0, 0, 0.1)',
+      }),
+    })
+  );
+
+  vectorSource.addFeature(perimeterFeature); // Agregar el polígono a vectorSource
+
+  mapInstance.addLayer(vectorLayer);
 
   mapInstance.on('pointermove', (event) => {
     mapInstance.getView().setZoom(mapInstance.getView().getZoom());
@@ -131,14 +148,13 @@ function drawMap(perimeterCoordinates, vectorSource) {
       selectedFeature.value = feature;
       infoContainer.value.style.display = 'block';
     } else {
-      mapInstance.getViewport().style.cursor = ''; // Restaurar el estilo del cursor
+      mapInstance.getViewport().style.cursor = '';
       infoContainer.value.style.display = 'none';
     }
   });
-
-  mapInstance.addLayer(vectorLayer);
 }
 </script>
+
 
 <style>
 .map-container {
