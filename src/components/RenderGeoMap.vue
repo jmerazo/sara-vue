@@ -16,6 +16,7 @@
 
 <script setup>
 import { onMounted, ref, watch } from 'vue';
+import { LineString } from 'ol/geom';
 import Map from 'ol/Map';
 import View from 'ol/View';
 import TileLayer from 'ol/layer/Tile';
@@ -50,6 +51,8 @@ watch(() => geoStore.geoDataNew, () => {
   updateMap();
 });
 
+
+
 function updateVectorSource() {
   const newFeatures = geoStore.geoDataNew.map((point) => {
     const geometry = new Point(fromLonLat([point.lon, point.lat]));
@@ -70,6 +73,10 @@ function updateVectorSource() {
 
   vectorSource.clear();
   vectorSource.addFeatures(newFeatures);
+}
+
+function onlyPerimeter() {
+  vectorSource.clear();
 }
 
 function updateMap() {
@@ -118,14 +125,18 @@ function drawMap(perimeterCoordinates, vectorSource) {
     }),
   });
 
-  const polygonCoords = perimeterCoordinates.map(coord => fromLonLat(coord));
+  const lineCoords = perimeterCoordinates.map(coord => fromLonLat(coord));
 
-  const perimeterFeature = new Feature({
-    geometry: new Polygon([polygonCoords]),
+  // Crear una Polygon a partir de las coordenadas
+  const polygon = new Polygon([lineCoords]);
+
+  // Crear una característica de OpenLayers con el Polygon
+  const polygonFeature = new Feature({
+    geometry: polygon,
   });
 
-  // Definir estilo para el polígono
-  perimeterFeature.setStyle(
+  // Definir estilo para el perímetro (línea) y relleno
+  polygonFeature.setStyle(
     new Style({
       stroke: new Stroke({
         color: 'green',
@@ -137,7 +148,8 @@ function drawMap(perimeterCoordinates, vectorSource) {
     })
   );
 
-  vectorSource.addFeature(perimeterFeature); // Agregar el polígono a vectorSource
+  // Agregar la característica del polígono al origen del vector
+  vectorSource.addFeature(polygonFeature);
 
   mapInstance.addLayer(vectorLayer);
 
