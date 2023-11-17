@@ -15,33 +15,78 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 import Map from 'ol/Map';
 import View from 'ol/View';
 import TileLayer from 'ol/layer/Tile';
 import OSM from 'ol/source/OSM';
 import VectorLayer from 'ol/layer/Vector';
 import VectorSource from 'ol/source/Vector';
-import { Style, Icon } from 'ol/style';
+import { Style, Icon, Stroke, Fill } from 'ol/style';
 import { fromLonLat } from 'ol/proj';
 import Point from 'ol/geom/Point';
 import Feature from 'ol/Feature';
+import Polygon from 'ol/geom/Polygon.js';
 import treeIconPath from '../assets/icons/icon_tree_cg.png';
+import { useGeoCandidateTrees } from '../stores/candidate';
+
+const geoStore = useGeoCandidateTrees();
 
 const mapContainer = ref(null);
 const infoContainer = ref(null);
 const selectedFeature = ref(null);
-const { filteredData } = defineProps(['filteredData']);
+let mapInstance = null;
 
-onMounted(() => {
-  if (filteredData.length > 0) {
-    const firstCoordinate = [filteredData[0].lon, filteredData[0].lat];
-    drawMap(firstCoordinate);
-  }
+const vectorSource = new VectorSource({
+  features: [],
 });
 
-function drawMap(centerCoordinate) {
-  const map = new Map({
+onMounted(() => {
+  updateMap();
+});
+
+watch(() => geoStore.geoDataNew, () => {
+  updateVectorSource();
+  updateMap();
+});
+
+function updateVectorSource() {
+  const newFeatures = geoStore.geoDataNew.map((point) => {
+    const geometry = new Point(fromLonLat([point.lon, point.lat]));
+    const feature = new Feature(geometry);
+    feature.setProperties({
+      // Asigna las propiedades según tu estructura de datos
+      codigo: point.codigo,
+      nombre_comun: point.nombre_comun,
+      nombre_cientifico: point.nombre_cientifico,
+      numero_placa: point.numero_placa,
+      coordenadas: point.coordenadas,
+      vereda: point.vereda,
+      nombre_del_predio: point.nombre_del_predio,
+      resultado: point.resultado,
+    });
+    return feature;
+  });
+
+  vectorSource.clear();
+  vectorSource.addFeatures(newFeatures);
+}
+
+function updateMap() {
+  if (geoStore.geoDataNew.length > 0) {
+    if (mapInstance) {
+      mapInstance.setTarget(null);
+      mapInstance = null;
+    }
+    updateVectorSource();
+    geoStore.calculatePerimeterCoordinates()
+    const perimeterCoordinates = geoStore.coordinatesPolygon;
+    drawMap(perimeterCoordinates, vectorSource);
+  }
+}
+
+function drawMap(perimeterCoordinates, vectorSource) {
+  mapInstance = new Map({
     target: mapContainer.value,
     layers: [
       new TileLayer({
@@ -51,32 +96,14 @@ function drawMap(centerCoordinate) {
       }),
     ],
     view: new View({
-      center: fromLonLat(centerCoordinate),
+      center: fromLonLat([perimeterCoordinates[0][0], perimeterCoordinates[0][1]]),
       zoom: 9,
       minZoom: 7,
       maxZoom: 30,
     }),
   });
 
-  map.getViewport().style.cursor = 'pointer';
-
-  const vectorSource = new VectorSource({
-    features: filteredData.map((point) => {
-      const geometry = new Point(fromLonLat([point.lon, point.lat]));
-      const feature = new Feature(geometry);
-      feature.setProperties({
-        codigo: point.codigo,
-        nombre_comun: point.nombre_comun,
-        nombre_cientifico: point.nombre_cientifico,
-        numero_placa: point.numero_placa,
-        coordenadas: point.coordenadas,
-        vereda: point.vereda,
-        nombre_del_predio: point.nombre_del_predio,
-        resultado: point.resultado,
-      });
-      return feature;
-    }),
-  });
+  mapInstance.getViewport().style.cursor = 'pointer';
 
   const treeIcon = new Icon({
     src: treeIconPath,
@@ -91,24 +118,44 @@ function drawMap(centerCoordinate) {
     }),
   });
 
-  vectorLayer.set('pointerEvents', 'visible');
+  const polygonCoords = perimeterCoordinates.map(coord => fromLonLat(coord));
 
-  map.on('pointermove', (event) => {
-    map.getView().setZoom(map.getView().getZoom());
-    const feature = map.forEachFeatureAtPixel(event.pixel, (f) => f);
+  const perimeterFeature = new Feature({
+    geometry: new Polygon([polygonCoords]),
+  });
+
+  // Definir estilo para el polígono
+  perimeterFeature.setStyle(
+    new Style({
+      stroke: new Stroke({
+        color: 'green',
+        width: 2,
+      }),
+      fill: new Fill({
+        color: 'rgba(0, 255, 0, 0.1)',
+      }),
+    })
+  );
+
+  vectorSource.addFeature(perimeterFeature); // Agregar el polígono a vectorSource
+
+  mapInstance.addLayer(vectorLayer);
+
+  mapInstance.on('pointermove', (event) => {
+    mapInstance.getView().setZoom(mapInstance.getView().getZoom());
+    const feature = mapInstance.forEachFeatureAtPixel(event.pixel, (f) => f);
     if (feature) {
-      map.getViewport().style.cursor = 'pointer';
+      mapInstance.getViewport().style.cursor = 'pointer';
       selectedFeature.value = feature;
       infoContainer.value.style.display = 'block';
     } else {
-      map.getViewport().style.cursor = ''; // Restaurar el estilo del cursor
+      mapInstance.getViewport().style.cursor = '';
       infoContainer.value.style.display = 'none';
     }
   });
-
-  map.addLayer(vectorLayer);
 }
 </script>
+
 
 <style>
 .map-container {
