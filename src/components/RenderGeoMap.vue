@@ -1,4 +1,5 @@
 <template>
+  <button @click="onlyPerimeter">Mostrar solo perímetro</button>
   <div class="map-container" ref="mapContainer"></div>
   <div class="info-container" ref="infoContainer">
     <div v-if="selectedFeature">
@@ -42,6 +43,42 @@ const vectorSource = new VectorSource({
   features: [],
 });
 
+function onlyPerimeter() {
+  vectorSource.clear(); // Limpiar todas las características
+
+  const perimeterCoords = geoStore.coordinatesPolygon;
+  drawPerimeter(perimeterCoords);
+}
+
+function drawPerimeter(perimeterCoords) {
+  if (perimeterCoords && perimeterCoords.length > 0) {
+    const lineCoords = perimeterCoords.map(coord => fromLonLat(coord));
+
+    // Crear una Polygon a partir de las coordenadas
+    const polygon = new Polygon([lineCoords]);
+
+    // Crear una característica de OpenLayers con el Polygon
+    const polygonFeature = new Feature({
+      geometry: polygon,
+    });
+
+    // Definir estilo para el perímetro (línea) y relleno
+    polygonFeature.setStyle(
+      new Style({
+        stroke: new Stroke({
+          color: 'green',
+          width: 2,
+        }),
+        fill: new Fill({
+          color: 'rgba(0, 255, 0, 0.1)',
+        }),
+      })
+    );
+
+    vectorSource.addFeature(polygonFeature);
+  }
+}
+
 onMounted(() => {
   updateMap();
 });
@@ -50,8 +87,6 @@ watch(() => geoStore.geoDataNew, () => {
   updateVectorSource();
   updateMap();
 });
-
-
 
 function updateVectorSource() {
   const newFeatures = geoStore.geoDataNew.map((point) => {
@@ -73,10 +108,6 @@ function updateVectorSource() {
 
   vectorSource.clear();
   vectorSource.addFeatures(newFeatures);
-}
-
-function onlyPerimeter() {
-  vectorSource.clear();
 }
 
 function updateMap() {
