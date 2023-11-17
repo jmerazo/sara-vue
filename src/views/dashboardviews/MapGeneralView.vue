@@ -7,7 +7,7 @@ import { useEspeciesStore } from '../../stores/species'
 const geoStore = useGeoCandidateTrees();
 
 const especies = useEspeciesStore();
-const codeFind = ref();
+const codeFind = ref('');
 
 onMounted(async () => {
   await geoStore.fetchData();
@@ -31,7 +31,7 @@ const filterGeoData = () => {
             Filtrar especie
           </label>
 
-          <div class="flex">
+          <div class="flex custom-select">
             <select
               id="especie"
               class="text-lg p-3 w-full rounded-lg focus:outline-none font-bold flex-1"
@@ -40,16 +40,36 @@ const filterGeoData = () => {
             >
               <option value="" selected disabled>Seleccione una especie...</option>
               <option
-                v-for="especie in especies.especies"
+                v-for="especie in especies.uniqueNomComunes"
                 :key="especie.cod_especie"
                 :value="especie.cod_especie"
               >
                 {{ especie.nom_comunes + " | " + especie.nombre_cientifico }}
               </option>
             </select>
-            <button type="submit" class="btn-form-search-header cursor-pointer font-bold rounded-lg pl-2 pr-2 ml-3" @click="geoStore.deleteFilterGeo()">Eliminar filtro</button>
+            <button type="submit" class="btn-form-search-header cursor-pointer font-bold rounded-lg pl-2 pr-2 ml-3" @click="geoStore.deleteFilterGeo()"><font-awesome-icon :icon="['fas', 'trash']" class="mr-2"/> Eliminar filtro</button>
           </div>
         </div>      
         <RenderGeo />
     </div>   
 </template>
+
+<style scoped>
+/* Estilos para el componente */
+.custom-select {
+  display: flex;
+  align-items: center;
+}
+
+/* Estilos para el select */
+select {
+  padding: 10px;
+  font-family: inherit;
+  width: 100%;
+  max-width: 500px;
+}
+
+select option {
+  color: black;
+}
+</style>

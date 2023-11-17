@@ -13,14 +13,12 @@ export const useGeoCandidateTrees = defineStore('geoCandidateTrees', () => {
             const { data } = await APIService.getGeoCandidateTrees()
             geoCandidateData.value = data
             geoDataNew.value = data
-            console.log('geoStore: ', geoCandidateData.value)
             isDataLoaded = true
         }
     }
 
     // Función para calcular las coordenadas del perímetro
     const calculatePerimeterCoordinates = (code) => {
-        console.log('code calculate: ', code)
         if(code){
             const filteredPoints = geoDataNew.value.filter((point) => point.codigo === code);
       
@@ -66,10 +64,8 @@ export const useGeoCandidateTrees = defineStore('geoCandidateTrees', () => {
     };      
 
     function filterGeo(codeFilter) {
-      console.log('code store filter: ', codeFilter);
   
       if (codeFilter) {
-          console.log('estoy con codeFilter', geoCandidateData);
           geoDataNew.value = geoCandidateData.value
               .filter((item) => item.codigo === codeFilter)
               .map((item) => ({
@@ -98,7 +94,6 @@ export const useGeoCandidateTrees = defineStore('geoCandidateTrees', () => {
               nombre_del_predio: item.nombre_del_predio,
               resultado: item.resultado
           }));
-          console.log('estoy sin codeFilter', geoDataNew.value);
       }
     }
     

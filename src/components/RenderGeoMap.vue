@@ -81,7 +81,6 @@ function updateMap() {
     updateVectorSource();
     geoStore.calculatePerimeterCoordinates()
     const perimeterCoordinates = geoStore.coordinatesPolygon;
-    console.log('perimeterCoor: ', perimeterCoordinates)
     drawMap(perimeterCoordinates, vectorSource);
   }
 }
@@ -119,19 +118,21 @@ function drawMap(perimeterCoordinates, vectorSource) {
     }),
   });
 
+  const polygonCoords = perimeterCoordinates.map(coord => fromLonLat(coord));
+
   const perimeterFeature = new Feature({
-    geometry: new Polygon([perimeterCoordinates]),
+    geometry: new Polygon([polygonCoords]),
   });
 
   // Definir estilo para el polígono
   perimeterFeature.setStyle(
     new Style({
       stroke: new Stroke({
-        color: 'red',
+        color: 'green',
         width: 2,
       }),
       fill: new Fill({
-        color: 'rgba(255, 0, 0, 0.1)',
+        color: 'rgba(0, 255, 0, 0.1)',
       }),
     })
   );
