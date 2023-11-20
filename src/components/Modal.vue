@@ -11,10 +11,10 @@ const modal = useModalStore()
 const especies = useEspeciesStore()
 const consulta = useConsultaStore()
 
-const imgDefault = ref('https://miputumayo.com.co/wp-content/uploads/2015/06/%C3%81rbol-emergente.-PNN-Amacayacu-20-09-2011.jpg')
+const imgDefault = ref('https://static.vecteezy.com/system/resources/previews/000/527/023/non_2x/tree-with-roots-vector.jpg')
 
 const imagenModal = ref({
-    imgEspecie:'https://miputumayo.com.co/wp-content/uploads/2015/06/%C3%81rbol-emergente.-PNN-Amacayacu-20-09-2011.jpg',
+    imgEspecie:'https://static.vecteezy.com/system/resources/previews/000/527/023/non_2x/tree-with-roots-vector.jpg',
     imgHojas:'https://inaturalist-open-data.s3.amazonaws.com/photos/24715/large.jpg',
     imgTallo:'https://www.researchgate.net/profile/Gerardo-Robledo/publication/274314363/figure/fig1/AS:669424336007177@1536614607961/Figura-3-Tejidos-que-constituyen-el-tronco-de-un-arbol-corte-transversal-En-el-centro.jpg',
     imgFlores:'https://img.freepik.com/fotos-premium/flores-amarillas-arbol-hoja-perenne-cassia-isla_136404-734.jpg',

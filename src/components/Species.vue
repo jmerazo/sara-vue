@@ -14,7 +14,7 @@ defineProps({
     <div class="especie__img">
       <img
         alt="imagen especie"
-        src="https://miputumayo.com.co/wp-content/uploads/2015/06/%C3%81rbol-emergente.-PNN-Amacayacu-20-09-2011.jpg"
+        src="/img/arbol_especie.jpeg"
       />
     </div>
 
