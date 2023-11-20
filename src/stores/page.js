@@ -4,16 +4,23 @@ import APIService from '../services/APIService'
 
 export const usePageContent = defineStore('pageContent',()=>{
 
-    const pageContentData = ref({})
+    const contenidoNosotros = ref({})
 
-    const fetchData = async ()=>{
+    const informacionUsuario = ref([])
+
+    onMounted(async ()=>{
         const { data } = await APIService.getPageContent()
-        pageContentData.value = data
-        console.log('about page: ', pageContentData.value)
-    }
+        contenidoNosotros.value = data
+        contenidoNosotros.value.forEach(seccion =>{
+            informacionUsuario.value.push({
+                titulo: seccion.title,
+                descripcion: seccion.content,
+            });
+        })
+    })
+
 
     return {
-        pageContentData,
-        fetchData
+        informacionUsuario, 
     }
 })

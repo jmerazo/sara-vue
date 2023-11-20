@@ -12,6 +12,9 @@ import { useConsultaStore } from "@/stores/consulta";
 
 const modal = useModalStore();
 const consulta = useConsultaStore();
+
+
+
 </script>
 
 <template>

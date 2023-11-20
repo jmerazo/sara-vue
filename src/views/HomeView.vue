@@ -1,198 +1,293 @@
 <script setup>
 import { onMounted } from "vue";
-import { useGeoCandidateTrees } from '../stores/candidate'
-import { useAverageSpecie } from '../stores/average'
+import { useGeoCandidateTrees } from "@/stores/candidate";
+import { useAverageSpecie } from "@/stores/average";
+import { useHomeStore } from "@/stores/home";
 
 const geoStore = useGeoCandidateTrees();
-const averageStore = useAverageSpecie()
+const averageStore = useAverageSpecie();
+const homeStore = useHomeStore();
 
 onMounted(async () => {
-    await geoStore.fetchData();
-    await averageStore.fetchData();
+  await geoStore.fetchData();
+  await averageStore.fetchData();
 });
+
+//top de especies
 </script>
 
 <template>
-  
-  <div class="w-auto text-xs flex flex-col min-w-[400px] justify-center items-center ">
-    <div class="imagen-information w-full rounded-lg mb-10">
-      <div class="flex flex-col items-center">
-        <div class="flex justify-center">
-          <div class="marquee-container">
-            <h2 class="text-xl font-bold text-center animate-marquee">TOP ESPECIES</h2>
-          </div>
-        </div>
-        <div class="flex justify-center">
-          <div class="relative mr-4">
-            <img src="../assets/media/algarrobo.jpg" class="img-information rounded-lg w-40 h-40 object-cover" />
-            <span class="text-white font-bold text-xs text-center absolute top-0 left-0 right-0 p-2 bg-black bg-opacity-50 rounded-lg">Algarrobo</span>
-          </div>
-          <div class="relative mr-4">
-            <img src="../assets/media/gualanday.jpg" class="img-information rounded-lg w-40 h-40 object-cover" />
-            <span class="text-white font-bold text-xs text-center absolute top-0 left-0 right-0 p-2 bg-black bg-opacity-50 rounded-lg">Gualanday</span>
-          </div>
-          <div class="relative mr-4">
-            <img src="../assets/media/nogal_cafetero.jpg" class="img-information rounded-lg w-40 h-40 object-cover" />
-            <span class="text-white font-bold text-xs text-center absolute top-0 left-0 right-0 p-2 bg-black bg-opacity-50 rounded-lg">Nogal Cafetero</span>
-          </div>
-          <div class="relative mr-4">
-            <img src="../assets/media/gualanday.jpg" class="img-information rounded-lg w-40 h-40 object-cover" />
-            <span class="text-white font-bold text-xs text-center absolute top-0 left-0 right-0 p-2 bg-black bg-opacity-50 rounded-lg">Gualanday</span>
-          </div>
-          <div class="relative mr-4">
-            <img src="../assets/media/gualanday.jpg" class="img-information rounded-lg w-40 h-40 object-cover" />
-            <span class="text-white font-bold text-xs text-center absolute top-0 left-0 right-0 p-2 bg-black bg-opacity-50 rounded-lg">Gualanday</span>
-          </div>
-          <div class="relative mr-4">
-            <img src="../assets/media/gualanday.jpg" class="img-information rounded-lg w-40 h-40 object-cover" />
-            <span class="text-white font-bold text-xs text-center absolute top-0 left-0 right-0 p-2 bg-black bg-opacity-50 rounded-lg">Gualanday</span>
-          </div>
-          <div class="relative mr-4">
-            <img src="../assets/media/gualanday.jpg" class="img-information rounded-lg w-40 h-40 object-cover" />
-            <span class="text-white font-bold text-xs text-center absolute top-0 left-0 right-0 p-2 bg-black bg-opacity-50 rounded-lg">Gualanday</span>
-          </div>
-          <div class="relative mr-4">
-            <img src="../assets/media/gualanday.jpg" class="img-information rounded-lg w-40 h-40 object-cover" />
-            <span class="text-white font-bold text-xs text-center absolute top-0 left-0 right-0 p-2 bg-black bg-opacity-50 rounded-lg">Gualanday</span>
-          </div>
-        </div>
+  <section class="contenedor proyecto">
+    <div class="proyecto__contenido">
+      <h2 class="proyecto__heading">PROYECTO SEMILLAS CTEI</h2>
+      <p class="proyecto__texto">
+        Lorem ipsum dolor sit amet consectetur adipisicing elit. Sit fugiat
+        adipisci facere quis! Provident molestiae non minus inventore ex
+        perspiciatis in saepe impedit quae facilis, molestias quas praesentium
+        consectetur quibusdam!
+      </p>
+    </div>
+  </section>
+
+  <section class="contenedor topEspecies">
+    <h3 class="topEspecies__heading">Top especies más buscadas</h3>
+    <div class="topEspecies__grid">
+      <!-- especie -->
+      <div
+        class="topEspecie__contenido"
+        v-for="(item, index) in homeStore.urlImagenesHome"
+        :key="index"
+      >
+        <div
+          class="topEspecie__contenido-imagen"
+          :style="{ backgroundImage: 'url(' + item.url + ')' }"
+        ></div>
+        <a class="topEspeice__enlace">{{ item.nombreEspecie }}</a>
       </div>
-    </div>  
+      <!--fin especie -->
+    </div>
+  </section>
 
-    <div class="information-sara flex flex-row">
-      <div class="text-information w-full">
-        <span class="title-information font-bold">PROYECTO SEMILLAS CTEI</span><br><br>
-        <p class="p-h">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce nec ultricies nisi. Cras in posuere orci, quis lobortis urna. 
-          Nulla congue velit et viverra vehicula. Nunc ut ligula purus. Phasellus vitae ultrices lacus. Cras efficitur imperdiet orci, 
-          eu faucibus nibh placerat ut. Aenean tincidunt dolor a turpis aliquet, ac commodo augue bibendum. Maecenas tincidunt sed nibh faucibus convallis.
-
-          Maecenas eu vehicula enim. Nunc pellentesque hendrerit quam, sit amet euismod justo consequat consequat. Morbi dignissim placerat lacus, 
-          sed luctus nunc fermentum id. Morbi aliquam dolor sit amet risus molestie congue. Etiam in urna id lacus facilisis suscipit. In vehicula mi dictum 
-          orci tempor gravida. Aenean ut ex in dui consequat commodo non quis ligula. Class aptent taciti sociosqu ad litora torquent per conubia nostra, 
-          per inceptos himenaeos. Morbi et pharetra turpis. Morbi quis nulla pretium, suscipit lorem sit amet, aliquam nulla. Mauris rutrum ultricies sapien eu aliquet. 
-          Ut vitae nulla non sapien finibus euismod. Etiam quis neque laoreet, sodales diam gravida, sodales diam.
+  <section class="colaboradores">
+    <div class="colaboradores__contenido">
+      <div class="colaboradores__descripcion">
+        <h2 class="colaboradores__heading">Nuestros Colaboradores</h2>
+        <p class="colaboradores__texto">
+          Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptatibus
+          at est qui! Cupiditate harum non quia, fuga aliquid porro saepe omnis
+          libero tenetur veritatis atque, officia minus? Accusamus, vero illum?
         </p>
       </div>
-    </div>
 
-  
-    <div class="colaborators flex flex-row">
-        <a href="https://minciencias.gov.co/"><img src="../assets/logos/mc-vida.png" class="log-minciencia fixed-between hover:scale-110"></a>
-        <a href="https://www.corpoamazonia.gov.co/"><img src="../assets/logos/corpoamazonia.png" class="log-corpoamazonia fixed-between hover:scale-110"></a>
-        <a href="https://www.sgr.gov.co/"><img src="../assets/logos/sgr.png" class="log-sgr fixed-between hover:scale-110"></a>
-        <a href="https://www.putumayo.gov.co/"><img src="../assets/logos/gp.png" class="log-gobernacion fixed-between hover:scale-110"></a>
-        <a href="https://itp.edu.co/ITP2022/"><img src="../assets/logos/itp.png" class="log-itp fixed-between hover:scale-110"></a>
+      <div class="colaboradores__grid">
+        <!-- colaborador -->
+        <div
+          class="colaborador"
+          v-for="(colaborador, index) in homeStore.colaboradores"
+          :key="index"
+        >
+          <a target="_blank" :href="colaborador.enlace"
+            ><img
+              :src="colaborador.img"
+              class="colaborador__imagen"
+              alt="imagen colaborador"
+          /></a>
+        </div>
+        <!-- fin colaborador -->
+      </div>
     </div>
-  </div>
- 
- 
-
+  </section>
 </template>
 
 <style scoped>
-.information-sara {
-  font-size: 16px;
-  margin-left: auto;
-  margin-right: auto;
-  margin-bottom: 25px;
-}
-.text-information {
-  text-align: justify;
-  grid-column-start: 1;
-  grid-column-end: 2;
-}
+/* inromacion proyecto */
 
-.marquee-container {
-  width: 100%; /* Ajusta el ancho según tus necesidades */
-  overflow: hidden;
-  margin-bottom: 20px;
+.proyecto {
+  display: grid;
+  grid-template-rows: repeat(2, 1fr);
+  background-image: url("/img/P001.jpg");
+  background-repeat: no-repeat;
+  background-position: bottom center;
+  margin-top: 0;
+  border-bottom-left-radius: 20px;
+  border-bottom-right-radius: 20px;
 }
 
+@media (min-width: 920px) {
+  .proyecto {
+    grid-template-columns: repeat(3, 1fr);
+    margin-top: 8rem;
+    max-width: 90rem;
+  }
+}
 
-.imagen-information {
-  grid-column-start: 2;
-  grid-column-end: 3;
-  color: #262f21;
+.proyecto__contenido {
+  background-color: var(--blanco);
+  padding: 2rem;
+}
 
+@media (min-width: 920px) {
+  .proyecto__contenido {
+    grid-column: 2/4;
+  }
+}
+
+.proyecto__heading {
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.proyecto__heading {
+  text-align: center;
+  font-size: 2rem;
+  margin-top: 0;
+}
+
+@media (min-width: 768px) {
+  .proyecto__heading {
+    font-size: 3rem;
+  }
+}
+
+@media (min-width: 920px) {
+  .proyecto__heading {
+    text-align: left;
+    font-size: 3rem;
+  }
+
+  .proyecto__texto {
+    margin-bottom: 1rem;
+  }
+}
+
+/* top especies */
+.topEspecies {
+  margin-top: 5rem;
+  max-width: 90rem;
+}
+.topEspecies__heading {
+  font-size: 2rem;
+  margin-bottom: 2rem;
+}
+
+@media (min-width: 768px) {
+  .topEspecies__heading {
+    font-size: 3rem;
+    margin-bottom: 3rem;
+  }
+}
+@media (min-width: 992px) {
+  .topEspecies__heading {
+    font-size: 4rem;
+    margin-bottom: 3rem;
+  }
+}
+.topEspecies__grid {
+  display: grid;
+  gap: 1rem;
+}
+
+@media (min-width: 768px) {
+  .topEspecies__grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (min-width: 992px) {
+  .topEspecies__grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+  }
+}
+.topEspecie__contenido {
   display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-left: 15px;
+  flex-direction: column;
+  transition-property: scale(1.2);
+  transition-duration: .5s;
+  height: 32rem;
+}
+
+.topEspecie__contenido:hover {
+  transform: scale(1.05);
+}
+.topEspecie__contenido-imagen {
+  background-repeat: no-repeat;
+  background-size: cover;
+  width: 100%;
+  height: 30rem;
+  margin: 0 auto;
+}
+@media (min-width: 992px) {
+  .topEspecie__contenido-imagen {
+    height: 85%;
+  }
+}
+
+.topEspeice__enlace {
+  backdrop-filter: blur(
+    10px
+  ); /* Cambia el valor según el nivel de desenfoque que desees */
+  opacity: 1;
+  background-color: rgba(38, 47, 33, 0.3);
+  color: var(--gris);
+  text-align: center;
   padding: 1rem;
-}
-
-.relative {
-  position: relative;
-}
-
-.img-information {
+  display: block;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+  font-weight: 700;
   cursor: pointer;
-  transition: transform 0.3s;
+  transition-property: background-color color;
+  transition-duration: .5s;
 }
-
-.img-information:hover {
-  transform: scale(1.1);
+.topEspeice__enlace:hover {
+  background-color: var(--primary-hover);
+  color: var(--blanco);
 }
+/* colaboradores */
+.colaboradores {
+  /* background-color: #eaf2ed; */
+  margin: 5rem auto;
+  max-width: 90rem;
 
-@keyframes marquee {
-  0% {
-    transform: translateX(100%);
+}
+.colaboradores__heading {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  line-height: 1.3;
+}
+.colaboradores__contenido {
+  display: grid;
+  padding: 1.5rem;
+}
+@media (min-width: 992px) {
+  .colaboradores__contenido {
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
   }
-  100% {
-    transform: translateX(-100%);
+
+  .colaboradores__grid {
+    grid-column: 1/2;
+    grid-row: 1/2;
+  }
+  .colaboradores__descripcion {
+    grid-column: 2/3;
+    grid-row: 1/2;
   }
 }
 
-.animate-marquee {
-  animation: marquee 5s linear infinite;
-  white-space: nowrap; /* Evita que el texto se divida en varias líneas */
-}
-.p-h {
-  text-align: justify;
-}
-.colaborators {
-  width: auto;
-  height: auto;
-  display: flex;
-  margin-bottom: 20px;
-
-  align-items: center;
-  justify-content: center;
-
-  background-color: #ffffff;
+.colaboradores__grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2rem;
+  margin: 2rem auto;
 }
 
-
-.log-minciencia {
-  width: auto;
-  height: 10vh;
+.colaborador {
+  width: 5rem;
+  transition-property: scale(1.4);
+  transition-duration: .3s;
 }
 
-.log-corpoamazonia {
-  width: auto;
-  height: 10vh;
+.colaborador:hover{
+  transform: scale(1.05);
 }
 
-.log-gobernacion {
-  width: auto;
-  height: 10vh;
+@media (min-width: 768px) {
+  .colaborador {
+    width: 10rem;
+  }
 }
+@media (min-width: 992px) {
 
-.log-sgr {
-  width: auto;
-  height: 10vh;
-}
-
-.log-itp {
-  width: auto;
-  height: 10vh;
-}
-
-.fixed-between {
-  margin-right: 50px;
-  margin-top: 15px;
-  margin-bottom: 15px;
+  .colaboradores__grid {
+    display: flex;
+    gap: 2rem;
+    margin: 2rem auto;
+    align-items: center;
+  }
+  .colaborador {
+    width: 10rem;
+  }
 }
 </style>
 

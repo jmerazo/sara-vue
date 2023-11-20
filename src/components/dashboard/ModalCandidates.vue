@@ -102,7 +102,7 @@ const consulta = useConsultaStore();
                                 humedad: {{ candidato.humedad }}
                               </p>
                               <p class="font-bold text-slate-700">
-                                cap: {{ candidato.ShortcutIDEV }}
+                                cap: {{ candidato.cap }}
                               </p>
                               <p class="font-bold text-slate-700">
                                 Altura comercial:

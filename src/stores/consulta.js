@@ -201,7 +201,7 @@ export const useConsultaStore = defineStore("consulta", () => {
       const lowerMunicipio = term.municipio ? term.municipio.toLowerCase(): '';
       // Verifica si la placa es igual al término (ya sea número o cadena)
       const termPlaca = term.numero_placa != null ? term.numero_placa.toString(): ''; // Convierte el número a cadena
-      
+    
       return (
         lowerExpediente.includes(lowerTermino) ||
         lowerDepartamento.includes(lowerTermino) ||
@@ -211,6 +211,8 @@ export const useConsultaStore = defineStore("consulta", () => {
       );
     });
   }
+
+
 
   return {
     currentPage,
