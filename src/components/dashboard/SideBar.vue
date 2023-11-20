@@ -224,7 +224,13 @@ const userData = JSON.parse(userDataString);
 
           <li class="nav-header">REPORTES</li>
 
-          
+          <li class="nav-item">
+            <a href="#" class="nav-link">
+              <font-awesome-icon :icon="['fas', 'up-right-and-down-left-from-center']" />
+              <p> Promedio Altura</p>
+            </a>
+          </li>
+
           <RouterLink :to="{ name: 'list-species' }">
           <li v-if="userData.rol == 'ADMINISTRADOR' && userData.is_superuser == 1 && userData.is_staff == 1" class="nav-item">
             <a href="#" class="nav-link">
@@ -232,12 +238,20 @@ const userData = JSON.parse(userDataString);
               <p> Especies forestales</p>
             </a>
           </li>
-        </RouterLink>
+          </RouterLink>
           <RouterLink :to="{ name: 'species-data' }">
           <li v-if="userData.rol == 'ADMINISTRADOR' && userData.is_superuser == 1 && userData.is_staff == 1" class="nav-item">
             <a href="#" class="nav-link">
               <font-awesome-icon :icon="['fab', 'pagelines']" />
               <p> Datos generales especies</p>
+            </a>
+          </li>
+          </RouterLink>
+          <RouterLink :to="{ name: 'map-general' }">
+          <li class="nav-item">
+            <a href="#" class="nav-link">
+              <font-awesome-icon :icon="['fas', 'map-location']" />
+              <p> Mapa General</p>
             </a>
           </li>
         </RouterLink>
@@ -247,19 +261,19 @@ const userData = JSON.parse(userDataString);
           <RouterLink :to="{ name: 'users' }">
           <li v-if="userData.rol == 'ADMINISTRADOR' && userData.is_superuser == 1 && userData.is_staff == 1" class="nav-item">
             <a href="#" class="nav-link">
-              <i class="nav-icon fas fa-user"></i>
+              <font-awesome-icon :icon="['fas', 'users-gear']" />
               <p> Usuarios</p>
             </a>
           </li>
-        </RouterLink>
-        <RouterLink :to="{ name: 'species' }">
-          <li v-if="userData.rol == 'ADMINISTRADOR' && userData.is_superuser == 1 && userData.is_staff == 1" class="nav-item">
-            <a href="#" class="nav-link">
-              <font-awesome-icon :icon="['fab', 'pagelines']" />
-              <p> Especies forestales</p>
-            </a>
-          </li>
-        </RouterLink>
+          </RouterLink>
+          <RouterLink :to="{ name: 'species' }">
+            <li v-if="userData.rol == 'ADMINISTRADOR' && userData.is_superuser == 1 && userData.is_staff == 1" class="nav-item">
+              <a href="#" class="nav-link">
+                <font-awesome-icon :icon="['fas', 'clipboard-check']" />
+                <p> Especies forestales</p>
+              </a>
+            </li>
+          </RouterLink>
         </ul>
       </nav>
     </div>

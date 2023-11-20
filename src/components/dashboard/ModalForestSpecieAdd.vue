@@ -214,14 +214,12 @@ watch(() => speciesStore.specieSelected, () => {
                     as="h4"
                     class="text-gray-900 text-lg text-center font-extrabold"
                   >
-                    {{ speciesStore.especies[0].nom_comunes }}
-                    {{ speciesStore.especies[0].nombre_cientifico }}
+
                   </DialogTitle>
                   <DialogTitle
                     as="h4"
                     class="text-gray-900 text-lg text-center font-extrabold mb-5"
                   >
-                    {{ speciesStore.especies[0].cod_especie }}
                   </DialogTitle>
                   <hr />
                   <form @submit.prevent="forestSpecieAdd">
@@ -285,8 +283,11 @@ watch(() => speciesStore.specieSelected, () => {
                     <textarea class="w-full auto-resize-textarea" v-model="formData.hojas"></textarea>
                   </DialogTitle>
                   <DialogTitle as="h3" class="text-gray-900 text-lg my-5">
-                    <font-awesome-icon :icon="['fas', 'image']" /> <span class="font-bold"> Imagen de las hojas: </span><br>
-                    <input type="file" ref="imageInputLeaf" accept="image/*" @change="handleImageUpload(e, 'imageInputLeaf')" />
+                    <label for="imageInputLeaf" class="file-input-label">
+                      <img src="ruta-a-tu-icono.png" alt="Cargar imagen" class="upload-icon">
+                      <span class="font-bold">Imagen de las hojas</span>
+                    </label>
+                    <input type="file" id="imageInputLeaf" ref="imageInputLeaf" accept="image/*" @change="handleImageUpload" style="display: none;" />
                   </DialogTitle>
 
                   <DialogTitle as="h3" class="text-gray-900 text-lg my-5">
@@ -372,8 +373,36 @@ watch(() => speciesStore.specieSelected, () => {
 </template>
 
 <style>
-  .auto-resize-textarea {
-    overflow: hidden;
-  }
+.auto-resize-textarea {
+  overflow: hidden;
+}
+
+.file-input-label {
+  display: inline-block;
+  background-color: #0074d9;
+  color: #fff;
+  padding: 10px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  text-align: center;
+  transition: background-color 0.3s ease;
+}
+
+.file-input-label:hover {
+  background-color: #0056b3;
+}
+
+.upload-icon {
+  width: 20px;
+  height: 20px;
+  vertical-align: middle;
+  margin-right: 10px;
+}
+
+/* Ocultar el campo de entrada de archivo nativo */
+input[type="file"] {
+  display: none;
+}
+
 </style>
 

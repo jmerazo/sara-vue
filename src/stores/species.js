@@ -15,6 +15,7 @@ export const useEspeciesStore = defineStore('especies', () => {
     const monitoreosEspecie = ref({})
     const noResultados = computed(() => especies.value.length === 0 );
     const especiesOriginales = ref([]);
+    const uniqueNomComunes = ref([]);
 
     // variables para paginación
     const currentPage = ref(1); // Página actual
@@ -26,6 +27,13 @@ export const useEspeciesStore = defineStore('especies', () => {
       const { data } = await APIService.getSpecies();
       especies.value = data;
       especiesOriginales.value = data;
+
+      const uniqueSpecies = [...new Map(data.map(especie => [especie.nom_comunes, especie])).values()];
+      uniqueNomComunes.value = uniqueSpecies.map(especie => ({
+        nom_comunes: especie.nom_comunes,
+        nombre_cientifico: especie.nombre_cientifico,
+        cod_especie: especie.cod_especie,
+      }));
       consulta.cargando = false
     });
   
@@ -136,6 +144,7 @@ export const useEspeciesStore = defineStore('especies', () => {
       especie,
       noResultados,
       especiesOriginales,
+      uniqueNomComunes,
       seleccionarEspecie,
       buscarTermino,
       quitarFiltroEspecie,
