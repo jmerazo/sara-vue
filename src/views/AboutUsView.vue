@@ -96,7 +96,7 @@ const pageStore = usePageContent();
     width: 30%;
   }
   .nosotros__heading {
-    font-size: 3.5rem;
+    font-size: 3rem;
     margin: 5rem 0rem 3rem 0rem;
   }
 }
@@ -153,7 +153,7 @@ const pageStore = usePageContent();
 
 /* vision */
 .vision {
-  margin: 0 auto;
+  margin: 5rem auto;
 }
 
 .vision__flex {

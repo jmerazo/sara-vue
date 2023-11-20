@@ -119,7 +119,7 @@ const displayedPageRange = computed(() => {
 
 @media (min-width: 768px) {
   .familias__heading {
-    font-size: 3.5rem;
+    font-size: 3rem;
   }
 }
 
