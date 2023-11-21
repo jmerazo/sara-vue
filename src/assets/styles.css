@@ -1,10 +1,79 @@
-@font-face {
-    font-family: 'Montserrat';
-    src: url('../src/assets/fonts/Montserrat-Regular.woff2') format('woff2'); /* Asegúrate de que el nombre del archivo coincida con el que has descargado */
-    font-weight: normal;
-    font-style: normal;
-  }
-  
-body {
-    font-family: 'Montserrat', sans-serif; /* Aplicar Montserrat como fuente predeterminada */
+/* vairantes de montserrat
+font-family: 'Lato', sans-serif;
+font-family: 'Montserrat', sans-serif;
+font-family: 'Playfair Display', serif;
+font-family: 'Raleway', sans-serif;
+font-family: 'Roboto', sans-serif;
+*/
+
+
+:root {
+  --primary: #008100;
+  --primary-hover:rgb(12, 172, 12);
+  --primary-backgound:#eaf2ed;
+  --gris-claro:#f0eded;
+  --gris:#192125;
+  --negro: #080E06;
+  --blanco: #FFF;
+  --fuente-principal: 'Montserrat', sans-serif;
 }
+
+template {
+  font-size: 62.5%;
+  box-sizing: border-box;
+}
+
+*,
+*:before,
+*:after {
+  box-sizing: inherit;
+}
+
+body {
+  font-size: 1.2rem;
+  font-family: var(--fuente-principal);
+  line-height: 1.5;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+[class*="contenedor"] {
+  max-width: 120rem;
+  margin: 0 auto;
+  width: 90%;
+}
+
+[class$="heading"] {
+  font-family: var(--fuente-principal);
+  font-size: 4rem;
+  text-align: center;
+  font-weight: 700;
+  color: var(--gris);
+  margin: 5rem 0;
+  margin: 0;
+}
+
+[class$="texto"]{
+  line-height: 2;
+  text-align: justify;
+  margin: 0;
+  padding: 0;
+}
+
+a{
+  text-decoration: none;
+  background-color: var(--gris);
+  color: var(--gris);
+}
+
+button{
+  border: none;
+}
+input{
+  border: none;
+}
+
+

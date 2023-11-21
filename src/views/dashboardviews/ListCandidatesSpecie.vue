@@ -2,6 +2,7 @@
 import { useConsultaStore } from "@/stores/consulta";
 
 const consulta = useConsultaStore();
+
 </script>
 <template>
   <h1 class="text-4xl mb-10 mt-10 text-center font-extrabold">

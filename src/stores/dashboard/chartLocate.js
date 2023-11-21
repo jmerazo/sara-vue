@@ -86,7 +86,7 @@ export const useChartLocateStore = defineStore('chartLocate', () => {
   
    
     function listar(index) {
-       console.log(index)
+       
         if (index >= 0) {
             chartMunicipios.value = municipios.value[index];
             chartRealizados.value = realizados.value[index];
