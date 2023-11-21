@@ -54,7 +54,7 @@ localStorage.removeItem("hasReloaded");
     <main class="login__contenido">
       
       <form @submit.prevent="handleLogin" class="formulario">
-        <p class="formulario__icono"><font-awesome-icon :icon="['fas', 'user']" /></p>
+        <p class="formulario__icono"><font-awesome-icon :icon="['fas', 'circle-user']" /></p>
         <div class="formulario__seccion">
           <label for="email" class="formulario__label">Email</label>
           <input
