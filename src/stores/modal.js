@@ -13,6 +13,7 @@ export const useModalStore = defineStore('modal',()=>{
     const modalForestSpecieAdd = ref(false)
     const modalInfoCandidate = ref(false)
     
+    
     //modal especie
     function handleClickModal(){
         modal.value = !modal.value

@@ -9,6 +9,8 @@ font-family: 'Roboto', sans-serif;
 
 :root {
   --primary: #008100;
+  --secondary:#343a40;
+  --secondary-hover:#464d55;
   --primary-hover:rgb(12, 172, 12);
   --primary-backgound:#eaf2ed;
   --gris-claro:#f0eded;
@@ -67,10 +69,12 @@ a{
   text-decoration: none;
   background-color: var(--gris);
   color: var(--gris);
+  cursor: pointer;
 }
 
 button{
   border: none;
+  cursor: pointer;
 }
 input{
   border: none;
