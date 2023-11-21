@@ -138,6 +138,7 @@ const displayedPageRange = computed(() => {
 /* buscador */
 .header__label {
   font-weight: 700;
+  color: var(--gris);
 }
 
 @media (min-width: 768px) {

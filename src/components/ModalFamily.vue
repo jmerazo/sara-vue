@@ -1,13 +1,6 @@
 <script setup>
 import { reactive, ref, computed } from "vue";
-import { useRoute, useRouter} from "vue-router";
-import {
-  Dialog,
-  DialogPanel,
-  DialogTitle,
-  TransitionChild,
-  TransitionRoot,
-} from "@headlessui/vue";
+import { useRoute, useRouter } from "vue-router";
 
 import { useModalStore } from "../stores/modal";
 import { useConsultaStore } from "../stores/consulta";
@@ -17,7 +10,7 @@ const modal = useModalStore();
 const consulta = useConsultaStore();
 
 const paginaInicio = computed(() => route.name === "home");
-const router = useRouter()
+const router = useRouter();
 
 const consultar = (nombre_comun) => {
   consulta.consulta.categoria = "Nombre Común";
@@ -25,120 +18,191 @@ const consultar = (nombre_comun) => {
   consulta.mostrarConsulta();
 };
 
-const irFamilias = ()=>{
-  router.push('/familias')
-}
+const irFamilias = () => {
+  router.push("/familias");
+};
 </script>
 
 <template>
-  <TransitionRoot as="template" :show="modal.modalFamily">
-    <Dialog
-      as="div"
-      class="relative z-10"
-      @close="modal.handleClickModalFamily()"
-    >
-      <TransitionChild
-        as="template"
-        enter="ease-out duration-300"
-        enter-from="opacity-0"
-        enter-to="opacity-100"
-        leave="ease-in duration-200"
-        leave-from="opacity-100"
-        leave-to="opacity-0"
-      >
-        <div
-          class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"
-        />
-      </TransitionChild>
-      <div class="fixed inset-0 z-10 overflow-y-auto">
-        <div
-          class="flex min-h-full items-end justify-center p-2 text-center sm:items-center sm:p-0"
+  <div class="modal" v-if="modal.modalFamily">
+    <div class="modal__contenido">
+      <h3 class="modal__heading">
+        {{ consulta.strFamilia }}
+      </h3>
+      <p class="modal__texto">
+        Esta familia cuenta con las siguientes especies:
+      </p>
+      <hr />
+      <!-- iterar las especies -->
+      <div class="modal__tabla">
+        <!-- tabla -->
+        <table
+          class="tabla"
+          v-for="especie in consulta.familia"
+          :key="especie.familia"
         >
-          <TransitionChild
-            as="template"
-            enter="ease-out duration-300"
-            enter-from="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-            enter-to="opacity-100 translate-y-0 sm:scale-100"
-            leave="ease-in duration-200"
-            leave-from="opacity-100 translate-y-0 sm:scale-100"
-            leave-to="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-          >
-            <DialogPanel
-              class="relative transform overflow-hidden rounded-lg bg-white px-2 pt-2 pb-2 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-3xl sm:p-6"
-            >
-              <div>
-                <div>
-                  <!-- llenar la info dinámica -->
-
-                  <DialogTitle
-                    as="h4"
-                    class="text-gray-900 text-lg text-center font-extrabold"
-                  >
-                    {{ consulta.strFamilia }}
-                  </DialogTitle>
-                  <DialogTitle
-                    as="h3"
-                    class="text-gray-900 text-lg font-bold my-5"
-                  >
-                    La familia {{ consulta.strFamilia }} cuenta con las
-                    siguientes especies:
-                  </DialogTitle>
-                  <!-- iterar las especies -->
-                  <div
-                    class="bg-green-100 rounded-lg shadow-lg"
-                  >
-                    <!-- tabla -->
-                  <table 
-                    class="w-full"
-                    v-for="especie in consulta.familia"
-                    :key="especie.familia"
-                  >
-                    <tr>
-                      <td class="w-3/5 p-4">
-                        <p class="font-bold">
-                          {{ especie.nom_comunes }} -
-                          {{ especie.nombre_cientifico }}
-                        </p>
-                        <p class="text-slate-600" >
-                          {{ especie.otros_nombres }}
-                        </p>
-                      </td>
-                      <td class="w-1/4 p-4">
-                        <button
-                          class="w-full p-1 bg-white hover:bg-green-700 hover:text-white text-black font-bold  rounded-lg"
-                          @click="consultar(especie.nom_comunes),modal.handleClickModalFamily()"
-                        >
-                          Ver información
-                        </button>
-                      </td>
-                    </tr>
-                  </table>
-                  <!-- fin de la tabla -->
-                  </div>
-                  
-                </div>
-              </div>
-              <div class="mt-8 sm:mt-6 flex justify-between gap-4">
-                <button
-                  type="button"
-                  class="shadow p-1 w-full rounded-lg bg-gray-700 hover:bg-gray-800 text-white uppercase font-bold"
-                  @click="modal.handleClickModalFamily()"
-                >
-                  Cerrar
-                </button>
-                <button
-                  v-if="paginaInicio"
-                  type="button"
-                  class="shadow p-1 w-full rounded-lg bg-green-600 hover:bg-green-700 text-white uppercase font-bold"
-                  @click="irFamilias(), modal.handleClickModalFamily()"
-                >
-                  Ver Todas las Familias
-                </button>
-              </div>
-            </DialogPanel>
-          </TransitionChild>
-        </div>
+          <tr class="tabla__fila">
+            <td class="tabla__columna">
+              <p class="tabla__dato">
+                {{ especie.nom_comunes }} -
+                {{ especie.nombre_cientifico }}
+              </p>
+             
+            </td>
+            <td class="tabla__columna">
+              <button
+                class="tabla__boton"
+                @click="
+                  consultar(especie.nom_comunes), modal.handleClickModalFamily()
+                "
+              >
+                Ver especie
+              </button>
+            </td>
+          </tr>
+        </table>
+        <!-- fin de la tabla -->
       </div>
-    </Dialog>
-  </TransitionRoot>
+      <div class="modal__botones">
+        <button
+          v-if="paginaInicio"
+          type="button"
+          class="modal__botonMas"
+          @click="irFamilias(), modal.handleClickModalFamily()"
+        >
+          Ver Todas las Familias
+        </button>
+        <button
+          type="button"
+          class="modal__botonCerrar"
+          @click="modal.handleClickModalFamily()"
+        >
+          Cerrar
+        </button>
+      </div>
+    </div>
+  </div>
 </template>
+<style scoped>
+.tabla__fila {
+  display: flex;
+  flex-direction: column;
+  background-color: var(--gris-claro);
+  border-radius: 20px;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+@media (min-width: 768px) {
+  .tabla {
+    width: 100%;
+  }
+  .tabla__fila {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    align-items: center;
+  }
+}
+
+.tabla__dato {
+  font-weight: 700;
+  color: var(--gris);
+  padding: 0 10px;
+}
+.tabla__boton {
+  background-color: #066964;
+  color: var(--blanco);
+  font-weight: 700;
+  border-radius: 10px;
+  padding: 10px 55px;
+  transition: background-color 0.3s;
+}
+.tabla__boton:hover {
+  background-color: #033b37;
+}
+
+@media (min-width: 768px){
+  .tabla__boton{
+    background-color: var(--blanco);
+    color: var(--gris);
+    transition-property: background-color color;
+    transition-duration: .4s;
+  }
+  .tabla__boton:hover{
+    background-color:#066964;
+    color: var(--blanco);
+  }
+}
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  overflow: auto;
+}
+
+.modal__contenido {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+  text-align: center;
+  width: 80%;
+  max-height: 90vh;
+  overflow-y: auto;
+  transform: translate(-50%, -50%);
+}
+
+@media (min-width: 830px) {
+  .modal__contenido {
+    width: 45%;
+  }
+}
+
+.modal__heading {
+  font-size: 2rem;
+  margin: 3rem 0 1.5rem 0;
+  color: var(--primary);
+}
+
+.modal__texto {
+  line-height: 1.5;
+  text-align: center;
+  font-weight: 700;
+  color: var(--secondary);
+}
+.modal__botones {
+  margin-top: 3rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.modal__botonCerrar {
+  background-color: var(--secondary);
+  color: var(--blanco);
+  padding: 1rem;
+  font-weight: 700;
+  border-radius: 20px;
+  transition: background-color 0.3s;
+}
+.modal__botonCerrar:hover {
+  background-color: var(--secondary-hover);
+}
+.modal__botonMas {
+  background-color: var(--primary);
+  color: var(--blanco);
+  padding: 1rem;
+  font-weight: 700;
+  border-radius: 20px;
+  transition: background-color 0.3s;
+}
+
+.modal__botonMas:hover {
+  background-color: var(--primary-hover);
+}
+</style>
