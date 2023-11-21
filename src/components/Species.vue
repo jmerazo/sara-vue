@@ -68,6 +68,7 @@ defineProps({
   text-align: center;
   font-weight: 700;
   font-size: 2rem;
+  color: var(--gris);
 }
 
 .especie__nombre-cientifico {
@@ -87,6 +88,7 @@ defineProps({
 }
 span {
   font-weight: 600;
+  color: var(--gris);
 }
 
 .especie__boton {

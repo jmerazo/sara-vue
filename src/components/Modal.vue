@@ -208,7 +208,7 @@ const consultar = (nombre_comun) => {
   background-color: var(--secondary);
   color: var(--blanco);
   padding: 1rem;
-  font-weight: 900;
+  font-weight: 700;
   border-radius: 20px;
   transition: background-color 0.3s;
 }
@@ -220,7 +220,7 @@ const consultar = (nombre_comun) => {
   background-color: var(--primary);
   color: var(--blanco);
   padding: 1rem;
-  font-weight: 900;
+  font-weight: 700;
   border-radius: 20px;
   transition: background-color 0.3s;
 }

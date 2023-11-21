@@ -44,7 +44,7 @@ const displayedPageRange = computed(() => {
     <!-- fin header vista familia -->
     <hr />
     <main class="familias">
-      <h3 v-if="familias.familias.length != 0">
+      <h3 class="familias__enunciado" v-if="familias.familias.length != 0">
         En el contexto de las especies forestales y la taxonomía biológica, una
         "familia" es una categoría de clasificación que agrupa a un conjunto de
         plantas que comparten ciertas características similares y están
@@ -101,6 +101,11 @@ const displayedPageRange = computed(() => {
 </template>
 
 <style scoped>
+.familias__enunciado{
+  color: var(--gris);
+  text-align: justify;
+  margin-bottom: 3rem;
+}
 /* Header */
 .header__familias {
   margin-top: 2rem;
@@ -142,6 +147,7 @@ const displayedPageRange = computed(() => {
 /* buscador */
 .header__label {
   font-weight: 700;
+  color: var(--gris);
 }
 
 @media (min-width: 768px) {
