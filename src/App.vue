@@ -25,7 +25,7 @@ const consulta = useConsultaStore()
   <main v-if="!store.authActive" >
     <router-view v-if="!store.authActive" />
   </main> 
-  <!-- <Spinner v-if="consulta.cargando"/>  -->
+  <Spinner v-if="consulta.cargando"/> 
   <Footer/> 
   <Modal/>
   <ModalFamily/>

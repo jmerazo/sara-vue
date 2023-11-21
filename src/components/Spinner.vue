@@ -1,7 +1,5 @@
 <template>
-  <div
-    class="w-screen h-full fixed inset-0 z-50 spinner"
-  >
+  <div class="mostrar spinner">
     <div class="sk-circle">
       <div class="sk-circle1 sk-child"></div>
       <div class="sk-circle2 sk-child"></div>
@@ -20,6 +18,25 @@
 </template>
   
   <style scoped>
+.mostrar {
+  /* w-screen */
+  width: 100vw;
+
+  /* h-full */
+  height: 100%;
+
+  /* fixed */
+  position: fixed;
+
+  /* inset-0 */
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+
+  /* z-50 */
+  z-index: 50;
+}
 .spinner {
   display: flex;
   justify-content: center;

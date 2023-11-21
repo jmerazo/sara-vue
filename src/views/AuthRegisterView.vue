@@ -191,6 +191,7 @@ const mostrarError = (message) => {
                 type="email"
                 id="email"
                 class="formulario__input"
+                required
               />
               <!-- Celular -->
               <label for="cellphone" class="formulario__label">Celular:</label>
