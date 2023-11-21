@@ -119,7 +119,7 @@ const displayedPageRange = computed(() => {
 
 @media (min-width: 768px) {
   .familias__heading {
-    font-size: 3.5rem;
+    font-size: 3rem;
   }
 }
 
@@ -182,10 +182,10 @@ const displayedPageRange = computed(() => {
     grid-template-columns: repeat(2, 1fr);
   }
 }
-@media (min-width: 992px) {
+@media (min-width: 1300px) {
   .familias__grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(3, 1fr);
   }
 }
 
