@@ -1,7 +1,6 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
 import APIService from '../services/APIService'
-import convexHull from 'convexhull-js';
 
 export const useGeoCandidateTrees = defineStore('geoCandidateTrees', () => {
     const geoCandidateData = ref([])
