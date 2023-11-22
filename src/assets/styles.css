@@ -8,11 +8,13 @@ font-family: 'Roboto', sans-serif;
 
 
 :root {
-  --primary: #008100;
-  --primary-hover:rgb(12, 172, 12);
+  --primary: #10613e;
+  --primary-hover:#0c4029;
+  --secondary:#213343;
+  --secondary-hover:#0c141a;
   --primary-backgound:#eaf2ed;
-  --gris-claro:#f0eded;
-  --gris:#192125;
+  --gris-claro:#eeecec;
+  --gris:#0f1a22;
   --negro: #080E06;
   --blanco: #FFF;
   --fuente-principal: 'Montserrat', sans-serif;
@@ -61,16 +63,19 @@ img {
   text-align: justify;
   margin: 0;
   padding: 0;
+  color: var(--gris);
 }
 
 a{
   text-decoration: none;
   background-color: var(--gris);
   color: var(--gris);
+  cursor: pointer;
 }
 
 button{
   border: none;
+  cursor: pointer;
 }
 input{
   border: none;

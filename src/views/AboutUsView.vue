@@ -3,6 +3,7 @@ import { onMounted, ref, computed } from "vue";
 import { usePageContent } from "../stores/page";
 
 const pageStore = usePageContent();
+
 </script>
 
 <template>

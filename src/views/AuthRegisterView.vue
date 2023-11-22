@@ -1,9 +1,10 @@
 <script setup>
-import { ref, computed } from 'vue';
-import APIService from '../services/APIService'
-import { useAuthToken } from '../stores/auth'
+import { registerables } from "chart.js";
+import { ref, computed } from "vue";
+import APIService from "../services/APIService";
+import { useAuthToken } from "../stores/auth";
 
-const locates = useAuthToken()
+const locates = useAuthToken();
 
 // Datos del formulario
 const formData = ref({
@@ -16,21 +17,16 @@ const formData = ref({
   profession: "",
   entity: "",
   reason: "",
-  password: "",
-  confirm_password: "",
-  department: '',
-  city: ''
+  password:"123456789",
+  confirm_password: "123456789",
+  department: "",
+  city: "",
 });
 
-const filteredCities = computed(() => {
-  const selectedDepartament = formData.value.department
-  console.log(selectedDepartament)
-  if (selectedDepartament) {    
-    const filtered = locates.cities.filter(city => city.department_id === selectedDepartament);
-    return filtered;
-  }
-  return [];
-});
+
+
+const error = ref("");
+const exito = ref(false)
 
 const profesiones = [
   "Estudiante",
@@ -42,330 +38,471 @@ const profesiones = [
   // Agrega más profesiones según sea necesario
 ];
 
-function validateForm() {
-  const formKeys = Object.keys(formData.value);
-  for (const key of formKeys) {
-    if (!formData.value[key]) {
-      return false;
-    }
+const filteredCities = computed(() => {
+  const { department } = formData.value;
+
+  if (department) {
+    const filtered = locates.cities.filter(
+      (city) => city.department_id === department
+    );
+    return filtered;
   }
-  return true;
+  return [];
+});
+
+function validarCampos(obj) {
+  return Object.values(obj).some((value) => value === "");
 }
 
-const passwordsMatch = ref(true);
-const passwordsMismatchMessage = ref('');
-const passwordLengthMessage = ref('')
+// function confirmarPassword() {
+//   const { password, confirm_password } = formData.value;
+//   return password === confirm_password;
+// }
+
+function resetForm() {
+  Object.keys(formData.value).forEach(key => {
+    formData.value[key] = "";
+  });
+}
 
 function validatePasswords() {
   return formData.value.password === formData.value.confirm_password;
 }
 
-function resetForm() {
-  for (let key in formData.value) {
-    formData.value[key] = "";
-  }
-}
+
 // Función para enviar el formulario
 async function userCreate() {
-  if (!validatePasswords()) {
-    alert("Las contraseñas no coinciden");
+
+  if (validarCampos(formData.value)) {
+    mostrarError("Llene todos los campos") ;
     return;
   }
 
-  if (!validateForm()) {
-    alert("Por favor complete todos los campos del formulario.");
-    return;
-  }
+  // if (!confirmarPassword()) {
+  //   mostrarError("Las contraseñas no coinciden");
+  //   return;
+  // }
+
 
   try {
     await APIService.createUsers(formData.value);
     resetForm();
+    exito.value = true
   } catch (error) {
     if (error.response && error.response.data && error.response.data.error) {
       // Si hay un mensaje de error en la respuesta, lo puedes mostrar
       alert(error.response.data.error);
     } else {
       // En caso de un error inesperado
-      alert('Ocurrió un error al procesar la solicitud.');
+      alert("Ocurrió un error al procesar la solicitud.");
     }
   }
-  
+}
+
+
+
+function convertToUppercase(event) {
+  const inputElement = event.target;
+  inputElement.value = inputElement.value.toUpperCase();
+}
+
+const mostrarError = (message) => {
+  error.value = message;
+  setTimeout(() => {
+    error.value = null;
+  }, 3000); // El mensaje de error desaparecerá después de 3 segundos
 };
 
-function checkPasswordsMatch() {
-  passwordsMatch.value = validatePasswords();
-  if (!passwordsMatch.value) {
-    passwordsMismatchMessage.value = "Las contraseñas no coinciden";
-  } else {
-    passwordsMismatchMessage.value = "";
-  }
-}
-
-function validatePasswordLength() {
-  if (formData.value.password.length < 6) {
-    passwordLengthMessage.value = "La contraseña debe tener al menos 6 caracteres";
-    return false;
-  }
-  passwordLengthMessage.value = "";
-  return true;
-}
-
-function getSecurityLevel() {
-  const password = formData.value.password;
-
-  if (password.length < 6) {
-    return "Bajo";
-  }
-
-  const containsLowerCase = /[a-z]/.test(password);
-  const containsUpperCase = /[A-Z]/.test(password);
-  const containsNumber = /\d/.test(password);
-  const containsSymbol = /[!@#$%^&*(),.?":{}|<>]/.test(password);
-
-  let level = 0;
-
-  if (containsLowerCase) level++;
-  if (containsUpperCase) level++;
-  if (containsNumber) level++;
-  if (containsSymbol) level++;
-
-  if (level >= 3) {
-    return "Alto";
-  } else if (level === 2) {
-    return "Medio";
-  } else {
-    return "Bajo";
-  }
-}
-
-function getSecurityBarWidth() {
-  const securityLevel = getSecurityLevel();
-
-  if (securityLevel === 'Bajo') {
-    return { percentage: '33%', level: 'low-security' };
-  } else if (securityLevel === 'Medio') {
-    return { percentage: '66%', level: 'medium-security' };
-  } else {
-    return { percentage: '100%', level: 'high-security' };
-  }
-}
-
-document.addEventListener('DOMContentLoaded', function() {
-  const sendData = document.getElementById("saveUser");
-
-  sendData.addEventListener("click", validate);
-
-  function validate(e) {
-    e.preventDefault();
-
-    const names = document.getElementById("names");
-    const lastnames = document.getElementById("lastnames")
-    const email = document.getElementById("email")
-    const cellphone = document.getElementById("cellphone")
-    const profession = document.getElementById("profession")
-    const entity = document.getElementById("entity")
-    const reason = document.getElementById("reason")
-    const password = document.getElementById("password")
-
-    let valido = true;
-
-    const nameError = document.getElementById("nameError")
-
-    if (!names.value) {
-      nameError.classList.add("visible");
-      names.classList.add("invalido");
-      nameError.setAttribute("aria-hidden", false);
-      nameError.setAttribute("aria-invalid", true);
-    }
-
-    if (!lastnames.value) {
-      nameError.classList.add("visible");
-      lastnames.classList.add("invalido");
-      nameError.setAttribute("aria-hidden", false);
-      nameError.setAttribute("aria-invalid", true);
-    }
-
-    if (!email.value) {
-      nameError.classList.add("visible");
-      email.classList.add("invalido");
-      nameError.setAttribute("aria-hidden", false);
-      nameError.setAttribute("aria-invalid", true);
-    }
-
-    if (!cellphone.value) {
-      nameError.classList.add("visible");
-      cellphone.classList.add("invalido");
-      nameError.setAttribute("aria-hidden", false);
-      nameError.setAttribute("aria-invalid", true);
-    }
-
-    if (!profession.value) {
-      nameError.classList.add("visible");
-      profession.classList.add("invalido");
-      nameError.setAttribute("aria-hidden", false);
-      nameError.setAttribute("aria-invalid", true);
-    }
-
-    if (!entity.value) {
-      nameError.classList.add("visible");
-      entity.classList.add("invalido");
-      nameError.setAttribute("aria-hidden", false);
-      nameError.setAttribute("aria-invalid", true);
-    }
-
-    if (!reason.value) {
-      nameError.classList.add("visible");
-      reason.classList.add("invalido");
-      nameError.setAttribute("aria-hidden", false);
-      nameError.setAttribute("aria-invalid", true);
-    }
-
-    if (!password.value) {
-      nameError.classList.add("visible");
-      password.classList.add("invalido");
-      nameError.setAttribute("aria-hidden", false);
-      nameError.setAttribute("aria-invalid", true);
-    }
-    
-    return valido;
-  }
-});
-
-function convertToUppercase() {
-  const entityInput = document.getElementById('entity');
-  entityInput.value = entityInput.value.toUpperCase();
-}
 </script>
 
 <template>
-    <div class="max-w-md mx-auto">
-      <h2 class="text-2xl font-bold mb-4 text-center">Formulario solicitud de Registro</h2>
-      <form @submit.prevent="userCreate" class="space-y-4 mb-20 relative bg-white p-8 rounded-lg shadow-lg backdrop-blur-lg backdrop-opacity-50">
-        <!-- Tipo de documento -->
-        <div>
-          <label for="document_type" class="block font-semibold mb-1">Tipo de documento</label>
-          <select v-model="formData.document_type" id="document_type" class="w-full rounded-lg border px-4 py-2" required>
-            <option value="Cédula de ciudadanía">Cédula de ciudadanía</option>
-            <option value="Tarjeta de identidad">Tarjeta de identidad</option>
-            <option value="NIT">NIT</option>
-            <option value="Cédula de extranjería">Cédula de extranjería</option>
-          </select>
-        </div>
-  
-        <!-- Número de documento -->
-        <div>
-          <label for="document_number" class="block font-semibold mb-1">Número de documento</label>
-          <input v-model="formData.document_number" type="text" id="document_number" class="w-full rounded-lg border px-4 py-2" required>
-        </div>
-  
-        <!-- Nombres -->
-        <div>
-          <label for="first_name" class="block font-semibold mb-1">Nombres</label>
-          <input v-model="formData.first_name" type="text" id="first_name" class="w-full rounded-lg border px-4 py-2" required>
-        </div>
-  
-        <!-- Apellidos -->
-        <div>
-          <label for="last_name" class="block font-semibold mb-1">Apellidos</label>
-          <input v-model="formData.last_name" type="text" id="last_name" class="w-full rounded-lg border px-4 py-2" required>
-        </div>
-  
-        <!-- Correo electrónico -->
-        <div>
-          <label for="email" class="block font-semibold mb-1">Correo electrónico</label>
-          <input v-model="formData.email" type="email" id="email" class="w-full rounded-lg border px-4 py-2">
-          <span class="error-message-email" id="email-error" style="color: red;">Por favor, ingresa un correo electrónico válido.</span>
-        </div>
-
-        <!-- Celular -->
-        <div>
-          <label for="cellphone" class="block font-semibold mb-1">Celular</label>
-          <input v-model="formData.cellphone" type="number" id="cellphone" class="w-full rounded-lg border px-4 py-2" required>
-        </div>
-  
-        <!-- Profesión -->
-        <div>
-          <label for="profession" class="block font-semibold mb-1">Profesión</label>
-          <select v-model="formData.profession" id="profession" class="w-full rounded-lg border px-4 py-2">
-            <option value="">Selecciona una profesión</option>
-            <option v-for="profesion in profesiones" :value="profesion" :key="profesion">{{ profesion }}</option>
-          </select>
-        </div>
-  
-        <!-- Entidad -->
-        <div>
-          <label for="entity" class="block font-semibold mb-1">Entidad</label>
-          <input v-model="formData.entity" type="text" id="entity" class="w-full rounded-lg border px-4 py-2" @input="convertToUppercase">
-        </div>
-  
-        <!-- Motivo -->
-        <div>
-          <label for="reason" class="block font-semibold mb-1">Motivo solicitud</label>
-          <textarea v-model="formData.reason" id="reason" class="w-full rounded-lg border px-4 py-2" required></textarea>
-        </div>
-
-        <div>
-          <label class="block font-bold" for="parametro">Departamento</label>
-          <select
-            id="department"
-            class="w-full rounded-lg border px-4 py-2"
-            v-model="formData.department"
-          >
-            <option value="" disabled selected>Seleccione un departamento...</option>
-            <option v-for="loc in locates.departments" :key="loc.id" :value="loc.code">
-              {{ loc.name }}
-            </option>
-          </select>
-        </div>
-
-        <div v-if="filteredCities.length">
-          <label class="block font-bold" for="parametro">Ciudad</label>
-          <select
-            id="city"
-            class="w-full rounded-lg border px-4 py-2"
-            v-model="formData.city"
-          >
-            <option value="" disabled selected>Seleccione una ciudad...</option>
-            <option v-for="city in filteredCities" :key="city.id" :value="city.id">
-              {{ city.name }}
-            </option>
-          </select>
-        </div>
-
-        <div :class="{'error': !passwordsMatch}">
-          <label for="password" class="block font-semibold mb-1">Contraseña</label>
-          <input v-model="formData.password" @input="checkPasswordsMatch" type="password" @blur="validatePasswordLength" id="password" :class="{'valid': passwordsMatch, 'invalid': !passwordsMatch}" class="w-full rounded-lg border px-4 py-2" required>
-        </div>
-
-        <!-- Confirmar Contraseña -->
-        <div :class="{'error': !passwordsMatch}">
-          <label for="confirm_password" class="block font-semibold mb-1">Confirmar Contraseña</label>
-          <input v-model="formData.confirm_password" @input="checkPasswordsMatch" type="password" id="confirm_password" :class="{'valid': passwordsMatch, 'invalid': !passwordsMatch}" class="w-full rounded-lg border px-4 py-2" required>
-          <span class="text-red-500 text-sm" v-if="passwordsMismatchMessage">{{ passwordsMismatchMessage }}</span>
-        </div>
-
-        <div>
-          <span class="text-red-500 text-sm" v-if="passwordLengthMessage">{{ passwordLengthMessage }}</span>
-        </div>
-
-        <div v-if="formData.password != ''">
-          <p v-if="formData.password.length >= 6">Nivel de Seguridad: {{ getSecurityLevel() }}</p>
-          <div :style="{ width: getSecurityBarWidth().percentage }" :class="getSecurityBarWidth().level" class="security-bar"></div>
-        </div>
-
-        <span role="alert" id="nameError" aria-hidden="true">
-          Ingrese todos los datos, por favor
-        </span>
-  
-        <button id="saveUser" type="submit" class="w-full bg-blue-500 text-white font-semibold rounded-lg py-2" @click.prevent="userCreate">
-          Registrarse
-        </button>
-      </form>
+  <div class="contenedor">
+    <div class="solicitud__header">
+      <h2 class="solicitud__heading">Solicitud de registro</h2>
     </div>
+
+    <main v-if="!exito" class="solicitud__contenido">
+      <form @submit.prevent="userCreate" class="formulario">
+        <p class="formulario__icono">
+          <font-awesome-icon :icon="['fas', 'clipboard-user']" />
+        </p>
+        <div class="formulario__grid">
+          <div class="formulario__columna">
+            <fieldset class="formulario__seccion">
+              <legend>Datos personales</legend>
+              <!-- tipo id -->
+              <label for="document_type" class="formulario__label"
+                >Tipo de documento:</label
+              >
+              <select
+                v-model="formData.document_type"
+                id="document_type"
+                class="formulario__input formulario__input--select"
+                required
+              >
+                <option value="Cédula de ciudadanía">
+                  Cédula de ciudadanía
+                </option>
+                <option value="Tarjeta de identidad">
+                  Tarjeta de identidad
+                </option>
+                <option value="NIT">NIT</option>
+                <option value="Cédula de extranjería">
+                  Cédula de extranjería
+                </option>
+              </select>
+              <label for="document_number" class="formulario__label"
+                >Número de documento </label
+              >
+              <input
+                v-model="formData.document_number"
+                type="number"
+                id="document_number"
+                class="formulario__input"
+                placeholder="Número sin puntos"
+                required
+              />
+              <!-- nombres -->
+              <label for="first_name" class="formulario__label">Nombres:</label>
+              <input
+                v-model="formData.first_name"
+                type="text"
+                id="first_name"
+                class="formulario__input mayus"
+                required
+                @input="convertToUppercase"
+              />
+              <!-- Apellidos -->
+              <label for="last_name" class="formulario__label">Apellidos:</label>
+              <input
+                v-model="formData.last_name"
+                type="text"
+                id="last_name"
+                class="formulario__input mayus"
+                @input="convertToUppercase"
+                required
+              />
+              <!-- Correo electrónico -->
+              <label for="email" class="formulario__label"
+                >Correo electrónico:</label
+              >
+              <input
+                v-model="formData.email"
+                type="email"
+                id="email"
+                class="formulario__input"
+                required
+              />
+              <!-- Celular -->
+              <label for="cellphone" class="formulario__label">Celular:</label>
+              <input
+                v-model="formData.cellphone"
+                type="tel"
+                id="cellphone"
+                class="formulario__input"
+                placeholder="Celular sin espacios"
+                required
+              />
+            </fieldset>
+          </div>
+          <div class="formulario__columna">
+            <fieldset class="formulario__seccion">
+              <legend>Datos Laborales</legend>
+              <!-- Profesión -->
+              <label for="profession" class="formulario__label"
+                >Profesión:</label
+              >
+              <select
+                v-model="formData.profession"
+                id="profession"
+                class="formulario__input formulario__input--select"
+              >
+                <option value="">--seleccione--</option>
+                <option
+                  v-for="profesion in profesiones"
+                  :value="profesion"
+                  :key="profesion"
+                >
+                  {{ profesion }}
+                </option>
+              </select>
+              <!-- Entidad -->
+              <label for="entity" class="formulario__label">Entidad:</label>
+              <input
+                v-model="formData.entity"
+                type="text"
+                class="formulario__input mayus"
+                @input="convertToUppercase"
+              />
+              <!-- departamento -->
+              <label class="formulario__label" for="parametro"
+                >Departamento:</label
+              >
+              <select
+                id="department"
+                class="formulario__input formulario__input--select"
+                v-model="formData.department"
+              >
+                <option value="">--seleccione--</option>
+                <option
+                  v-for="loc in locates.departments"
+                  :key="loc.id"
+                  :value="loc.code"
+                >
+                  {{ loc.name }}
+                </option>
+              </select>
+              <!-- ciudad -->
+              <div v-if="filteredCities.length">
+                <label class="formulario__label" for="parametro">Ciudad:</label>
+                <select
+                  id="city"
+                  class="formulario__input formulario__input--select"
+                  v-model="formData.city"
+                >
+                  <option value="" disabled selected>--seleccione--</option>
+                  <option
+                    v-for="city in filteredCities"
+                    :key="city.id"
+                    :value="city.id"
+                  >
+                    {{ city.name }}
+                  </option>
+                </select>
+              </div>
+              <!-- Motivo -->
+              <label for="reason" class="formulario__label"
+                >Motivo solicitud:</label
+              >
+              <textarea
+                v-model="formData.reason"
+                id="reason"
+                class="formulario__input formulario__input--area"
+                required
+              ></textarea>
+            </fieldset>
+          </div>
+          <div class="formulario__columna ocultar">
+            <fieldset
+              class="formulario__seccion"
+            >
+              <legend>Definir seguridad</legend>
+              <!-- contraseña -->
+              <label for="password" class="formulario__label">Crear Contraseña</label>
+              <input
+                type="password"
+                id="password"
+                class="formulario__input formulario__input--select"
+                required
+              />
+              <!-- Confirmar Contraseña -->
+              <div>
+                <label for="confirm_password" class="formulario__label"
+                  >Confirmar Contraseña</label
+                >
+                <input
+                  type="password"
+                  id="confirm_password"
+                  class="formulario__input formulario__input--select"
+                  required
+                />
+              </div>
+            </fieldset>
+          </div>
+        </div>
+
+        <input
+          id="saveUser"
+          type="submit"
+          class="formulario__boton"
+          @click.prevent="userCreate"
+          :class="{ show: error }"
+          :value="error ? error : 'Registrarse'"
+        />
+      </form>
+    </main>
+    <div class="respuesta" v-if="exito">
+      <p class="respuesta__icono"><font-awesome-icon :icon="['fas', 'clipboard-check']" /></p>
+      <p class="respuesta__info">la solicitud ha sido enviada exitosamente</p>
+      <p class="respuesta__info">Espare en su <span>Email</span> una repuesta en los siguietnes días</p>
+    </div>
+  </div>
 </template>
 
 <style scoped>
-.error {
+.respuesta{
+  background-color: var(--gris-claro);
+  padding: 1rem;
+  border-radius: 20px;
+  margin-bottom: 4rem;
+  box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+.respuesta__icono{
+  font-size: 5rem;
+  padding: 0;
+  margin: 0;
+  text-align: center;
+  color: var(--primary);
+}
+.respuesta__info{
+  font-weight: 700;
+  text-align: center;
+}
+.respuesta__info span{
+  color: var(--primary);
+  border-bottom: 1px solid var(--primary);
+}
+.ocultar{
+  display: none;
+}
+.solicitud__header {
+  margin-top: 3rem;
+}
+.solicitud__heading {
+  font-size: 1.6rem;
+  margin: 2rem auto;
+}
+@media (min-width: 768px) {
+  .solicitud__heading {
+    font-size: 3rem;
+  }
+}
+.solicitud__contenido {
+  align-items: center;
+  margin: 3rem auto;
+}
+
+@media (min-width: 768px) {
+  .solicitud__contenido {
+    margin: 5rem auto;
+  }
+}
+
+/* formulario */
+.formulario__icono {
+  text-align: center;
+  margin: 2rem 0;
+  font-size: 4rem;
+  color: var(--gris);
+}
+
+@media (min-width: 768px) {
+  .formulario__icono {
+    font-size: 5rem;
+  }
+}
+
+.formulario {
+  display: flex;
+  flex-direction: column;
+  background-color: var(--gris-claro);
+  margin-bottom: 2rem;
+  border-radius: 1rem;
+  box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+@media (min-width: 768px) {
+  .formulario {
+    margin: 0 auto;
+  }
+}
+
+@media (min-width: 1200px) {
+  .formulario {
+    max-width: 50%;
+  }
+}
+.formulario__seccion {
+  margin: 0 1rem;
+  border: 1px solid var(--gris);
+  margin-bottom: 2rem;
+}
+
+.formulario__seccion:last-of-type {
+  margin-bottom: 4rem;
+}
+
+.formulario legend {
+  background-color: var(--primary);
+  width: 100%;
+  text-align: center;
+  color: var(--blanco);
+  text-transform: uppercase;
+  font-weight: 900;
+  padding: 0.5rem;
+  margin-bottom: 3rem;
+  border-bottom-left-radius: 20px;
+  border-bottom-right-radius: 20px;
+}
+
+.formulario__label {
+  display: block;
+  font-weight: 700;
+  text-align: center;
+  margin: 0 0 5px 0;
+}
+.formulario__input {
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  width: 88%;
+  max-width: 90%;
+  margin-bottom: 20px;
+}
+.formulario__input--select {
+  text-align: center;
+}
+.formulario__span {
+  color: red;
+  text-align: center;
+  margin: 0;
+  padding: 0;
+}
+@media (min-width: 768px) {
+  .formulario__input {
+    max-width: unset;
+    width: 95%;
+    max-width: 95%;
+  }
+  .formulario__label{
+    text-align: left;
+  }
+}
+.formulario__input:focus {
+  outline: 2px solid var(--primary);
+}
+
+.formulario__boton {
+  background-color: green;
+  max-width: 100%;
+  width: 100%;
+  border-bottom-left-radius: 20px;
+  border-bottom-right-radius: 20px;
+  padding: 1rem 0;
+  color: var(--blanco);
+  font-weight: 700;
+  transition: background-color 0.3s ease;
+}
+
+.formulario__boton:hover {
+  background-color: var(--primary-hover);
+}
+
+.show {
+  background-color: rgb(175, 4, 4);
+}
+.show:hover{
+  background-color: rgb(209, 7, 7);
+}
+.formulario__input--area {
+  height: 5rem;
+}
+@media (min-width: 992px) {
+  .formulario__input--area {
+    height: 6rem;
+  }
+}
+/* estilos anteriores */
+/* .error {
   border-color: red;
 }
 
@@ -375,11 +512,12 @@ function convertToUppercase() {
 
 .invalid {
   border-color: red;
-}.security-bar {
+}
+.security-bar {
   height: 10px;
   width: 100%;
   border-radius: 20px;
-  background-color: #ccc; /* Color de fondo predeterminado */
+  background-color: #ccc; /* Color de fondo predeterminado 
 }
 
 .low-security {
@@ -394,16 +532,16 @@ function convertToUppercase() {
   background-color: rgb(169, 202, 169);
 }
 .border-red-500 {
-  border-color: #EF4444;
+  border-color: #ef4444;
 }
 
 .error-message {
-  color: #EF4444;
+  color: #ef4444;
   display: none;
 }
 
 .error-message-email {
-  display: none; 
+  display: none;
 }
 
 .border-red-500 + .error-message {
@@ -421,5 +559,5 @@ function convertToUppercase() {
 
 input.invalido {
   border-color: red;
-}
+} */
 </style>

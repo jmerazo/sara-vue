@@ -138,6 +138,7 @@ const displayedPageRange = computed(() => {
 /* buscador */
 .header__label {
   font-weight: 700;
+  color: var(--gris);
 }
 
 @media (min-width: 768px) {
@@ -183,6 +184,12 @@ const displayedPageRange = computed(() => {
   .especies__grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
+  }
+}
+@media (min-width: 1500px) {
+  .especies__grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
   }
 }
 

@@ -67,6 +67,7 @@ defineProps({
   justify-content: center;
   align-items: center;
   gap: 10px;
+  
 }
 /* informacion familia */
 .familia__informacion {
@@ -74,7 +75,7 @@ defineProps({
   gap: 1rem;
   flex-direction: column;
   justify-content: space-between;
-  
+  color: var(--gris);
 }
 
 .familia__nombre {
@@ -86,6 +87,7 @@ defineProps({
   text-align: center;
   font-weight: 700;
   font-size: 2rem;
+  color: var(--gris);
 }
 .familia__caracteristicas{
   text-align: justify;
