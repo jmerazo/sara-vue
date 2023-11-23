@@ -1,7 +1,7 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
 import APIService from '../services/APIService'
-import convexHull from 'convexhull-js';
+import JSZip from 'jszip';
 
 export const useGeoCandidateTrees = defineStore('geoCandidateTrees', () => {
 
@@ -9,6 +9,9 @@ export const useGeoCandidateTrees = defineStore('geoCandidateTrees', () => {
     const geoDataNew = ref([])
     let isDataLoaded = false
     const coordinatesPolygon = ref([])
+    const coordinatesKML = ref([])
+    const departments = ref([])
+    const cities = ref([])
 
     const fetchData = async () => {
         if (!isDataLoaded) {
@@ -17,6 +20,18 @@ export const useGeoCandidateTrees = defineStore('geoCandidateTrees', () => {
             /* console.log('geoStore: ', geoCandidateData.value) */
             geoDataNew.value = data
             isDataLoaded = true
+
+            const defDep = [...new Map(geoCandidateData.value.map(dp => [dp.departamento, dp])).values()];
+            departments.value = defDep.map(dp => ({
+                cod_especie: dp.cod_especie,
+                departamento: dp.departamento
+            }));
+
+            const defCities= [...new Map(geoCandidateData.value.map(ct => [ct.municipio, ct])).values()];
+            cities.value = defCities.map(ct => ({
+                cod_especie: ct.cod_especie,
+                departamento: ct.departamento
+            }));
         }
     }
 
@@ -27,16 +42,18 @@ export const useGeoCandidateTrees = defineStore('geoCandidateTrees', () => {
           return geoCandidateData.value
             .filter(item => item.codigo === codeFilter)
             .map(item => ({
-              lon: item.lon,
-              lat: item.lat,
-              nombre_comun: item.nom_comunes,
-              codigo: item.codigo,
-              numero_placa: item.numero_placa,
-              nombre_cientifico: item.nombre_cientifico,
-              vereda: item.vereda,
-              coordenadas: item.coordenadas,
-              nombre_del_predio: item.nombre_del_predio,
-              resultado: item.resultado
+                lon: item.lon,
+                lat: item.lat,
+                nombre_comun: item.nom_comunes,
+                codigo: item.codigo,
+                numero_placa: item.numero_placa,
+                nombre_cientifico: item.nombre_cientifico,
+                departamento: item.departamento,
+                municipio: item.municipio,
+                vereda: item.vereda,
+                coordenadas: item.coordenadas,
+                nombre_del_predio: item.nombre_del_predio,
+                resultado: item.resultado
             }));
         } else {
             console.log('estoy sin codeFilter')
@@ -48,6 +65,8 @@ export const useGeoCandidateTrees = defineStore('geoCandidateTrees', () => {
             codigo: item.codigo,
             numero_placa: item.numero_placa,
             nombre_cientifico: item.nombre_cientifico,
+            departamento: item.departamento,
+            municipio: item.municipio,
             vereda: item.vereda,
             coordenadas: item.coordenadas,
             nombre_del_predio: item.nombre_del_predio,
@@ -56,51 +75,6 @@ export const useGeoCandidateTrees = defineStore('geoCandidateTrees', () => {
         }
     }  
 
-    /* // Función para calcular las coordenadas del perímetro
-    const calculatePerimeterCoordinates = (code) => {
-        if(code){
-            const filteredPoints = geoDataNew.value.filter((point) => point.codigo === code);
-      
-            const lonArray = filteredPoints.map((point) => point.lon);
-            const latArray = filteredPoints.map((point) => point.lat);
-        
-            if (lonArray.length === 0 || latArray.length === 0) {
-            // No hay puntos para el código de especie proporcionado
-            return [];
-            }
-        
-            const minLon = Math.min(...lonArray);
-            const maxLon = Math.max(...lonArray);
-            const minLat = Math.min(...latArray);
-            const maxLat = Math.max(...latArray);
-        
-            coordinatesPolygon.value = [
-            [minLon, minLat],
-            [minLon, maxLat],
-            [maxLon, maxLat],
-            [maxLon, minLat],
-            [minLon, minLat], // Cerrar el polígono
-            ];
-        }else{
-            const lonArray = geoDataNew.value.map((point) => point.lon);
-            const latArray = geoDataNew.value.map((point) => point.lat);
-            
-            const minLon = Math.min(...lonArray);
-            const maxLon = Math.max(...lonArray);
-            const minLat = Math.min(...latArray);
-            const maxLat = Math.max(...latArray);
-            
-            coordinatesPolygon.value = [
-                [minLon, minLat],
-                [minLon, maxLat],
-                [maxLon, maxLat],
-                [maxLon, minLat],
-                [minLon, minLat], // Cerrar el polígono
-            ];
-            
-        }
-        
-    };  */ 
     // Función para calcular el Convex Hull utilizando el algoritmo de Jarvis March
     function convexHullJarvisMarch(points) {
         if (points.length <= 3) return points; // No es necesario si son menos de 3 puntos
@@ -140,8 +114,70 @@ export const useGeoCandidateTrees = defineStore('geoCandidateTrees', () => {
         const next = nextPoint(current, points);
         current = next;
         } while (current !== leftMost);
-    
+        
+        coordinatesKML.value = convertToKML(hull)
+        
         return hull;
+    }
+
+    function convertToKML(coordinates) {
+        let kmlString = `<?xml version="1.0" encoding="UTF-8"?>
+        <kml xmlns="http://www.opengis.net/kml/2.2">
+          <Document>
+            <name>Coordinates</name>
+            <Placemark>
+              <name>Perimeter</name>
+              <Polygon>
+                <outerBoundaryIs>
+                  <LinearRing>
+                    <coordinates>`;
+      
+        coordinates.forEach(coord => {
+          kmlString += `${coord[0]},${coord[1]},0\n`; // Assuming a flat surface (z=0)
+        });
+      
+        kmlString += `</coordinates>
+                  </LinearRing>
+                </outerBoundaryIs>
+              </Polygon>
+            </Placemark>
+          </Document>
+        </kml>`;
+      
+        return kmlString;
+    }
+
+    function exportToKML() {
+        const blob = new Blob([coordinatesKML.value], { type: 'application/vnd.google-earth.kml+xml' });
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', 'coordinates.kml');
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+
+        exportToKMZ(coordinatesKML.value);
+    }
+
+    function exportToKMZ(kmlContent) {
+        const kmz = new JSZip();
+        kmz.file('doc.kml', kmlContent); // Agrega el archivo KML al archivo KMZ
+      
+        // ... Puedes agregar otros recursos como imágenes, estilos, etc., si es necesario
+        
+        kmz.generateAsync({ type: 'blob' }).then((content) => {
+          const blob = new Blob([content], { type: 'application/vnd.google-earth.kmz' });
+          const url = window.URL.createObjectURL(blob);
+      
+          const link = document.createElement('a');
+          link.href = url;
+          link.setAttribute('download', 'coordinates.kmz');
+          document.body.appendChild(link);
+          
+          link.click();
+          document.body.removeChild(link);
+        });
     }
 
     const calculatePerimeterCoordinates = (code) => {      
@@ -151,7 +187,7 @@ export const useGeoCandidateTrees = defineStore('geoCandidateTrees', () => {
       
           // Utilizar Convex Hull para encontrar los límites exteriores
           coordinatesPolygon.value = convexHullJarvisMarch(allCoordinates);
-          console.log('convex: ', coordinatesPolygon.value)
+          /* console.log('convex: ', coordinatesPolygon.value) */
         } else {
             const allCoordinates = geoDataNew.value.map((point) => [point.lon, point.lat]);
             coordinatesPolygon.value = convexHullJarvisMarch(allCoordinates);
@@ -164,46 +200,52 @@ export const useGeoCandidateTrees = defineStore('geoCandidateTrees', () => {
           geoDataNew.value = geoCandidateData.value
               .filter((item) => item.codigo === codeFilter)
               .map((item) => ({
-                  lon: item.lon,
-                  lat: item.lat,
-                  nombre_comun: item.nombre_comun,
-                  codigo: item.codigo,
-                  numero_placa: item.numero_placa,
-                  nombre_cientifico: item.nombre_cientifico,
-                  vereda: item.vereda,
-                  coordenadas: item.coordenadas,
-                  nombre_del_predio: item.nombre_del_predio,
-                  resultado: item.resultado
+                    lon: item.lon,
+                    lat: item.lat,
+                    nombre_comun: item.nombre_comun,
+                    codigo: item.codigo,
+                    numero_placa: item.numero_placa,
+                    nombre_cientifico: item.nombre_cientifico,
+                    departamento: item.departamento,
+                    municipio: item.municipio,
+                    vereda: item.vereda,
+                    coordenadas: item.coordenadas,
+                    nombre_del_predio: item.nombre_del_predio,
+                    resultado: item.resultado
               }));
       } else {
           // Si no hay especie seleccionada, retornar todos los datos sin filtrar
           geoDataNew.value = geoCandidateData.value.map((item) => ({
-              lon: item.lon,
-              lat: item.lat,
-              nombre_comun: item.nombre_comun,
-              codigo: item.codigo,
-              numero_placa: item.numero_placa,
-              nombre_cientifico: item.nombre_cientifico,
-              vereda: item.vereda,
-              coordenadas: item.coordenadas,
-              nombre_del_predio: item.nombre_del_predio,
-              resultado: item.resultado
+                lon: item.lon,
+                lat: item.lat,
+                nombre_comun: item.nombre_comun,
+                codigo: item.codigo,
+                numero_placa: item.numero_placa,
+                nombre_cientifico: item.nombre_cientifico,
+                departamento: item.departamento,
+                municipio: item.municipio,
+                vereda: item.vereda,
+                coordenadas: item.coordenadas,
+                nombre_del_predio: item.nombre_del_predio,
+                resultado: item.resultado
           }));
       }
     }
     
     function deleteFilterGeo() {
       geoDataNew.value = geoCandidateData.value.map((item) => ({
-          lon: item.lon,
-          lat: item.lat,
-          nombre_comun: item.nombre_comun,
-          codigo: item.codigo,
-          numero_placa: item.numero_placa,
-          nombre_cientifico: item.nombre_cientifico,
-          vereda: item.vereda,
-          coordenadas: item.coordenadas,
-          nombre_del_predio: item.nombre_del_predio,
-          resultado: item.resultado
+            lon: item.lon,
+            lat: item.lat,
+            nombre_comun: item.nombre_comun,
+            codigo: item.codigo,
+            numero_placa: item.numero_placa,
+            nombre_cientifico: item.nombre_cientifico,
+            departamento: item.departamento,
+            municipio: item.municipio,
+            vereda: item.vereda,
+            coordenadas: item.coordenadas,
+            nombre_del_predio: item.nombre_del_predio,
+            resultado: item.resultado
       }));
     }
 
@@ -211,9 +253,14 @@ export const useGeoCandidateTrees = defineStore('geoCandidateTrees', () => {
         geoCandidateData,
         geoDataNew,
         coordinatesPolygon,
+        coordinatesKML,
+        departments,
+        cities,
         fetchData,
         filterGeo,
         calculatePerimeterCoordinates,
-        deleteFilterGeo
+        deleteFilterGeo,
+        convertToKML,
+        exportToKML
     }
 })
