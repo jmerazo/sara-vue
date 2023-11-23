@@ -166,6 +166,7 @@
   display: block;
   width: 100%;
   padding: 2rem 0;
+  margin: 0;
   text-transform: uppercase;
 }
 </style>

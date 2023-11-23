@@ -209,7 +209,7 @@ const consultar = (nombre_comun) => {
   color: var(--blanco);
   padding: 1rem;
   font-weight: 700;
-  border-radius: 20px;
+  border-radius: 10px;
   transition: background-color 0.3s;
 }
 .modal__botonCerrar:hover {
@@ -221,7 +221,7 @@ const consultar = (nombre_comun) => {
   color: var(--blanco);
   padding: 1rem;
   font-weight: 700;
-  border-radius: 20px;
+  border-radius: 10px;
   transition: background-color 0.3s;
 }
 

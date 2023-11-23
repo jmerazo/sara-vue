@@ -18,7 +18,6 @@ import treeIconPath from '../assets/icons/icon_tree_cg.png'
 
 const mapContainer = ref(null);
 const { filteredData } =  defineProps(['filteredData']);
-console.log('filtered data render geo: ', filteredData)
 
 onMounted(() => {
   if (filteredData.length > 0) {
