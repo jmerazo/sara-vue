@@ -11,7 +11,7 @@ const especies = useEspeciesStore();
 
 const renderGeoMapRef = ref(null);
 const codeFind = ref('');
-const department = ref('');
+const department = ref({ code: '', name: '' });
 const city = ref('');
 
 onMounted(async () => {
@@ -25,15 +25,15 @@ function callOnlyPerimeter() {
 }
 
 const filterGeoData = () => {
-  console.log('code view to find: ', codeFind.value)
+/*   console.log('department: ', department.value.name, " city: ", city.value) */
   geoStore.filterGeo(codeFind.value)
   geoStore.calculatePerimeterCoordinates(codeFind.value)
 }
 
 const filteredCities = computed(() => {
-  if (department.value) {
+  if (department.value.code) {
     const filtered = locates.cities.filter(
-      (city) => city.department_id === department.value
+      (city) => city.department_id === department.value.code
     );
     return filtered;
   }
@@ -48,7 +48,7 @@ const filteredCities = computed(() => {
         </div>
         <div class="space-y-4 mb-5">
           <label class="block text-black uppercase font-bold" for="parametro">
-            <font-awesome-icon :icon="['fas', 'filter']" class="mr-2 ml-2" />
+            <font-awesome-icon :icon="['fas', 'database']" class="mr-2 ml-2" />
             Filtrar especie
           </label>
 
@@ -63,7 +63,7 @@ const filteredCities = computed(() => {
                 <option
                   v-for="loc in locates.departments"
                   :key="loc.id"
-                  :value="loc.code"
+                  :value="{ code: loc.code, name: loc.name }"
                 >
                   {{ loc.name }}
                 </option>
@@ -80,7 +80,7 @@ const filteredCities = computed(() => {
                   <option
                     v-for="city in filteredCities"
                     :key="city.id"
-                    :value="city.id"
+                    :value="city.name"
                   >
                     {{ city.name }}
                   </option>
@@ -102,7 +102,8 @@ const filteredCities = computed(() => {
                 {{ especie.nom_comunes + " | " + especie.nombre_cientifico }}
               </option>
             </select>
-            <button type="submit" class="btn-form-search-header cursor-pointer font-bold rounded-lg pl-2 pr-2 ml-3" @click="geoStore.deleteFilterGeo()"><font-awesome-icon :icon="['fas', 'trash']" class="mr-2"/> Eliminar filtro</button>
+            <button type="submit" class="btn-form-search-header cursor-pointer font-bold rounded-lg pl-2 pr-2 ml-3" @click="filterGeoData()"><font-awesome-icon :icon="['fas', 'filter']" class="mr-2"/> Filtrar</button>
+            <button type="submit" class="btn-form-search-header cursor-pointer font-bold rounded-lg pl-2 pr-2 ml-3" @click="geoStore.deleteFilterGeo()"><font-awesome-icon :icon="['fas', 'filter-circle-xmark']" class="mr-2"/> Eliminar filtro</button>
             <button type="submit" class="btn-form-search-header cursor-pointer font-bold rounded-lg pl-2 pr-2 ml-3" @click="geoStore.exportToKML(geoStore.coordinatesKML)"><font-awesome-icon :icon="['fas', 'arrows-to-eye']" class="mr-2"/> Exportar KML/KMZ</button>
             <button type="submit" class="btn-form-search-header cursor-pointer font-bold rounded-lg pl-2 pr-2 ml-3" @click="callOnlyPerimeter"><font-awesome-icon :icon="['fas', 'draw-polygon']" class="mr-2"/> Perímetro</button>
           </div>

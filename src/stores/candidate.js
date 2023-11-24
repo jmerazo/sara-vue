@@ -35,46 +35,6 @@ export const useGeoCandidateTrees = defineStore('geoCandidateTrees', () => {
         }
     }
 
-    function filterGeo(codeFilter) {
-        console.log('code store filter: ', codeFilter)
-        if (codeFilter) {
-            console.log('estoy con codeFilter')
-          return geoCandidateData.value
-            .filter(item => item.codigo === codeFilter)
-            .map(item => ({
-                lon: item.lon,
-                lat: item.lat,
-                nombre_comun: item.nom_comunes,
-                codigo: item.codigo,
-                numero_placa: item.numero_placa,
-                nombre_cientifico: item.nombre_cientifico,
-                departamento: item.departamento,
-                municipio: item.municipio,
-                vereda: item.vereda,
-                coordenadas: item.coordenadas,
-                nombre_del_predio: item.nombre_del_predio,
-                resultado: item.resultado
-            }));
-        } else {
-            console.log('estoy sin codeFilter')
-          // Si no hay especie seleccionada, retornar todos los datos sin filtrar
-          return geoCandidateData.value.map(item => ({
-            lon: item.lon,
-            lat: item.lat,
-            nombre_comun: item.nom_comunes,
-            codigo: item.codigo,
-            numero_placa: item.numero_placa,
-            nombre_cientifico: item.nombre_cientifico,
-            departamento: item.departamento,
-            municipio: item.municipio,
-            vereda: item.vereda,
-            coordenadas: item.coordenadas,
-            nombre_del_predio: item.nombre_del_predio,
-            resultado: item.resultado
-          }));
-        }
-    }  
-
     // Función para calcular el Convex Hull utilizando el algoritmo de Jarvis March
     function convexHullJarvisMarch(points) {
         if (points.length <= 3) return points; // No es necesario si son menos de 3 puntos
@@ -195,7 +155,7 @@ export const useGeoCandidateTrees = defineStore('geoCandidateTrees', () => {
     };
 
     function filterGeo(codeFilter) {
-  
+
       if (codeFilter) {
           geoDataNew.value = geoCandidateData.value
               .filter((item) => item.codigo === codeFilter)
@@ -230,7 +190,7 @@ export const useGeoCandidateTrees = defineStore('geoCandidateTrees', () => {
                 resultado: item.resultado
           }));
       }
-    }
+    }    
     
     function deleteFilterGeo() {
       geoDataNew.value = geoCandidateData.value.map((item) => ({
@@ -258,8 +218,8 @@ export const useGeoCandidateTrees = defineStore('geoCandidateTrees', () => {
         cities,
         fetchData,
         filterGeo,
-        calculatePerimeterCoordinates,
         deleteFilterGeo,
+        calculatePerimeterCoordinates,
         convertToKML,
         exportToKML
     }
