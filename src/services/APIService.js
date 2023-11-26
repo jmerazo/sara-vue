@@ -96,5 +96,14 @@ export default {
     },
     getCities(){
         return api.get(`/cities/`)
+    },
+    getAssessmentData(){
+        return api.get('/candidates/trees')
+    },
+    getMonitoringData(){
+        return api.get('/monitoring/report/data')
+    },
+    getSampleData(){
+        return api.get('/samples/report/data')
     }
 }

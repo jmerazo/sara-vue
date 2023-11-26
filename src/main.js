@@ -23,8 +23,17 @@ import { faCircleUser } from "@fortawesome/free-regular-svg-icons";
 
 import {} from "@fortawesome/free-brands-svg-icons";
 
+import DataTable from 'datatables.net-vue3';
+import Select from 'datatables.net-select';
+/* import 'datatables.net-dt/css/jquery.dataTables.css'; */
+import 'datatables.net-buttons-dt/css/buttons.dataTables.css';
+import DataTablesCore from 'datatables.net-bs5';
+DataTable.use(Select);
+DataTable.use(DataTablesCore);
+
 library.add(fas, fab, faCopy, faCircleUser);
 
+app.component('DataTable', DataTable);
 app.use(createPinia());
 app.use(router);
 app.use(Toaster, {

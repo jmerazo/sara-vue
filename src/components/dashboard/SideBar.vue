@@ -17,7 +17,7 @@ const userData = JSON.parse(userDataString);
         class="brand-image img-circle elevation-3"
         style="opacity: 0.8"
       />
-      <span class="brand-text font-weight-light">{{ userData.first_name + " " + userData.last_name }}</span>
+      <span class="brand-text font-weight-light text-ellipsis">{{ userData.first_name + " " + userData.last_name }}</span>
     </a>
 
     <!-- Sidebar -->
@@ -129,7 +129,7 @@ const userData = JSON.parse(userDataString);
               </li>
             </ul>
           </li>
-          <li class="nav-header">EVENTOS</li>
+          <li class="nav-header font-bold bg-white">EVENTOS</li>
           <li class="nav-item">
             <a href="#" class="nav-link">
               <i class="nav-icon far fa-calendar-alt"></i>
@@ -222,12 +222,28 @@ const userData = JSON.parse(userDataString);
             </ul>
           </li>
 
-          <li class="nav-header">REPORTES</li>
+          <li class="nav-header font-bold bg-white">REPORTES</li>
+
+          <RouterLink :to="{ name: 'assessment' }">
+          <li class="nav-item">
+            <a href="#" class="nav-link">
+              <font-awesome-icon :icon="['fas', 'list-check']" />
+              <p> Evaluaciones realizadas</p>
+            </a>
+          </li>
+        </RouterLink>
 
           <li class="nav-item">
             <a href="#" class="nav-link">
-              <font-awesome-icon :icon="['fas', 'up-right-and-down-left-from-center']" />
-              <p> Promedio Altura</p>
+              <font-awesome-icon :icon="['fas', 'folder-tree']" />
+              <p> Monitoreos realizados</p>
+            </a>
+          </li>
+
+          <li class="nav-item">
+            <a href="#" class="nav-link">
+              <font-awesome-icon :icon="['fas', 'chart-simple']" />
+              <p> Muestras realizadas</p>
             </a>
           </li>
 
@@ -256,7 +272,7 @@ const userData = JSON.parse(userDataString);
           </li>
         </RouterLink>
 
-          <li v-if="userData.rol == 'ADMINISTRADOR' && userData.is_superuser == 1 && userData.is_staff == 1" class="nav-header">ADMINISTRACIÓN</li>
+          <li v-if="userData.rol == 'ADMINISTRADOR' && userData.is_superuser == 1 && userData.is_staff == 1" class="nav-header font-bold bg-white">ADMINISTRACIÓN</li>
           
           <RouterLink :to="{ name: 'users' }">
           <li v-if="userData.rol == 'ADMINISTRADOR' && userData.is_superuser == 1 && userData.is_staff == 1" class="nav-item">
@@ -284,4 +300,15 @@ const userData = JSON.parse(userDataString);
 @import url("@/adminlte/dist/css/adminlte.min.css");
 @import url("@/adminlte/plugins/fontawesome-free/css/all.min.css");
 @import url("@/adminlte/plugins/ekko-lightbox/ekko-lightbox.css");
+.brand-link {
+  display: flex;
+  align-items: center;
+}
+
+.brand-text {
+  flex: 1;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
 </style>

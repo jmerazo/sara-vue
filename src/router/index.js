@@ -123,7 +123,16 @@ const router = createRouter({
         auth: true,
         roles: ['ADMINISTRADOR', 'is_superuser', 'is_staff']
       }
-    },   
+    },  
+    {
+      path:'/assessment',
+      name:'assessment',
+      component: () => import('../views/dashboardviews/AssessmentListView.vue'),
+      meta: {
+        auth: true,
+        roles: ['ADMINISTRADOR', 'is_superuser', 'is_staff']
+      }
+    } 
   ]
 })
 

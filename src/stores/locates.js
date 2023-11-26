@@ -3,14 +3,19 @@ import { defineStore } from "pinia";
 import APIService from "../services/APIService";
 
 export const locatesColombia = defineStore("locatesColombia", () => {
-
-  const departments = ref({});
+  const departments = ref([]);
   const cities = ref({});
 
   onMounted(async () => {
     try {
       const departmentsResponse = await APIService.getDepartments();
-      departments.value = departmentsResponse.data;
+      // Filtrar solo los departamentos que deseas mantener (Putumayo y Caquetá)
+      const filteredDepartments = departmentsResponse.data.filter(
+        (department) => department.name === "Putumayo" || department.name === "Caquetá"
+      );
+      departments.value = filteredDepartments;
+
+      // Obtener ciudades, podrías obtener las ciudades nuevamente basadas en los departamentos filtrados si es necesario
 
       const citiesResponse = await APIService.getCities();
       cities.value = citiesResponse.data;
