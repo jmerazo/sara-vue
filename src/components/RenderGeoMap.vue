@@ -1,5 +1,4 @@
 <template>
-  <button @click="onlyPerimeter">Mostrar solo perímetro</button>
   <div class="map-container" ref="mapContainer"></div>
   <div class="info-container" ref="infoContainer">
     <div v-if="selectedFeature">
@@ -8,6 +7,8 @@
       <p><span class="font-bold"><font-awesome-icon :icon="['fas', 'signature']" /> Nombre científico:</span> {{ selectedFeature.getProperties().nombre_cientifico }}</p>
       <p><span class="font-bold"><font-awesome-icon :icon="['fas', 'hashtag']" /> Número de placa:</span> {{ selectedFeature.getProperties().numero_placa }}</p>
       <p><span class="font-bold"><font-awesome-icon :icon="['fas', 'location-crosshairs']" /> Coordenadas:</span> {{ selectedFeature.getProperties().coordenadas }}</p>
+      <p><span class="font-bold"><font-awesome-icon :icon="['fab', 'squarespace']" /> Departamento:</span> {{ selectedFeature.getProperties().departamento }}</p>
+      <p><span class="font-bold"><font-awesome-icon :icon="['fab', 'squarespace']" /> Municipio:</span> {{ selectedFeature.getProperties().municipio }}</p>
       <p><span class="font-bold"><font-awesome-icon :icon="['fab', 'squarespace']" /> Vereda:</span> {{ selectedFeature.getProperties().vereda }}</p>
       <p><span class="font-bold"><font-awesome-icon :icon="['fas', 'location-dot']" /> Nombre del predio:</span> {{ selectedFeature.getProperties().nombre_del_predio }}</p>
       <p><span class="font-bold"><font-awesome-icon :icon="['fas', 'star']" /> Puntaje evaluación:</span> {{ selectedFeature.getProperties().resultado }}</p>
@@ -17,7 +18,7 @@
 
 <script setup>
 import { onMounted, ref, watch } from 'vue';
-import { LineString } from 'ol/geom';
+import { defineExpose } from 'vue';
 import Map from 'ol/Map';
 import View from 'ol/View';
 import TileLayer from 'ol/layer/Tile';
@@ -49,6 +50,10 @@ function onlyPerimeter() {
   const perimeterCoords = geoStore.coordinatesPolygon;
   drawPerimeter(perimeterCoords);
 }
+
+defineExpose({
+  onlyPerimeter
+})
 
 function drawPerimeter(perimeterCoords) {
   if (perimeterCoords && perimeterCoords.length > 0) {
@@ -99,6 +104,8 @@ function updateVectorSource() {
       nombre_cientifico: point.nombre_cientifico,
       numero_placa: point.numero_placa,
       coordenadas: point.coordenadas,
+      departamento: point.departamento,
+      municipio: point.municipio,
       vereda: point.vereda,
       nombre_del_predio: point.nombre_del_predio,
       resultado: point.resultado,
@@ -186,14 +193,21 @@ function drawMap(perimeterCoordinates, vectorSource) {
 
   mapInstance.on('pointermove', (event) => {
     mapInstance.getView().setZoom(mapInstance.getView().getZoom());
-    const feature = mapInstance.forEachFeatureAtPixel(event.pixel, (f) => f);
-    if (feature) {
+    const pixel = mapInstance.getEventPixel(event.originalEvent);
+    const feature = mapInstance.forEachFeatureAtPixel(pixel, (f) => f);
+
+    if (feature && feature.getGeometry() instanceof Point) {
       mapInstance.getViewport().style.cursor = 'pointer';
       selectedFeature.value = feature;
-      infoContainer.value.style.display = 'block';
+
+      if (infoContainer.value) {
+        infoContainer.value.style.display = 'block';
+      }
     } else {
       mapInstance.getViewport().style.cursor = '';
-      infoContainer.value.style.display = 'none';
+      if (infoContainer.value) {
+        infoContainer.value.style.display = 'none';
+      }
     }
   });
 }
@@ -202,15 +216,16 @@ function drawMap(perimeterCoordinates, vectorSource) {
 
 <style>
 .map-container {
+  position: relative;
   width: auto;
-  height: 82vh;
+  height: 68vh;
   border-radius: 25px;
 }
 
 .info-container {
   position: absolute;
-  top: 10px;
-  left: 10px;
+  top: 185px; /* Ajusta la posición vertical según necesites */
+  right: 20px; /* Ajusta la posición horizontal según necesites */
   background-color: white;
   border: 1px solid #ccc;
   padding: 10px;

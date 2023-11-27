@@ -373,8 +373,14 @@ watch(() => speciesStore.specieSelected, () => {
 </template>
 
 <style>
-.auto-resize-textarea {
-  overflow: hidden;
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  overflow: auto;
 }
 
 .file-input-label {
@@ -405,4 +411,3 @@ input[type="file"] {
 }
 
 </style>
-
