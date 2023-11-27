@@ -27,10 +27,15 @@ export const useReportsGeneral = defineStore('ReportsGeneral', () => {
 
     const fetchSamplesData = async () => {
         if (!isDataLoaded) {
-            const { data } = await APIService.getSamplesData()
+            const { data } = await APIService.getSampleData()
             samplesData.value = data
             isDataLoaded = true
         }
+    }
+
+    // Función para marcar como no cargados los datos al iniciar fetchSamplesData
+    const resetDataLoaded = () => {
+        isDataLoaded = false
     }
 
     return {
@@ -39,6 +44,7 @@ export const useReportsGeneral = defineStore('ReportsGeneral', () => {
         samplesData,
         fetchAssessmentData,
         fetchMonitoringData,
-        fetchSamplesData
+        fetchSamplesData,
+        resetDataLoaded
     }
 })

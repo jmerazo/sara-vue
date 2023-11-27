@@ -231,21 +231,25 @@ const userData = JSON.parse(userDataString);
               <p> Evaluaciones realizadas</p>
             </a>
           </li>
-        </RouterLink>
+          </RouterLink>
 
+          <RouterLink :to="{ name: 'monitoring_data' }">
           <li class="nav-item">
             <a href="#" class="nav-link">
               <font-awesome-icon :icon="['fas', 'folder-tree']" />
               <p> Monitoreos realizados</p>
             </a>
           </li>
+          </RouterLink>
 
+          <RouterLink :to="{ name: 'samples_data' }">
           <li class="nav-item">
             <a href="#" class="nav-link">
               <font-awesome-icon :icon="['fas', 'chart-simple']" />
               <p> Muestras realizadas</p>
             </a>
           </li>
+        </RouterLink>
 
           <RouterLink :to="{ name: 'list-species' }">
           <li v-if="userData.rol == 'ADMINISTRADOR' && userData.is_superuser == 1 && userData.is_staff == 1" class="nav-item">

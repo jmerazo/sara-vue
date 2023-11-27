@@ -10,47 +10,15 @@ let dataTable = null; // Variable para almacenar la instancia de DataTable
 
 // Opciones para DataTable
 const options = {
-  data: reports.assessmentData, // Datos a mostrar
+  data: [], // Datos a mostrar
   dom: 'Blfrtip',
   columns: [
     { data: 'numero_placa', title: 'Número placa' },
-    { data: 'cod_expediente', title: 'Código de expediente' },
-    { data: 'cod_especie', title: 'Código Especie' },
-    { data: 'fecha_evaluacion', title: 'Fecha de evaluación' },
-    { data: 'departamento', title: 'Departamento' },
-    { data: 'municipio', title: 'Municipio' },
-    { data: 'nombre_del_predio', title: 'Predio' },
-    { data: 'nombre_propietario', title: 'Propietario' },
-    { data: 'corregimiento', title: 'Corregimiento' },
-    { data: 'vereda', title: 'Vereda' },
-    { data: 'correo', title: 'Correo' },
-    { data: 'celular', title: 'Celular' },
-    { data: 'altitud', title: 'Altitud' },
-    { data: 'latitud', title: 'Latitud' },
-    { data: 'g_lat', title: 'Grados' },
-    { data: 'm_lat', title: 'Min' },
-    { data: 's_lat', title: 'Seg' },
-    { data: 'longitud', title: 'Longitud' },
-    { data: 'g_long', title: 'Grados' },
-    { data: 'm_long', title: 'Min' },
-    { data: 's_long', title: 'Seg' },
-    { data: 'coordenadas_decimales', title: 'Coord. GPS' },
-    { data: 'abcisa_xy', title: 'Coord. Google' },
-    { data: 'altura_total', title: 'Alt. Total' },
-    { data: 'altura_comercial', title: 'Alt. com' },
-    { data: 'municipio', title: 'municipio' },
-    { data: 'entorno_individuo', title: 'Entorno' },
-    { data: 'cobertura', title: 'Cobertura' },
-    { data: 'dominancia_if', title: 'Dominancia' },
-    { data: 'forma_fuste', title: 'Forma fuste' },
-    { data: 'dominancia', title: 'Dominancia Eje' },
-    { data: 'alt_bifurcacion', title: 'Bifurcación' },
-    { data: 'estado_copa', title: 'Estado copa' },
-    { data: 'fitosanitario', title: 'Est. Fitosanitario' },
-    { data: 'presencia', title: 'Parasitas' },
-    { data: 'resultado', title: 'resultado' },
-    { data: 'evaluacion', title: 'Evaluación' },
-    { data: 'observaciones', title: 'Observaciones' },
+    { data: 'nom_comunes', title: 'Nombre común' },
+    { data: 'nombre_cientifico', title: 'Nombre científico' },
+    { data: 'cod_especie', title: 'Código especie' },
+    { data: 'fecha_monitoreo', title: 'Fecha' },
+    { data: 'hora', title: 'Hora' },
   ],
   pageLength: 10,
   buttons: [
@@ -88,9 +56,9 @@ const options = {
 };
 
 onMounted(async () => {
-    await reports.fetchAssessmentData();
-    console.log('data: ', reports.assessmentData)
-    options.data = reports.assessmentData; // Actualiza los datos cuando se cargan
+    await reports.fetchMonitoringData();
+    console.log('data: ', reports.monitoringData)
+    options.data = reports.monitoringData; // Actualiza los datos cuando se cargan
     dataLoaded.value = true;    
 
     if (dataLoaded.value) {
@@ -99,7 +67,7 @@ onMounted(async () => {
 });
 
 function initializeDataTable() {
-  const tableElement = document.getElementById('assessment-table');
+  const tableElement = document.getElementById('monitoring-table');
   if (tableElement) {
     dataTable = $(tableElement).DataTable(options);
   }
@@ -117,9 +85,9 @@ onBeforeUnmount(() => {
 <template>
   <div v-if="dataLoaded" class="m-3 table-container">
     <div class="text-center">
-      <h1 class="font-bold">Evaluaciones realizadas</h1>
+      <h1 class="font-bold">Monitoreos realizados</h1>
     </div>
-    <DataTable id="assessment-table" :options="options" class="display">
+    <DataTable id="monitoring-table" :options="options" class="display">
       <template v-slot:head>
         <tr>
           <th v-for="(column, index) in columns" :key="index">{{ column.title }}</th>
@@ -127,9 +95,9 @@ onBeforeUnmount(() => {
       </template>
       <template v-slot:default="{ items }">
         <tbody>
-          <tr v-for="(assessment, rowIndex) in items" :key="rowIndex">
+          <tr v-for="(mon, rowIndex) in items" :key="rowIndex">
             <td v-for="(column, colIndex) in columns" :key="colIndex">
-              {{ assessment[column.data] }}
+              {{ mon[column.data] }}
             </td>
           </tr>
         </tbody>
