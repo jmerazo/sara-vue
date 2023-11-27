@@ -24,12 +24,16 @@ import { faCircleUser } from "@fortawesome/free-regular-svg-icons";
 import {} from "@fortawesome/free-brands-svg-icons";
 
 import DataTable from 'datatables.net-vue3';
-import Select from 'datatables.net-select';
-/* import 'datatables.net-dt/css/jquery.dataTables.css'; */
-import 'datatables.net-buttons-dt/css/buttons.dataTables.css';
-import DataTablesCore from 'datatables.net-bs5';
-DataTable.use(Select);
-DataTable.use(DataTablesCore);
+import DataTablesLib from 'datatables.net';
+import 'datatables.net-select';
+import 'datatables.net-buttons';
+import 'datatables.net-buttons/js/buttons.html5';
+import jszip from 'jszip';
+import pdfmake from 'pdfmake';
+
+DataTable.use(DataTablesLib);
+DataTablesLib.Buttons.jszip(jszip);
+DataTablesLib.Buttons.pdfMake(pdfmake);
 
 library.add(fas, fab, faCopy, faCircleUser);
 
