@@ -195,109 +195,455 @@ scrollToTop()
 </script>
 
 <template>
-   <div v-if="nom_comunes">
+  <div v-if="nom_comunes">
     <QuoteButton></QuoteButton>
-    <div class="md:flex mb-6 gap-4 p-4">
-    
-        <div class="w-3/4 rounded-lg shadow-lg  px-14">
-            <h1 class="text-lg font-extrabold text-slate-900 mt-10">{{ nom_comunes }} - {{nombre_cientifico}}</h1>
-            <h3 class="font-bold text-slate-500 ">Otros nombres: {{ otros_nombres }}</h3>
-            <h3 class="font-bold text-slate-500 ">Familia: {{ familia }}</h3>
-            <br>
-            <img class="mb-10 h-72 rounded-lg" src="https://miputumayo.com.co/wp-content/uploads/2015/06/%C3%81rbol-emergente.-PNN-Amacayacu-20-09-2011.jpg" alt="">
-            <h4 class="font-bold">Distribución</h4>
-            <p class="text-justify mb-4">{{ distribucion }}</p>
-
-            <div class="flex gap-3 mt-10 ">
-                <div class="w-1/3">
-                    <img class="rounded-lg hover:scale-150 transition-transform" src="https://miputumayo.com.co/wp-content/uploads/2015/06/%C3%81rbol-emergente.-PNN-Amacayacu-20-09-2011.jpg" alt="">
-                </div>
-                <div class="w-1/3">
-                    <img class="rounded-lg hover:scale-150 transition-transform" src="https://miputumayo.com.co/wp-content/uploads/2015/06/%C3%81rbol-emergente.-PNN-Amacayacu-20-09-2011.jpg" alt="">
-                </div>
-                <div class="w-1/3">
-                    <img class="rounded-lg hover:scale-150 transition-transform" src="https://miputumayo.com.co/wp-content/uploads/2015/06/%C3%81rbol-emergente.-PNN-Amacayacu-20-09-2011.jpg" alt="">
-                </div>
+    <div class="contenedor">
+      <main class="contenido">
+        <div class="contenido__grid">
+          <div class="contenido__derecha-arriba">
+            <div class="composicion__general">
+              <!-- imagen principal -->
+              <div class="imagen__principal">
+                <img src="/img/arbol__especie.jpg" alt="imagen principal" />
+              </div>
+              <!-- contenido header -->
+              <div class="header">
+                <h1 class="header__heading">
+                  {{ nom_comunes }}
+                </h1>
+                <h1 class="header__heading header__heading--subtitulo">
+                  {{ nombre_cientifico }}
+                </h1>
+                <h3 class="header__titulo">
+                  <span>Otros nombres:</span> {{ otros_nombres }}
+                </h3>
+                <h3 class="header__titulo">
+                  <span>Familia:</span> {{ familia }}
+                </h3>
+              </div>
+              <!-- fin header -->
             </div>
-
-            <div class="bg-gray-100 mt-10 rounded-lg p-3 shadow-lg space-y-3">
-                <p class="font-bold">
-                    Tipo hoja: <span class="font-normal">{{ tipo_hoja }}</span>
-                </p>
-                <p class="font-bold">
-                    Disposición de hojas: <span class="font-normal">{{ disposicion_hojas }}</span>
-                </p>
-                <p class="font-bold">
-                    Follaje: <span class="font-normal">{{ follaje }}</span>
-                </p>
-                <p class="font-bold">
-                    Forma de la copa: <span class="font-normal">{{ forma_copa }}</span>
-                </p>
-                <p class="font-bold">
-                    Hábito: <span class="font-normal">{{ habito }}</span>
-                </p>
-                <p class="font-bold">
-                    Sinónimos: <span class="font-normal">{{ sinonimos }}</span>
-                </p>
-
+            <!-- composicion fisica -->
+            <div class="composicion__especie">
+              <p class="composicion__dato">
+                <span>Tipo hoja: </span>{{ tipo_hoja }}
+              </p>
+              <p class="composicion__dato">
+                <span>Disposición de hojas: </span>{{ disposicion_hojas }}
+              </p>
+              <p class="composicion__dato">
+                <span>Follaje: </span>{{ follaje }}
+              </p>
+              <p class="composicion__dato">
+                <span>Forma de la copa: </span>{{ forma_copa }}
+              </p>
+              <p class="composicion__dato"><span>Hábito: </span>{{ habito }}</p>
             </div>
-            <div class="shadow-lg bg-gray-50 p-2 rounded-lg mb-5 mt-4">
-                <span class="font-bold mb-5">Alturas y altitud promedio de la especie</span><br><br>
-                <div v-if="!isNaN(Number(totalHeightSpecie)) || !isNaN(Number(commercialHeightSpecie)) || !isNaN(Number(averageAltitude))" id="chart"></div>
+            <!-- fin composicion fisica -->
+            <!-- especie -->
+            <div class="especie">
+              <!-- hojas -->
+              <div class="especie__contenido">
+                <div class="especie__imagen">
+                  <img
+                    src="https://inaturalist-open-data.s3.amazonaws.com/photos/24715/large.jpg"
+                    alt=""
+                  />
+                </div>
+                <div class="especie__info">
+                  <h4 class="especie__titulo">Hojas</h4>
+                  <p class="especie__texto">{{ hojas }}</p>
+                </div>
+              </div>
+              <!-- flores -->
+              <div class="especie__contenido">
+                <div class="especie__imagen">
+                  <img
+                    src="https://img.freepik.com/fotos-premium/flores-amarillas-arbol-hoja-perenne-cassia-isla_136404-734.jpg"
+                    alt=""
+                  />
+                </div>
+                <div class="especie__info">
+                  <h4 class="especie__titulo">Flores</h4>
+                  <p class="especie__texto">{{ flor }}</p>
+                </div>
+              </div>
+              <!-- frutos -->
+              <div class="especie__contenido">
+                <div class="especie__imagen">
+                  <img
+                    src="https://img.freepik.com/fotos-premium/fruta-granada-madura-colgando-jardin-espacio-copiar_150101-4103.jpg"
+                    alt=""
+                  />
+                </div>
+                <div class="especie__info">
+                  <h4 class="especie__titulo">Frutos</h4>
+                  <p class="especie__texto">{{ frutos }}</p>
+                </div>
+              </div>
             </div>
-
-            <div class="shadow-lg bg-gray-50 p-2 rounded-lg mb-5">
-                <p class="font-bold text-lg mt-10 mb-3">Distribución región amazónica</p>
+            <!-- sinonimos -->
+            <div class="sinonimos">
+              <p class="contenido__titulo sinonimos__titulo">Sinónimos:</p>
+              <p class="contenido__texto sinonimos__texto">
+                {{ sinonimos }}
+              </p>
+            </div>
+          </div>
+          <div class="contenido__izquierda-abajo">
+            <!-- estadisticas -->
+            <div class="estadistica">
+              <div class="estadistica__contenido">
+                <span class="estadistica__titulo"
+                  >Alturas y altitud promedio de la especie</span
+                >
+                <div class="estadistica__grafico">
+                  <div
+                    class="grafico"
+                    v-if="
+                      !isNaN(Number(totalHeightSpecie)) ||
+                      !isNaN(Number(commercialHeightSpecie)) ||
+                      !isNaN(Number(averageAltitude))
+                    "
+                    id="chart"
+                  ></div>
+                </div>
+              </div>
+            </div>
+            <!-- distribucion -->
+            <div class="contenido__seccion">
+              <h4 class="contenido__titulo">Distribución:</h4>
+              <p class="contenido__texto">{{ distribucion }}</p>
+            </div>
+            <!-- mapa -->
+            <div class="contenido__seccion">
+              <div class="mapa">
+                <p class="mapa__texto">Distribución región amazónica</p>
                 <template v-if="filteredData.length > 0">
-                    <RenderGeo :filteredData="filteredData" />
+                  <RenderGeo :filteredData="filteredData" />
                 </template>
-            </div>            
+              </div>
+            </div>
+            <!-- fin mapa -->
+            <!-- galeria -->
+            <section class="galeria">
+              <h2 class="galeria__titulo">Galeria de la especie</h2>
+              <div class="galeria__flex">
+                <div class="galeria__imagen">
+                  <img src="/img/arbol__especie.jpg" alt="imagen galeria" />
+                </div>
+                <div class="galeria__imagen-flex">
+                  <img src="/img/arbol__especie.jpg" alt="imagen galeria" />
+                  <img src="/img/arbol__especie.jpg" alt="imagen galeria" />
+                </div>
+              </div>
+            </section>
+            <!-- fin garleria -->
+          </div>
         </div>
-
-
-        <div class="w-1/4 bg-green-200 rounded-lg shadow-lg p-4">
-            <h1 class="text-lg font-extrabold text-slate-900">Información de la especie</h1>
-            <hr>
-
-            <h4 class="text-center font-bold mt-5 mb-2">Hojas</h4>
-            <p class="text-justify">{{ hojas }}</p>
-            <img class="px-10 mb-14 rounded-lg mt-3" src="https://inaturalist-open-data.s3.amazonaws.com/photos/24715/large.jpg" alt="">
-            <hr>
-            <h4 class="text-center font-bold mt-5 mb-2">Flores</h4>
-            <p class="text-justify">{{ flor }}</p>
-            <img class="px-10 mb-14 rounded-lg mt-3" src="https://img.freepik.com/fotos-premium/flores-amarillas-arbol-hoja-perenne-cassia-isla_136404-734.jpg" alt="">
-
-            <h4 class="text-center font-bold mt-5 mb-2">Frutos</h4>
-            <p class="text-justify">{{ frutos }}</p>
-            <img class="px-10 mb-14 rounded-lg mt-3" src="https://img.freepik.com/fotos-premium/fruta-granada-madura-colgando-jardin-espacio-copiar_150101-4103.jpg" alt="">
+      </main>
+      <div class="descargas">
+        <div class="descargas__boton">
+          <a @click="downloadDataSpecie" download>
+            <font-awesome-icon :icon="['fas', 'file-pdf']" />
+            Exportar ficha técnica
+          </a>
         </div>
+      </div>
     </div>
-
-    <div class="mt-10 mb-10">
-      <span class="text-left font-bold">Sección de descargas:</span><br>
-      <a @click="downloadDataSpecie" download class="cursor-pointer text-customGreen">
-        <font-awesome-icon :icon="['fas', 'file-pdf']" class="mr-2" />
-        Exportar ficha técnica de la especie.
-      </a>
-    </div>
-
-    
-    <PagesQueries></PagesQueries>    
-   </div>
-   <div v-else class="flex flex-col items-center justify-center h-80">
-    <p class="text-center font-bold text-2xl">No se encontraron resultados</p>
-    <button 
-        type="button"
-        class="bg-green-600 hover:bg-green-700 uppercase p-3 rounded-lg shadow-lg font-bold mt-5 mb-20 text-white"
-        @click="router.push('/')"
-    >
-        volver al inicio
+  </div>
+  <!-- no resultados -->
+  <div v-else class="noResultados">
+    <p class="noResultados__heading">No se encontraron resultados</p>
+    <button type="button" class="noResultados__boton" @click="router.push('/')">
+      Volver al inicio
     </button>
-   </div>
+  </div>
+  <PagesQueries></PagesQueries>
 </template>
 
-<style>
-.bar {
-  fill: #262f21;
+<style scoped>
+
+/* header */
+.header {
+  margin-top: 2rem;
+}
+@media (min-width: 768px) {
+  .header {
+    margin-top: 5rem;
+  }
+}
+.header__heading {
+  font-size: 1.3rem;
+  margin-bottom: 0;
+  line-height: 0.8;
+}
+@media (min-width: 768px) {
+  .header__heading {
+    font-size: 1.5rem;
+  }
+}
+
+.header__heading--subtitulo {
+  font-size: 1rem;
+  text-align: center;
+  color: var(--gris);
+  line-height: 1;
+}
+@media (min-width: 768px) {
+  .header__heading--subtitulo {
+    font-size: 1.1rem;
+  }
+}
+.header__titulo {
+  font-size: 0.9rem;
+  text-align: center;
+  color: var(--gris);
+}
+@media (min-width: 768px) {
+  .header__titulo {
+    font-size: 1rem;
+  }
+}
+/* grid-flex */
+
+.contenido__grid {
+  display: flex;
+  flex-direction: column;
+}
+@media (min-width: 800px) {
+  .contenido__grid {
+    display: grid;
+    grid-template-columns: 3fr 1fr;
+    gap: 2rem;
+    margin-top: 5rem;
+  }
+}
+/* secciones */
+.contenido__seccion {
+  padding: 0;
+  margin-bottom: 2rem;
+}
+
+.contenido__titulo {
+  text-align: center;
+  font-size: 1rem;
+  padding: 0;
+  margin: 0 0 0.5rem 0;
+}
+@media (min-width: 768px) {
+  .contenido__titulo {
+    margin: 0;
+    padding: 0;
+  }
+}
+.contenido__texto {
+  font-size: 0.8rem;
+  padding: 1rem;
+  color: var(--negro);
+}
+@media (min-width: 768px) {
+  .contenido__texto {
+    font-size: 0.9rem;
+  }
+}
+/* contenido especie (hojas, flores y frutos) */
+.especie__contenido {
+  background-color: var(--gris-claro);
+  margin: 1rem 0;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+}
+
+@media (min-width: 992px) {
+  .especie__contenido {
+    background-color: var(--blanco);
+    border: 1px solid var(--primary);
+  }
+}
+
+@media (min-width: 992px) {
+  .especie__contenido {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    align-items: center;
+  }
+  .especie__imagen {
+    width: 20rem;
+  }
+  .especie__info {
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+.especie__titulo {
+  text-align: center;
+  font-size: 1rem;
+  line-height: 0.5;
+}
+.especie__texto {
+  font-size: 0.8rem;
+  color: var(--negro);
+  font-weight: 500;
+  text-align: center;
+  padding: 0.5rem;
+  margin: 0 0 0.5rem 0;
+}
+/* sinonimos */
+.sinonimos {
+  background-color: var(--gris-claro);
+  padding: 1rem;
+  margin-bottom: 2rem;
+}
+.sinonimos__titulo {
+  padding: 0;
+  margin: 0 0 0.2rem 0;
+  font-weight: 700;
+}
+.sinonimos__texto {
+  padding: 0 1rem;
+  margin: 0;
+  text-align: center;
+  font-size: 0.9rem;
+}
+/* composicion especie */
+.composicion__general {
+  margin-top: 2rem;
+}
+.composicion__especie {
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+  background-color: var(--gris-claro);
+  margin-bottom: 2rem;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+}
+.composicion__dato {
+  margin: 0;
+  padding: 1rem auto;
+  color: var(--negro);
+  font-size: 1rem;
+}
+.composicion__dato span {
+  font-weight: 700;
+  color: var(--gris);
+}
+@media (min-width: 992px) {
+  .composicion__general {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    justify-content: center;
+    align-items: center;
+    align-content: center;
+    text-align: center;
+  }
+}
+/* estadistica */
+.estadistica {
+  margin-bottom: 2rem;
+}
+.estadistica__contenido {
+  margin: 0 auto;
+  text-align: center;
+}
+.estadistica__titulo {
+  font-size: 1rem;
+  font-weight: 700;
+}
+.estadistica__grafico {
+  margin: 0 auto;
+}
+
+.grafico {
+  max-width: 95% !important;
+}
+/* galeria */
+.galeria {
+  border: 1px solid var(--primary);
+  background-color: var(--negro);
+}
+.galeria__flex {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.galeria__titulo {
+  font-size: 1rem;
+  text-align: center;
+  color: var(--blanco);
+}
+.galeria__imagen-flex {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.mapa__texto {
+  text-align: center;
+  line-height: 1.5;
+  margin-bottom: 0.5rem;
+  color: var(--gris);
+  font-weight: 700;
+}
+/* descargas */
+.descargas {
+  margin-top: 3rem;
+  width: 100%;
+}
+.descargas__boton {
+  width: 70%;
+  margin: 0 auto;
+  background-color: var(--primary);
+  font-weight: 700;
+  padding: 0.3rem;
+  font-size: 1rem;
+  text-align: center;
+  border-radius: 5px;
+}
+.descargas__boton a {
+  color: var(--blanco);
+}
+.descargas__boton:hover {
+  background-color: var(--primary-hover);
+}
+/* no resultados */
+.noResultados {
+  background-color: var(--gris-claro);
+  width: 80%;
+  margin: 5rem auto;
+  border-bottom-left-radius: 20px;
+  border-bottom-right-radius: 20px;
+  display: flex;
+  gap: 1rem;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+@media (min-width: 992px) {
+  .noResultados {
+    width: 40%;
+  }
+}
+
+.noResultados__heading {
+  font-size: 1.5rem;
+  margin: 2rem auto;
+  color: var(--gris);
+}
+
+.noResultados__boton {
+  background-color: var(--primary);
+  color: var(--blanco);
+  font-weight: 700;
+  padding: 1rem;
+  border-bottom-left-radius: 20px;
+  border-bottom-right-radius: 20px;
+  transition: background-color 0.3s;
+}
+
+.noResultados__boton:hover {
+  background-color: var(--primary-hover);
 }
 </style>

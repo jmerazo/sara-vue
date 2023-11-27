@@ -11,7 +11,7 @@ const especies = useEspeciesStore();
 
 const renderGeoMapRef = ref(null);
 const codeFind = ref('');
-const department = ref('');
+const department = ref({ code: '', name: '' });
 const city = ref('');
 
 onMounted(async () => {
@@ -25,20 +25,31 @@ function callOnlyPerimeter() {
 }
 
 const filterGeoData = () => {
-  console.log('code view to find: ', codeFind.value)
-  geoStore.filterGeo(codeFind.value)
-  geoStore.calculatePerimeterCoordinates(codeFind.value)
+/*   console.log('department: ', department.value.name, " city: ", city.value) */
+  geoStore.filterGeo(department.value.name, city.value, codeFind.value)
+  geoStore.calculatePerimeterCoordinates(department.value.name, city.value, codeFind.value)
 }
 
 const filteredCities = computed(() => {
-  if (department.value) {
+  if (department.value.code) {
     const filtered = locates.cities.filter(
-      (city) => city.department_id === department.value
+      (city) => city.department_id === department.value.code
     );
     return filtered;
   }
   return [];
 });
+
+function delParameters() {
+  codeFind.value = '';
+  department.value = { code: '', name: '' };
+  city.value = '';
+}
+
+function execDeleteParameter(){
+  delParameters();
+  geoStore.deleteFilterGeo();
+}
 </script>
 
 <template>
@@ -55,15 +66,16 @@ const filteredCities = computed(() => {
           <div class="flex custom-select">
             <!-- departamento -->
               <select
-                class="text-lg p-3 w-full rounded-lg focus:outline-none font-bold flex-1"
+                class="text-lg p-3 w-full rounded-lg focus:outline-none flex-1"
                 id="department"
                 v-model="department"
+                @change="filterGeoData"
               >
-                <option value="" selected disabled>Seleccione un departmento...</option>
+                <option :value="{ code: '', name: '' }" disabled>Seleccione un departamento...</option>
                 <option
                   v-for="loc in locates.departments"
                   :key="loc.id"
-                  :value="loc.code"
+                  :value="{ code: loc.code, name: loc.name }"
                 >
                   {{ loc.name }}
                 </option>
@@ -72,15 +84,16 @@ const filteredCities = computed(() => {
               <!-- ciudad -->
               <div v-if="filteredCities.length > 0">
                 <select
-                  class="text-lg p-3 w-full rounded-lg focus:outline-none font-bold flex-1"
+                  class="text-lg p-3 w-full rounded-lg focus:outline-none flex-1"
                   id="city"
                   v-model="city"
+                  @change="filterGeoData"
                 >
                   <option value="" disabled selected>Seleccione un municipio...</option>
                   <option
                     v-for="city in filteredCities"
                     :key="city.id"
-                    :value="city.id"
+                    :value="city.name"
                   >
                     {{ city.name }}
                   </option>
@@ -89,7 +102,7 @@ const filteredCities = computed(() => {
 
             <select
               id="especie"
-              class="text-lg p-3 w-full rounded-lg focus:outline-none font-bold flex-1"
+              class="text-lg p-3 w-full rounded-lg focus:outline-none flex-1"
               @change="filterGeoData"
               v-model="codeFind"
             >
@@ -102,7 +115,8 @@ const filteredCities = computed(() => {
                 {{ especie.nom_comunes + " | " + especie.nombre_cientifico }}
               </option>
             </select>
-            <button type="submit" class="btn-form-search-header cursor-pointer font-bold rounded-lg pl-2 pr-2 ml-3" @click="geoStore.deleteFilterGeo()"><font-awesome-icon :icon="['fas', 'trash']" class="mr-2"/> Eliminar filtro</button>
+<!--             <button type="submit" class="btn-form-search-header cursor-pointer font-bold rounded-lg pl-2 pr-2 ml-3" @click="filterGeoData()"><font-awesome-icon :icon="['fas', 'filter']" class="mr-2"/> Filtrar</button>
+ -->            <button type="submit" class="btn-form-search-header cursor-pointer font-bold rounded-lg pl-2 pr-2 ml-3" @click="execDeleteParameter"><font-awesome-icon :icon="['fas', 'filter-circle-xmark']" class="mr-2"/> Eliminar filtro</button>
             <button type="submit" class="btn-form-search-header cursor-pointer font-bold rounded-lg pl-2 pr-2 ml-3" @click="geoStore.exportToKML(geoStore.coordinatesKML)"><font-awesome-icon :icon="['fas', 'arrows-to-eye']" class="mr-2"/> Exportar KML/KMZ</button>
             <button type="submit" class="btn-form-search-header cursor-pointer font-bold rounded-lg pl-2 pr-2 ml-3" @click="callOnlyPerimeter"><font-awesome-icon :icon="['fas', 'draw-polygon']" class="mr-2"/> Perímetro</button>
           </div>

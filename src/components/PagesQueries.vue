@@ -2,46 +2,50 @@
 </script>
 
 <template>
-  <div class="flex flex-col items-center mt-8 mb-4">
-    <!-- <hr class="border-t-2 border-solid border-green-700 w-11/12 mb-4"> -->
-
-    <div class="w-full bg-pastel-green p-4 rounded-lg hover:shadow-lg transition-shadow">
-      <h2 class="text-base font-semibold mb-4 text-center">Páginas de consultas relacionadas</h2>
-      <div class="flex justify-center items-start"> <!-- Añadimos 'justify-center' aquí -->
-        <a href="http://catalogoplantasdecolombia.unal.edu.co/es/" target="_blank" class="mx-4">
-          <img src="../assets/logos/cat_plantas_liquines_col.png" title="Catálogo de plantas y liquenes de Colombia" class="w-14 h-auto backdrop-blur-md transform hover:scale-110">
+  <div class="relacionados">
+    <h2 class="relacionados__titulo">Páginas de consultas relacionadas</h2>
+    
+      <div class="relacionados__flex"> <!-- Añadimos 'justify-center' aquí -->
+        <a href="http://catalogoplantasdecolombia.unal.edu.co/es/" target="_blank" class="relacionados__enlace">
+          <img src="../assets/logos/cat_plantas_liquines_col.png" title="Catálogo de plantas y liquenes de Colombia" >
         </a>
-        <a href="https://tropicos.org/home" target="_blank" class="mx-4">
-          <img src="../assets/logos/tropicos.png" title="Trópicos" class="w-14 h-auto backdrop-blur-md transform hover:scale-110">
+        <a href="https://tropicos.org/home" target="_blank" class="relacionados__enlace">
+          <img src="../assets/logos/tropicos.png" title="Trópicos" >
         </a>
-        <a href="https://catalogofloravalleaburra.eia.edu.co/" target="_blank" class="mx-4">
-          <img src="../assets/logos/valle_aburra.png" title="Catálogo virtual de flora del Valle de Aburrá" class="w-14 h-auto backdrop-blur-md transform hover:scale-110">
+        <a href="https://catalogofloravalleaburra.eia.edu.co/" target="_blank" class="relacionados__enlace">
+          <img src="../assets/logos/aburra.svg" title="Catálogo virtual de flora del Valle de Aburrá" >
         </a>
-        <a href="https://powo.science.kew.org/" target="_blank" class="mx-4">
-          <img src="../assets/powo.png" title="Plants of the World Online" class="w-14 h-auto rounded-lg backdrop-blur-md transform hover:scale-110">
+        <a href="https://powo.science.kew.org/" target="_blank" class="relacionados__enlace">
+          <img src="../assets/powo.png" title="Plants of the World Online">
         </a>
-      </div>
+      
     </div>
   </div>
 </template>
 
 <style scoped>
-.bg-pastel-green {
-  background-color: #b6dfbb; /* Color pastel verde */
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.06);
+.relacionados{
+  margin: 3rem 0 2rem 0;
+}
+.relacionados__titulo{
+  text-align: center;
+  font-size: 1rem;
+}
+.relacionados__flex{
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  align-items: center;
+  gap: 2rem;
 }
 
-.backdrop-blur-md {
-  backdrop-filter: blur(8px); /* Efecto de desenfoque */
+.relacionados__enlace{
+  width: 3rem;
+  padding: 0;
+  margin: 0;
+  transition: transform .3s ease-in-out;
 }
-
-/* Transición de sombra al pasar el cursor sobre el contenedor */
-.transition-shadow {
-  transition: box-shadow 0.3s ease;
-}
-
-/* Sombra más pronunciada al pasar el cursor sobre el contenedor */
-.hover\:shadow-lg:hover {
-  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1), 0 4px 6px rgba(0, 0, 0, 0.1);
+.relacionados__enlace:hover{
+  transform: scale(1.2);
 }
 </style>

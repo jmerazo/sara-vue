@@ -35,46 +35,6 @@ export const useGeoCandidateTrees = defineStore('geoCandidateTrees', () => {
         }
     }
 
-    function filterGeo(codeFilter) {
-        console.log('code store filter: ', codeFilter)
-        if (codeFilter) {
-            console.log('estoy con codeFilter')
-          return geoCandidateData.value
-            .filter(item => item.codigo === codeFilter)
-            .map(item => ({
-                lon: item.lon,
-                lat: item.lat,
-                nombre_comun: item.nom_comunes,
-                codigo: item.codigo,
-                numero_placa: item.numero_placa,
-                nombre_cientifico: item.nombre_cientifico,
-                departamento: item.departamento,
-                municipio: item.municipio,
-                vereda: item.vereda,
-                coordenadas: item.coordenadas,
-                nombre_del_predio: item.nombre_del_predio,
-                resultado: item.resultado
-            }));
-        } else {
-            console.log('estoy sin codeFilter')
-          // Si no hay especie seleccionada, retornar todos los datos sin filtrar
-          return geoCandidateData.value.map(item => ({
-            lon: item.lon,
-            lat: item.lat,
-            nombre_comun: item.nom_comunes,
-            codigo: item.codigo,
-            numero_placa: item.numero_placa,
-            nombre_cientifico: item.nombre_cientifico,
-            departamento: item.departamento,
-            municipio: item.municipio,
-            vereda: item.vereda,
-            coordenadas: item.coordenadas,
-            nombre_del_predio: item.nombre_del_predio,
-            resultado: item.resultado
-          }));
-        }
-    }  
-
     // Función para calcular el Convex Hull utilizando el algoritmo de Jarvis March
     function convexHullJarvisMarch(points) {
         if (points.length <= 3) return points; // No es necesario si son menos de 3 puntos
@@ -180,57 +140,86 @@ export const useGeoCandidateTrees = defineStore('geoCandidateTrees', () => {
         });
     }
 
-    const calculatePerimeterCoordinates = (code) => {      
-        if (code) {
-          const filteredPoints = geoDataNew.value.filter((point) => point.codigo === code);
-          const allCoordinates = filteredPoints.map((point) => [point.lon, point.lat]);
-      
-          // Utilizar Convex Hull para encontrar los límites exteriores
-          coordinatesPolygon.value = convexHullJarvisMarch(allCoordinates);
-          /* console.log('convex: ', coordinatesPolygon.value) */
-        } else {
-            const allCoordinates = geoDataNew.value.map((point) => [point.lon, point.lat]);
-            coordinatesPolygon.value = convexHullJarvisMarch(allCoordinates);
-        }
-    };
-
-    function filterGeo(codeFilter) {
-  
-      if (codeFilter) {
-          geoDataNew.value = geoCandidateData.value
-              .filter((item) => item.codigo === codeFilter)
-              .map((item) => ({
-                    lon: item.lon,
-                    lat: item.lat,
-                    nombre_comun: item.nombre_comun,
-                    codigo: item.codigo,
-                    numero_placa: item.numero_placa,
-                    nombre_cientifico: item.nombre_cientifico,
-                    departamento: item.departamento,
-                    municipio: item.municipio,
-                    vereda: item.vereda,
-                    coordenadas: item.coordenadas,
-                    nombre_del_predio: item.nombre_del_predio,
-                    resultado: item.resultado
-              }));
-      } else {
-          // Si no hay especie seleccionada, retornar todos los datos sin filtrar
-          geoDataNew.value = geoCandidateData.value.map((item) => ({
-                lon: item.lon,
-                lat: item.lat,
-                nombre_comun: item.nombre_comun,
-                codigo: item.codigo,
-                numero_placa: item.numero_placa,
-                nombre_cientifico: item.nombre_cientifico,
-                departamento: item.departamento,
-                municipio: item.municipio,
-                vereda: item.vereda,
-                coordenadas: item.coordenadas,
-                nombre_del_predio: item.nombre_del_predio,
-                resultado: item.resultado
-          }));
+    const calculatePerimeterCoordinates = (departmentCode, city, codeFilter) => {
+      let filteredPoints = geoDataNew.value;
+    
+      if (departmentCode && city && codeFilter) {
+        filteredPoints = filteredPoints.filter(
+          (point) =>
+            point.departamento === departmentCode &&
+            point.municipio === city &&
+            point.codigo === codeFilter
+        );
+      } else if (departmentCode && city) {
+        filteredPoints = filteredPoints.filter(
+          (point) => point.departamento === departmentCode && point.municipio === city
+        );
+      } else if (departmentCode && codeFilter) {
+        filteredPoints = filteredPoints.filter(
+          (point) => point.departamento === departmentCode && point.codigo === codeFilter
+        );
+      } else if (city && codeFilter) {
+        filteredPoints = filteredPoints.filter(
+          (point) => point.municipio === city && point.codigo === codeFilter
+        );
+      } else if (departmentCode) {
+        filteredPoints = filteredPoints.filter((point) => point.departamento === departmentCode);
+      } else if (city) {
+        filteredPoints = filteredPoints.filter((point) => point.municipio === city);
+      } else if (codeFilter) {
+        filteredPoints = filteredPoints.filter((point) => point.codigo === codeFilter);
       }
+    
+      const allCoordinates = filteredPoints.map((point) => [point.lon, point.lat]);
+      coordinatesPolygon.value = convexHullJarvisMarch(allCoordinates);
+    };    
+
+    function filterGeo(departmentCode, city, codeFilter) {
+      let filteredData = geoCandidateData.value;
+    
+      if (departmentCode && city && codeFilter) {
+        filteredData = filteredData.filter(
+          (item) =>
+            item.departamento === departmentCode &&
+            item.municipio === city &&
+            item.codigo === codeFilter
+        );
+      } else if (departmentCode && city) {
+        filteredData = filteredData.filter(
+          (item) => item.departamento === departmentCode && item.municipio === city
+        );
+      } else if (departmentCode && codeFilter) {
+        filteredData = filteredData.filter(
+          (item) => item.departamento === departmentCode && item.codigo === codeFilter
+        );
+      } else if (city && codeFilter) {
+        filteredData = filteredData.filter(
+          (item) => item.municipio === city && item.codigo === codeFilter
+        );
+      } else if (departmentCode) {
+        filteredData = filteredData.filter((item) => item.departamento === departmentCode);
+      } else if (city) {
+        filteredData = filteredData.filter((item) => item.municipio === city);
+      } else if (codeFilter) {
+        filteredData = filteredData.filter((item) => item.codigo === codeFilter);
+      }
+    
+      geoDataNew.value = filteredData.map((item) => ({
+        lon: item.lon,
+        lat: item.lat,
+        nombre_comun: item.nombre_comun,
+        codigo: item.codigo,
+        numero_placa: item.numero_placa,
+        nombre_cientifico: item.nombre_cientifico,
+        departamento: item.departamento,
+        municipio: item.municipio,
+        vereda: item.vereda,
+        coordenadas: item.coordenadas,
+        nombre_del_predio: item.nombre_del_predio,
+        resultado: item.resultado
+      }));
     }
+        
     
     function deleteFilterGeo() {
       geoDataNew.value = geoCandidateData.value.map((item) => ({
@@ -258,8 +247,8 @@ export const useGeoCandidateTrees = defineStore('geoCandidateTrees', () => {
         cities,
         fetchData,
         filterGeo,
-        calculatePerimeterCoordinates,
         deleteFilterGeo,
+        calculatePerimeterCoordinates,
         convertToKML,
         exportToKML
     }

@@ -472,7 +472,7 @@ const mostrarError = (message) => {
 }
 
 .formulario__boton {
-  background-color: green;
+  background-color:var(--primary);
   max-width: 100%;
   width: 100%;
   border-bottom-left-radius: 20px;
