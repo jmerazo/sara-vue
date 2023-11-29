@@ -205,7 +205,7 @@ onMounted(async () => {
 .topEspeice__enlace {
   backdrop-filter: blur(
     10px
-  ); /* Cambia el valor según el nivel de desenfoque que desees */
+  );
   opacity: 1;
   background-color: rgba(38, 47, 33, 0.3);
   color: var(--gris);

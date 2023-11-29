@@ -5,11 +5,6 @@ import { useGlossaryStore } from "@/stores/glossary";
 
 const glossary = useGlossaryStore();
 
-//const filteredGlossary = computed(() => glossary.getFilteredGlossary());
-// const searchTerm = computed({
-//   get: () => glossary.searchTerm,
-//   set: (value) => glossary.setSearchTerm(value),
-// });
 
 const alfabeto = ref([
   "a",
