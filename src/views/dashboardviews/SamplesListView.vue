@@ -1,16 +1,15 @@
 <script setup>
-import { onMounted, ref, onBeforeUnmount, watchEffect  } from 'vue';
+import { onMounted, ref, onBeforeUnmount, watchEffect, watch  } from 'vue';
 import { useReportsGeneral } from '../../stores/dashboard/reports'
 import pdfMake from 'pdfmake/build/pdfmake';
 import pdfFonts from 'pdfmake/build/vfs_fonts';
 
 const reports = useReportsGeneral();
-const dataLoaded = ref(false);
 let dataTable = null; // Variable para almacenar la instancia de DataTable
 
 // Opciones para DataTable
 const options = {
-  data: [], // Datos a mostrar
+  data: reports.samplesData, // Datos a mostrar
   dom: 'Blfrtip',
   columns: [
     { data: 'numero_placa', title: 'Número placa' },
@@ -23,9 +22,9 @@ const options = {
     { data: 'siglas_colector_ppal', title: 'Siglas colector' },
     { data: 'nro_coleccion', title: 'Número colección' },
     { data: 'voucher', title: 'Voucher' },
-    { data: 'nombres_colectores', title: 'Nombre colector asociados' },
+    { data: 'nombres_colectores', title: 'Colectores asociados' },
     { data: 'otros_nombres', title: 'Otros nombres' },
-    { data: 'descripcion', title: 'descripcion' },
+    { data: 'descripcion', title: 'Descripción' },
     { data: 'usos', title: 'Usos' },
   ],
   pageLength: 10,
@@ -66,39 +65,42 @@ const options = {
 
 onMounted(async () => {
     await reports.fetchSamplesData();
-    console.log('data: ', reports.samplesData)
-    options.data = reports.samplesData; // Actualiza los datos cuando se cargan
-    dataLoaded.value = true;    
+    console.log('ejec samples')
+});
 
-    if (dataLoaded.value) {
+// Observar los cambios en reports.samplesData
+watch(() => reports.samplesData, () => {
+  if (reports.samplesData.length > 0) {
       initializeDataTable();
+      options.data = reports.samplesData; // Actualiza los datos cuando se cargan
     }
 });
 
-watchEffect(() => {
-  if (dataLoaded.value) {
-    initializeDataTable();
-  }
-});
 
 function initializeDataTable() {
+  destroyDataTable();
   const tableElement = document.getElementById('samples-table');
   if (tableElement) {
     dataTable = $(tableElement).DataTable(options);
   }
 }
 
+// Observa los cambios en la ruta para destruir el DataTable al cambiar de vista
+watchEffect(() => {
+  destroyDataTable();
+});
+
 // Destruir la instancia de DataTable cuando el componente se desmonte
-onBeforeUnmount(() => {
+function destroyDataTable() {
   if (dataTable !== null) {
     dataTable.destroy(true);
     dataTable = null;
   }
-});
+}
 </script>
 
 <template>
-  <div v-if="dataLoaded" class="m-3 table-container">
+  <div v-if="reports.samplesData.length > 0" class="m-3 table-container">
     <div class="text-center">
       <h1 class="font-bold">Muestras realizadas</h1>
     </div>

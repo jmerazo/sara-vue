@@ -1,11 +1,10 @@
 <script setup>
-import { onMounted, ref, onBeforeUnmount } from 'vue';
+import { onMounted, ref, watchEffect, watch } from 'vue';
 import { useReportsGeneral } from '../../stores/dashboard/reports'
 import pdfMake from 'pdfmake/build/pdfmake';
 import pdfFonts from 'pdfmake/build/vfs_fonts';
 
 const reports = useReportsGeneral();
-const dataLoaded = ref(false);
 let dataTable = null; // Variable para almacenar la instancia de DataTable
 
 // Opciones para DataTable
@@ -89,33 +88,40 @@ const options = {
 
 onMounted(async () => {
     await reports.fetchAssessmentData();
-    console.log('data: ', reports.assessmentData)
-    options.data = reports.assessmentData; // Actualiza los datos cuando se cargan
-    dataLoaded.value = true;    
+    console.log('ejec assess')
+});
 
-    if (dataLoaded.value) {
+watch(() => reports.assessmentData, () => {
+  if (reports.assessmentData.length > 0) {
       initializeDataTable();
+      options.data = reports.assessmentData; // Actualiza los datos cuando se cargan
     }
 });
 
 function initializeDataTable() {
+  destroyDataTable();
   const tableElement = document.getElementById('assessment-table');
   if (tableElement) {
     dataTable = $(tableElement).DataTable(options);
   }
 }
 
+// Observa los cambios en la ruta para destruir el DataTable al cambiar de vista
+watchEffect(() => {
+  destroyDataTable();
+});
+
 // Destruir la instancia de DataTable cuando el componente se desmonte
-onBeforeUnmount(() => {
+function destroyDataTable() {
   if (dataTable !== null) {
     dataTable.destroy(true);
     dataTable = null;
   }
-});
+}
 </script>
 
 <template>
-  <div v-if="dataLoaded" class="m-3 table-container">
+  <div v-if="reports.assessmentData.length > 0" class="m-3 table-container">
     <div class="text-center">
       <h1 class="font-bold">Evaluaciones realizadas</h1>
     </div>
