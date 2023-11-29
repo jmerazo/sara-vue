@@ -123,7 +123,34 @@ const router = createRouter({
         auth: true,
         roles: ['ADMINISTRADOR', 'is_superuser', 'is_staff']
       }
-    },   
+    },  
+    {
+      path:'/assessment',
+      name:'assessment',
+      component: () => import('../views/dashboardviews/AssessmentListView.vue'),
+      meta: {
+        auth: true,
+        roles: ['ADMINISTRADOR', 'is_superuser', 'is_staff']
+      }
+    },  
+    {
+      path:'/monitoring_data',
+      name:'monitoring_data',
+      component: () => import('../views/dashboardviews/MonitoringListView.vue'),
+      meta: {
+        auth: true,
+        roles: ['ADMINISTRADOR', 'is_superuser', 'is_staff']
+      }
+    },  
+    {
+      path:'/samples_data',
+      name:'samples_data',
+      component: () => import('../views/dashboardviews/SamplesListView.vue'),
+      meta: {
+        auth: true,
+        roles: ['ADMINISTRADOR', 'is_superuser', 'is_staff']
+      }
+    }   
   ]
 })
 
