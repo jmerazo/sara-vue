@@ -382,32 +382,4 @@ watch(() => speciesStore.specieSelected, () => {
   background-color: rgba(0, 0, 0, 0.5);
   overflow: auto;
 }
-
-.file-input-label {
-  display: inline-block;
-  background-color: #0074d9;
-  color: #fff;
-  padding: 10px 15px;
-  border-radius: 5px;
-  cursor: pointer;
-  text-align: center;
-  transition: background-color 0.3s ease;
-}
-
-.file-input-label:hover {
-  background-color: #0056b3;
-}
-
-.upload-icon {
-  width: 20px;
-  height: 20px;
-  vertical-align: middle;
-  margin-right: 10px;
-}
-
-/* Ocultar el campo de entrada de archivo nativo */
-input[type="file"] {
-  display: none;
-}
-
 </style>

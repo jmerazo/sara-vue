@@ -1,4 +1,4 @@
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { defineStore } from 'pinia'
 import APIService from '../../services/APIService'
 
@@ -13,6 +13,7 @@ export const useReportsGeneral = defineStore('ReportsGeneral', () => {
         if (!isDataLoaded) {
             const { data } = await APIService.getAssessmentData()
             assessmentData.value = data
+            console.log('cargando data assessment')
             isDataLoaded = true
         }
     }
@@ -21,6 +22,7 @@ export const useReportsGeneral = defineStore('ReportsGeneral', () => {
         if (!isDataLoaded) {
             const { data } = await APIService.getMonitoringData()
             monitoringData.value = data
+            console.log('cargando data monitoring')
             isDataLoaded = true
         }
     }
@@ -29,22 +31,18 @@ export const useReportsGeneral = defineStore('ReportsGeneral', () => {
         if (!isDataLoaded) {
             const { data } = await APIService.getSampleData()
             samplesData.value = data
+            console.log('cargando data samples')
             isDataLoaded = true
         }
     }
-
-    // Función para marcar como no cargados los datos al iniciar fetchSamplesData
-    const resetDataLoaded = () => {
-        isDataLoaded = false
-    }
-
+    
     return {
         assessmentData,
         monitoringData,
         samplesData,
+        isDataLoaded,
         fetchAssessmentData,
         fetchMonitoringData,
-        fetchSamplesData,
-        resetDataLoaded
+        fetchSamplesData
     }
 })
