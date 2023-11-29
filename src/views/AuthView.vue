@@ -62,6 +62,7 @@ localStorage.removeItem("hasReloaded");
             type="email"
             id="email"
             class="formulario__input"
+            placeholder="Ingresa tu usuario"
             required
           />
         </div>
@@ -72,6 +73,7 @@ localStorage.removeItem("hasReloaded");
             type="password"
             id="password"
             class="formulario__input"
+            placeholder="Ingresa contraseña"
             required
           />
         </div>

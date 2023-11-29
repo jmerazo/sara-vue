@@ -174,6 +174,7 @@ const irFamilias = () => {
   text-align: center;
   font-weight: 700;
   color: var(--secondary);
+  margin-bottom: 2rem;
 }
 .modal__botones {
   margin-top: 3rem;

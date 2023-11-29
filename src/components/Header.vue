@@ -34,15 +34,14 @@ const images = [
   "/img/P001.jpg",
   "/img/pi1.jpg",
   "/img/pi2.jpg",
-  // Agrega más rutas de imágenes según sea necesario
 ];
 
+//carusel de imagenes header
 const currentImage = ref(images[0]);
-
 onMounted(() => {
   setInterval(() => {
     changeBackgroundImage();
-  }, 5000); // Cambia la imagen cada 5000 milisegundos (5 segundos)
+  }, 5000);
 });
 
 function changeBackgroundImage() {
