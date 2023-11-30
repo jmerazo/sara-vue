@@ -103,7 +103,7 @@ export default {
     getMonitoringData(){
         return api.get('/monitoring/report/data')
     },
-    getSampleData(){
+    getSamplesData(){
         return api.get('/samples/report/data')
     }
 }

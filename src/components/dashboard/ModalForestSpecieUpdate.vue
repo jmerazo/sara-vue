@@ -9,15 +9,21 @@ import {
 } from "@headlessui/vue";
 import { useModalStore } from "@/stores/modal";
 import { useEspeciesStore } from "@/stores/species";
+import api from '../../api/axios';
 
 const modal = useModalStore();
 const speciesStore = useEspeciesStore();
+
+const getFullImageUrl = (relativePath) => {
+  return `${api.defaults.baseURL}/${relativePath.replace(/\\/g, '/')}`;
+};
 
 const formData = ref({
   cod_especie: "",
   nom_comunes: "",
   otros_nombres: "",
   nombre_cientifico: "",
+  img_general: "",
   sinonimos: "",
   familia: "",
   distribucion: "",
@@ -27,7 +33,9 @@ const formData = ref({
   tipo_hoja: "",
   disposicion_hojas: "",
   hojas: "",
+  img_leafs: "",
   flor: "",
+  img_flowers: "",
   frutos: "",
   semillas: "",
   tallo: "",
@@ -50,6 +58,7 @@ const initializeFormData = () => {
   if (selectedForestSpecie) {
     formData.value = {
       cod_especie: selectedForestSpecie.cod_especie || "",
+      img_general: selectedForestSpecie.img_general || "",
       nom_comunes: selectedForestSpecie.nom_comunes || "",
       otros_nombres: selectedForestSpecie.otros_nombres || "",
       nombre_cientifico: selectedForestSpecie.nombre_cientifico || "",
@@ -62,7 +71,9 @@ const initializeFormData = () => {
       tipo_hoja: selectedForestSpecie.tipo_hoja || "",
       disposicion_hojas: selectedForestSpecie.disposicion_hojas || "",
       hojas: selectedForestSpecie.hojas || "",
+      img_leafs: selectedForestSpecie.img_leafs || "",
       flor: selectedForestSpecie.flor || "",
+      img_flowers: selectedForestSpecie.img_flowers || "",
       frutos: selectedForestSpecie.frutos || "",
       semillas: selectedForestSpecie.semillas || "",
       tallo: selectedForestSpecie.tallo || "",
@@ -158,6 +169,9 @@ watch(() => speciesStore.specieSelected, () => {
                   <hr />
                   <form @submit.prevent="forestSpecieUpdate">
                   <DialogTitle as="h3" class="text-gray-900 text-lg my-5">
+                    <img  v-if="formData.img_general" :src="getFullImageUrl(formData.img_general)" >
+                  </DialogTitle>
+                  <DialogTitle as="h3" class="text-gray-900 text-lg my-5">
                     <font-awesome-icon :icon="['fas', 'list-ol']" /> <span class="font-bold"> Código especie: </span>
                     <input type="number" class="w-80" v-model="formData.cod_especie" required/>
                   </DialogTitle>
@@ -210,8 +224,14 @@ watch(() => speciesStore.specieSelected, () => {
                     <textarea class="w-full auto-resize-textarea" v-model="formData.hojas"></textarea>
                   </DialogTitle>
                   <DialogTitle as="h3" class="text-gray-900 text-lg my-5">
+                    <img  v-if="formData.img_leafs" :src="getFullImageUrl(formData.img_leafs)" >
+                  </DialogTitle>
+                  <DialogTitle as="h3" class="text-gray-900 text-lg my-5">
                     <font-awesome-icon :icon="['fas', 'spa']" /> <span class="font-bold"> Información de la flor: </span>
                     <textarea type="text" class="w-full auto-resize-textarea" v-model="formData.flor"></textarea>
+                  </DialogTitle>
+                  <DialogTitle as="h3" class="text-gray-900 text-lg my-5">
+                    <img  v-if="formData.img_flowers" :src="getFullImageUrl(formData.img_flowers)" >
                   </DialogTitle>
                   <DialogTitle as="h3" class="text-gray-900 text-lg my-5">
                     <font-awesome-icon :icon="['fab', 'apple']" /> <span class="font-bold"> Información de los frutos: </span>

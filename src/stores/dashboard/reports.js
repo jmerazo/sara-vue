@@ -10,32 +10,23 @@ export const useReportsGeneral = defineStore('ReportsGeneral', () => {
     const samplesData = ref([])
 
     const fetchAssessmentData = async () => {
-        if (!isDataLoaded) {
-            const { data } = await APIService.getAssessmentData()
-            assessmentData.value = data
-            console.log('cargando data assessment')
-            isDataLoaded = true
-        }
+        const { data } = await APIService.getAssessmentData()
+        assessmentData.value = data
+        console.log('cargando data assessment')
     }
 
     const fetchMonitoringData = async () => {
-        if (!isDataLoaded) {
-            const { data } = await APIService.getMonitoringData()
-            monitoringData.value = data
-            console.log('cargando data monitoring')
-            isDataLoaded = true
-        }
+        const { data } = await APIService.getMonitoringData()
+        monitoringData.value = data
+        console.log('cargando data monitoring')
     }
 
     const fetchSamplesData = async () => {
-        if (!isDataLoaded) {
-            const { data } = await APIService.getSampleData()
-            samplesData.value = data
-            console.log('cargando data samples')
-            isDataLoaded = true
-        }
+        const { data } = await APIService.getSamplesData()
+        samplesData.value = data
+        console.log('cargando data samples')
     }
-    
+
     return {
         assessmentData,
         monitoringData,
