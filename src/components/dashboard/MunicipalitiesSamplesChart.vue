@@ -1,9 +1,16 @@
 <script setup>
+import CircleProgress from 'vue3-circle-progress'
+import "vue3-circle-progress/dist/circle-progress.css"
+
 import Chart from "chart.js/auto";
 import { onMounted, ref, watch } from "vue";
 import { useChartSamples } from "@/stores/dashboard/chartSamples";
 
 const chartStore = useChartSamples();
+
+
+
+
 const colors = [
   "#6e9167",
   "#ffdd8c",
@@ -43,7 +50,23 @@ const data = {
 const config = {
   type: "pie",
   data: data,
-  options: { responsive: true },
+  options: {
+    responsive: true,
+    layout: {
+      padding: {
+        bottom: 50, // Ajusta el espacio en la parte inferior según sea necesario
+      },
+    },
+    plugins: {
+      legend: {
+        position: "bottom", // Mueve la leyenda a la parte inferior
+        labels: {
+          rotation: -45,
+        },
+      },
+    },
+    
+  },
 };
 
 // Crear la gráfica en onMounted
@@ -55,14 +78,16 @@ onMounted(() => {
     config
   );
 });
+
+
 </script>
 <template>
-  <div class="p-4">
+  <div class="grafico">
     <div class="card rounded-lg">
       <div class="card-header bg-red-600 text-white text-lg p-3 rounded">
         <h1>Total de muestras tomadas por Municipio</h1>
       </div>
-      <div class="card-body p-5 bg-white shadow-md rounded-lg">
+      <div class="grafico__contenido">
         <canvas
           style="
             min-height: 250px;
@@ -75,4 +100,6 @@ onMounted(() => {
       </div>
     </div>
   </div>
+
+
 </template>

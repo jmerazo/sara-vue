@@ -38,7 +38,6 @@ import { RouterView } from "vue-router";
               <div class="col-12">
                 <router-view />
               </div>
-              
             </div>
           </div>
           <!-- /.container-fluid -->

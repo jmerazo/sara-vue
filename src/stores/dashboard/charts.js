@@ -32,20 +32,12 @@ export const useChartsStore = defineStore('charts',()=>{
             totalDepartamentos.value += Number(data.departamentos[departamento])
         }
         
-        totalDepartamentos.value =  separarMiles(totalDepartamentos.value)
-        
-
         for (const municipio in data.municipios) {
             cantidadMunicipio.value.push(Number(data.municipios[municipio]));
             totalMunicipios.value += Number(data.municipios[municipio])
         }
-        
-       
-        totalMunicipios.value =  separarMiles(totalMunicipios.value)
         consulta.cargando = false
-
-
-  
+       
     })
     // formatear los valores con separador de miles
     function separarMiles(valor) {
@@ -55,10 +47,9 @@ export const useChartsStore = defineStore('charts',()=>{
         departamentos,
         CantidadDepartamento,
         totalDepartamentos,
-
         municipios,
         cantidadMunicipio,
         totalMunicipios,
-        
+        separarMiles
     }
 })

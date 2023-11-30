@@ -35,7 +35,7 @@ export const useChartSamples = defineStore('samples', () => {
 
         });    
        
-        totalMuestras.value =  separarMiles(totalMuestras.value)
+        
       
     });
     
@@ -53,6 +53,7 @@ export const useChartSamples = defineStore('samples', () => {
         totalMuestras,
         municipios,
         CantidadMunicipio,
+        separarMiles,
        
     };
 });
