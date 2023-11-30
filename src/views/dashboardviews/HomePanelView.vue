@@ -1,19 +1,23 @@
 <script setup>
 import "@/adminlte/plugins/chart/Chart.min.js";
-
 import { onMounted } from "vue";
 import { useChartsStore } from "@/stores/dashboard/charts";
 import { useChartLocateStore } from "@/stores/dashboard/chartLocate";
 import { useChartSamples } from "@/stores/dashboard/chartSamples";
 
 import CardsHome from "@/components/dashboard/CardsHome.vue";
-import MunicipalitiesChart from "@/components/dashboard/MunicipalitiesChart.vue";
-import DepartmentLocatesChart from "@/components/dashboard/DepartmentLocatesChart.vue";
+import PresenceMap from "@/components/dashboard/PresenceMap.vue";
+
+//monitoreos mensual
+import monthlyDepartmentMonitoring from "@/components/dashboard/charts/monthlyDepartmentMonitoring.vue";
+import monthlyMunicipalMonitoring from "@/components/dashboard/charts/monthlyMunicipalMonitoring.vue";
+
 import MunicipalitiesLocatesChart from "@/components/dashboard/MunicipalitiesLocatesChart.vue";
 
+//muestras
 import totalDepartmentSamples from "@/components/dashboard/charts/totalDepartmentSamples.vue";
-import MunicipalitiesSamplesChart from "@/components/dashboard/MunicipalitiesSamplesChart.vue";
-import PresenceMap from "@/components/dashboard/PresenceMap.vue";
+import totalSamplesMunicipalities from "@/components/dashboard/charts/totalSamplesMunicipalities.vue";
+
 //monitoreos
 import totalDepartmentMonitoring from "@/components/dashboard/charts/totalDepartmentMonitoring.vue";
 import totalMunicipalMonitoring from "@/components/dashboard/charts/totalMunicipalMonitoring.vue";
@@ -43,46 +47,32 @@ onMounted(() => {
   </div>
   <hr />
   <!-- graficos modificados -->
+
   <div class="graficos">
     <div class="grafico">
       <totalDepartmentMonitoring v-if="chartStore.departamentos.length > 0" />
-      <totalMunicipalMonitoring  v-if="chartStore.municipios.length > 0"/>
+      <totalMunicipalMonitoring v-if="chartStore.municipios.length > 0" />
     </div>
-    
+
     <div class="grafico">
-      <totalDepartmentSamples v-if="chartSamples.totalDepartamentos.length > 0" />
+      <totalDepartmentSamples
+        v-if="chartSamples.totalDepartamentos.length > 0"
+      />
+      <totalSamplesMunicipalities
+        v-if="chartSamples.CantidadMunicipio.length > 0"
+      />
+    </div>
+    <div class="grafico">
+      <monthlyDepartmentMonitoring
+        v-if="chartLocateStore.departamentoTotal.length > 0"
+      />
+      <monthlyMunicipalMonitoring
+        v-if="chartLocateStore.todosMunicipios.length > 0"
+      />
     </div>
   </div>
 
   <!-- fin graficos modificados -->
-
-  <div class="flex flex-col lg:flex-row justify-between gap-3">
-    <div class="w-full lg:w-1/2">
-      <h3 class="text-center mt-4">
-        <font-awesome-icon :icon="['fas', 'chart-pie']" /> Graficos de procesos
-        mensual
-      </h3>
-      <hr />
-      <DepartmentLocatesChart
-        v-if="chartLocateStore.departamentoTotal.length > 0"
-      />
-      <MunicipalitiesLocatesChart
-        v-if="chartLocateStore.todosMunicipios.length > 0"
-      />
-    </div>
-    <div class="w-full lg:w-1/2">
-      <h3 class="text-center mt-4">
-        <font-awesome-icon :icon="['fas', 'chart-pie']" /> Graficos de procesos
-        Totales
-      </h3>
-      <hr />
-
-      <!-- <MunicipalitiesChart v-if="chartStore.municipios.length > 0" /> -->
-      <MunicipalitiesSamplesChart
-        v-if="chartSamples.CantidadMunicipio.length > 0"
-      />
-    </div>
-  </div>
   <PresenceMap />
 </template>
 <style scoped>
@@ -91,9 +81,14 @@ onMounted(() => {
 @import url("@/adminlte/plugins/fontawesome-free/css/all.min.css");
 @import url("@/adminlte/plugins/ekko-lightbox/ekko-lightbox.css");
 
-.graficos{
+.graficos {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
+}
+.grafico{
+  background-color: var(--blanco);
+  border-radius: 10px;
+  box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
 }
 </style>

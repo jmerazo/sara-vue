@@ -7,10 +7,11 @@ export const useChartLocateStore = defineStore('chartLocate', () => {
     const consulta = useConsultaStore()
 
     // Departamentos
-    const departamentos = ref({});
+    const departamentos = ref([]);
     const departamentoRealizados = ref([]);
     const departamentoPendientes = ref([]);
     const departamentoTotal = ref([]);
+    const totalDepartamentos = ref(0)
     
 
     // Municipios
@@ -22,6 +23,7 @@ export const useChartLocateStore = defineStore('chartLocate', () => {
     const todosPendientes = ref([]);
     const totales = ref([]);
     const todosTotales = ref([]);
+
     //DATA grafico
     const chartMunicipios = ref([]);
     const chartRealizados = ref([]);
@@ -41,13 +43,13 @@ export const useChartLocateStore = defineStore('chartLocate', () => {
             departamentoRealizados.value.push(departamentoData.monitoreos_realizados_mes)
             departamentoPendientes.value.push(departamentoData.monitoreos_pendientes_mes)
             departamentoTotal.value.push(departamentoData.total_monitoreos_mes)
-
+            totalDepartamentos.value += departamentoData.total_monitoreos_mes
             // Agregar los datos de municipios, realizados, pendientes y totales
             municipios.value.push(Object.keys(departamentoData.municipios));
             realizados.value.push(Object.values(departamentoData.municipios).map(municipio => municipio.monitoreos_realizados_mes));
             pendientes.value.push(Object.values(departamentoData.municipios).map(municipio => municipio.monitoreos_pendientes_mes));
             totales.value.push(Object.values(departamentoData.municipios).map(municipio => municipio.total_monitoreos_mes));
-
+            
 
         });    
         
@@ -99,7 +101,6 @@ export const useChartLocateStore = defineStore('chartLocate', () => {
             chartRealizados.value = todosRealizados.value;
             chartPendientes.value = todosPendientes.value;
             chartTotales.value = todosTotales.value;
-           
             return 
         }
        
@@ -112,6 +113,7 @@ export const useChartLocateStore = defineStore('chartLocate', () => {
         departamentoRealizados,
         departamentoPendientes,
         departamentoTotal,
+        totalDepartamentos,
         //municipio
         todosMunicipios,
         todosRealizados,
