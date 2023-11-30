@@ -283,11 +283,8 @@ watch(() => speciesStore.specieSelected, () => {
                     <textarea class="w-full auto-resize-textarea" v-model="formData.hojas"></textarea>
                   </DialogTitle>
                   <DialogTitle as="h3" class="text-gray-900 text-lg my-5">
-                    <label for="imageInputLeaf" class="file-input-label">
-                      <img src="ruta-a-tu-icono.png" alt="Cargar imagen" class="upload-icon">
-                      <span class="font-bold">Imagen de las hojas</span>
-                    </label>
-                    <input type="file" id="imageInputLeaf" ref="imageInputLeaf" accept="image/*" @change="handleImageUpload" style="display: none;" />
+                      <font-awesome-icon :icon="['fas', 'image']" /> <span class="font-bold"> Imagen de las hojas: </span><br>
+                      <input type="file" ref="imageInputLeaf" accept="image/*" @change="handleImageUpload(e, 'imageInputLeaf')" />
                   </DialogTitle>
 
                   <DialogTitle as="h3" class="text-gray-900 text-lg my-5">
