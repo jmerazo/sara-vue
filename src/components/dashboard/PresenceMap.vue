@@ -1,8 +1,8 @@
 <template>
   <div class="contenedor">
     <div class="icono">
-          <font-awesome-icon :icon="['fas', 'earth-americas']" />
-        </div>
+      <img class="img" src="/logos/corpoamazonia.png" alt="logo corpoamazonia">
+    </div>
     <div>
       <div class="mapa__header">
         <h1 class="mapa__titulo">
@@ -276,7 +276,9 @@
   font-size: 2rem;
   color: var(--primary);
 }
-
+.img{
+  width: 5rem;
+}
 .mapa__titulo{
   background-color: var(--primary);
   color: var(--blanco);

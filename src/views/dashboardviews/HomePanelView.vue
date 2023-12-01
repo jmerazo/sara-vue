@@ -136,7 +136,7 @@ onMounted(() => {
   font-weight: 900;
 }
 .mapa__territorial {
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.1);
 }
 .contenido__grid {
   display: flex;
