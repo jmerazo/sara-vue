@@ -68,6 +68,7 @@ const porcentaje = (cantidad,total) => {
 .contenedor {
   padding: 1rem;
   background-color: var(--blanco);
+  margin-bottom: 1rem;
 }
 .tarjetas__grid {
   display: grid;
@@ -76,11 +77,16 @@ const porcentaje = (cantidad,total) => {
 
 @media (min-width: 768px) {
   .tarjetas__grid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(1, 1fr);
   }
 }
 
-@media (min-width: 992px) {
+@media screen and (min-width: 1350px) and (max-width: 1670px) {
+  .tarjetas__grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (min-width: 1900px) {
   .tarjetas__grid {
     grid-template-columns: repeat(3, 1fr);
   }
@@ -93,6 +99,10 @@ const porcentaje = (cantidad,total) => {
   padding: 1rem;
   border-radius: 10px;
   box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
+  transition: transform .3s ease-in-out;
+}
+.card:hover{
+  transform: scale(1.03);
 }
 .card__nombre {
   width: 100%;
@@ -117,11 +127,16 @@ const porcentaje = (cantidad,total) => {
 }
 .porcentaje {
   font-weight: 900;
-  font-size: 1.5rem;
+  font-size: 1rem;
   margin: 1rem;
   color: var(--gris);
   text-align: center;
   opacity: .8;
-  
+}
+
+@media (min-width: 768px){
+  .porcentaje{
+    font-size: 1.5rem;
+  }
 }
 </style>

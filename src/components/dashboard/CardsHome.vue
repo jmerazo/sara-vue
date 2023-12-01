@@ -13,9 +13,9 @@ const users = useUsersStore()
 </script>
 <template>
     <div>
-        <div class="row">
+        <div >
 
-        <div class="col-lg-3 col-xs-6" v-if="charts.departamentos.length > 0">
+        <div class="m-2" v-if="charts.departamentos.length > 0">
           <!-- small box -->
           <div class="small-box bg-green">
             <div class="inner">
@@ -29,37 +29,7 @@ const users = useUsersStore()
           </div>
         </div>
         <!-- ./col -->
-        <div class="col-lg-3 col-xs-6">
-          <!-- small box -->
-          <div class="small-box bg-yellow">
-            <div class="inner">
-              <h3>{{ samples.totalMuestras }}</h3>
-              <p>Total de muestras tomadas</p>
-            </div>
-            <div class="icon">
-              <font-awesome-icon :icon="['fas', 'vial']" />
-              <!-- <i class="ion ion-person-add"></i> -->
-            </div>
-            
-          </div>
-        </div>
-        <!-- ./col -->
-        <div class="col-lg-3 col-xs-6">
-          <!-- small box -->
-          <div class="small-box bg-red">
-            <div class="inner">
-              <h3>{{ charts.totalDepartamentos }}</h3>
-              <p>Total de monitoreos realizados</p>
-            </div>
-            <div class="icon">
-              <i class="ion ion-pie-graph"></i>
-            </div>
-           
-          </div>
-        </div>
-        <!-- ./col -->
-        
-        <div class="col-lg-3 col-xs-6" v-if="charts.municipios.length > 0">
+        <div class="m-2" v-if="charts.municipios.length > 0">
           <!-- small box -->
           <div class="small-box bg-info">
             <div class="inner">

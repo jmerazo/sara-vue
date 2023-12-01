@@ -157,7 +157,13 @@ function separarMiles(valor) {
 .cantidades {
   display: flex;
   justify-content: space-between;
-  margin: 0 5px;
+  margin: 0;
+}
+
+@media (min-width: 768px){
+  .cantidades{
+    margin: 0 6px;
+  }
 }
 .cantidades__nombre {
   margin: 0;

@@ -65,6 +65,8 @@ const colores = ref([
   padding: 2rem;
   border-radius: 10px;
 }
+
+
 .titulo__graficos {
   text-align: center;
   font-size: 1.5rem;
@@ -137,6 +139,7 @@ const colores = ref([
   animation: animacion-progreso 1s forwards;
   
 }
+
 @keyframes animacion-progreso {
   0% {
     transform: rotate(calc(((var(--i) - 0) * 0.01turn)));

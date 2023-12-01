@@ -1,7 +1,5 @@
 <script setup>
 import "@/adminlte/plugins/chart/Chart.min.js";
-
-
 </script>
 <template>
     <div>
