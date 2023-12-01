@@ -50,7 +50,7 @@ const porcentaje = (cantidad,total) => {
               Realizadas: <span class="card__valores">{{ chartStore.chartRealizados[index] }}</span>
             </p>
             <p class="card__texto">
-              Prendientes: <span class="card__valores">{{ chartStore.chartPendientes[index] }}</span>
+              Pendientes: <span class="card__valores">{{ chartStore.chartPendientes[index] }}</span>
             </p>
           </div>
           <div class="card__porcentaje">

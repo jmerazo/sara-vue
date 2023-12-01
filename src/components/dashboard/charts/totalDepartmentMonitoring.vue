@@ -101,7 +101,7 @@ const colores = ref([
 
 .grafico .grafico__porcentaje {
   position: absolute;
-  top: 23%;
+  top: 35%;
   left: 50%;
   transform: translate(-50%, -50%);
   font-size: 1.8rem;
@@ -109,7 +109,7 @@ const colores = ref([
 }
 .grafico .grafico__departamento {
   position: absolute;
-  top: 40%;
+  top: 45%;
   left: 50%;
   transform: translateX(-50%);
   z-index: 1;

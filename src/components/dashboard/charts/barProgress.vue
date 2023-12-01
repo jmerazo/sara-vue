@@ -61,6 +61,7 @@ function separarMiles(valor) {
   }
 }
 
+
 .barra {
   height: 30px;
   background-color: rgb(100, 100, 100);

@@ -121,7 +121,7 @@ onMounted(() => {
   grid-column: 2/3;
   box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.4);
   border-radius: 6px 0 0 0;
-  background: rgba(0, 0, 0, 0.9);
+  background: rgba(0, 0, 0, 0.5);
 }
 .home__heading {
   font-size: 2rem;
