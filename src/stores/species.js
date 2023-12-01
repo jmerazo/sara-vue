@@ -43,9 +43,9 @@ export const useEspeciesStore = defineStore('especies', () => {
 
     // Calcula las especies a mostrar en la página actual
     const displayedEspecies = computed(() => {
-    const start = (currentPage.value - 1) * itemsPerPage.value;
-    const end = start + itemsPerPage.value;
-    return especies.value.slice(start, end);
+      const start = (currentPage.value - 1) * itemsPerPage.value;
+      const end = start + itemsPerPage.value;
+      return especies.value.slice(start, end);
     });
 
     //función para cambiar de página
