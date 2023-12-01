@@ -120,6 +120,11 @@ function separarMiles(valor) {
   line-height: 1.1;
   margin: 0;
 }
+@media (min-width: 768px) {
+  .titulo__general{
+    font-size: 1.3rem;
+  }
+}
 .titulo__total {
   font-weight: 900;
 }

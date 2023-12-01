@@ -1,6 +1,5 @@
 <script setup>
 import { RouterLink } from "vue-router";
-import { computed } from 'vue';
 import { useAuthToken } from "../../stores/auth";
 
 const store = useAuthToken();
@@ -17,7 +16,9 @@ const userData = JSON.parse(userDataString);
         class="brand-image img-circle elevation-3"
         style="opacity: 0.8"
       />
-      <span class="brand-text font-weight-light text-ellipsis">{{ userData.first_name + " " + userData.last_name }}</span>
+      <span class="brand-text font-weight-light text-ellipsis">{{
+        userData.first_name + " " + userData.last_name
+      }}</span>
     </a>
 
     <!-- Sidebar -->
@@ -36,18 +37,11 @@ const userData = JSON.parse(userDataString);
             <li class="nav-item">
               <a href="#" class="nav-link">
                 <i class="nav-icon fas fa-tachometer-alt"></i>
-                <p>   Panel Principal</p>
+                <p>Panel Principal</p>
               </a>
             </li>
           </RouterLink>
-          <!-- <RouterLink :to="{ name: 'charts' }">
-          <li class="nav-item">
-            <a href="#" class="nav-link">
-              <i class="nav-icon fas fa-chart-pie"></i>
-              <p>   Ver gráficos</p>
-            </a>
-          </li>
-          </RouterLink> -->
+
           <li class="nav-item">
             <a href="#" class="nav-link">
               <i class="nav-icon fas fa-tree"></i>
@@ -130,15 +124,18 @@ const userData = JSON.parse(userDataString);
             </ul>
           </li>
           <li class="nav-header font-bold bg-white">EVENTOS</li>
-          <li class="nav-item">
-            <a href="#" class="nav-link">
-              <i class="nav-icon far fa-calendar-alt"></i>
-              <p>
-                Calendario Sara
-                <span class="badge badge-info right">2</span>
-              </p>
-            </a>
-          </li>
+
+          <RouterLink :to="{ name: 'calendar' }">
+            <li class="nav-item">
+              <a href="#" class="nav-link">
+                <i class="nav-icon far fa-calendar-alt"></i>
+                <p>
+                  Calendario ambiental
+                  <span class="badge badge-info right">1</span>
+                </p>
+              </a>
+            </li>
+          </RouterLink>
           <li class="nav-item">
             <a href="#" class="nav-link">
               <i class="nav-icon far fa-image"></i>
@@ -225,72 +222,109 @@ const userData = JSON.parse(userDataString);
           <li class="nav-header font-bold bg-white">REPORTES</li>
 
           <RouterLink :to="{ name: 'assessment' }">
-          <li class="nav-item">
-            <a href="#" class="nav-link">
-              <font-awesome-icon :icon="['fas', 'list-check']" />
-              <p> Evaluaciones realizadas</p>
-            </a>
-          </li>
+            <li class="nav-item">
+              <a href="#" class="nav-link">
+                <font-awesome-icon :icon="['fas', 'list-check']" />
+                <p>Evaluaciones realizadas</p>
+              </a>
+            </li>
           </RouterLink>
 
           <RouterLink :to="{ name: 'monitoring_data' }">
-          <li class="nav-item">
-            <a href="#" class="nav-link">
-              <font-awesome-icon :icon="['fas', 'folder-tree']" />
-              <p> Monitoreos realizados</p>
-            </a>
-          </li>
+            <li class="nav-item">
+              <a href="#" class="nav-link">
+                <font-awesome-icon :icon="['fas', 'folder-tree']" />
+                <p>Monitoreos realizados</p>
+              </a>
+            </li>
           </RouterLink>
 
           <RouterLink :to="{ name: 'samples_data' }">
-          <li class="nav-item">
-            <a href="#" class="nav-link">
-              <font-awesome-icon :icon="['fas', 'chart-simple']" />
-              <p> Muestras realizadas</p>
-            </a>
-          </li>
-        </RouterLink>
+            <li class="nav-item">
+              <a href="#" class="nav-link">
+                <font-awesome-icon :icon="['fas', 'chart-simple']" />
+                <p>Muestras realizadas</p>
+              </a>
+            </li>
+          </RouterLink>
 
           <RouterLink :to="{ name: 'list-species' }">
-          <li v-if="userData.rol == 'ADMINISTRADOR' && userData.is_superuser == 1 && userData.is_staff == 1" class="nav-item">
-            <a href="#" class="nav-link">
-              <font-awesome-icon :icon="['fab', 'pagelines']" />
-              <p> Especies forestales</p>
-            </a>
-          </li>
+            <li
+              v-if="
+                userData.rol == 'ADMINISTRADOR' &&
+                userData.is_superuser == 1 &&
+                userData.is_staff == 1
+              "
+              class="nav-item"
+            >
+              <a href="#" class="nav-link">
+                <font-awesome-icon :icon="['fab', 'pagelines']" />
+                <p>Especies forestales</p>
+              </a>
+            </li>
           </RouterLink>
           <RouterLink :to="{ name: 'species-data' }">
-          <li v-if="userData.rol == 'ADMINISTRADOR' && userData.is_superuser == 1 && userData.is_staff == 1" class="nav-item">
-            <a href="#" class="nav-link">
-              <font-awesome-icon :icon="['fab', 'pagelines']" />
-              <p> Datos generales especies</p>
-            </a>
-          </li>
+            <li
+              v-if="
+                userData.rol == 'ADMINISTRADOR' &&
+                userData.is_superuser == 1 &&
+                userData.is_staff == 1
+              "
+              class="nav-item"
+            >
+              <a href="#" class="nav-link">
+                <font-awesome-icon :icon="['fab', 'pagelines']" />
+                <p>Datos generales especies</p>
+              </a>
+            </li>
           </RouterLink>
           <RouterLink :to="{ name: 'map-general' }">
-          <li class="nav-item">
-            <a href="#" class="nav-link">
-              <font-awesome-icon :icon="['fas', 'map-location']" />
-              <p> Mapa General</p>
-            </a>
-          </li>
-        </RouterLink>
+            <li class="nav-item">
+              <a href="#" class="nav-link">
+                <font-awesome-icon :icon="['fas', 'map-location']" />
+                <p>Mapa General</p>
+              </a>
+            </li>
+          </RouterLink>
 
-          <li v-if="userData.rol == 'ADMINISTRADOR' && userData.is_superuser == 1 && userData.is_staff == 1" class="nav-header font-bold bg-white">ADMINISTRACIÓN</li>
-          
-          <RouterLink :to="{ name: 'users' }">
-          <li v-if="userData.rol == 'ADMINISTRADOR' && userData.is_superuser == 1 && userData.is_staff == 1" class="nav-item">
-            <a href="#" class="nav-link">
-              <font-awesome-icon :icon="['fas', 'users-gear']" />
-              <p> Usuarios</p>
-            </a>
+          <li
+            v-if="
+              userData.rol == 'ADMINISTRADOR' &&
+              userData.is_superuser == 1 &&
+              userData.is_staff == 1
+            "
+            class="nav-header font-bold bg-white"
+          >
+            ADMINISTRACIÓN
           </li>
+
+          <RouterLink :to="{ name: 'users' }">
+            <li
+              v-if="
+                userData.rol == 'ADMINISTRADOR' &&
+                userData.is_superuser == 1 &&
+                userData.is_staff == 1
+              "
+              class="nav-item"
+            >
+              <a href="#" class="nav-link">
+                <font-awesome-icon :icon="['fas', 'users-gear']" />
+                <p>Usuarios</p>
+              </a>
+            </li>
           </RouterLink>
           <RouterLink :to="{ name: 'species' }">
-            <li v-if="userData.rol == 'ADMINISTRADOR' && userData.is_superuser == 1 && userData.is_staff == 1" class="nav-item">
+            <li
+              v-if="
+                userData.rol == 'ADMINISTRADOR' &&
+                userData.is_superuser == 1 &&
+                userData.is_staff == 1
+              "
+              class="nav-item"
+            >
               <a href="#" class="nav-link">
                 <font-awesome-icon :icon="['fas', 'clipboard-check']" />
-                <p> Especies forestales</p>
+                <p>Especies forestales</p>
               </a>
             </li>
           </RouterLink>

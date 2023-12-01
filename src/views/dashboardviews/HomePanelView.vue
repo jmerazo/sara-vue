@@ -99,8 +99,12 @@ onMounted(() => {
     </main>
   </div>
 </div>
+
 </template>
 <style scoped>
+.calendario{
+  width: 100%	;
+}
 .encabezado {
   background-image: url("/img/home_sara.jpg");
   background-repeat: no-repeat;

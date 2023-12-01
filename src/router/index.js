@@ -39,9 +39,9 @@ const router = createRouter({
       }
     },
     {
-      path: '/charts',
-      name: 'charts',
-      component: ()=> import('../views/dashboardviews/ChartsView.vue')
+      path: '/calendar',
+      name: 'calendar',
+      component: ()=> import('../views/dashboardviews/calendarView.vue')
     },
     {
       path: '/acercade',
