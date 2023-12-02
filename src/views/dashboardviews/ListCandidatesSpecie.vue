@@ -1,140 +1,430 @@
 <script setup>
+import pdfMake from "pdfmake/build/pdfmake";
+import pdfFonts from "pdfmake/build/vfs_fonts";
+// Registra las fuentes
+pdfMake.vfs = pdfFonts.pdfMake.vfs;
+
+import { computed } from "vue";
 import { useConsultaStore } from "@/stores/consulta";
+import exportFromJSON from "export-from-json";
 
 const consulta = useConsultaStore();
 
+//botones paginador
+const displayedPageRange = computed(() => {
+  const currentPage = consulta.currentPage;
+  const totalPages = consulta.totalPagesCandidates;
+  const rangeStart = Math.max(1, currentPage - 1);
+  const rangeEnd = Math.min(totalPages, rangeStart + 3);
+
+  return Array.from(
+    { length: rangeEnd - rangeStart + 1 },
+    (_, index) => rangeStart + index
+  );
+});
+
+//descargar candidatos en excel
+function descargarExcel(datos) {
+  const data = datos;
+  const fileName = `candidatos ${consulta.nombreEspecie}`;
+  // const exportType= exportFromJSON.types.xls
+  const exportType = exportFromJSON.types.xls;
+  exportFromJSON({ data, fileName, exportType });
+}
+
+//descargar info tabla en pdf
+function descargarPdf(datos, tituloTabla) {
+  const columnasMostrar = Math.min(8, Object.keys(datos[0]).length);
+
+  if (columnasMostrar > 0) {
+    const headers = Object.keys(datos[0]).slice(1, columnasMostrar+1);
+    //ojo esta varible no se puede cambiar la solicita la liberia
+    const documentDefinition = {
+      pageOrientation: "landscape", //para vertical seria: portrait 
+      content: [
+        { text: tituloTabla, style: "header" },
+        {
+          table: {
+            widths: Array(columnasMostrar).fill("auto"),
+            headerRows: 1,
+            body: [
+              headers.map((header) => ({
+                text: header,
+                fillColor: "#10613e",
+                color: "#ffffff",
+              })), // Color primario
+              ...datos.map((objeto) =>
+                headers
+                  .map((header) => objeto[header])
+                  .slice(0, columnasMostrar)
+              ),
+            ],
+          },
+          layout: {
+            fillColor: function (rowIndex, node, columnIndex) {
+              return rowIndex === 0 ? "#10613e" : null; // Fila de encabezados con color de fondo
+            },
+          },
+        },
+      ],
+      margin: [20, 20, 20, 20], // Márgenes: [izquierda, arriba, derecha, abajo]
+      styles: {
+        header: {
+          fontSize: 18,
+          bold: true,
+          margin: [0, 0, 0, 15], // Márgenes para el título (15 puntos en la parte inferior)
+        },
+      },
+    };
+
+    const pdfDoc = pdfMake.createPdf(documentDefinition);
+    pdfDoc.open();
+  } else {
+    console.error("No hay suficientes columnas en los datos para mostrar.");
+  }
+}
 </script>
 <template>
-  <h1 class="text-4xl mb-10 mt-10 text-center font-extrabold">
-    Candidatos de la especie {{ consulta.nombreEspecie }}
-  </h1>
-  <div class="flex justify-end mt-5 mb-5">
-      <label class="p-3 text-lg font-bold rounded-lg mx-3">Buscar </label>
-      <input
-        class="p-3 rounded-lg lg:w-1/4 sm:w-full border-2 border-gray-500 py-2 px-4"
-        type="text"
-        placeholder="Placa, expediente, Departamento o Municipio"
-        @input="consulta.buscarTermino($event.target.value)"
-      />
+  <div class="contenedor">
+    <!-- encabezado vista -->
+    <h1 class="reporte__heading">
+      Candidatos de la especie {{ consulta.nombreEspecie }}
+    </h1>
+    <div class="contenido__header">
+      <div class="buscador">
+        <div class="buscador__contenido"></div>
+        <label class="buscador__label">Buscar: </label>
+        <input
+          class="buscador__input"
+          type="text"
+          placeholder="Escríbe un término de búsqueda"
+          @input="consulta.buscarTermino($event.target.value)"
+        />
+      </div>
+      <div class="botones__descarga">
+        <a @click="descargarExcel(consulta.datosExcel)" class="boton" href="#"
+          ><font-awesome-icon
+            class="boton__excel"
+            :icon="['fas', 'file-excel']"
+        /></a>
+        <a
+          @click="descargarPdf(consulta.datosExcel, `candidatos de la especie ${consulta.nombreEspecie}`)"
+          class="boton"
+          href="#"
+          ><font-awesome-icon class="boton__pdf" :icon="['fas', 'file-pdf']"
+        /></a>
+        
+      </div>
     </div>
-  <hr />
-  <table class="bg-slate-50 shadow-md border rounded-lg mx-auto mt-5 table custom-table">
-    <thead>
-      <tr>
-        <th class="px-4 py-2 text-gray-600">Fecha evaluación</th>
-        <th class="px-4 py-2 text-gray-600">Numero de placa</th>
-        <th class="px-4 py-2 text-gray-600">Código expediente</th>
-        <th class="px-4 py-2 text-gray-600">Departamento</th>
-        <th class="px-4 py-2 text-gray-600">Municipio</th>
+    <!-- fin encabezado vista -->
+    <hr />
+    <main>
+      <table class="tabla">
+        <thead class="tabla__encabezado">
+          <tr class="tabla__fila">
+            <th class="dato__encabezado fecha">Fecha evaluación</th>
+            <th class="dato__encabezado"># Placa</th>
+            <th class="dato__encabezado">Código expediente</th>
+            <th class="dato__encabezado">Departamento</th>
+            <th class="dato__encabezado">Municipio</th>
+            <th class="dato__encabezado">Acciones</th>
+          </tr>
+        </thead>
+        <tbody class="tabla__contenido">
+          <tr
+            class="tabla__fila"
+            v-for="candidato in consulta.displayedCandidates"
+            :key="candidato.ShortcutIDEV"
+          >
+            <td class="tabla__dato fecha">
+              <span class="nombre__campo">Fecha evaluación: </span>
+              {{ candidato.fecha_evaluacion }}
+            </td>
+            <td class="tabla__dato">
+              <span class="nombre__campo"># Placa: </span>
+              <span
+                :class="{
+                  placa: !candidato.numero_placa,
+                }"
+              >
+                {{
+                  candidato.numero_placa ? candidato.numero_placa : "Sin placa"
+                }}
+              </span>
+            </td>
+            <td class="tabla__dato">
+              <span class="nombre__campo">Código expediente: </span>
+              {{ candidato.cod_expediente }}
+            </td>
+            <td class="tabla__dato">
+              <span class="nombre__campo">Departamento: </span>
+              {{ candidato.departamento }}
+            </td>
+            <td class="tabla__dato">
+              <span class="nombre__campo">Municipio: </span>
+              {{ candidato.municipio }}
+            </td>
+            <td class="tabla__dato tabla__botones">
+              <button
+                @click="consulta.verMonitoreosCandidato(candidato.ShortcutIDEV)"
+                class="tabla__boton"
+              >
+                <font-awesome-icon :icon="['fas', 'eye']" /> Ver Monitoreos
+              </button>
+              <button
+                @click="consulta.mostrarInfoCandidato(candidato)"
+                class="tabla__boton tabla__boton--secundario"
+              >
+                <font-awesome-icon :icon="['fas', 'angles-right']" /> Info
+                Candidato
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </main>
+    <!-- paginador -->
+    <section class="paginador">
+      <div class="paginador__botones">
+        <button
+          class="paginador__boton paginador__boton--anterior"
+          v-if="consulta.currentPage > 1"
+          @click="consulta.changePageCandidates(consulta.currentPage - 1)"
+        >
+          <font-awesome-icon :icon="['fas', 'angles-left']" />
+        </button>
 
-        <th class="px-4 py-2 text-gray-600">Acciones</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr
-        v-for="candidato in consulta.displayedCandidates"
-        v-bind:key="candidato.ShortcutIDEV"
+        <button
+          v-for="page in displayedPageRange"
+          :key="page"
+          @click="consulta.changePageCandidates(page)"
+          class="paginador__boton"
+          :class="{ 'paginador__boton-actual': page === consulta.currentPage }"
+        >
+          {{ page }}
+        </button>
+        <button
+          class="paginador__boton paginador__boton--siguiente"
+          v-if="consulta.currentPage < consulta.totalPages"
+          @click="consulta.changePageCandidates(consulta.currentPage + 1)"
+        >
+          <font-awesome-icon :icon="['fas', 'angles-right']" />
+        </button>
+      </div>
+    </section>
+    <!--fin paginador -->
+    <!-- texto validacion buscador -->
+    <section class="validacion__contenido">
+      <h1
+        v-if="consulta.candidatosEspecie.length == 0"
+        class="validacion__heading"
       >
-        <td class="px-4 py-3 border">{{ candidato.fecha_evaluacion }}</td>
-        <td  class="px-4 py-3 border">
-          <button 
-            :class="{'font-bold rounded-lg bg-red-200 p-1': !candidato.numero_placa }"
-            >
-            {{ candidato.numero_placa ? candidato.numero_placa : 'Sin placa' }}
-          </button>
-        </td>
-       
-        <td class="px-4 py-3 border">{{ candidato.cod_expediente }}</td>
-        <td class="px-4 py-3 border">{{ candidato.departamento }}</td>
-        <td class="px-4 py-3 border">{{ candidato.municipio }}</td>
-
-        <td class="px-4 py-3 border space-y-2">
-          <button
-            @click="consulta.verMonitoreosCandidato(candidato.ShortcutIDEV)"
-            class="w-full btn rounded-lg font-bold p-1  bg-green-800 hover:bg-green-900 text-white hover:shadow-lg"
-          >
-            <font-awesome-icon :icon="['fas', 'eye']" /> Ver Monitoreos
-          </button>
-          <button
-            @click="consulta.mostrarInfoCandidato(candidato)"
-            class="w-full btn rounded-lg font-bold p-1 bg-gray-700 hover:bg-gray-800 text-white hover:shadow-lg"
-          >
-          <font-awesome-icon :icon="['fas', 'angles-right']" /> Info Candidato
-          </button>
-        </td>
-       
-      </tr>
-    </tbody>
-  </table>
-  <!-- paginador -->
-  <div class="flex justify-center mt-5 mb-10">
-    <button
-      v-for="page in consulta.totalPagesCandidates"
-      :key="page"
-      @click="consulta.changePageCandidates(page)"
-      class="px-3 py-2 mx-1 rounded-lg bg-green-200 text-black hover:bg-green-600"
-      :class="{ 'bg-green-600': page === consulta.currentPage }"
-    >
-      {{ page }}
-    </button>
+        No hay resultados de búsqueda
+      </h1>
+    </section>
+    <!--fin texto validacion buscador -->
   </div>
-
-  <h1
-    v-if="consulta.candidatosEpecie.length == 0"
-    class="text-center font-bold text-2xl mt-5 mb-40"
-  >
-    No hay resultados de búsqueda
-    <span class="text-green-900">{{ consulta.nombreEspecie }}</span>
-  </h1>
 </template>
 
 <style scope>
-.custom-table {
+/* encabezado de la vista */
+.reporte__heading {
+  font-size: 1.3rem;
+  margin: 2rem;
+}
+@media (min-width: 768px) {
+  .reporte__heading {
+    font-size: 1.8rem;
+    margin: 3rem;
+  }
+}
+.contenido__header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.2rem;
+  margin-bottom: 0.6rem;
+}
+@media (min-width: 768px) {
+  .contenido__header {
+    flex-direction: row-reverse;
+    justify-content: space-between;
+    margin: 0 1rem 2rem 1rem;
+  }
+}
+.reporte__grid {
+  display: grid;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+@media (min-width: 768px) {
+  .reporte__grid {
+    grid-template-columns: repeat(2fr, 1fr);
+  }
+}
+@media (min-width: 992px) {
+  .reporte__grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* buscador */
+.buscador__label {
+  display: none;
+}
+@media (min-width: 768px) {
+  .buscador__label {
+    display: inline;
+    margin-right: 1rem;
+  }
+}
+.buscador__input {
+  width: 300px;
+  padding: 0.4rem;
+  border-radius: 6px;
+  border: 1px solid var(--primary);
+  text-align: center;
+}
+@media (min-width: 768px) {
+  .buscador__input {
+    padding: 0.5rem;
+    text-align: left;
+  }
+}
+/* descargas */
+.botones__descarga {
+  display: flex;
+  gap: 1rem;
+}
+.boton {
+  font-size: 1.5rem;
+}
+@media (min-width: 768px) {
+  .boton {
+    font-size: 1.8rem;
+  }
+}
+.boton__excel {
+  color: rgb(6, 114, 6);
+}
+.boton__pdf {
+  color: rgb(184, 50, 50);
+}
+
+/* Tabla */
+/* Estilos para escritorio*/
+.tabla {
   width: 100%;
-  margin-bottom: 1rem;
-  background-color: #fff;
-  border: 1px solid rgba(0, 0, 0, 0.125);
-  border-collapse: collapse; /* Agregamos esto para mostrar todos los bordes */
+  border-collapse: collapse;
+  margin-bottom: 20px;
+  background-color: var(--blanco);
 }
 
-.custom-table th, .custom-table td {
-  border: 1px solid rgba(0, 0, 0, 0.125); /* Borde para todas las celdas */
-  padding: 0.5rem; /* Ajusta el espaciado interior de las celdas */
+.dato__encabezado {
+  background-color: var(--primary-backgound);
 }
 
-.custom-table th {
-  background-color: #f8f9fa;
+.tabla__fila,
+.tabla__dato {
+  border: 1px solid #ddd;
+  padding: 8px;
   text-align: left;
 }
 
-/* Estilo responsivo para que la tabla sea desplazable horizontalmente en pantallas pequeñas */
-@media (max-width: 767px) {
-  .custom-table {
-    overflow-x: auto;
+.nombre__campo {
+  font-weight: 900;
+  display: none;
+}
+
+.placa {
+  background-color: rgb(248, 205, 205);
+  width: 30%;
+  border-radius: 7px;
+  padding: 1px;
+  color: rgb(145, 18, 18);
+}
+.tabla__botones {
+  display: flex;
+  gap: 1rem;
+}
+.tabla__boton {
+  background-color: var(--primary);
+  text-align: center;
+  color: var(--blanco);
+  border-radius: 5px;
+  padding: 0.1rem 0.5rem;
+  transition: background-color 0.3s ease;
+}
+.tabla__boton--secundario {
+  background-color: var(--secondary);
+}
+
+.tabla__boton:hover {
+  background-color: var(--primary-hover);
+}
+.tabla__boton--secundario:hover {
+  background-color: var(--secondary-hover);
+}
+.dato__encabezado {
+  font-weight: 900;
+  border: 1px solid #ddd;
+  padding: 5px;
+  text-align: left;
+}
+/* Estilos para dispositivos */
+@media (max-width: 768px) {
+  .tabla,
+  .dato__encabezado,
+  .tabla__contenido,
+  .tabla__fila,
+  .tabla__dato {
     display: block;
   }
-  
-  .custom-table thead {
+  .tabla {
+    background-color: unset;
+  }
+
+  .nombre__campo {
+    font-weight: 900;
+    display: inline;
+  }
+
+  .dato__encabezado {
     display: none;
   }
-  
-  .custom-table tbody {
-    display: block;
+  .tabla__fila {
+    padding: 0;
+    border-radius: 5px;
+    background-color: var(--blanco);
+    margin-bottom: 1rem;
+    box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
   }
-  
-  .custom-table tbody tr {
-    margin-bottom: 0.625rem;
+
+  .tabla__dato {
     display: flex;
     flex-direction: column;
-    border: 1px solid rgba(0, 0, 0, 0.125);
-  }
-  
-  .custom-table tbody tr td {
-    padding: 0.625rem;
-    border: none;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.125);
-    flex-basis: 100%;
     text-align: center;
+    justify-content: center;
+    align-items: center;
+    border: none;
+    padding: 5px;
+    position: relative;
   }
+  .tabla__botones {
+    gap: 0.7rem;
+    margin-bottom: 1rem;
+  }
+  .fecha {
+    text-align: center;
+    padding: 10px;
+  }
+}
+
+/* validacion */
+.validacion__contenido {
+  margin-bottom: 8rem;
+}
+.validacion__heading {
+  font-size: 1.5rem;
 }
 </style>

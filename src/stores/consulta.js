@@ -1,4 +1,4 @@
-import { ref, reactive, computed } from "vue";
+import { ref, reactive, computed,watch } from "vue";
 import { defineStore } from "pinia";
 import { useRouter } from "vue-router";
 import { useModalStore } from "../stores/modal";
@@ -20,9 +20,10 @@ export const useConsultaStore = defineStore("consulta", () => {
   const monitoreosCandidato = ref({})
 
   //candidatos especie
-  const candidatosEpecie = ref({})
-  const canditadosEspecieOriginal = ref({})
+  const candidatosEspecie = ref([])
+  const candidatosEspecieOriginal = ref({})
   const infoCandidato = ref({})
+  const datosExcel = ref([])
   // variables para paginación
   const currentPage = ref(1); // Página actual
   const itemsPerPage = ref(12); // Elementos por página
@@ -118,12 +119,27 @@ export const useConsultaStore = defineStore("consulta", () => {
     cargando.value = true
     nombreEspecie.value = nombre_comun
     const {data} = await APIService.lookCandidateSpecie(nombre_comun)
-    candidatosEpecie.value = data
-    canditadosEspecieOriginal.value = data
+    candidatosEspecie.value = data
+    candidatosEspecieOriginal.value = data
     router.push("/candidates-species");
     cargando.value = false
   }
+  
+function cargarExcel(){
+  candidatosEspecie.value.forEach(candidato =>{
+    datosExcel.value.push(candidato)
+   
+  })
+}
 
+watch(
+  () => candidatosEspecie.value, // Corregido: Agrega una coma aquí y elimina el bloque de código innecesario
+  () => {
+    datosExcel.value=[]
+    cargarExcel();
+  },
+  { deep: true }
+);
   // Calcula el número total de páginas del objeto monitoreos por especie
   const totalPages = computed(() =>
     Math.ceil(monitoreosEspecie.value.length / itemsPerPage.value)
@@ -146,16 +162,22 @@ export const useConsultaStore = defineStore("consulta", () => {
 
   // Calcula el número total de páginas del objeto candidatos por especie
   const totalPagesCandidates = computed(() =>
-    Math.ceil(candidatosEpecie.value.length / itemsPerPage.value)
+    Math.ceil(candidatosEspecie.value.length / itemsPerPage.value)
   );
 
 
   // Calcula el numero de páginas a candidatos por especie
   const displayedCandidates = computed(() => {
-    const start = (currentPage.value - 1) * itemsPerPage.value;
-    const end = start + itemsPerPage.value;
-    return candidatosEpecie.value.slice(start, end);
+    try{
+      const start = (currentPage.value - 1) * itemsPerPage.value;
+      const end = start + itemsPerPage.value;   
+    return candidatosEspecie.value.slice(start, end);
+    }catch{
+      console.log('no hay paginacion')
+    }
   });
+
+ 
 
   //función para cambiar de página candidatos por especie
   function changePageCandidates(page) {
@@ -194,14 +216,14 @@ export const useConsultaStore = defineStore("consulta", () => {
   //motor de busqueda para tabla candidatos especie
   function buscarTermino(termino) {
     changePageCandidates(1)
-    candidatosEpecie.value = canditadosEspecieOriginal.value.filter(term => {
+    candidatosEspecie.value = candidatosEspecieOriginal.value.filter(term => {
       const lowerTermino = termino.toLowerCase();
       const lowerExpediente = term.cod_expediente ? term.cod_expediente.toLowerCase() : '';
       const lowerDepartamento = term.departamento ? term.departamento.toLowerCase(): '';
       const lowerMunicipio = term.municipio ? term.municipio.toLowerCase(): '';
       // Verifica si la placa es igual al término (ya sea número o cadena)
       const termPlaca = term.numero_placa != null ? term.numero_placa.toString(): ''; // Convierte el número a cadena
-    
+
       return (
         lowerExpediente.includes(lowerTermino) ||
         lowerDepartamento.includes(lowerTermino) ||
@@ -209,7 +231,9 @@ export const useConsultaStore = defineStore("consulta", () => {
         termPlaca === termino  // Compara término y numero placa
         
       );
+      
     });
+    
   }
 
 
@@ -226,11 +250,12 @@ export const useConsultaStore = defineStore("consulta", () => {
     nombreEspecie,
     monitoreosEspecie,
     monitoreosCandidato,
-    candidatosEpecie,
+    candidatosEspecie,
     infoCandidato,
     displayedMonitoring,
     displayedCandidates,
     cargando,
+    datosExcel,
     verMonitoreosEspecie,
     verCandidatosEspecie,
     verMonitoreosCandidato,
@@ -240,6 +265,7 @@ export const useConsultaStore = defineStore("consulta", () => {
     filtrarFecha,
     limpiarFiltroFecha,
     mostrarInfoCandidato,
-    buscarTermino
+    buscarTermino,
+    
   };
 });

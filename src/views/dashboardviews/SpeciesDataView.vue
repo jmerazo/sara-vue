@@ -1,9 +1,14 @@
 <script setup>
 import { computed } from "vue";
+import { onBeforeRouteLeave } from "vue-router";
 import { useEspeciesData } from "@/stores/dashboard/speciesData";
 
 const especies = useEspeciesData();
-
+//limpiar filtros antes de cambiar de vista
+onBeforeRouteLeave((to, from, next) => {
+  especies.quitarFiltroEspecie();
+  next();
+});
 //botones paginador
 const displayedPageRange = computed(() => {
   const currentPage = especies.currentPage;
@@ -171,14 +176,14 @@ const displayedPageRange = computed(() => {
 }
 .buscador__input {
   width: 300px;
-  padding: 0.5rem;
+  padding: 0.4rem;
   border-radius: 6px;
   border: 1px solid var(--primary);
   text-align: center;
 }
 @media (min-width: 768px) {
   .buscador__input {
-    padding: 0.7rem;
+    padding: 0.5rem;
     text-align: left;
   }
 }

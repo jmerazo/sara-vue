@@ -21,7 +21,6 @@ export const useEspeciesData = defineStore('especiesData', () => {
       const { data } = await APIService.getSpeciesData();
       especiesData.value = data;
       especiesOriginalesData.value = data;
-      console.log(especiesData.value)
       consulta.cargando = false
     });
   
