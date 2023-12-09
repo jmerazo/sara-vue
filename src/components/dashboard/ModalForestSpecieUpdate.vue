@@ -37,9 +37,14 @@ const formData = ref({
   flor: "",
   img_flowers: "",
   frutos: "",
+  img_fruits: "",
   semillas: "",
+  img_seed: "",
   tallo: "",
-  raiz: ""
+  raiz: "",
+  img_landscapeone: "",
+  img_landscapetwo: "",
+  img_landscapethree: ""
 });
 
 async function forestSpecieUpdate() {
@@ -75,6 +80,7 @@ const initializeFormData = () => {
       flor: selectedForestSpecie.flor || "",
       img_flowers: selectedForestSpecie.img_flowers || "",
       frutos: selectedForestSpecie.frutos || "",
+      img_fruits: selectedForestSpecie.img_fruits || "",
       semillas: selectedForestSpecie.semillas || "",
       tallo: selectedForestSpecie.tallo || "",
       raiz: selectedForestSpecie.raiz || ""
@@ -236,6 +242,9 @@ watch(() => speciesStore.specieSelected, () => {
                   <DialogTitle as="h3" class="text-gray-900 text-lg my-5">
                     <font-awesome-icon :icon="['fab', 'apple']" /> <span class="font-bold"> Información de los frutos: </span>
                     <textarea type="text" class="w-full auto-resize-textarea" v-model="formData.frutos"></textarea>
+                  </DialogTitle>
+                  <DialogTitle as="h3" class="text-gray-900 text-lg my-5">
+                    <img  v-if="formData.img_fruits" :src="getFullImageUrl(formData.img_fruits)" >
                   </DialogTitle>
                   <DialogTitle as="h3" class="text-gray-900 text-lg my-5">
                     <font-awesome-icon :icon="['fas', 'seedling']" /> <span class="font-bold"> Información de las semillas: </span>

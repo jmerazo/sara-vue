@@ -27,6 +27,7 @@ export const useEspeciesStore = defineStore('especies', () => {
       const { data } = await APIService.getSpecies();
       especies.value = data;
       especiesOriginales.value = data;
+      console.log('species data: ', especies.value)
 
       const uniqueSpecies = [...new Map(data.map(especie => [especie.nom_comunes, especie])).values()];
       uniqueNomComunes.value = uniqueSpecies.map(especie => ({
