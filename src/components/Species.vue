@@ -14,7 +14,7 @@ defineProps({
     <div class="especie__img">
       <img
         alt="imagen especie"
-        src="/img/arbol_especie.jpeg"
+        src="/img/arbol__especie.jpg"
       />
     </div>
 

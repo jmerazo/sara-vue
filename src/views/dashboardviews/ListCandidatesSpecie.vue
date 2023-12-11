@@ -1,8 +1,8 @@
 <script setup>
 import pdfMake from "pdfmake/build/pdfmake";
-import pdfFonts from "pdfmake/build/vfs_fonts";
+/* import * as pdfFonts from "pdfmake/build/vfs_fonts"; */
 // Registra las fuentes
-pdfMake.vfs = pdfFonts.pdfMake.vfs;
+/* pdfMake.vfs = pdfFonts.pdfMake.vfs; */
 
 import { computed } from "vue";
 import { useConsultaStore } from "@/stores/consulta";

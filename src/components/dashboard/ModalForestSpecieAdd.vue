@@ -9,6 +9,7 @@ import {
 } from "@headlessui/vue";
 import { useModalStore } from "@/stores/modal";
 import { useEspeciesStore } from "@/stores/species";
+import { read } from "pdfmake/build/pdfmake";
 
 const modal = useModalStore();
 const speciesStore = useEspeciesStore();
@@ -53,7 +54,7 @@ const imageInputLandScapeOne = ref(null);
 const imageInputLandScapeTwo = ref(null);
 const imageInputLandScapeThree = ref(null);
 
-const handleImageUpload = (event, fieldName) => {
+/* const handleImageUpload = (event, fieldName) => {
   console.log('fieldName: ',event, fieldName)
   let imageInput;
 
@@ -87,6 +88,9 @@ const handleImageUpload = (event, fieldName) => {
     case 'imageInputLandScapeThree':
       imageInput = imageInputLandScapeThree.value;
       break;
+    
+    default:
+      break;
   }
 
   if (imageInput) {
@@ -95,8 +99,29 @@ const handleImageUpload = (event, fieldName) => {
 
     reader.onload = (e) => {
       formData.value[fieldName] = e.target.result; // Almacena la imagen en el campo correspondiente del formulario
+      // Refleja la imagen en la etiqueta img
+      const imgElement = imageInput.nextElementSibling.querySelector('img');
+      if (imgElement) {
+        imgElement.src = e.target.result;
+      }
     };
 
+    reader.readAsDataURL(file);
+  }
+}; */
+
+const handleImageUpload = (event, fieldName) => {
+  const file = event.target.files[0];
+  const reader = new FileReader();
+  console.log('file: ', file, " reader: ", reader)
+
+  reader.onload = () => {
+    formData.value[fieldName] = reader.result;
+    /* console.log('formData: ',formData.value[fieldName]) */
+  };
+
+  if (file) {
+    console.log('file: ')
     reader.readAsDataURL(file);
   }
 };
@@ -248,9 +273,28 @@ watch(() => speciesStore.specieSelected, () => {
                     <input type="text" class="w-80" v-model="formData.familia"/>
                   </DialogTitle>
 
-                  <DialogTitle as="h3" class="text-gray-900 text-lg my-5">
-                    <font-awesome-icon :icon="['fas', 'image']" /> <span class="font-bold"> Imagen especie: </span><br>
-                    <input type="file" ref="imageInputGeneral" accept="image/*" @change="e => handleImageUpload(e, 'imageInputGeneral')" />
+                  <DialogTitle as="h3" class="text-gray-900 text-lg my-5 input__uploadImage">
+                    <span class="text__imgSpecie_Add"> Imagen especie: </span>
+                    <label for="fileInput" class="custom-file-upload">
+                      <div class="drop-area">
+                        <div v-if="!formData.imageInputGeneral" class="img__specieUploadPhoto">
+                          <img                            
+                            src="../../assets/prefabs/icon_upload_photo.png"
+                            alt="Imagen de arrastre o clic"
+                            style="width: 100px; height: auto; margin-bottom: 10px;"
+                          />
+                          <p>Arrastra y suelta o haz clic para seleccionar un archivo</p>
+                        </div>
+                        <div v-if="formData.imageInputGeneral" class="img__specieUploadPhotoSelect">
+                          <img
+                            class="img_specie_selected"
+                            :src="formData.imageInputGeneral"
+                            alt="Imagen seleccionada"
+                          />
+                        </div>
+                      </div>
+                      <input id="fileInput" type="file" ref="imageInputGeneral" accept="image/*" @change="e => handleImageUpload(e, 'imageInputGeneral')" />
+                    </label>
                   </DialogTitle>
 
                   <DialogTitle as="h3" class="text-gray-900 text-lg my-5">
@@ -282,63 +326,116 @@ watch(() => speciesStore.specieSelected, () => {
                     <font-awesome-icon :icon="['fab', 'envira']" /> <span class="font-bold"> Información de las hojas: </span>
                     <textarea class="w-full auto-resize-textarea" v-model="formData.hojas"></textarea>
                   </DialogTitle>
-                  <DialogTitle as="h3" class="text-gray-900 text-lg my-5">
-                      <font-awesome-icon :icon="['fas', 'image']" /> <span class="font-bold"> Imagen de las hojas: </span><br>
-                      <input type="file" ref="imageInputLeaf" accept="image/*" @change="handleImageUpload(e, 'imageInputLeaf')" />
+                  <DialogTitle as="h3" class="text-gray-900 text-lg my-5 input__uploadImage">
+                      <span class="text__imgSpecie_Add"> Imagen de las hojas: </span>
+                      <label for="fileInput" class="custom-file-upload">
+                        <div class="drop-area">
+                          <img src="../../assets/prefabs/icon_upload_photo.png" alt="Imagen de arrastre o clic" style="width: 100px; height: auto; margin-bottom: 10px;">
+                          <p>Arrastra y suelta o haz clic para seleccionar un archivo</p>
+                        </div>
+                        <input id="fileInput" type="file" ref="imageInputLeaf" accept="image/*" @change="handleImageUpload(e, 'imageInputLeaf')" />
+                      </label>
                   </DialogTitle>
 
                   <DialogTitle as="h3" class="text-gray-900 text-lg my-5">
                     <font-awesome-icon :icon="['fas', 'spa']" /> <span class="font-bold"> Información de la flor: </span>
                     <textarea type="text" class="w-full auto-resize-textarea" v-model="formData.flor"></textarea>
                   </DialogTitle>
-                  <DialogTitle as="h3" class="text-gray-900 text-lg my-5">
-                    <font-awesome-icon :icon="['fas', 'image']" /> <span class="font-bold"> Imagen de las flores: </span><br>
-                    <input type="file" ref="imageInputFlower" accept="image/*" @change="handleImageUpload(e, 'imageInputFlower')" />
+                  <DialogTitle as="h3" class="text-gray-900 text-lg my-5 input__uploadImage">
+                    <span class="text__imgSpecie_Add"> Imagen de las flores: </span>
+                    <label for="fileInput" class="custom-file-upload">
+                      <div class="drop-area">
+                        <img src="../../assets/prefabs/icon_upload_photo.png" alt="Imagen de arrastre o clic" style="width: 100px; height: auto; margin-bottom: 10px;">
+                        <p>Arrastra y suelta o haz clic para seleccionar un archivo</p>
+                      </div>
+                      <input id="fileInput" type="file" ref="imageInputFlower" accept="image/*" @change="handleImageUpload(e, 'imageInputFlower')" />
+                    </label>
                   </DialogTitle>
 
                   <DialogTitle as="h3" class="text-gray-900 text-lg my-5">
                     <font-awesome-icon :icon="['fab', 'apple']" /> <span class="font-bold"> Información de los frutos: </span>
                     <textarea type="text" class="w-full auto-resize-textarea" v-model="formData.frutos"></textarea>
                   </DialogTitle>
-                  <DialogTitle as="h3" class="text-gray-900 text-lg my-5">
-                    <font-awesome-icon :icon="['fas', 'image']" /> <span class="font-bold"> Imagen de los frutos: </span><br>
-                    <input type="file" ref="imageInputFruit" accept="image/*" @change="handleImageUpload(e, 'imageInputFruit')" />
+                  <DialogTitle as="h3" class="text-gray-900 text-lg my-5 input__uploadImage">
+                    <span class="text__imgSpecie_Add"> Imagen de los frutos: </span>
+                    <label for="fileInput" class="custom-file-upload">
+                      <div class="drop-area">
+                        <img src="../../assets/prefabs/icon_upload_photo.png" alt="Imagen de arrastre o clic" style="width: 100px; height: auto; margin-bottom: 10px;">
+                        <p>Arrastra y suelta o haz clic para seleccionar un archivo</p>
+                      </div>
+                      <input id="fileInput" type="file" ref="imageInputFruit" accept="image/*" @change="handleImageUpload(e, 'imageInputFruit')" />
+                    </label>
                   </DialogTitle>
 
                   <DialogTitle as="h3" class="text-gray-900 text-lg my-5">
                     <font-awesome-icon :icon="['fas', 'seedling']" /> <span class="font-bold"> Información de las semillas: </span>
                     <textarea type="text" class="w-full auto-resize-textarea" v-model="formData.semillas"></textarea>
                   </DialogTitle>
-                  <DialogTitle as="h3" class="text-gray-900 text-lg my-5">
-                    <font-awesome-icon :icon="['fas', 'image']" /> <span class="font-bold"> Imagen de las semillas: </span><br>
-                    <input type="file" ref="imageInputSeed" accept="image/*" @change="handleImageUpload(e, 'imageInputSeed')" />
+                  <DialogTitle as="h3" class="text-gray-900 text-lg my-5 input__uploadImage">
+                    <span class="text__imgSpecie_Add"> Imagen de las semillas: </span>
+                    <label for="fileInput" class="custom-file-upload">
+                      <div class="drop-area">
+                        <img src="../../assets/prefabs/icon_upload_photo.png" alt="Imagen de arrastre o clic" style="width: 100px; height: auto; margin-bottom: 10px;">
+                        <p>Arrastra y suelta o haz clic para seleccionar un archivo</p>
+                      </div>
+                      <input id="fileInput" type="file" ref="imageInputSeed" accept="image/*" @change="handleImageUpload(e, 'imageInputSeed')" />
+                      </label>
                   </DialogTitle>
 
                   <DialogTitle as="h3" class="text-gray-900 text-lg my-5">
-                    <font-awesome-icon :icon="['fas', 'ticket-simple']" /> <span class="font-bold"> Información del tallo: </span>
+                    <span class="text__imgSpecie_Add"> Información del tallo: </span>
                     <textarea type="text" class="w-full auto-resize-textarea" v-model="formData.tallo"></textarea>
                   </DialogTitle>
-                  <DialogTitle as="h3" class="text-gray-900 text-lg my-5">
-                    <font-awesome-icon :icon="['fas', 'image']" /> <span class="font-bold"> Imagen del tallo: </span><br>
-                    <input type="file" ref="imageInputStem" accept="image/*" @change="handleImageUpload(e, 'imageInputStem')" />
+                  <DialogTitle as="h3" class="text-gray-900 text-lg my-5 input__uploadImage">
+                    <span class="text__imgSpecie_Add"> Imagen del tallo: </span><br>
+                    <input id="fileInput" type="file" ref="imageInputStem" accept="image/*" @change="handleImageUpload(e, 'imageInputStem')" />
                   </DialogTitle>
 
                   <DialogTitle as="h3" class="text-gray-900 text-lg my-5">
-                    <font-awesome-icon :icon="['fas', 'mound']" /> <span class="font-bold"> Información de la raíz: </span>
+                    <span class="text__imgSpecie_Add"> Información de la raíz: </span>
                     <textarea type="text" class="w-full auto-resize-textarea" v-model="formData.raiz"></textarea>
                   </DialogTitle>
 
-                  <DialogTitle as="h3" class="text-gray-900 text-lg my-5">
-                    <font-awesome-icon :icon="['fas', 'image']" /> <span class="font-bold"> Imagen paisajística[1]: </span><br>
-                    <input type="file" ref="imageInputLandScapeOne" accept="image/*" @change="handleImageUpload(e, 'imageInputLandScapeOne')" />
+                  <DialogTitle as="h3" class="text-gray-900 text-lg my-5 input__uploadImage">
+                    <span class="text__imgSpecie_Add"> Imagen paisajística[1]: </span>
+                    <label for="fileInput" class="custom-file-upload">
+                      <div class="drop-area">
+                        <img src="../../assets/prefabs/icon_upload_photo.png" alt="Imagen de arrastre o clic" style="width: 100px; height: auto; margin-bottom: 10px;">
+                        <p>Arrastra y suelta o haz clic para seleccionar un archivo</p>
+                      </div>
+                      <input type="file" ref="imageInputLandScapeOne" accept="image/*" @change="handleImageUpload(e, 'imageInputLandScapeOne')" />
+                    </label>
                   </DialogTitle>
-                  <DialogTitle as="h3" class="text-gray-900 text-lg my-5">
-                    <font-awesome-icon :icon="['fas', 'image']" /> <span class="font-bold"> Imagen paisajística[2]: </span><br>
-                    <input type="file" ref="imageInputLandScapeTwo" accept="image/*" @change="handleImageUpload(e, 'imageInputLandScapeTwo')" />
+                  <DialogTitle as="h3" class="text-gray-900 text-lg my-5 input__uploadImage">
+                    <span class="text__imgSpecie_Add"> Imagen paisajística[2]: </span>
+                    <label for="fileInput" class="custom-file-upload">
+                      <div class="drop-area">
+                        <img src="../../assets/prefabs/icon_upload_photo.png" alt="Imagen de arrastre o clic" style="width: 100px; height: auto; margin-bottom: 10px;">
+                        <p>Arrastra y suelta o haz clic para seleccionar un archivo</p>
+                      </div>
+                      <input id="fileInput" type="file" ref="imageInputLandScapeTwo" accept="image/*" @change="handleImageUpload(e, 'imageInputLandScapeTwo')" />
+                    </label>
                   </DialogTitle>
-                  <DialogTitle as="h3" class="text-gray-900 text-lg my-5">
-                    <font-awesome-icon :icon="['fas', 'image']" /> <span class="font-bold"> Imagen paisajística[3]: </span><br>
-                    <input type="file" ref="imageInputLandScapeThree" accept="image/*" @change="handleImageUpload(e, 'imageInputLandScapeThree')" />
+                  <DialogTitle as="h3" class="text-gray-900 text-lg my-5 input__uploadImage">
+                    <span class="text__imgSpecie_Add"> Imagen paisajística[3]: </span>
+                    <label for="fileInput" class="custom-file-upload">
+                      <div class="drop-area">
+                        <img src="../../assets/prefabs/icon_upload_photo.png" alt="Imagen de arrastre o clic" style="width: 100px; height: auto; margin-bottom: 10px;">
+                        <p>Arrastra y suelta o haz clic para seleccionar un archivo</p>
+                      </div>
+                      <input id="fileInput" type="file" ref="imageInputLandScapeThree" accept="image/*" @change="handleImageUpload(e, 'imageInputLandScapeThree')" />
+                    </label>
+                  </DialogTitle>
+
+                  <DialogTitle as="h3" class="text-gray-900 text-lg my-5 input__uploadImage" >
+                    <span class="text__imgSpecie_Add"> Imagen paisajística[4]: </span>
+                    <label for="fileInput" class="custom-file-upload">
+                      <div class="drop-area">
+                        <img src="../../assets/prefabs/icon_upload_photo.png" alt="Imagen de arrastre o clic" style="width: 100px; height: auto; margin-bottom: 10px;">
+                        <p>Arrastra y suelta o haz clic para seleccionar un archivo</p>
+                      </div>
+                      <input id="fileInput" type="file" ref="imageInputGeneral" accept="image/*" @change="e => handleImageUpload(e, 'imageInputGeneral')" style="display: none;" />
+                    </label>
                   </DialogTitle>
 
                   <button
@@ -378,5 +475,74 @@ watch(() => speciesStore.specieSelected, () => {
   height: 100%;
   background-color: rgba(0, 0, 0, 0.5);
   overflow: auto;
+}
+
+/* Estilos para ocultar el input de archivo */
+#fileInput {
+  display: none;
+}
+
+/* Estilos para el diseño personalizado del input de archivo */
+.custom-file-upload {
+  display: inline-block;
+  cursor: pointer;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.drop-area {
+  border: 2px dashed #ccc;
+  padding: 20px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 150px; /* Altura deseada */
+}
+
+.drop-area img {
+  margin-bottom: 10px;
+}
+.input__uploadImage {
+  display: flex;
+  flex-direction: column;
+  /* align-items: center; */
+}
+
+.text__imgSpecie_Add{
+  font-weight: bold;
+  text-align: left;
+}
+
+.img_specie_selected{
+  max-height: 180px;
+  width: auto;
+  border-radius: 10px;
+}
+
+.img__specieUploadPhotoSelect{
+  display: flex;
+  text-align: center;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.img__specieUploadPhoto{
+  display: flex;
+  text-align: center;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 </style>

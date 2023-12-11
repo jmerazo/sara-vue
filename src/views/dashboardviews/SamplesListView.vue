@@ -2,7 +2,7 @@
 import { onMounted, ref, onBeforeUnmount, watchEffect, watch  } from 'vue';
 import { useReportsGeneral } from '../../stores/dashboard/reports'
 import pdfMake from 'pdfmake/build/pdfmake';
-import pdfFonts from 'pdfmake/build/vfs_fonts';
+/* import pdfFonts from 'pdfmake/build/vfs_fonts'; */
 
 const reports = useReportsGeneral();
 let dataTable = null; // Variable para almacenar la instancia de DataTable

@@ -39,12 +39,13 @@ const formData = ref({
   frutos: "",
   img_fruits: "",
   semillas: "",
-  img_seed: "",
+  img_seeds: "",
   tallo: "",
+  img_stems: "",
   raiz: "",
-  img_landscapeone: "",
-  img_landscapetwo: "",
-  img_landscapethree: ""
+  img_landscape_one: "",
+  img_landscape_two: "",
+  img_landscape_three: ""
 });
 
 async function forestSpecieUpdate() {
@@ -82,8 +83,13 @@ const initializeFormData = () => {
       frutos: selectedForestSpecie.frutos || "",
       img_fruits: selectedForestSpecie.img_fruits || "",
       semillas: selectedForestSpecie.semillas || "",
+      img_seeds: selectedForestSpecie.img_seeds || "",
       tallo: selectedForestSpecie.tallo || "",
-      raiz: selectedForestSpecie.raiz || ""
+      img_stems: selectedForestSpecie.img_stems || "",
+      raiz: selectedForestSpecie.raiz || "",
+      img_landscape_one: selectedForestSpecie.img_landscape_one || "",
+      img_landscape_two: selectedForestSpecie.img_landscape_two || "",
+      img_landscape_three: selectedForestSpecie.img_landscape_three || ""
     };
   }
 };
@@ -174,8 +180,8 @@ watch(() => speciesStore.specieSelected, () => {
                   </DialogTitle>
                   <hr />
                   <form @submit.prevent="forestSpecieUpdate">
-                  <DialogTitle as="h3" class="text-gray-900 text-lg my-5">
-                    <img  v-if="formData.img_general" :src="getFullImageUrl(formData.img_general)" >
+                  <DialogTitle as="h3" class="text-gray-900 text-lg my-5 img__specie__dg">
+                    <img class="img__specie__modal"  v-if="formData.img_general" :src="getFullImageUrl(formData.img_general)" >
                   </DialogTitle>
                   <DialogTitle as="h3" class="text-gray-900 text-lg my-5">
                     <font-awesome-icon :icon="['fas', 'list-ol']" /> <span class="font-bold"> Código especie: </span>
@@ -229,34 +235,49 @@ watch(() => speciesStore.specieSelected, () => {
                     <font-awesome-icon :icon="['fab', 'envira']" /> <span class="font-bold"> Información de las hojas: </span>
                     <textarea class="w-full auto-resize-textarea" v-model="formData.hojas"></textarea>
                   </DialogTitle>
-                  <DialogTitle as="h3" class="text-gray-900 text-lg my-5">
-                    <img  v-if="formData.img_leafs" :src="getFullImageUrl(formData.img_leafs)" >
+                  <DialogTitle as="h3" class="text-gray-900 text-lg my-5 img__specie__dg">
+                    <img class="img__specie__modal" v-if="formData.img_leafs" :src="getFullImageUrl(formData.img_leafs)" >
                   </DialogTitle>
                   <DialogTitle as="h3" class="text-gray-900 text-lg my-5">
                     <font-awesome-icon :icon="['fas', 'spa']" /> <span class="font-bold"> Información de la flor: </span>
                     <textarea type="text" class="w-full auto-resize-textarea" v-model="formData.flor"></textarea>
                   </DialogTitle>
-                  <DialogTitle as="h3" class="text-gray-900 text-lg my-5">
-                    <img  v-if="formData.img_flowers" :src="getFullImageUrl(formData.img_flowers)" >
+                  <DialogTitle as="h3" class="text-gray-900 text-lg my-5 img__specie__dg">
+                    <img class="img__specie__modal" v-if="formData.img_flowers" :src="getFullImageUrl(formData.img_flowers)" >
                   </DialogTitle>
                   <DialogTitle as="h3" class="text-gray-900 text-lg my-5">
                     <font-awesome-icon :icon="['fab', 'apple']" /> <span class="font-bold"> Información de los frutos: </span>
                     <textarea type="text" class="w-full auto-resize-textarea" v-model="formData.frutos"></textarea>
                   </DialogTitle>
-                  <DialogTitle as="h3" class="text-gray-900 text-lg my-5">
-                    <img  v-if="formData.img_fruits" :src="getFullImageUrl(formData.img_fruits)" >
+                  <DialogTitle as="h3" class="text-gray-900 text-lg my-5 img__specie__dg">
+                    <img class="img__specie__modal" v-if="formData.img_fruits" :src="getFullImageUrl(formData.img_fruits)" >
                   </DialogTitle>
                   <DialogTitle as="h3" class="text-gray-900 text-lg my-5">
                     <font-awesome-icon :icon="['fas', 'seedling']" /> <span class="font-bold"> Información de las semillas: </span>
                     <textarea type="text" class="w-full auto-resize-textarea" v-model="formData.semillas"></textarea>
                   </DialogTitle>
+                  <DialogTitle as="h3" class="text-gray-900 text-lg my-5 img__specie__dg">
+                    <img class="img__specie__modal" v-if="formData.img_seeds" :src="getFullImageUrl(formData.img_seeds)" >
+                  </DialogTitle>
                   <DialogTitle as="h3" class="text-gray-900 text-lg my-5">
                     <font-awesome-icon :icon="['fas', 'ticket-simple']" /> <span class="font-bold"> Información del tallo: </span>
                     <textarea type="text" class="w-full auto-resize-textarea" v-model="formData.tallo"></textarea>
                   </DialogTitle>
+                  <DialogTitle as="h3" class="text-gray-900 text-lg my-5 img__specie__dg">
+                    <img class="img__specie__modal" v-if="formData.img_stems" :src="getFullImageUrl(formData.img_stems)" >
+                  </DialogTitle>
                   <DialogTitle as="h3" class="text-gray-900 text-lg my-5">
                     <font-awesome-icon :icon="['fas', 'mound']" /> <span class="font-bold"> Información de la raíz: </span>
                     <textarea type="text" class="w-full auto-resize-textarea" v-model="formData.raiz"></textarea>
+                  </DialogTitle>
+                  <DialogTitle as="h3" class="text-gray-900 text-lg my-5 img__specie__dg">
+                    <img class="img__specie__modal" v-if="formData.img_landscape_one" :src="getFullImageUrl(formData.img_landscape_one)" >
+                  </DialogTitle>
+                  <DialogTitle as="h3" class="text-gray-900 text-lg my-5 img__specie__dg">
+                    <img class="img__specie__modal" v-if="formData.img_landscape_two" :src="getFullImageUrl(formData.img_landscape_two)" >
+                  </DialogTitle>
+                  <DialogTitle as="h3" class="text-gray-900 text-lg my-5 img__specie__dg">
+                    <img class="img__specie__modal" v-if="formData.img_landscape_three" :src="getFullImageUrl(formData.img_landscape_three)" >
                   </DialogTitle>
                   <button
                     type="submit"
@@ -289,6 +310,17 @@ watch(() => speciesStore.specieSelected, () => {
 <style>
   .auto-resize-textarea {
     overflow: hidden;
+  }
+
+  .img__specie__modal {
+    border-radius: 15px;
+    max-height: 200px;
+    width: auto;
+  }
+
+  .img__specie__dg {
+    text-align: center;
+    vertical-align: middle;
   }
 </style>
 

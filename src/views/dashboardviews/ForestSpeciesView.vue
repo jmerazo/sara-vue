@@ -19,8 +19,14 @@ onBeforeRouteLeave((to, from, next) => {
 });
 
 const getFullImageUrl = (relativePath) => {
+  if (!relativePath || relativePath.trim() === '' || relativePath === null) {
+    // Si el relativePath está vacío, null o es una cadena de espacios, retorna un valor por defecto o una cadena vacía
+    return ''; // o puedes retornar una imagen de marcador de posición
+  }
+  // Si relativePath tiene una URL válida, devuelve la URL completa
   return `${api.defaults.baseURL}/${relativePath.replace(/\\/g, '/')}`;
 };
+
 
 async function delForestSpecie(id, nc) {
   console.log(id)
@@ -111,6 +117,10 @@ function copyToClipboard() {
         <th class="px-4 py-2 text-gray-600">Nombre común</th>
         <th class="px-4 py-2 text-gray-600">Nombre cientifico</th>
         <th class="px-4 py-2 text-gray-600">Familia</th>
+        <th class="px-4 py-2 text-gray-600">Img. general</th>
+        <th class="px-4 py-2 text-gray-600">Img. Hojas</th>
+        <th class="px-4 py-2 text-gray-600">Img. Frutos</th>
+        <th class="px-4 py-2 text-gray-600">Img. Flores</th>
         <th class="px-4 py-2 text-gray-600">Acciones</th>
       </tr>
     </thead>
@@ -120,6 +130,10 @@ function copyToClipboard() {
         <td class="px-4 py-3 border">{{ especie.nom_comunes }}</td>
         <td class="px-4 py-3 border">{{ especie.nombre_cientifico }}</td>
         <td class="px-4 py-3 border">{{ especie.familia }}</td>
+        <td class="px-4 py-3 border img__table__td"><img :src="getFullImageUrl(especie.img_general)" class="img__table__species" alt=""></td>
+        <td class="px-4 py-3 border"><img :src="getFullImageUrl(especie.img_leafs)" class="img__table__species" alt=""></td>
+        <td class="px-4 py-3 border"><img :src="getFullImageUrl(especie.img_fruits)" class="img__table__species" alt=""></td>
+        <td class="px-4 py-3 border"><img :src="getFullImageUrl(especie.img_flowers)" class="img__table__species" alt=""></td>
         <td class="px-4 py-3 border">
           <button @click="especies.selectedForestSpecieUpdate(especie.ShortcutID)" class="btn  rounded-lg font-bold p-1 text-white bg-customGreen hover:bg-green-500 hover:shadow-lg ml-2"><font-awesome-icon :icon="['fas', 'pen-to-square']" /> Editar</button>
           <button @click="delForestSpecie(especie.ShortcutID, especie.nom_comunes)" class="btn  rounded-lg font-bold p-1 text-white bg-customGreen hover:bg-green-500 hover:shadow-lg ml-2"><font-awesome-icon :icon="['fas', 'trash']" /> Eliminar</button>
@@ -204,5 +218,16 @@ function copyToClipboard() {
     -webkit-transform: translateX(16px);
     -ms-transform: translateX(16px);
     transform: translateX(16px);
+  }
+
+  .img__table__species {
+    max-height: 100px;
+    width: auto;
+    border-radius: 10px;
+  }
+
+  .img__table__td {
+    text-align: center;
+    vertical-align: middle;
   }
 </style>
