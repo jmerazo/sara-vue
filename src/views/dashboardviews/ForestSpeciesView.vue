@@ -118,10 +118,11 @@ function copyToClipboard() {
         <th class="px-4 py-2 text-gray-600">OTROS NOMBRES</th>
         <th class="px-4 py-2 text-gray-600">DISTRIBUCIÓN</th>
         <th class="px-4 py-2 text-gray-600">HOJAS</th>
-        <!-- <th class="px-4 py-2 text-gray-600">Img. Hojas</th>
-        <th class="px-4 py-2 text-gray-600">Img. Frutos</th>
-        <th class="px-4 py-2 text-gray-600">Img. Flores</th> -->
-        <!-- <th class="px-4 py-2 text-gray-600">Acciones</th> -->
+        <th class="px-4 py-2 text-gray-600">FLOR</th>
+        <th class="px-4 py-2 text-gray-600">FRUTOS</th>
+        <th class="px-4 py-2 text-gray-600">SEMILLAS</th>
+        <th class="px-4 py-2 text-gray-600">TALLO</th>
+        <th class="px-4 py-2 text-gray-600">RAÍZ</th>
       </tr>
     </thead>
     <tbody>
@@ -134,7 +135,12 @@ function copyToClipboard() {
         </td>
         <td class="px-4 py-3 border">{{ especie.otros_nombres }}</td>
         <td class="px-4 py-3 border">{{ especie.distribucion }}</td>
-        <td class="px-4 py-3 border img__table__td">{{ especie.hojas }}</td>
+        <td class="px-4 py-3 border">{{ especie.hojas }}</td>
+        <td class="px-4 py-3 border">{{ especie.flor }}</td>
+        <td class="px-4 py-3 border">{{ especie.frutos }}</td>
+        <td class="px-4 py-3 border">{{ especie.semillas }}</td>
+        <td class="px-4 py-3 border">{{ especie.tallo }}</td>
+        <td class="px-4 py-3 border">{{ especie.raiz }}</td>
         <!-- <td class="px-4 py-3 border"><img :src="getFullImageUrl(especie.img_leafs)" class="img__table__species" alt=""></td>
         <td class="px-4 py-3 border"><img :src="getFullImageUrl(especie.img_fruits)" class="img__table__species" alt=""></td>
         <td class="px-4 py-3 border"><img :src="getFullImageUrl(especie.img_flowers)" class="img__table__species" alt=""></td> -->
