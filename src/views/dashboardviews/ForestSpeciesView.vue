@@ -112,32 +112,33 @@ function copyToClipboard() {
   <div class="w-auto mt-5 mb-10 mx-20">
   <table class="bg-slate-50 shadow-md border rounded-lg" id="forestSpecies">
     <thead>
-      <tr>
-        <th class="px-4 py-2 text-gray-600">Código</th>
-        <th class="px-4 py-2 text-gray-600">Nombre común</th>
-        <th class="px-4 py-2 text-gray-600">Nombre cientifico</th>
-        <th class="px-4 py-2 text-gray-600">Familia</th>
-        <th class="px-4 py-2 text-gray-600">Img. general</th>
-        <th class="px-4 py-2 text-gray-600">Img. Hojas</th>
+      <tr class="title__table">
+        <th class="px-4 py-2 text-gray-600">CÓDIGO</th>
+        <th class="px-4 py-2 text-gray-600">ESPECIE FORESTAL</th>
+        <th class="px-4 py-2 text-gray-600">OTROS NOMBRES</th>
+        <th class="px-4 py-2 text-gray-600">DISTRIBUCIÓN</th>
+        <th class="px-4 py-2 text-gray-600">HOJAS</th>
+        <!-- <th class="px-4 py-2 text-gray-600">Img. Hojas</th>
         <th class="px-4 py-2 text-gray-600">Img. Frutos</th>
-        <th class="px-4 py-2 text-gray-600">Img. Flores</th>
-        <th class="px-4 py-2 text-gray-600">Acciones</th>
+        <th class="px-4 py-2 text-gray-600">Img. Flores</th> -->
+        <!-- <th class="px-4 py-2 text-gray-600">Acciones</th> -->
       </tr>
     </thead>
     <tbody>
       <tr v-for="especie in especies.displayedEspecies" v-bind:key="especie.ShorcutID">
         <td class="px-4 py-3 border">{{ especie.cod_especie }}</td>
-        <td class="px-4 py-3 border">{{ especie.nom_comunes }}</td>
-        <td class="px-4 py-3 border">{{ especie.nombre_cientifico }}</td>
-        <td class="px-4 py-3 border">{{ especie.familia }}</td>
-        <td class="px-4 py-3 border img__table__td"><img :src="getFullImageUrl(especie.img_general)" class="img__table__species" alt=""></td>
-        <td class="px-4 py-3 border"><img :src="getFullImageUrl(especie.img_leafs)" class="img__table__species" alt=""></td>
-        <td class="px-4 py-3 border"><img :src="getFullImageUrl(especie.img_fruits)" class="img__table__species" alt=""></td>
-        <td class="px-4 py-3 border"><img :src="getFullImageUrl(especie.img_flowers)" class="img__table__species" alt=""></td>
-        <td class="px-4 py-3 border">
-          <button @click="especies.selectedForestSpecieUpdate(especie.ShortcutID)" class="btn  rounded-lg font-bold p-1 text-white bg-customGreen hover:bg-green-500 hover:shadow-lg ml-2"><font-awesome-icon :icon="['fas', 'pen-to-square']" /> Editar</button>
-          <button @click="delForestSpecie(especie.ShortcutID, especie.nom_comunes)" class="btn  rounded-lg font-bold p-1 text-white bg-customGreen hover:bg-green-500 hover:shadow-lg ml-2"><font-awesome-icon :icon="['fas', 'trash']" /> Eliminar</button>
+        <td class="px-4 py-3 border td__data"><img :src="getFullImageUrl(especie.img_general)" class="img__table__species" alt="">{{ especie.nom_comunes }} <br> <b class="txt__nameScientific">{{ especie.nombre_cientifico }}</b> {{ especie.familia }}</td>
+        <td class="px-4 py-3 border td__data">
+          <button @click="especies.selectedForestSpecieUpdate(especie.ShortcutID)" class="btn  rounded-lg font-bold p-1 text-white bg-customGreen hover:bg-green-500 hover:shadow-lg mb-2"><font-awesome-icon :icon="['fas', 'pen-to-square']" /> Editar</button>
+          <button @click="delForestSpecie(especie.ShortcutID, especie.nom_comunes)" class="btn  rounded-lg font-bold p-1 text-white bg-customGreen hover:bg-green-500 hover:shadow-lg m-2"><font-awesome-icon :icon="['fas', 'trash']" /> Eliminar</button>
         </td>
+        <td class="px-4 py-3 border">{{ especie.otros_nombres }}</td>
+        <td class="px-4 py-3 border">{{ especie.distribucion }}</td>
+        <td class="px-4 py-3 border img__table__td">{{ especie.hojas }}</td>
+        <!-- <td class="px-4 py-3 border"><img :src="getFullImageUrl(especie.img_leafs)" class="img__table__species" alt=""></td>
+        <td class="px-4 py-3 border"><img :src="getFullImageUrl(especie.img_fruits)" class="img__table__species" alt=""></td>
+        <td class="px-4 py-3 border"><img :src="getFullImageUrl(especie.img_flowers)" class="img__table__species" alt=""></td> -->
+        
       </tr>
     </tbody>
   </table>
@@ -229,5 +230,30 @@ function copyToClipboard() {
   .img__table__td {
     text-align: center;
     vertical-align: middle;
+  }
+
+  .td__data{
+    display: flex;
+    text-align: center;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .td__dataButton {
+    display: flex;
+    text-align: center;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .txt__nameScientific{
+    font-weight: bold;
+    font-style: oblique;
+  }
+
+  .title__table{
+    text-align: center;
   }
 </style>
