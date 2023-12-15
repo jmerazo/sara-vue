@@ -84,26 +84,32 @@ const pageStore = usePageContent();
 }
 
 .nosotros__img {
-  width: 60%;
+  width:30%;
 }
 .nosotros__heading {
-  font-size: 2rem;
-  margin: 2rem 0rem;
+  font-size: 1.1rem;
+  margin: 2rem auto;
 }
 
 @media (min-width: 768px) {
   .nosotros__img {
-    margin-top: 5rem;
-    width: 30%;
+    margin-top: 2rem;
+    width: 20%;
   }
   .nosotros__heading {
-    font-size: 3rem;
-    margin: 5rem 0rem 3rem 0rem;
+    font-size: 1.3rem;
+    margin: 3rem 0rem 3rem 0rem;
+  }
+}
+@media (min-width:1440px) {
+  .nosotros__img {
+    margin-top: 3rem;
+    width: 10%;
   }
 }
 
 .nosotros__titulo {
-  font-size: 2rem;
+  font-size: 1.1rem;
   margin: 0;
   padding: 0;
   text-align: center;
@@ -115,11 +121,12 @@ const pageStore = usePageContent();
   text-align: center;
   font-weight: 700;
   padding: 0;
+  font-size: .8rem;
 }
 
 @media (min-width: 768px) {
   .nosotros__titulo {
-    font-size: 3rem;
+    font-size: 1.3rem;
   }
 }
 

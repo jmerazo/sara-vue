@@ -51,163 +51,151 @@ localStorage.removeItem("hasReloaded");
       <h2 class="login__heading">Iniciar sesión</h2>
     </div>
     <hr />
-    <main class="login__contenido">
-      
-      <form @submit.prevent="handleLogin" class="formulario">
-        <p class="formulario__icono"><font-awesome-icon :icon="['fas', 'circle-user']" /></p>
-        <div class="formulario__seccion">
-          <label for="email" class="formulario__label">Email</label>
-          <input
-            v-model="email"
-            type="email"
-            id="email"
-            class="formulario__input"
-            placeholder="Ingresa tu usuario"
-            required
-          />
-        </div>
-        <div class="formulario__seccion">
-          <label for="password" class="formulario__label">Contraseña</label>
-          <input
-            v-model="password"
-            type="password"
-            id="password"
-            class="formulario__input"
-            placeholder="Ingresa contraseña"
-            required
-          />
-        </div>
-        <input type="submit" class="formulario__boton" :class="{'show':error}" :value="error ? error : 'Ingresar'">
-      </form>
-
-      <RouterLink :to="{ name: 'register' }" class="formulario__enlace">
-        <span>Solicitud de registro</span>
-      </RouterLink>
-    </main>
+    
+      <div class="formulario__contenido">
+        <form @submit.prevent="handleLogin" class="formulario">
+          <div class="formulario__encabezado">
+            <div class="logo">
+              <img src="/icons/sara.png" alt="Logotipo" />
+            </div>
+            <p>Bienvenidos</p>
+          </div>
+          <hr />
+          <div class="formulario__campo">
+            <label class="formulario__label" for="email">Email</label>
+            <input
+              class="formulario__input"
+              type="email"
+              name="email"
+              id="email"
+              v-model="email"
+              placeholder="Escribe tu email"
+            />
+          </div>
+          <div class="formulario__campo">
+            <label class="formulario__label" for="pass">Contraseña</label>
+            <input
+              class="formulario__input"
+              type="password"
+              id="password"
+              v-model="password"
+              placeholder="Ingresar contraseña"
+              required
+            />
+          </div>
+          <div class="formulario__botones">
+            <input
+              class="formulario__btn"
+              type="submit"
+              name="ingresar"
+              id="ingresar"
+              :class="{ show: error }"
+              :value="error ? error : 'Ingresar'"
+            />
+          </div>
+          <RouterLink :to="{ name: 'register' }" class="formulario__enlace">
+            <span>Solicitud de registro</span>
+          </RouterLink>
+        </form>
+      </div>
+   
   </div>
 </template>
 
 <style scoped>
-
-.login__header {
-  margin-top: 3rem;
+.login__heading{
+  margin-top: 2rem;
 }
-.login__heading {
-  font-size: 2rem;
-  margin: 2rem auto;
-}
-@media (min-width:768px){
-  .login__heading{
-    font-size: 3rem;
-  }
-}
-.login__contenido {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-evenly;
-  align-items: center;
-  margin: 3rem auto;
+.show {
+  background-color: rgb(175, 4, 4);
 }
 
-@media (min-width:768px){
-  .login__contenido{
-    margin: 5rem auto;
-  }
+.formulario__enlace {
+  font-weight: 700;
+  padding: 0.5rem;
+  font-size: 1rem;
+  color: var(--primary);
+  border-bottom: 1px solid var(--gris);
+  transition: background-color 0.5s;
 }
-.formulario__icono{
-  text-align: center;
-  margin: 2rem 0 0 0;
-  font-size: 3rem;
+.formulario__enlace:hover {
+  background-color: var(--gris);
+  opacity: 1.1;
+  color: var(--blanco);
+  border-radius: 5px;
+  border-bottom: none;
+  border: 1px solid var(--gris);
+}
+
+.formulario__encabezado {
   color: var(--gris);
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  text-align: center;
+  gap: 1rem;
+}
+.logo {
+  width: 3.5rem;
 }
 
-@media (min-width:768px){
-  .formulario__icono{
-    font-size: 5rem;
+.formulario__contenido {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 2rem auto;
+  text-align: center;
+}
+
+@media (min-width: 992px) {
+  .formulario__contenido {
+    margin: 3rem auto;
   }
 }
 
 .formulario {
-  display: flex;
-  flex-direction: column;
-  background-color: var(--gris-claro);
-  margin-bottom: 2rem;
-  border-radius: 1rem;
-  box-shadow: 0px 10px 15px -3px rgba(0,0,0,0.1);
+  width: 90%;
+  max-width: 400px;
+  padding: 1rem;
+  border: 1px solid #ccc;
+  background-color: var(--blanco);
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
 }
 
-
-.formulario__seccion {
-  margin: 1rem 1rem;
-}
-
-@media (min-width:768px){
-  .formulario{
-    width: 50%;
-    
-  }
-  .formulario__seccion{
-    margin: 2rem 1rem;
-  }
+.formulario__campo {
+  margin: 2rem 0;
 }
 
 .formulario__label {
+  font-size: 1rem;
   display: block;
-  font-weight: 700;
-  text-align: center;
-  margin-bottom: 20px;
+  font-weight: bold;
+  color: var(--gris);
 }
+
 .formulario__input {
-  padding: 0.5rem 1rem;
-  border-radius: 0.5rem;
+  font-size: 1rem;
+  text-align: center;
+  width: 95%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
 }
 
-@media (min-width:768px){
-  .formulario__input{
-    text-align: center;
-    width: 95%;
-  }
+.formulario__botones{
+  margin: 2rem 0;
 }
-.formulario__input:focus{
-  outline: 2px solid var(--primary);
-}
-
-.formulario__boton {
-  background-color: var(--primary);
-  max-width: 100%;
-  width: 100%;
-  border-bottom-left-radius: 20px;
-  border-bottom-right-radius: 20px;
-  padding: 1rem 0;
-  color: var(--blanco);
-  font-weight: 700;
-  transition: background-color 0.3s ease;
-}
-
-.formulario__boton:hover {
-  background-color: var(--primary-hover);
-}
-
-.show {
-  background-color: rgb(175, 4, 4);
-}
-.show:hover{
-  background-color: rgb(209, 7, 7);
-}
-
-.formulario__enlace{
+.formulario__btn {
+  width: 95%;
+  font-size: 1rem;
   font-weight: 700;
   padding: .5rem;
-  color: var(--primary);
-  border-bottom: 1px solid var(--gris);
-  transition: background-color .4s;
-}
-.formulario__enlace:hover{
- 
+  background-color: var(--primary);
   color: var(--blanco);
-  border-bottom: none;
-  background-color: var(--gris);
-  border-bottom-left-radius: 20px;
-  border-bottom-right-radius: 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
 }
+
 </style>

@@ -50,7 +50,7 @@ img {
 
 [class$="heading"] {
   font-family: var(--fuente-principal);
-  font-size: 3rem;
+  font-size: 1.1rem;
   text-align: center;
   font-weight: 700;
   color: var(--gris);

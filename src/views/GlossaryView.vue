@@ -164,46 +164,42 @@ const displayedPageRange = computed(() => {
 
 /* header contenido */
 .header__glosario {
-  margin-top: 2rem;
+  margin-top: 1rem;
 }
 
 @media (min-width: 768px) {
   .header__glosario {
-    margin-top: 5rem;
+    margin-top: 2rem;
   }
 }
 
 .glosario__heading {
-  font-size: 2rem;
-  margin-bottom: 2rem;
+  font-size: 1.1rem;
 }
 
 @media (min-width: 768px) {
   .glosario__heading {
-    font-size: 3rem;
+    font-size: 1.3rem;
   }
 }
 .header__contenido {
   display: flex;
   flex-direction: column-reverse;
-  gap: 2rem;
-  margin: 3rem 0 1.5rem 0;
+  gap: 1.5rem;
+  margin: 1.5rem 0;
   align-items: center;
 }
 
 @media (min-width: 768px) {
   .header__contenido {
     display: flex;
-    gap: 2rem;
-    margin: 5rem 0 2rem 0;
+    margin: 3rem 0 2rem 0;
     justify-content: flex-end;
   }
 }
 @media (min-width: 992px) {
   .header__contenido {
     display: flex;
-    gap: 2rem;
-    margin: 5rem 0 2rem 0;
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
@@ -213,15 +209,16 @@ const displayedPageRange = computed(() => {
 
 /* buscador termino*/
 .header__label {
+  font-size: .8rem;
   font-weight: 700;
-  margin-right: 15px;
+  margin-right: 10px;
 }
 .header__label-termino {
   display: none;
 }
 @media (min-width: 768px) {
   .header__label {
-    font-size: 1.5rem;
+    font-size: 1rem;
   }
   .header__label-termino {
     display: inline-block;
@@ -231,40 +228,42 @@ const displayedPageRange = computed(() => {
 .header__buscador {
   border: 1px solid var(--gris);
   padding: 0.5rem;
-  border-radius: 8px;
+  border-radius: 5px;
+  font-size: .8rem;
 }
 
 @media (min-width: 768px) {
   .header__buscador {
     border: 2px solid var(--gris);
-    padding: 1rem;
-    width: 25rem;
+    padding: .5rem;
+    width: 20rem;
   }
 }
 
 /* buscador formulario */
 .buscador__select{
-  padding: 5px 10px;
+  padding: 2px;
   font-weight: 700;
+  font-size: .8rem;
   text-align: center;
   text-transform: uppercase;
   border: 1px solid var(--primary);
-  border-radius: 10px;
+  border-radius: 5px;
 }
 
 @media (min-width: 768px) {
   .buscador__select{
-    padding: 8px 35px;
+    padding: 5px 15px;
   }
 }
 
 /* glosario main */
 .glosario__listado {
-  margin-top: 4rem;
+  margin-top: 2rem;
 }
 @media (min-width: 768px) {
   .glosario__listado {
-    margin-top: 6rem;
+    margin-top: 3rem;
   }
 }
 .glosario__grid {
@@ -288,39 +287,15 @@ const displayedPageRange = computed(() => {
   padding: 10px;
   border-radius: 10px;
   box-shadow: 0px 10px 15px -3px rgba(0,0,0,0.1);
+  font-size: 1rem;
 }
 .glosario__contenido span{
   font-weight: 700;
-  
+  font-size: 1rem;
 }
 /* Paginador */
 .paginador {
   margin: 3rem 0;
 }
-.paginador__botones {
-  display: flex;
-  justify-content: center;
-}
-.paginador__boton {
-  font-weight: 700;
-  font-size: 2rem;
-  padding: 1rem;
-}
-.paginador__boton-actual {
-  background-color: var(--primary);
-}
-.paginador__boton--anterior {
-  border-bottom-left-radius: 20px;
-}
-.paginador__boton--siguiente {
-  border-bottom-right-radius: 20px;
-}
 
-/* validacion */
-.validacion__contenido {
-  margin-bottom: 8rem;
-}
-.validacion__heading {
-  font-size: 2rem;
-}
 </style>

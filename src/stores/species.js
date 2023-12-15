@@ -10,9 +10,9 @@ export const useEspeciesStore = defineStore('especies', () => {
     const modal = useModalStore();
     const consulta = useConsultaStore()
     const especies = ref([]);
-    const especie = ref({});
+    const especie = ref([]);
     const specieSelected = ref([])
-    const monitoreosEspecie = ref({})
+   
     const noResultados = computed(() => especies.value.length === 0 );
     const especiesOriginales = ref([]);
     const uniqueNomComunes = ref([]);
@@ -27,8 +27,6 @@ export const useEspeciesStore = defineStore('especies', () => {
       const { data } = await APIService.getSpecies();
       especies.value = data;
       especiesOriginales.value = data;
-      console.log('species data: ', especies.value)
-
       const uniqueSpecies = [...new Map(data.map(especie => [especie.nom_comunes, especie])).values()];
       uniqueNomComunes.value = uniqueSpecies.map(especie => ({
         nom_comunes: especie.nom_comunes,
@@ -37,7 +35,15 @@ export const useEspeciesStore = defineStore('especies', () => {
       }));
       consulta.cargando = false
     });
-  
+    
+    const getFullImageUrl = (relativePath) => {
+      //console.log(relativePath)
+      if(relativePath){  
+        return `http://127.0.0.1:8000/api/${relativePath}`
+      }else{
+        return '/img/sin_img.png'
+      }
+    };
 
     // Calcula el número total de páginas en función de los datos
     const totalPages = computed(() => Math.ceil(especies.value.length / itemsPerPage.value));
@@ -57,13 +63,10 @@ export const useEspeciesStore = defineStore('especies', () => {
     }
 
    
-    async function seleccionarEspecie(nombre_comun) {
-      consulta.cargando = true
-      const { data } = await APIService.lookSpecie(nombre_comun);
-      especie.value = data;
-      consulta.cargando = false
+    function seleccionarEspecie(cod_especie) {
+      especie.value = especiesOriginales.value.filter(especie => especie.cod_especie === cod_especie)
+      console.log(especie.value)
       modal.handleClickModal();
-      
     }
 
     //quitar los filtros del motor de busqueda
@@ -146,14 +149,15 @@ export const useEspeciesStore = defineStore('especies', () => {
       noResultados,
       especiesOriginales,
       uniqueNomComunes,
+      specieSelected,
       seleccionarEspecie,
       buscarTermino,
       quitarFiltroEspecie,
       changePage,
       deleteForestSpecie,
       selectedForestSpecieUpdate,
-      specieSelected,
       updateForestSpecie,
-      addForestSpecie
+      addForestSpecie,
+      getFullImageUrl
     };
 });

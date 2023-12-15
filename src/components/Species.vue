@@ -14,7 +14,7 @@ defineProps({
     <div class="especie__img">
       <img
         alt="imagen especie"
-        src="/img/arbol__especie.jpg"
+        :src="especies.getFullImageUrl(especie.img_general)"
       />
     </div>
 
@@ -27,7 +27,7 @@ defineProps({
       <button
         class="especie__boton"
         type="button"
-        @click="especies.seleccionarEspecie(especie.nom_comunes)"
+        @click="especies.seleccionarEspecie(especie.cod_especie)"
       >
         Ver Especie
       </button>
@@ -35,25 +35,30 @@ defineProps({
   </div>
 </template>
 <style scoped>
+.especie__img img{
+  height: 15rem;
+  width: 100%;
+  margin: 0 auto;
+}
 .especie {
   position: relative;
   overflow: hidden;
   background-color: #f3f1f1;
-  border-bottom-left-radius: 20px;
-  border-bottom-right-radius: 20px;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
 }
 
 .especie:hover .especie__img {
-  transform: scale(1.1);
+  transform: scale(1.08);
 }
 
 .especie__img {
-  transition: transform 0.9s ease;
+  transition: transform 0.6s ease;
 }
 
 .especie__informacion {
   display: flex;
-  gap: 1rem;
+  gap: .7rem;
   flex-direction: column;
   justify-content: space-between;
   
@@ -67,7 +72,7 @@ defineProps({
   margin-bottom: 0;
   text-align: center;
   font-weight: 700;
-  font-size: 2rem;
+  font-size: 1.1rem;
   color: var(--gris);
 }
 
@@ -76,14 +81,15 @@ defineProps({
   overflow: hidden; /* Oculta el contenido que desborda */
   text-overflow: ellipsis; /* Agrega puntos suspensivos (...) para indicar que hay más contenido */
   text-align: center;
+  font-size: 1rem;
   font-weight: 500;
   line-height: 1;
   padding: 0 10px;
   margin: 0;
-  
 }
 .especie__familia {
   text-align: center;
+  font-size: 1rem;
   margin: 0;
 }
 span {
@@ -93,14 +99,14 @@ span {
 
 .especie__boton {
   background-color: var(--primary);
-  padding: 1rem;
+  padding: .8rem;
   color: var(--blanco);
   font-weight: 700;
   transition: background-color .4s ease-in-out;
+  font-size: 1rem;
 }
 .especie__boton:hover {
   background-color: var(--primary-hover);
-
 }
 
 </style>

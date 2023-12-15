@@ -69,9 +69,10 @@ export const useConsultaStore = defineStore("consulta", () => {
   };
 
   //consultar por nombre común
-  async function seleccionarComun(nombre_comun) {
+  async function seleccionarComun(cod_especie) {
+    
     cargando.value = true;
-    const { data } = await APIService.lookSpecie(nombre_comun);
+    const { data } = await APIService.lookSpecie(cod_especie);
     especie.value = data;
     cargando.value = false;
   }
@@ -236,6 +237,15 @@ watch(
     
   }
 
+  const getFullImageUrl = (relativePath) => {
+    //console.log(relativePath)
+    if(relativePath){  
+      return `http://127.0.0.1:8000/api/${relativePath}`
+    }else{
+      return '/img/sin_img.png'
+    }
+  };
+
 
 
   return {
@@ -266,6 +276,6 @@ watch(
     limpiarFiltroFecha,
     mostrarInfoCandidato,
     buscarTermino,
-    
+    getFullImageUrl,
   };
 });

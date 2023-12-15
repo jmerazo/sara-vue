@@ -5,10 +5,11 @@ import {defineStore} from 'pinia'
 export const useHomeStore = defineStore('home',()=>{
 
     const urlImagenesHome = ref([
-        {nombreEspecie:'Gualanday',url:'../../src/assets/media/gualanday.jpg'},
+        {nombreEspecie:'Gualanday',url:'../../src/assets/media/algarrobo.jpg'},
         {nombreEspecie:'Algarrobo',url:'../../src/assets/media/algarrobo.jpg'},
         {nombreEspecie:'Nogal Cafetero',url:'../../src/assets/media/nogal_cafetero.jpg'},
         {nombreEspecie:'NombreComun',url:'../../src/assets/media/pi3.jpg'},
+      
     ])
 
     const colaboradores = ref([
@@ -16,6 +17,7 @@ export const useHomeStore = defineStore('home',()=>{
         {enlace:'https://www.sgr.gov.co/',img:'/logos/sgr.png'},
         {enlace:'https://www.putumayo.gov.co/',img:'/logos/gp.png'},
         {enlace:'https://itp.edu.co/ITP2022/',img:'/logos/itp.png'},
+      
     ])
     return{
         urlImagenesHome,

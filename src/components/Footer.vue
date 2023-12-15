@@ -10,7 +10,6 @@
               src="../assets/log_corpoamazonia_black.png"
               alt="Logo de la empresa"
             />
-            
           </div>
           <!-- fin footer imagen -->
 
@@ -96,28 +95,32 @@
   background-color: #eaf2ed;
 }
 .footer__logo {
-  width: 10rem;
-  margin: 3rem 0 0 0;
+  width: 5rem;
+  margin: 2rem 0 0 0;
 }
+
 .footer__heading {
-  font-size: 2rem;
-  margin: 3rem 0 1rem 0;
+  font-size: 1rem;
+  margin: 2rem 0 1rem 0;
 }
 
 .footer__texto {
   text-align: center;
+  font-weight: 700;
+  font-size: .7rem;
 }
 .footer__texto--titulo {
   font-weight: 700;
+  font-size: .8rem;
 }
 
 .footer__social {
   display: flex;
   justify-content: space-between;
   gap: 1rem;
-  margin-top: 5rem;
+  margin-top: 2rem;
   margin-bottom: 1rem;
-  font-size: 3rem;
+  font-size: 1.1rem;
 }
 .footer__grid {
   display: grid;
@@ -126,7 +129,7 @@
 
 @media (min-width: 992px) {
   .footer__grid {
-    grid-template-columns: 1fr 2fr 1fr;
+    grid-template-columns: 1fr 3fr 1fr;
     align-items: center;
   }
   .footer__info {
@@ -134,39 +137,36 @@
     grid-template-columns: repeat(3, 1fr);
   }
   .footer__social {
-    gap: 0.5rem;
+    gap: 0.4rem;
     margin-top: 0;
     margin-bottom: 0;
-    font-size: 3rem;
+    font-size: 1.9rem;
   }
   .footer__logo {
-    width: 15rem;
+    width: 8rem;
     margin: 0;
   }
   .footer__heading {
-    font-size: 1.3rem;
-    margin: 3rem 0 1rem 0;
-    text-align: left;
+    margin: 1.3rem 0 .7rem 0;
+   
   }
-  .footer__texto {
-    text-align: left;
-    font-size: 1rem;
-  }
-  .footer__texto:last-of-type{
-    margin-bottom: 3rem;
+
+  .footer__texto:last-of-type {
+    margin-bottom: 1rem;
   }
   .footer__texto--titulo {
     font-weight: 700;
   }
 }
-.copyright{
+.copyright {
   color: var(--blanco);
   background-color: var(--gris);
   text-align: center;
   display: block;
   width: 100%;
-  padding: 2rem 0;
+  padding: 1rem 0;
   margin: 0;
+  font-size: .7rem;
   text-transform: uppercase;
 }
 </style>

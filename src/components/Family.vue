@@ -48,9 +48,9 @@ defineProps({
   position: relative;
   overflow: hidden;
   background-color: #f3f1f1;
-  border-bottom-left-radius: 20px;
-  border-bottom-right-radius: 20px;
-  transition: transform 0.9s ease;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+  transition: transform 0.6s ease;
 }
 .familia:hover {
   transform: scale(1.05);
@@ -58,7 +58,7 @@ defineProps({
 
 /* familia grif */
 .familia__img {
-  width: 2rem;
+  width: 1.2rem;
 }
 
 /* familia imagen-nombre */
@@ -66,8 +66,7 @@ defineProps({
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 10px;
-  
+  gap: 10px;  
 }
 /* informacion familia */
 .familia__informacion {
@@ -82,18 +81,20 @@ defineProps({
   white-space: nowrap; /* Evita saltos de línea automáticos */
   overflow: hidden; /* Oculta el contenido que desborda */
   text-overflow: ellipsis; /* Agrega puntos suspensivos (...) para indicar que hay más contenido */
-  margin-top: 1rem;
+  margin-top: 1.5rem;
   margin-bottom: 0;
   text-align: center;
   font-weight: 700;
-  font-size: 2rem;
+  font-size: 1rem;
   color: var(--gris);
 }
 .familia__caracteristicas{
   text-align: justify;
   margin: 0;
-  padding: 10px;
+  padding: 15px;
+  font-size: .8rem;
 }
+
 span {
   font-weight: 600;
 }
@@ -101,7 +102,7 @@ span {
 /* boton */
 .familia__boton {
   background-color: var(--primary);
-  padding: 1rem;
+  padding: .8rem;
   color: var(--blanco);
   font-weight: 700;
   transition: background-color 0.4s ease-in-out;
