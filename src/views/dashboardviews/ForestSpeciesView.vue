@@ -82,6 +82,18 @@ function copyToClipboard() {
     console.error('Error al copiar');
   }
 }
+
+function limitTextLines(text, lines) {
+    const textLines = text.split('\n');
+    if (textLines.length > lines) {
+      return textLines.slice(0, lines).join('\n');
+    }
+    return text;
+}
+
+function toggleShowMore(especie) {
+  especie.showMore = !especie.showMore;
+}
 </script>
 
 <template>
@@ -126,12 +138,16 @@ function copyToClipboard() {
       </tr>
     </thead>
     <tbody>
-      <tr v-for="especie in especies.displayedEspecies" v-bind:key="especie.ShorcutID">
+      <tr v-for="especie in especies.displayedEspecies" v-bind:key="especie.ShorcutID" class="text__table">
         <td class="px-4 py-3 border">{{ especie.cod_especie }}</td>
-        <td class="px-4 py-3 border td__data"><img :src="getFullImageUrl(especie.img_general)" class="img__table__species" alt="">{{ especie.nom_comunes }} <br> <b class="txt__nameScientific">{{ especie.nombre_cientifico }}</b> {{ especie.familia }}</td>
-        <td class="px-4 py-3 border td__data">
-          <button @click="especies.selectedForestSpecieUpdate(especie.ShortcutID)" class="btn  rounded-lg font-bold p-1 text-white bg-customGreen hover:bg-green-500 hover:shadow-lg mb-2"><font-awesome-icon :icon="['fas', 'pen-to-square']" /> Editar</button>
-          <button @click="delForestSpecie(especie.ShortcutID, especie.nom_comunes)" class="btn  rounded-lg font-bold p-1 text-white bg-customGreen hover:bg-green-500 hover:shadow-lg m-2"><font-awesome-icon :icon="['fas', 'trash']" /> Eliminar</button>
+        <td class="px-4 py-3 border td__dataSpecie">
+          <img :src="getFullImageUrl(especie.img_general)" class="img__table__species" alt="">{{ especie.nom_comunes }} <br> 
+          <b class="txt__nameScientific">{{ especie.nombre_cientifico }}</b> 
+          {{ especie.familia }}<br><br>
+          <div class="td_buttons">
+            <button @click="especies.selectedForestSpecieUpdate(especie.ShortcutID)" class="btn  rounded-lg font-bold p-1 text-white bg-customGreen hover:bg-green-500 hover:shadow-lg mb-2"><font-awesome-icon :icon="['fas', 'pen-to-square']" /> Editar</button>
+            <button @click="delForestSpecie(especie.ShortcutID, especie.nom_comunes)" class="btn  rounded-lg font-bold p-1 text-white bg-customGreen hover:bg-green-500 hover:shadow-lg m-2"><font-awesome-icon :icon="['fas', 'trash']" /> Eliminar</button>
+          </div>      
         </td>
         <td class="px-4 py-3 border">{{ especie.otros_nombres }}</td>
         <td class="px-4 py-3 border">{{ especie.distribucion }}</td>
@@ -230,20 +246,14 @@ function copyToClipboard() {
   .img__table__species {
     max-height: 100px;
     width: auto;
-    border-radius: 10px;
+    border-radius: 5px;
+    margin-left: auto;
+    margin-right: auto;
   }
 
   .img__table__td {
     text-align: center;
     vertical-align: middle;
-  }
-
-  .td__data{
-    display: flex;
-    text-align: center;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
   }
 
   .td__dataButton {
@@ -261,5 +271,21 @@ function copyToClipboard() {
 
   .title__table{
     text-align: center;
+  }
+
+  .td__dataSpecie{
+    text-align: center; 
+  }
+
+  .text__table {
+    vertical-align: top;
+  }
+
+  .td_buttons{
+    display: flex;
+    text-align: center;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
   }
 </style>
