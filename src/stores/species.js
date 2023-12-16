@@ -3,8 +3,7 @@ import {defineStore} from 'pinia'
 import {useModalStore} from '../stores/modal'
 import {useConsultaStore} from '../stores/consulta'
 import APIService from '../services/APIService'
-
-
+import api from '../api/axios';
 
 export const useEspeciesStore = defineStore('especies', () => {
     const modal = useModalStore();
@@ -39,7 +38,7 @@ export const useEspeciesStore = defineStore('especies', () => {
     const getFullImageUrl = (relativePath) => {
       //console.log(relativePath)
       if(relativePath){  
-        return `http://127.0.0.1:8000/api/${relativePath}`
+        return `${api.defaults.baseURL}/${relativePath.replace(/\\/g, '/')}`;
       }else{
         return '/img/sin_img.png'
       }
