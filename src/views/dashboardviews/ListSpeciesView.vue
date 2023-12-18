@@ -6,6 +6,8 @@ import { useEspeciesStore } from "@/stores/species";
 import {useCantidateStore} from '@/stores/dashboard/reports/SpecieCanditates'
 import {useSpecieMonitoriong} from '@/stores/dashboard/reports/SpecieMonitoring'
 
+import { getFullImageUrl } from "@/helpers";
+
 const especies = useEspeciesStore();
 
 const candidatos = useCantidateStore()
@@ -28,8 +30,7 @@ const displayedPageRange = computed(() => {
   );
 });
 
-//url dinámica de ejemplo
-const url = "/img/arbol__especie.jpg";
+
 </script>
 <template>
   <div class="contenedor">
@@ -62,7 +63,7 @@ const url = "/img/arbol__especie.jpg";
         <div class="card__grid" v-if="especie.cod_especie">
           <div
             class="card__imagen"
-            :style="{ backgroundImage: `url(${url})` }"
+            :style="{ backgroundImage: `url(${getFullImageUrl(especie.img_general)})` }"
           ></div>
           <div class="card__contenido">
             <p class="card__titulo">{{ especie.nom_comunes }}</p>
