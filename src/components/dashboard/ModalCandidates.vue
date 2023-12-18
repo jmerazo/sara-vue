@@ -1,6 +1,7 @@
 <script setup>
 import { useModalStore } from "@/stores/modal";
 import { useCantidateStore } from "@/stores/dashboard/reports/SpecieCanditates";
+import { descargarExcel, descargarPdf, obtenerFecha } from "@/helpers";
 
 const modal = useModalStore();
 const consulta = useCantidateStore();
@@ -11,13 +12,20 @@ function toggleDetalles(idLista) {
 </script>
 
 <template>
-  <div class="modal" v-if="modal.modalInfoCandidate">
+  <div class="modal" v-if="modal.modalCandidates">
     <div class="modal__contenido">
       <div v-if="consulta.monitoreosCandidato.length === 0" class="card">
         <h2 class="card__titulo">
           <font-awesome-icon :icon="['fas', 'circle-exclamation']" /> No se han
           realizado monitoreos para este candidato
         </h2>
+        <button
+          type="button"
+          class="modal__boton"
+          @click="modal.handleClickModalCandidate()"
+        >
+          Cerrar
+        </button>
       </div>
       <div v-else>
         <div class="modal__encabezado">
@@ -25,7 +33,44 @@ function toggleDetalles(idLista) {
             Especie: <span>{{ consulta.nombreEspecie }}</span>
           </h2>
           <hr />
-          <p class="modal__subtitulo">Monitoreos del candidato</p>
+          <div class="modal__descargas">
+            <p class="modal__subtitulo">Monitoreos del candidato</p>
+            <div class="botones__descarga" >
+              <a
+                @click="
+                  descargarExcel(
+                    consulta.monitoreosCandidato,
+                    `Monitoreos candidato ${consulta.idCandidato}- ${obtenerFecha()}`
+                  )
+                "
+                class="boton"
+                href="#"
+                ><font-awesome-icon
+                  class="boton__excel"
+                  :icon="['fas', 'file-excel']"
+              /></a>
+              <a
+                @click="
+                  descargarPdf(
+                    consulta.monitoreosCandidato,
+                    `Monitoreos del candidato ${
+                      consulta.idCandidato
+                    } - ${obtenerFecha()}`,
+                    8,
+                    2
+                  )
+                "
+                class="boton"
+                href="#"
+                ><font-awesome-icon
+                  class="boton__pdf"
+                  :icon="['fas', 'file-pdf']"
+              /></a>
+            </div>
+            
+           
+          </div>
+         
         </div>
         <div class="card">
           <div
@@ -38,13 +83,19 @@ function toggleDetalles(idLista) {
                 @click="toggleDetalles(candidato.fecha_monitoreo)"
               >
                 <h2 class="card__titulo">
-                  Feha: {{ candidato.fecha_monitoreo }}
+                  <font-awesome-icon
+                    :icon="['fas', 'folder']"
+                    :style="{ color: 'var(--primary)' }"
+                  />
+                  Feha monitoreo: {{ candidato.fecha_monitoreo }}
                 </h2>
 
                 <div :id="candidato.fecha_monitoreo" class="detalles">
                   <p class="detalle__item">
                     precipitacion:
-                    <span class="detalle__dato"
+                    <span
+                      class="detalle__dato"
+                      :class="{ sinInfo: !candidato.precipitacion }"
                       >{{ candidato.precipitacion }}
                     </span>
                   </p>
@@ -56,86 +107,172 @@ function toggleDetalles(idLista) {
                   </p>
                   <p class="detalle__item">
                     humedad:
-                    <span class="detalle__dato">{{ candidato.humedad }} </span>
+                    <span
+                      class="detalle__dato"
+                      :class="{ sinInfo: !candidato.humedad }"
+                      >{{ candidato.humedad }}
+                    </span>
                   </p>
                   <p class="detalle__item">
                     cap:
-                    <span class="detalle__dato">{{ candidato.cali }} </span>
+                    <span
+                      class="detalle__dato"
+                      :class="{ sinInfo: !candidato.cap }"
+                      >{{ candidato.cap ? candidato.cap : "Por evaluar" }}
+                    </span>
                   </p>
                   <p class="detalle__item">
                     Altura comercial:
-                    <span class="detalle__dato"
-                      >{{ candidato.altura_comercial }}
+                    <span
+                      class="detalle__dato"
+                      :class="{ sinInfo: !candidato.altura_comercial }"
+                      >{{
+                        candidato.altura_comercial
+                          ? candidato.altura_comercial
+                          : "Por evaluar"
+                      }}
                     </span>
                   </p>
                   <p class="detalle__item">
                     Altura Total:
-                    <span class="detalle__dato"
-                      >{{ candidato.altura_total }}
+                    <span
+                      class="detalle__dato"
+                      :class="{ sinInfo: !candidato.altura_total }"
+                      >{{
+                        candidato.altura_total
+                          ? candidato.altura_total
+                          : "Por evaluar"
+                      }}
                     </span>
                   </p>
                   <p class="detalle__item">
                     Eje X:
-                    <span class="detalle__dato">{{ candidato.eje_x }} </span>
+                    <span
+                      class="detalle__dato"
+                      :class="{ sinInfo: !candidato.eje_x }"
+                      >{{ candidato.eje_x ? candidato.eje_x : "Por evaluar" }}
+                    </span>
                   </p>
                   <p class="detalle__item">
                     Eje y:
-                    <span class="detalle__dato">{{ candidato.eje_y }} </span>
+                    <span
+                      class="detalle__dato"
+                      :class="{ sinInfo: !candidato.eje_y }"
+                      >{{ candidato.eje_y ? candidato.eje_y : "Por evaluar" }}
+                    </span>
                   </p>
                   <p class="detalle__item">
                     Eje Z:
-                    <span class="detalle__dato">{{ candidato.eje_z }} </span>
+                    <span
+                      class="detalle__dato"
+                      :class="{ sinInfo: !candidato.eje_z }"
+                      >{{ candidato.eje_z ? candidato.eje_z : "Por evaluar" }}
+                    </span>
                   </p>
                   <p class="detalle__item">
                     Fitosanitario:
-                    <span class="detalle__dato"
-                      >{{ candidato.fitosanitario }}
+                    <span
+                      class="detalle__dato"
+                      :class="{ sinInfo: !candidato.fitosanitario }"
+                      >{{
+                        candidato.fitosanitario
+                          ? candidato.fitosanitario
+                          : "Por evaluar"
+                      }}
                     </span>
                   </p>
                   <p class="detalle__item">
                     Afectacion:
-                    <span class="detalle__dato"
-                      >{{ candidato.afectacion }}
+                    <span
+                      class="detalle__dato"
+                      :class="{ sinInfo: !candidato.afectacion }"
+                      >{{
+                        candidato.afectacion
+                          ? candidato.afectacion
+                          : "Por evaluar"
+                      }}
                     </span>
                   </p>
                   <p class="detalle__item">
                     Follaje:
-                    <span class="detalle__dato">{{ candidato.follaje }} </span>
+                    <span
+                      class="detalle__dato"
+                      :class="{ sinInfo: !candidato.follaje }"
+                      >{{
+                        candidato.follaje ? candidato.follaje : "Por evaluar"
+                      }}
+                    </span>
                   </p>
                   <p class="detalle__item">
                     Follaje porcentaje:
-                    <span class="detalle__dato"
-                      >{{ candidato.follaje_porcentaje }}
+                    <span
+                      class="detalle__dato"
+                      :class="{ sinInfo: !candidato.follaje_porcentaje }"
+                      >{{
+                        candidato.follaje_porcentaje
+                          ? candidato.follaje_porcentaje
+                          : "Por evaluar"
+                      }}
                     </span>
                   </p>
                   <p class="detalle__item">
                     Observaciones flor:
-                    <span class="detalle__dato"
-                      >{{ candidato.observaciones_flor }}
+                    <span
+                      class="detalle__dato"
+                      :class="{ sinInfo: !candidato.observaciones_flor }"
+                      >{{
+                        candidato.observaciones_flor
+                          ? candidato.observaciones_flor
+                          : "Por evaluar"
+                      }}
                     </span>
                   </p>
                   <p class="detalle__item">
                     Frutos verdes:
-                    <span class="detalle__dato"
-                      >{{ candidato.frutos_verdes }}
+                    <span
+                      class="detalle__dato"
+                      :class="{ sinInfo: !candidato.frutos_verdes }"
+                      >{{
+                        candidato.frutos_verdes
+                          ? candidato.frutos_verdes
+                          : "Por evaluar"
+                      }}
                     </span>
                   </p>
                   <p class="detalle__item">
                     Estado madurez:
-                    <span class="detalle__dato"
-                      >{{ candidato.estado_madurez }}
+                    <span
+                      class="detalle__dato"
+                      :class="{ sinInfo: !candidato.estado_madurez }"
+                      >{{
+                        candidato.estado_madurez
+                          ? candidato.estado_madurez
+                          : "Por evaluar"
+                      }}
                     </span>
                   </p>
                   <p class="detalle__item">
                     Cantidad frutos:
-                    <span class="detalle__dato"
-                      >{{ candidato.cant_frutos }}
+                    <span
+                      class="detalle__dato"
+                      :class="{ sinInfo: !candidato.cant_frutos }"
+                      >{{
+                        candidato.cant_frutos
+                          ? candidato.cant_frutos
+                          : "Por evaluar"
+                      }}
                     </span>
                   </p>
                   <p class="detalle__item">
                     Medida - Peso frutos:
-                    <span class="detalle__dato"
-                      >{{ candidato.medida_peso_frutos }}
+                    <span
+                      class="detalle__dato"
+                      :class="{ sinInfo: !candidato.medida_peso_frutos }"
+                      >{{
+                        candidato.medida_peso_frutos
+                          ? candidato.medida_peso_frutos
+                          : "Por evaluar"
+                      }}
                     </span>
                   </p>
                 </div>
@@ -156,6 +293,13 @@ function toggleDetalles(idLista) {
 </template>
 
 <style scoped>
+.modal__descargas{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-content: center;
+  align-items: center;
+}
 .modal {
   position: fixed;
   top: 0;
@@ -180,7 +324,18 @@ function toggleDetalles(idLista) {
   overflow-y: auto;
   transform: translate(-50%, -50%);
   z-index: 1000;
-  margin-top: 4rem;
+  
+}
+@media (min-width: 992px) {
+  .modal__contenido {
+    width: 50%;
+    margin-top: 1rem;
+  }
+}
+@media (min-width: 1440px) {
+  .modal__contenido {
+    width: 30%;
+  }
 }
 .modal__boton {
   font-weight: 700;
@@ -202,7 +357,7 @@ function toggleDetalles(idLista) {
 }
 .modal__subtitulo {
   font-size: 1rem;
-  margin: 1rem auto 2rem auto;
+  margin: 1rem auto;
 }
 /* card */
 .card__titulo {
@@ -238,7 +393,7 @@ function toggleDetalles(idLista) {
 .detalles {
   max-height: 0;
   overflow: hidden;
-  transition: max-height 0.9s ease-in-out;
+  transition: max-height 0.5s ease-in-out;
 }
 .detalle__item {
   font-size: 0.8rem;
@@ -248,6 +403,9 @@ function toggleDetalles(idLista) {
 }
 .detalles.visible {
   max-height: 800px; /* Ajusta la altura máxima según tus necesidades */
-  transition: max-height 0.9s ease-in-out;
+  transition: max-height 0.5s ease-in-out;
+}
+.sinInfo {
+  color: rgb(240, 176, 176);
 }
 </style>

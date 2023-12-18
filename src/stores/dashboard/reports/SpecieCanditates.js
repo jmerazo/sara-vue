@@ -8,7 +8,7 @@ export const useCantidateStore = defineStore("candidate", () => {
   const modal = useModalStore();
   const router = useRouter();
   const nombreEspecie = ref("");
-
+  const idCandidato = ref('')
   //monitoreos candidato
   const monitoreosCandidato = ref({});
 
@@ -54,7 +54,7 @@ export const useCantidateStore = defineStore("candidate", () => {
   //consultar monitoreos de un candidato
   async function verMonitoreosCandidato(id) {
     cargando.value = true;
-
+    idCandidato.value = id
     const { data } = await APIService.lookMonitoringCandidate(id);
     monitoreosCandidato.value = data;
     //ordenar fechas reciente - antigua
@@ -137,6 +137,7 @@ export const useCantidateStore = defineStore("candidate", () => {
     displayedCandidates,
     cargando,
     datosImport,
+    idCandidato,
     verCandidatosEspecie,
     verMonitoreosCandidato,
     changePageCandidates,
