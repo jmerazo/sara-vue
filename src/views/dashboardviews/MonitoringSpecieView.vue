@@ -1,9 +1,11 @@
 <script setup>
-import { ref } from "vue";
+import { ref,computed } from "vue";
 import Alerta from "@/components/dashboard/Alert.vue";
-import { useConsultaStore } from "@/stores/consulta";
+import { useSpecieMonitoriong } from "@/stores/dashboard/reports/SpecieMonitoring";
 
-const consulta = useConsultaStore();
+import { descargarExcel, descargarPdf, obtenerFecha } from "@/helpers";
+
+const consulta = useSpecieMonitoriong();
 
 const fechaInicial = ref("");
 const fechaFinal = ref("");
@@ -32,6 +34,20 @@ const consultarFechas = () => {
   }
   consulta.filtrarFecha(fechaInicial.value, fechaFinal.value);
 };
+
+
+//botones paginador
+const displayedPageRange = computed(() => {
+  const currentPage = consulta.currentPage;
+  const totalPages = consulta.totalPages;
+  const rangeStart = Math.max(1, currentPage - 1);
+  const rangeEnd = Math.min(totalPages, rangeStart + 3);
+
+  return Array.from(
+    { length: rangeEnd - rangeStart + 1 },
+    (_, index) => rangeStart + index
+  );
+});
 </script>
 
 <template>
@@ -77,8 +93,16 @@ const consultarFechas = () => {
           <p>{{ error }}</p>
         </Alerta>
       </fieldset>
-      <div class="botones__descarga">
-        <a @click="descargarExcel(consulta.datosExcel)" class="boton" href="#"
+      <div class="botones__descarga" v-if="displayedPageRange.length > 1">
+        <a
+          @click="
+            descargarExcel(
+              consulta.datosImport,
+              `Monitoreos ${consulta.nombreEspecie} - ${obtenerFecha()}`
+            )
+          "
+          class="boton"
+          href="#"
           ><font-awesome-icon
             class="boton__excel"
             :icon="['fas', 'file-excel']"
@@ -86,8 +110,8 @@ const consultarFechas = () => {
         <a
           @click="
             descargarPdf(
-              consulta.datosExcel,
-              `candidatos de la especie ${consulta.nombreEspecie}`
+              consulta.datosImport,
+              `Monitoreos de la especie ${consulta.nombreEspecie} - ${ obtenerFecha() }`,11,5
             )
           "
           class="boton"
@@ -103,55 +127,116 @@ const consultarFechas = () => {
   <hr />
   <main>
     <table class="tabla">
-    <thead class="tabla__encabezado">
-      <tr class="tabla__fila">
-        <th class="dato__encabezado fecha">Fecha monitoreo</th>
-        <th class="dato__encabezado">Altura total</th>
-        <th class="dato__encabezado">Altura comercial</th>
-        <th class="dato__encabezado">Estado Follaje</th>
-        <th class="dato__encabezado">Tamaño follaje</th>
-      </tr>
-    </thead>
-    <tbody class="tabla__contenido">
-      <tr
-        class="tabla__fila"
-        v-for="monitoreo in consulta.displayedMonitoring"
-        v-bind:key="monitoreo.IDmonitoreo"
-      >
-        <td class="tabla__dato fecha"><span class="nombre__campo">Fecha monitoreo</span> {{ monitoreo.fecha_monitoreo }}</td>
-        <td class="tabla__dato" :class="{sinInfo:!monitoreo.altura_total}"> <span class="nombre__campo">Altura Total: </span>{{ monitoreo.altura_total ? monitoreo.altura_total:'Por evaluar' }}</td>
-        <td class="tabla__dato " :class="{sinInfo:!monitoreo.altura_comercial}"> <span class="nombre__campo">Altura comerical: </span>{{ monitoreo.altura_comercial ?  monitoreo.altura_comercial : 'Por evaluar'}}</td>
-        <td class="tabla__dato" :class="{sinInfo:!monitoreo.follaje}"> <span class="nombre__campo">Follaje estado: </span>{{ monitoreo.follaje ? monitoreo.follaje : 'Por evaluar'}}</td>
-        <td class="tabla__dato tabla__ultimo" :class="{sinInfo:!monitoreo.follaje_porcentaje}"><span class="nombre__campo">Tamaño Follaje: </span>{{ monitoreo.follaje_porcentaje ? monitoreo.follaje_porcentaje : 'Por evaluar' }}</td>
-      </tr>
-    </tbody>
-  </table>
+      <thead class="tabla__encabezado">
+        <tr class="tabla__fila">
+          <th class="dato__encabezado fecha">Fecha monitoreo</th>
+          <th class="dato__encabezado">Altura total</th>
+          <th class="dato__encabezado">Altura comercial</th>
+          <th class="dato__encabezado">Estado Follaje</th>
+          <th class="dato__encabezado">Tamaño follaje</th>
+        </tr>
+      </thead>
+      <tbody class="tabla__contenido">
+        <tr
+          class="tabla__fila"
+          v-for="monitoreo in consulta.displayedMonitoring"
+          v-bind:key="monitoreo.IDmonitoreo"
+        >
+          <td class="tabla__dato fecha">
+            <span class="nombre__campo">Fecha monitoreo</span>
+            {{ monitoreo.fecha_monitoreo }}
+          </td>
+          <td class="tabla__dato" :class="{ sinInfo: !monitoreo.altura_total }">
+            <span class="nombre__campo">Altura Total: </span
+            >{{
+              monitoreo.altura_total ? monitoreo.altura_total : "Por evaluar"
+            }}
+          </td>
+          <td
+            class="tabla__dato"
+            :class="{ sinInfo: !monitoreo.altura_comercial }"
+          >
+            <span class="nombre__campo">Altura comerical: </span
+            >{{
+              monitoreo.altura_comercial
+                ? monitoreo.altura_comercial
+                : "Por evaluar"
+            }}
+          </td>
+          <td class="tabla__dato" :class="{ sinInfo: !monitoreo.follaje }">
+            <span class="nombre__campo">Follaje estado: </span
+            >{{ monitoreo.follaje ? monitoreo.follaje : "Por evaluar" }}
+          </td>
+          <td
+            class="tabla__dato tabla__ultimo"
+            :class="{ sinInfo: !monitoreo.follaje_porcentaje }"
+          >
+            <span class="nombre__campo">Tamaño Follaje: </span
+            >{{
+              monitoreo.follaje_porcentaje
+                ? monitoreo.follaje_porcentaje
+                : "Por evaluar"
+            }}
+          </td>
+        </tr>
+      </tbody>
+    </table>
   </main>
- 
-  <!-- paginador -->
-  <div class="flex justify-center mt-5 mb-10">
-    <button
-      v-for="page in consulta.totalPages"
-      :key="page"
-      @click="consulta.changePage(page)"
-      class="px-3 py-2 mx-1 rounded-lg bg-green-200 text-black hover:bg-green-600"
-      :class="{ 'bg-green-600': page === consulta.currentPage }"
-    >
-      {{ page }}
-    </button>
-  </div>
 
-  <h1
-    v-if="consulta.monitoreosEspecie.length == 0"
-    class="text-center font-bold text-2xl mt-5 mb-40"
-  >
-    No hay monitoreos para la especie
-    <span class="text-green-900">{{ consulta.nombreEspecie }}</span>
-  </h1>
+<!-- paginador -->
+<section class="paginador">
+      <div class="paginador__botones">
+        <button
+          class="paginador__boton paginador__boton--anterior"
+          v-if="consulta.currentPage > 1"
+          @click="consulta.changePage(consulta.currentPage - 1)"
+        >
+          <font-awesome-icon :icon="['fas', 'angles-left']" />
+        </button>
+
+        <button
+          v-for="page in displayedPageRange"
+          :key="page"
+          @click="consulta.changePage(page)"
+          class="paginador__boton"
+          :class="{ 'paginador__boton-actual': page === consulta.currentPage }"
+        >
+          {{ page }}
+        </button>
+        <button
+          class="paginador__boton paginador__boton--siguiente"
+          v-if="consulta.currentPage < consulta.totalPages"
+          @click="consulta.changePage(consulta.currentPage + 1)"
+        >
+          <font-awesome-icon :icon="['fas', 'angles-right']" />
+        </button>
+      </div>
+    </section>
+    <!--fin paginador -->
+    <!-- texto validacion buscador -->
+    <section class="validacion__contenido">
+      <h1
+      v-if="consulta.monitoreosEspecie.length == 0"
+        class="validacion__heading"
+      >
+        No hay resultados de búsqueda
+      </h1>
+    </section>
+    <!--fin texto validacion buscador -->
+
+
+
+
+
+
+
+
+  
+
+  
 </template>
 
 <style  scoped>
-
 /* encabezado de la vista */
 .reporte__heading {
   font-size: 1rem;
@@ -302,7 +387,6 @@ const consultarFechas = () => {
   display: none;
 }
 
-
 .dato__encabezado {
   font-weight: 900;
   border: 1px solid #ddd;
@@ -354,7 +438,7 @@ const consultarFechas = () => {
     padding: 5px;
     position: relative;
   }
- 
+
   .fecha {
     text-align: center;
     padding: 10px;
@@ -368,7 +452,7 @@ const consultarFechas = () => {
 .validacion__heading {
   font-size: 1.5rem;
 }
-.sinInfo{
+.sinInfo {
   color: rgb(240, 176, 176);
 }
 </style>

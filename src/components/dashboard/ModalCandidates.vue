@@ -1,181 +1,253 @@
 <script setup>
-import {
-  Dialog,
-  DialogPanel,
-  DialogTitle,
-  TransitionChild,
-  TransitionRoot,
-} from "@headlessui/vue";
-
 import { useModalStore } from "@/stores/modal";
-import { useConsultaStore } from "@/stores/consulta";
+import { useCantidateStore } from "@/stores/dashboard/reports/SpecieCanditates";
 
 const modal = useModalStore();
-const consulta = useConsultaStore();
+const consulta = useCantidateStore();
+function toggleDetalles(idLista) {
+  const detalles = document.getElementById(idLista);
+  detalles.classList.toggle("visible");
+}
 </script>
 
 <template>
-  <TransitionRoot as="template" :show="modal.modalCandidates">
-    <Dialog
-      as="div"
-      class="relative z-10"
-      @close="modal.handleClickModalCandidate()"
-    >
-      <TransitionChild
-        as="template"
-        enter="ease-out duration-300"
-        enter-from="opacity-0"
-        enter-to="opacity-100"
-        leave="ease-in duration-200"
-        leave-from="opacity-100"
-        leave-to="opacity-0"
-      >
-        <div
-          class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"
-        />
-      </TransitionChild>
-
-      <div class="fixed inset-0 z-10 overflow-y-auto">
-        <div
-          class="flex min-h-full items-end justify-center p-2 text-center sm:items-center sm:p-0"
-        >
-          <TransitionChild
-            as="template"
-            enter="ease-out duration-300"
-            enter-from="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-            enter-to="opacity-100 translate-y-0 sm:scale-100"
-            leave="ease-in duration-200"
-            leave-from="opacity-100 translate-y-0 sm:scale-100"
-            leave-to="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+  <div class="modal" v-if="modal.modalInfoCandidate">
+    <div class="modal__contenido">
+      <div v-if="consulta.monitoreosCandidato.length === 0" class="card">
+        <h2 class="card__titulo">
+          <font-awesome-icon :icon="['fas', 'circle-exclamation']" /> No se han
+          realizado monitoreos para este candidato
+        </h2>
+      </div>
+      <div v-else>
+        <div class="modal__encabezado">
+          <h2 class="modal__titulo">
+            Especie: <span>{{ consulta.nombreEspecie }}</span>
+          </h2>
+          <hr />
+          <p class="modal__subtitulo">Monitoreos del candidato</p>
+        </div>
+        <div class="card">
+          <div
+            v-for="candidato in consulta.monitoreosCandidato"
+            :key="candidato.ShortcutIDEV"
           >
-            <DialogPanel
-              class="relative transform overflow-hidden rounded-lg bg-white px-2 pt-2 pb-2 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-3xl sm:p-6"
-            >
-              <div
-                v-if="consulta.monitoreosCandidato.length === 0"
-                class="card mt-5"
+            <ul class="lista__monitoreo">
+              <li
+                class="monitoreo"
+                @click="toggleDetalles(candidato.fecha_monitoreo)"
               >
-                <h2 class="w-full text-center font-bold">
-                  <font-awesome-icon :icon="['fas', 'circle-exclamation']" /> No
-                  se han realizado monitoreos para este candidato
+                <h2 class="card__titulo">
+                  Feha: {{ candidato.fecha_monitoreo }}
                 </h2>
-              </div>
-              <div v-else>
-                <div>
-                  <!-- llenar la info dinámica -->
 
-                  <DialogTitle
-                    as="h4"
-                    class="text-gray-900 text-lg text-center font-extrabold mb-3"
-                  >
-                    Especie: {{ consulta.nombreEspecie }}
-                  </DialogTitle>
-                  <hr />
-                  <DialogTitle
-                    as="h3"
-                    class="text-gray-900 font-bold my-5 text-center"
-                  >
-                    Datos del monitoreo
-                  </DialogTitle>
-
-                  <!-- iterar las especies -->
-
-                  <div>
-                    <div>
-                      <div
-                        v-for="candidato in consulta.monitoreosCandidato"
-                        :key="candidato.ShortcutIDEV"
-                      >
-                        <div class="bg-gray-100 rounded-lg shadow-lg mb-3">
-                          <p class="font-bold text-center p-2 bg-gray-200">
-                            Feha: {{ candidato.fecha_monitoreo }}
-                          </p>
-                          <div class="flex gap-2 justify-evenly p-3">
-                            <div>
-                              <p class="font-bold text-slate-700">
-                                precipitacion: <span class="text-slate-900">{{ candidato.precipitacion }} </span>
-                              </p>
-                              <p class="font-bold text-slate-700">
-                                temperatura: {{ candidato.temperatura }}
-                              </p>
-                              <p class="font-bold text-slate-700">
-                                humedad: {{ candidato.humedad }}
-                              </p>
-                              <p class="font-bold text-slate-700">
-                                cap: {{ candidato.cap }}
-                              </p>
-                              <p class="font-bold text-slate-700">
-                                Altura comercial:
-                                {{ candidato.altura_comercial }}
-                              </p>
-                              <p class="font-bold text-slate-700">
-                                Altura Total: {{ candidato.altura_total }}
-                              </p>
-                              <p class="font-bold text-slate-700">
-                                Eje X: {{ candidato.eje_x }}
-                              </p>
-                              <p class="font-bold text-slate-700">
-                                Eje y: {{ candidato.eje_y }}
-                              </p>
-                              <p class="font-bold text-slate-700">
-                                Eje Z: {{ candidato.eje_z }}
-                              </p>
-                            </div>
-
-                            <div>
-                              <p class="font-bold text-slate-700">
-                                Fitosanitario: {{ candidato.fitosanitario }}
-                              </p>
-                              <p class="font-bold text-slate-700">
-                                Afectacion: {{ candidato.afectacion }}
-                              </p>
-                              <p class="font-bold text-slate-700">
-                                Follaje: {{ candidato.follaje }}
-                              </p>
-                              <p class="font-bold text-slate-700">
-                                Follaje porcentaje:
-                                {{ candidato.follaje_porcentaje }}
-                              </p>
-                              <p class="font-bold text-slate-700">
-                                Observaciones flor:
-                                {{ candidato.observaciones_flor }}
-                              </p>
-                              <p class="font-bold text-slate-700">
-                                Frutos verdes: {{ candidato.frutos_verdes }}
-                              </p>
-                              <p class="font-bold text-slate-700">
-                                Estado madurez: {{ candidato.estado_madurez }}
-                              </p>
-                              <p class="font-bold text-slate-700">
-                                Cantidad frutos: {{ candidato.cant_frutos }}
-                              </p>
-                              <p class="font-bold text-slate-700">
-                                Medida - Peso frutos:
-                                {{ candidato.medida_peso_frutos }}
-                              </p>
-                            </div>
-                          </div>
-
-                          <!-- desde aqui otra columna -->
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+                <div :id="candidato.fecha_monitoreo" class="detalles">
+                  <p class="detalle__item">
+                    precipitacion:
+                    <span class="detalle__dato"
+                      >{{ candidato.precipitacion }}
+                    </span>
+                  </p>
+                  <p class="detalle__item">
+                    temperatura:
+                    <span class="detalle__dato"
+                      >{{ candidato.temperatura }}
+                    </span>
+                  </p>
+                  <p class="detalle__item">
+                    humedad:
+                    <span class="detalle__dato">{{ candidato.humedad }} </span>
+                  </p>
+                  <p class="detalle__item">
+                    cap:
+                    <span class="detalle__dato">{{ candidato.cali }} </span>
+                  </p>
+                  <p class="detalle__item">
+                    Altura comercial:
+                    <span class="detalle__dato"
+                      >{{ candidato.altura_comercial }}
+                    </span>
+                  </p>
+                  <p class="detalle__item">
+                    Altura Total:
+                    <span class="detalle__dato"
+                      >{{ candidato.altura_total }}
+                    </span>
+                  </p>
+                  <p class="detalle__item">
+                    Eje X:
+                    <span class="detalle__dato">{{ candidato.eje_x }} </span>
+                  </p>
+                  <p class="detalle__item">
+                    Eje y:
+                    <span class="detalle__dato">{{ candidato.eje_y }} </span>
+                  </p>
+                  <p class="detalle__item">
+                    Eje Z:
+                    <span class="detalle__dato">{{ candidato.eje_z }} </span>
+                  </p>
+                  <p class="detalle__item">
+                    Fitosanitario:
+                    <span class="detalle__dato"
+                      >{{ candidato.fitosanitario }}
+                    </span>
+                  </p>
+                  <p class="detalle__item">
+                    Afectacion:
+                    <span class="detalle__dato"
+                      >{{ candidato.afectacion }}
+                    </span>
+                  </p>
+                  <p class="detalle__item">
+                    Follaje:
+                    <span class="detalle__dato">{{ candidato.follaje }} </span>
+                  </p>
+                  <p class="detalle__item">
+                    Follaje porcentaje:
+                    <span class="detalle__dato"
+                      >{{ candidato.follaje_porcentaje }}
+                    </span>
+                  </p>
+                  <p class="detalle__item">
+                    Observaciones flor:
+                    <span class="detalle__dato"
+                      >{{ candidato.observaciones_flor }}
+                    </span>
+                  </p>
+                  <p class="detalle__item">
+                    Frutos verdes:
+                    <span class="detalle__dato"
+                      >{{ candidato.frutos_verdes }}
+                    </span>
+                  </p>
+                  <p class="detalle__item">
+                    Estado madurez:
+                    <span class="detalle__dato"
+                      >{{ candidato.estado_madurez }}
+                    </span>
+                  </p>
+                  <p class="detalle__item">
+                    Cantidad frutos:
+                    <span class="detalle__dato"
+                      >{{ candidato.cant_frutos }}
+                    </span>
+                  </p>
+                  <p class="detalle__item">
+                    Medida - Peso frutos:
+                    <span class="detalle__dato"
+                      >{{ candidato.medida_peso_frutos }}
+                    </span>
+                  </p>
                 </div>
-              </div>
-              <div class="mt-8 sm:mt-6 flex justify-between gap-4">
-                <button
-                  type="button"
-                  class="shadow p-1 w-full rounded-lg bg-gray-700 hover:bg-gray-800 text-white uppercase font-bold"
-                  @click="modal.handleClickModalCandidate()"
-                >
-                  Cerrar
-                </button>
-              </div>
-            </DialogPanel>
-          </TransitionChild>
+              </li>
+            </ul>
+          </div>
+          <button
+            type="button"
+            class="modal__boton"
+            @click="modal.handleClickModalCandidate()"
+          >
+            Cerrar
+          </button>
         </div>
       </div>
-    </Dialog>
-  </TransitionRoot>
+    </div>
+  </div>
 </template>
+
+<style scoped>
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  overflow: auto;
+  z-index: 2;
+}
+
+.modal__contenido {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+  text-align: center;
+  width: 80%;
+  max-height: 90vh;
+  overflow-y: auto;
+  transform: translate(-50%, -50%);
+  z-index: 1000;
+  margin-top: 4rem;
+}
+.modal__boton {
+  font-weight: 700;
+  color: var(--blanco);
+  background-color: var(--secondary);
+  width: 95%;
+  border-radius: 5px;
+  margin-top: 2rem;
+  padding: 0.4rem;
+  transition: background-color 0.3s ease;
+}
+.modal__boton:hover {
+  background-color: var(--secondary-hover);
+}
+.modal__titulo {
+  font-size: 1rem;
+  margin: 0 auto;
+  padding: 0;
+}
+.modal__subtitulo {
+  font-size: 1rem;
+  margin: 1rem auto 2rem auto;
+}
+/* card */
+.card__titulo {
+  font-size: 1rem;
+  border: 1px solid var(--primary);
+  padding: 0.5rem;
+  font-weight: 700;
+  cursor: pointer;
+  border-radius: 10px;
+  width: 95%;
+  margin-top: 1rem;
+  transition: background-color 0.3s ease;
+}
+.card__titulo:hover {
+  background-color: var(--primary);
+  color: var(--blanco);
+}
+
+/* listado - detalle monitoreo */
+.lista__monitoreo {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.monitoreo {
+  border-radius: 5px;
+  margin: 0;
+  padding: 0;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.detalles {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.9s ease-in-out;
+}
+.detalle__item {
+  font-size: 0.8rem;
+}
+.detalle__dato {
+  font-weight: 700;
+}
+.detalles.visible {
+  max-height: 800px; /* Ajusta la altura máxima según tus necesidades */
+  transition: max-height 0.9s ease-in-out;
+}
+</style>

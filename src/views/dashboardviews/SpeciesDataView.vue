@@ -1,7 +1,8 @@
 <script setup>
 import { computed } from "vue";
 import { onBeforeRouteLeave } from "vue-router";
-import { useEspeciesData } from "@/stores/dashboard/speciesData";
+import { useEspeciesData } from "@/stores/dashboard/reports/speciesData";
+import { descargarExcel, descargarPdf, obtenerFecha } from "@/helpers";
 
 const especies = useEspeciesData();
 //limpiar filtros antes de cambiar de vista
@@ -38,16 +39,21 @@ const displayedPageRange = computed(() => {
         />
       </div>
       <div class="botones__descarga">
-        <a class="boton" href="#"
+        <a
+          @click="descargarExcel(especies.datosImport, 'Datos generales')"
+          class="boton"
+          href="#"
           ><font-awesome-icon
             class="boton__excel"
             :icon="['fas', 'file-excel']"
         /></a>
-        <a class="boton" href="#"
+        <a
+          @click="
+            descargarPdf(especies.datosImport, `Datos generales - ${obtenerFecha()}`, 6,0)
+          "
+          class="boton"
+          href="#"
           ><font-awesome-icon class="boton__pdf" :icon="['fas', 'file-pdf']"
-        /></a>
-        <a class="boton" href="#"
-          ><font-awesome-icon class="boton__print" :icon="['fas', 'print']"
         /></a>
       </div>
     </div>
@@ -139,12 +145,12 @@ const displayedPageRange = computed(() => {
 
 <style scoped>
 .reporte__heading {
-  font-size: 1.3rem;
+  font-size: 1.1rem;
   margin: 2rem;
 }
 @media (min-width: 768px) {
   .reporte__heading {
-    font-size: 1.8rem;
+    font-size: 1.3rem;
     margin: 3rem;
   }
 }
@@ -153,7 +159,7 @@ const displayedPageRange = computed(() => {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1.2rem;
+  gap: 1rem;
   margin-bottom: 0.6rem;
 }
 @media (min-width: 768px) {
@@ -171,7 +177,7 @@ const displayedPageRange = computed(() => {
 @media (min-width: 768px) {
   .buscador__label {
     display: inline;
-    margin-right: 1rem;
+    margin-right: 0.5rem;
   }
 }
 .buscador__input {
@@ -206,9 +212,6 @@ const displayedPageRange = computed(() => {
 .boton__pdf {
   color: rgb(184, 50, 50);
 }
-.boton__print {
-  color: rgb(87, 82, 82);
-}
 
 /* estilos contenido main */
 
@@ -216,7 +219,7 @@ const displayedPageRange = computed(() => {
 .reporte__grid {
   display: grid;
   gap: 1rem;
-  margin-top: 2rem;
+  margin-top: 1.5rem;
 }
 @media (min-width: 768px) {
   .reporte__grid {
@@ -264,6 +267,4 @@ const displayedPageRange = computed(() => {
 .card__descripcion {
   margin: 4px 0;
 }
-
-
 </style>

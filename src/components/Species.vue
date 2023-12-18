@@ -1,7 +1,9 @@
 <script setup>
 import { useEspeciesStore } from "@/stores/species";
+import { getFullImageUrl} from '@/helpers/'
 
 const especies = useEspeciesStore();
+
 
 defineProps({
   especie: {
@@ -14,7 +16,7 @@ defineProps({
     <div class="especie__img">
       <img
         alt="imagen especie"
-        :src="especies.getFullImageUrl(especie.img_general)"
+        :src="getFullImageUrl(especie.img_general)"
       />
     </div>
 
