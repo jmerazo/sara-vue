@@ -14,6 +14,7 @@ export const useSpecieMonitoriong = defineStore("especieMonitoreo", () => {
   const nombreEspecie = ref("");
 
   const datosImport = ref([]);
+  
   // variables para paginación
   const currentPage = ref(1); // Página actual
   const itemsPerPage = ref(12); // Elementos por página
