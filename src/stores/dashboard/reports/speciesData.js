@@ -1,4 +1,4 @@
-import {ref, onMounted,computed} from 'vue'
+import {ref, onMounted,computed,watch} from 'vue'
 import {defineStore} from 'pinia'
 import { useConsultaStore } from '@/stores/consulta'
 import APIService from '@/services/APIService'
@@ -10,7 +10,8 @@ export const useEspeciesData = defineStore('especiesData', () => {
     const consulta = useConsultaStore()
     const especiesData = ref([]);
     const especiesOriginalesData = ref([]);
-
+    const datosImport = ref([]);
+    
     // variables para paginación
     const currentPage = ref(1); // Página actual
     const itemsPerPage = ref(20); // Elementos por página
@@ -23,7 +24,23 @@ export const useEspeciesData = defineStore('especiesData', () => {
       especiesOriginalesData.value = data;
       consulta.cargando = false
     });
+
+    function cargarData() {
+      especiesData.value.forEach((especie) => {
+        datosImport.value.push(especie);
+        
+      });
+    }
   
+    //cargar datos de importacion 
+    watch(
+      () => especiesData.value,
+      () => {
+        datosImport.value = [];
+        cargarData();
+      },
+      { deep: true }
+    );
 
     // Calcula el número total de páginas en función de los datos
     const totalPages = computed(() => Math.ceil(especiesData.value.length / itemsPerPage.value));
@@ -75,7 +92,7 @@ export const useEspeciesData = defineStore('especiesData', () => {
       displayedEspeciesData,
       especiesData,
       especiesOriginalesData,
-      
+      datosImport,
       buscarTermino,
       quitarFiltroEspecie,
       changePage,

@@ -1,9 +1,9 @@
 import {ref, onMounted,computed} from 'vue'
 import {defineStore} from 'pinia'
-import {useModalStore} from '../stores/modal'
-import {useConsultaStore} from '../stores/consulta'
-import APIService from '../services/APIService'
-import api from '../api/axios';
+import {useModalStore} from '@/stores/modal'
+import {useConsultaStore} from '@/stores/consulta'
+import APIService from '@/services/APIService'
+import api from '@/api/axios';
 
 export const useEspeciesStore = defineStore('especies', () => {
     const modal = useModalStore();
@@ -35,15 +35,7 @@ export const useEspeciesStore = defineStore('especies', () => {
       consulta.cargando = false
     });
     
-    const getFullImageUrl = (relativePath) => {
-      //console.log(relativePath)
-      if(relativePath){  
-        return `${api.defaults.baseURL}/${relativePath.replace(/\\/g, '/')}`;
-      }else{
-        return '/img/sin_img.png'
-      }
-    };
-
+   
     // Calcula el número total de páginas en función de los datos
     const totalPages = computed(() => Math.ceil(especies.value.length / itemsPerPage.value));
 
@@ -157,6 +149,6 @@ export const useEspeciesStore = defineStore('especies', () => {
       selectedForestSpecieUpdate,
       updateForestSpecie,
       addForestSpecie,
-      getFullImageUrl
+     
     };
 });

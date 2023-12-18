@@ -1,14 +1,11 @@
 <script setup>
-import pdfMake from "pdfmake/build/pdfmake";
-/* import * as pdfFonts from "pdfmake/build/vfs_fonts"; */
-// Registra las fuentes
-/* pdfMake.vfs = pdfFonts.pdfMake.vfs; */
 
 import { computed } from "vue";
-import { useConsultaStore } from "@/stores/consulta";
-import exportFromJSON from "export-from-json";
+import {useCantidateStore} from '@/stores/dashboard/reports/SpecieCanditates'
 
-const consulta = useConsultaStore();
+import { descargarExcel, descargarPdf, obtenerFecha } from "@/helpers";
+
+const consulta = useCantidateStore();
 
 //botones paginador
 const displayedPageRange = computed(() => {
@@ -23,66 +20,7 @@ const displayedPageRange = computed(() => {
   );
 });
 
-//descargar candidatos en excel
-function descargarExcel(datos) {
-  const data = datos;
-  const fileName = `candidatos ${consulta.nombreEspecie}`;
-  // const exportType= exportFromJSON.types.xls
-  const exportType = exportFromJSON.types.xls;
-  exportFromJSON({ data, fileName, exportType });
-}
 
-//descargar info tabla en pdf
-function descargarPdf(datos, tituloTabla) {
-  const columnasMostrar = Math.min(8, Object.keys(datos[0]).length);
-
-  if (columnasMostrar > 0) {
-    const headers = Object.keys(datos[0]).slice(1, columnasMostrar+1);
-    //ojo esta varible no se puede cambiar la solicita la liberia
-    const documentDefinition = {
-      pageOrientation: "landscape", //para vertical seria: portrait 
-      content: [
-        { text: tituloTabla, style: "header" },
-        {
-          table: {
-            widths: Array(columnasMostrar).fill("auto"),
-            headerRows: 1,
-            body: [
-              headers.map((header) => ({
-                text: header,
-                fillColor: "#10613e",
-                color: "#ffffff",
-              })), // Color primario
-              ...datos.map((objeto) =>
-                headers
-                  .map((header) => objeto[header])
-                  .slice(0, columnasMostrar)
-              ),
-            ],
-          },
-          layout: {
-            fillColor: function (rowIndex, node, columnIndex) {
-              return rowIndex === 0 ? "#10613e" : null; // Fila de encabezados con color de fondo
-            },
-          },
-        },
-      ],
-      margin: [20, 20, 20, 20], // Márgenes: [izquierda, arriba, derecha, abajo]
-      styles: {
-        header: {
-          fontSize: 18,
-          bold: true,
-          margin: [0, 0, 0, 15], // Márgenes para el título (15 puntos en la parte inferior)
-        },
-      },
-    };
-
-    const pdfDoc = pdfMake.createPdf(documentDefinition);
-    pdfDoc.open();
-  } else {
-    console.error("No hay suficientes columnas en los datos para mostrar.");
-  }
-}
 </script>
 <template>
   <div class="contenedor">
@@ -101,14 +39,14 @@ function descargarPdf(datos, tituloTabla) {
           @input="consulta.buscarTermino($event.target.value)"
         />
       </div>
-      <div class="botones__descarga">
-        <a @click="descargarExcel(consulta.datosExcel)" class="boton" href="#"
+      <div class="botones__descarga" v-if="displayedPageRange.length > 1">
+        <a @click="descargarExcel(consulta.datosImport,`candidatos ${consulta.nombreEspecie}`)" class="boton" href="#"
           ><font-awesome-icon
             class="boton__excel"
             :icon="['fas', 'file-excel']"
         /></a>
         <a
-          @click="descargarPdf(consulta.datosExcel, `candidatos de la especie ${consulta.nombreEspecie}`)"
+          @click="descargarPdf(consulta.datosImport, `candidatos de la especie ${consulta.nombreEspecie} - ${obtenerFecha()}`,8,1)"
           class="boton"
           href="#"
           ><font-awesome-icon class="boton__pdf" :icon="['fas', 'file-pdf']"

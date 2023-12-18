@@ -1,4 +1,4 @@
-import { ref, onMounted } from 'vue'
+import { ref} from 'vue'
 import { defineStore } from 'pinia'
 import APIService from '../../services/APIService'
 

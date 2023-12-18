@@ -2,11 +2,14 @@
 import { computed } from "vue";
 import { onBeforeRouteLeave } from "vue-router";
 import { useEspeciesStore } from "@/stores/species";
-import { useConsultaStore } from "@/stores/consulta";
+
+import {useCantidateStore} from '@/stores/dashboard/reports/SpecieCanditates'
+import {useSpecieMonitoriong} from '@/stores/dashboard/reports/SpecieMonitoring'
 
 const especies = useEspeciesStore();
-const consulta = useConsultaStore();
 
+const candidatos = useCantidateStore()
+const especieMonitoreos = useSpecieMonitoriong()
 //limpiar filtros antes de cambiar de vista
 onBeforeRouteLeave((to, from, next) => {
   especies.quitarFiltroEspecie();
@@ -44,17 +47,7 @@ const url = "/img/arbol__especie.jpg";
         />
       </div>
       <div class="botones__descarga">
-       <!--<a class="boton" href="#"
-          ><font-awesome-icon
-            class="boton__excel"
-            :icon="['fas', 'file-excel']"
-        /></a>
-        <a class="boton" href="#"
-          ><font-awesome-icon class="boton__pdf" :icon="['fas', 'file-pdf']"
-        /></a>
-        <a class="boton" href="#"
-          ><font-awesome-icon class="boton__print" :icon="['fas', 'print']"
-        /></a>--> 
+      
       </div>
     </div>
     <!-- fin encabezado vista -->
@@ -84,14 +77,14 @@ const url = "/img/arbol__especie.jpg";
             <div class="card__botones">
               <button
                 class="boton__primario"
-                @click="consulta.verCandidatosEspecie(especie.nom_comunes)"
+                @click="candidatos.verCandidatosEspecie(especie.nom_comunes)"
               >
                 <font-awesome-icon :icon="['fas', 'leaf']" /> Ver candidatos
               </button>
               <button
                 class="boton__secundario"
                 @click="
-                  consulta.verMonitoreosEspecie(
+                  especieMonitoreos.verMonitoreosEspecie(
                     especie.cod_especie,
                     especie.nom_comunes
                   )

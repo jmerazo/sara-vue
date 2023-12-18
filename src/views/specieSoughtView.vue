@@ -4,6 +4,8 @@ import { useConsultaStore } from "@/stores/consulta";
 import { useRouter } from "vue-router";
 import { useGeoCandidateTrees } from "@/stores/candidate";
 import { useAverageSpecie } from "@/stores/average";
+import { getFullImageUrl} from '@/helpers/'
+
 import APIService from "@/services/APIService";
 import * as d3 from "d3";
 
@@ -236,7 +238,7 @@ scrollToTop();
               <!-- imagen principal -->
               <div class="imagen__principal">
                 <img
-                  :src="especie.getFullImageUrl(img_general)"
+                  :src="getFullImageUrl(img_general)"
                   alt="imagen principal"
                 />
               </div>
@@ -279,7 +281,7 @@ scrollToTop();
               <!-- hojas -->
               <div class="especie__contenido">
                 <div class="especie__imagen">
-                  <img :src="especie.getFullImageUrl(img_leafs)" alt="" />
+                  <img :src="getFullImageUrl(img_leafs)" alt="" />
                 </div>
                 <div class="especie__info">
                   <h4 class="especie__titulo">Hojas</h4>
@@ -289,7 +291,7 @@ scrollToTop();
               <!-- flores -->
               <div class="especie__contenido">
                 <div class="especie__imagen">
-                  <img :src="especie.getFullImageUrl(img_flowers)" alt="" />
+                  <img :src="getFullImageUrl(img_flowers)" alt="" />
                 </div>
                 <div class="especie__info">
                   <h4 class="especie__titulo">Flores</h4>
@@ -300,7 +302,7 @@ scrollToTop();
               <div class="especie__contenido">
                 <div class="especie__imagen">
                   <img
-                    :src="especie.getFullImageUrl(img_fruits)"
+                    :src="getFullImageUrl(img_fruits)"
                     alt=""
                   />
                 </div>
@@ -358,11 +360,11 @@ scrollToTop();
               <h2 class="galeria__titulo">Galeria de la especie</h2>
               <div class="galeria__flex">
                 <div class="galeria__imagen">
-                  <img :src="especie.getFullImageUrl(img_landscape_one)" alt="imagen galeria" />
+                  <img :src="getFullImageUrl(img_landscape_one)" alt="imagen galeria" />
                 </div>
                 <div class="galeria__imagen-flex">
-                  <img :src="especie.getFullImageUrl(img_landscape_two)" alt="imagen galeria" />
-                  <img :src="especie.getFullImageUrl(img_landscape_three)" alt="imagen galeria" />
+                  <img :src="getFullImageUrl(img_landscape_two)" alt="imagen galeria" />
+                  <img :src="getFullImageUrl(img_landscape_three)" alt="imagen galeria" />
                 </div>
               </div>
             </section>
@@ -639,34 +641,36 @@ scrollToTop();
   background-color: var(--gris-claro);
   width: 80%;
   margin: 5rem auto;
-  border-bottom-left-radius: 20px;
-  border-bottom-right-radius: 20px;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
   display: flex;
   gap: 1rem;
   flex-direction: column;
   justify-content: space-between;
-  box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
+  box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.4);
 }
 
 @media (min-width: 992px) {
   .noResultados {
-    width: 40%;
+    width: 30%;
   }
 }
 
 .noResultados__heading {
-  font-size: 1.5rem;
+  font-size: 1rem;
   margin: 2rem auto;
   color: var(--gris);
+  padding: 0;
 }
 
 .noResultados__boton {
   background-color: var(--primary);
   color: var(--blanco);
   font-weight: 700;
-  padding: 1rem;
-  border-bottom-left-radius: 20px;
-  border-bottom-right-radius: 20px;
+  padding: .8rem;
+  font-size: 1rem;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
   transition: background-color 0.3s;
 }
 

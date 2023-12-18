@@ -124,7 +124,7 @@ onMounted(() => {
   background: rgba(0, 0, 0, 0.5);
 }
 .home__heading {
-  font-size: 2rem;
+  font-size: 1.5rem;
   margin: 2rem;
   color: var(--blanco);
 }
@@ -133,6 +133,7 @@ onMounted(() => {
   padding: 1rem;
 }
 .texto__bienvenida {
+  font-size: 1rem;
   text-align: center;
   box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.4);
   padding: 1rem;

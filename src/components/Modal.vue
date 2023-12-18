@@ -4,6 +4,7 @@ import { ref } from "vue";
 import { useModalStore } from "../stores/modal";
 import { useEspeciesStore } from "../stores/species";
 import { useConsultaStore } from "../stores/consulta";
+import { getFullImageUrl} from '@/helpers/'
 
 const modal = useModalStore();
 const especies = useEspeciesStore();
@@ -11,7 +12,7 @@ const consulta = useConsultaStore();
 const imagen = ref("");
 
 const verImg = (url) => {
-  imagen.value = especies.getFullImageUrl(url);
+  imagen.value = getFullImageUrl(url);
 };
 
 const consultar = (nombre_comun) => {
@@ -37,7 +38,7 @@ const limpiarModal = ()=>{
         <div class="modal__imagen">
           <img
             :src="
-              imagen ? imagen : especies.getFullImageUrl(especie.img_general)
+              imagen ? imagen : getFullImageUrl(especie.img_general)
             "
             :alt="'imagen de ' + especie.nom_comunes"
             @click="verImg(especie.img_general)"
