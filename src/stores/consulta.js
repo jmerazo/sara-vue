@@ -2,6 +2,7 @@ import { ref, reactive, computed,watch } from "vue";
 import { defineStore } from "pinia";
 import { useRouter } from "vue-router";
 import { useModalStore } from "../stores/modal";
+import api from '../api/axios'
 
 import APIService from "../services/APIService";
 
@@ -240,13 +241,11 @@ watch(
   const getFullImageUrl = (relativePath) => {
     //console.log(relativePath)
     if(relativePath){  
-      return `http://127.0.0.1:8000/api/${relativePath}`
+      return `${api.defaults.baseURL}/${relativePath.replace(/\\/g, '/')}`;
     }else{
       return '/img/sin_img.png'
     }
   };
-
-
 
   return {
     currentPage,
