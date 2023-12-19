@@ -15,7 +15,6 @@ export const useSamplesMade = defineStore("samplesMade", () => {
     const { data } = await APIService.getSamplesData();
     samplesData.value = data;
     samplesDataOriginal.value = data;
-    console.log(samplesData.value);
   };
 
   // Calcula el número total de páginas del objeto monitoreos por especie
