@@ -106,10 +106,7 @@ function toggleDetalles(contenedor) {
                 muestra.numero_placa ? muestra.numero_placa : "Sin placa"
               }}</span>
             </p>
-            <p class="especie__info">
-              id Muestra:
-              <span class="dato">{{ index + 1 }}</span>
-            </p>
+            
           </div>
 
           <!-- datos de la muestra -->

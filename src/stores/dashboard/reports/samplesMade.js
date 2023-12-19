@@ -15,6 +15,11 @@ export const useSamplesMade = defineStore("samplesMade", () => {
     const { data } = await APIService.getSamplesData();
     samplesData.value = data;
     samplesDataOriginal.value = data;
+    samplesData.value.sort((a, b) => {
+      const fechaA = new Date(a.fecha_coleccion);
+      const fechaB = new Date(b.fecha_coleccion);
+      return fechaB - fechaA;
+    });
   };
 
   // Calcula el número total de páginas del objeto monitoreos por especie
