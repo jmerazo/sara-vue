@@ -19,10 +19,9 @@ export const useGeneralMonitoring = defineStore("generalMonitoring", () => {
     const { data } = await APIService.getMonitoringData();
     monitoringData.value = data;
     monitoringDataOriginal.value = data;
+    ordenarPorFechas(monitoringData.value, "fecha_monitoreo");
+    ordenarPorFechas(monitoringDataOriginal.value, "fecha_monitoreo");
     cargando.value = false;
-    console.log(monitoringData.value);
-    //ordenarPorFechas(monitoringData.value.value, "fecha_coleccion");
-    //ordenarPorFechas(monitoringDataOriginal.value, "fecha_coleccion");
   });
 
   function cargarData() {
@@ -41,8 +40,63 @@ export const useGeneralMonitoring = defineStore("generalMonitoring", () => {
     { deep: true }
   );
 
+  //motor de busqueda para el reporte de monitoreos realizados
+  function buscarTermino(termino) {
+    changePage(1);
+     monitoringData.value =  monitoringDataOriginal.value.filter((term) => {
+      const lowerTermino = termino.toLowerCase();
+      const lowerComun = term.nom_comunes
+        ? term.nom_comunes.toLowerCase()
+        : "";
+      const lowerNombre_cientifico = term.nombre_cientifico
+        ? term.nombre_cientifico.toLowerCase()
+        : "";
+      // Verifica si la placa es igual al término (ya sea número o cadena)
+      const termCdoEspecie =
+        term.cod_especie != null ? term.cod_especie.toString() : ""; // Convierte el número a cadena
+      const termPlaca =
+        term.numero_placa != null ? term.numero_placa.toString() : ""; // Convierte el número a cadena
+
+      return (
+        lowerComun.includes(lowerTermino) ||
+        lowerNombre_cientifico.includes(lowerTermino) ||
+        termCdoEspecie === termino ||// Compara término y numero placa
+        termPlaca === termino // Compara término y numero placa
+      );
+    });
+  }
+
+  // Calcula el número total de páginas del objeto monitoreos por especie
+  const totalPages = computed(() =>
+    Math.ceil( monitoringData.value.length / itemsPerPage.value)
+  );
+
+  // Calcula el numero de páginas a monitoreos por especie
+  const displayedData = computed(() => {
+    try {
+      const start = (currentPage.value - 1) * itemsPerPage.value;
+      const end = start + itemsPerPage.value;
+      return  monitoringData.value.slice(start, end);
+    } catch {
+      console.log("esperando paginación...");
+    }
+  });
+
+  //función para cambiar de página monitoreos por especie
+  function changePage(page) {
+    if (page >= 1 && page <= totalPages.value) {
+      currentPage.value = page;
+    }
+  }
   return {
+    cargando,
+    currentPage,
+    itemsPerPage,
+    totalPages,
     datosImport,
     monitoringData,
+    displayedData,
+    buscarTermino,
+    changePage
   };
 });

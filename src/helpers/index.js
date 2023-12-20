@@ -111,7 +111,8 @@ export const obtenerFecha = () => {
 };
 
 //ordena arrays por fecha mas reciente
-export function ordenarPorFechas(dataArray, campoFecha) {
+export const ordenarPorFechas = (dataArray, campoFecha) => {
+  
   try {
     return dataArray.sort((a, b) => {
       const fechaA = new Date(a[campoFecha]);

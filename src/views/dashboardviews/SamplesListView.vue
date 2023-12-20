@@ -76,7 +76,7 @@ function toggleDetalles(contenedor) {
       </div>
     </div>
     <hr />
-    <LoadingData v-if="samples.cargando"/>
+    <LoadingData v-if="samples.cargando" />
     <!-- contenido principal -->
     <main class="muestra__grid">
       <div
@@ -235,8 +235,8 @@ function toggleDetalles(contenedor) {
       </div>
     </section>
     <!--fin paginador -->
-     <!-- texto validacion buscador -->
-     <section class="validacion__contenido">
+    <!-- texto validacion buscador -->
+    <section class="validacion__contenido">
       <h1
         v-if="samples.samplesData.length == 0 && !samples.cargando"
         class="validacion__heading"
