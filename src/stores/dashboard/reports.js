@@ -11,7 +11,6 @@ export const useReportsGeneral = defineStore('ReportsGeneral', () => {
     const fetchAssessmentData = async () => {
         const { data } = await APIService.getAssessmentData()
         assessmentData.value = data
-        
     }
 
     const fetchMonitoringData = async () => {
@@ -19,8 +18,6 @@ export const useReportsGeneral = defineStore('ReportsGeneral', () => {
         monitoringData.value = data
         
     }
-
-   
 
     return {
         assessmentData,

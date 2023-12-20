@@ -7,6 +7,7 @@ import { useConsultaStore } from "../stores/consulta";
 
 //componentes
 import Alerta from "./Alerta.vue";
+import LoadingData from "./LoadingData.vue";
 
 const route = useRoute();
 const paginaInicio = computed(() => route.name === "home");
@@ -103,7 +104,7 @@ const mostrarNavMovil = () => {
             <img src="../assets/sara.png" alt="Logotipo" />
           </RouterLink>
         </div>
-
+        <!-- barra de navegacion -->
         <nav class="navegacion__barra">
           <RouterLink
             :to="{ name: 'home' }"
@@ -181,103 +182,112 @@ const mostrarNavMovil = () => {
         <Alerta v-if="error">
           {{ error }}
         </Alerta>
-
-        <div class="formulario__categoria">
-          <label class="formulario__label" for="formulario__categoria"
-            >Seleccione una categoria</label
-          >
-          <select
-            id="categoria"
-            class="formulario__select"
-            v-model="consulta.consulta.categoria"
-            @change="consulta.consulta.vrBuscar = ''"
-          >
-            <option value="">-- Seleccione --</option>
-            <option>Familia</option>
-            <option>Nombre Común</option>
-            <option>Nombre científico</option>
-          </select>
-        </div>
-
-        <!-- Familia -->
-        <div
-          v-if="consulta.consulta.categoria === 'Familia'"
-          class="formulario__criterio"
-        >
-          <label class="formulario__label" for="familia">Familia</label>
-          <select
-            class="formulario__select"
-            id="familia"
-            v-model="consulta.consulta.vrBuscar"
-          >
-            <option value="">-- Seleccione --</option>
-            <option v-for="familia in familias.familias" :key="familia.familia">
-              {{ familia.familia }}
-            </option>
-          </select>
-        </div>
-        <!-- Especie -->
-
-        <div
-          v-if="consulta.consulta.categoria === 'Nombre Común'"
-          class="formulario__criterio"
-        >
-          <label class="formulario__label" for="especie">Nombre común</label>
-          <select
-            class="formulario__select"
-            id="especie"
-            v-model="consulta.consulta.vrBuscar"
-          >
-            <option value="">-- Seleccione --</option>
-            <option
-              v-for="especie in especies.especies"
-              :key="especie.nom_comunes"
-              :value="especie.cod_especie"
+        
+        
+          <LoadingData color='#fff' v-if="consulta.cargando" />
+          
+       
+        <div v-else>
+          <div class="formulario__categoria">
+            <label class="formulario__label" for="formulario__categoria"
+              >Seleccione una categoria</label
             >
-              {{ especie.nom_comunes }}
-            </option>
-          </select>
-        </div>
-
-        <!-- nombre científico -->
-        <div
-          v-if="consulta.consulta.categoria === 'Nombre científico'"
-          class="formulario__criterio"
-        >
-          <label class="formulario__label" for="cientifico"
-            >Nombre científico</label
-          >
-          <select
-            class="formulario__select"
-            id="cientifico"
-            v-model="consulta.consulta.vrBuscar"
-          >
-            <option value="">-- Seleccione --</option>
-            <option
-              v-for="especie in especies.especies"
-              :key="especie.nombre_cientifico"
+            <select
+              id="categoria"
+              class="formulario__select"
+              v-model="consulta.consulta.categoria"
+              @change="consulta.consulta.vrBuscar = ''"
             >
-              {{ especie.nombre_cientifico }}
-            </option>
-          </select>
-        </div>
-        <!-- disabled -->
-        <div v-if="!consulta.consulta.categoria" class="formulario__criterio">
-          <label class="formulario__label" for="categoria_inicial"
-            >Valor a buscar</label
-          >
+              <option value="">-- Seleccione --</option>
+              <option>Familia</option>
+              <option>Nombre Común</option>
+              <option>Nombre científico</option>
+            </select>
+          </div>
 
-          <select class="formulario__select" disabled id="categoria_inicial">
-            <option value="">-- Seleccione --</option>
-          </select>
-        </div>
-        <div class="fomulario__botones">
-          <input
-            class="formulario__boton"
-            type="submit"
-            value="Buscar"
-            @click="validarcampos()"
-          />
+          <!-- Familia -->
+          <div
+            v-if="consulta.consulta.categoria === 'Familia'"
+            class="formulario__criterio"
+          >
+            <label class="formulario__label" for="familia">Familia</label>
+            <select
+              class="formulario__select"
+              id="familia"
+              v-model="consulta.consulta.vrBuscar"
+            >
+              <option value="">-- Seleccione --</option>
+              <option
+                v-for="familia in familias.familias"
+                :key="familia.familia"
+              >
+                {{ familia.familia }}
+              </option>
+            </select>
+          </div>
+          <!-- Especie -->
+
+          <div
+            v-if="consulta.consulta.categoria === 'Nombre Común'"
+            class="formulario__criterio"
+          >
+            <label class="formulario__label" for="especie">Nombre común</label>
+            <select
+              class="formulario__select"
+              id="especie"
+              v-model="consulta.consulta.vrBuscar"
+            >
+              <option value="">-- Seleccione --</option>
+              <option
+                v-for="especie in especies.especies"
+                :key="especie.nom_comunes"
+                :value="especie.cod_especie"
+              >
+                {{ especie.nom_comunes }}
+              </option>
+            </select>
+          </div>
+
+          <!-- nombre científico -->
+          <div
+            v-if="consulta.consulta.categoria === 'Nombre científico'"
+            class="formulario__criterio"
+          >
+            <label class="formulario__label" for="cientifico"
+              >Nombre científico</label
+            >
+            <select
+              class="formulario__select"
+              id="cientifico"
+              v-model="consulta.consulta.vrBuscar"
+            >
+              <option value="">-- Seleccione --</option>
+              <option
+                v-for="especie in especies.especies"
+                :key="especie.nombre_cientifico"
+              >
+                {{ especie.nombre_cientifico }}
+              </option>
+            </select>
+          </div>
+          <!-- disabled -->
+          <div v-if="!consulta.consulta.categoria" class="formulario__criterio">
+            <label class="formulario__label" for="categoria_inicial"
+              >Valor a buscar</label
+            >
+
+            <select class="formulario__select" disabled id="categoria_inicial">
+              <option value="">-- Seleccione --</option>
+            </select>
+          </div>
+          <div class="fomulario__botones">
+            <input
+              class="formulario__boton"
+              type="submit"
+              value="Buscar"
+              @click="validarcampos()"
+            />
+          </div>
         </div>
       </form>
     </div>
@@ -285,6 +295,9 @@ const mostrarNavMovil = () => {
 </template>
 
 <style scoped>
+.texto {
+  color: var(--blanco) !important;
+}
 /* header */
 .pagina__inicio {
   color: var(--blanco);
@@ -352,7 +365,7 @@ const mostrarNavMovil = () => {
   .navegacion {
     margin: 0;
     background: #2f3640;
-    height:2rem;
+    height: 2rem;
     position: absolute;
     top: 0;
     left: 0;
@@ -443,7 +456,6 @@ const mostrarNavMovil = () => {
   border-radius: 10px;
 }
 
-
 @media (min-width: 993px) and (max-width: 1700px) {
   .formulario {
     margin: 15rem 0;
@@ -467,15 +479,14 @@ const mostrarNavMovil = () => {
   }
 }
 
-
 .formulario__label {
   display: block;
   font-weight: 700;
   font-size: 1rem;
 }
-@media (max-width: 1820px){
-  .formulario__label{
-    font-size: .7rem;
+@media (max-width: 1820px) {
+  .formulario__label {
+    font-size: 0.7rem;
   }
 }
 .formulario__label:last-of-type {
@@ -492,9 +503,9 @@ const mostrarNavMovil = () => {
   margin: 0.1rem auto;
 }
 
-@media (max-width: 1820px){
-  .formulario__select{
-    font-size: .7rem;
+@media (max-width: 1820px) {
+  .formulario__select {
+    font-size: 0.7rem;
   }
 }
 
@@ -515,12 +526,12 @@ const mostrarNavMovil = () => {
   }
 }
 
-.fomulario__botones{
+.fomulario__botones {
   width: 100%;
 }
 .formulario__boton {
   background-color: var(--primary);
-  padding: .3rem 0;
+  padding: 0.3rem 0;
   color: var(--blanco);
   font-weight: 700;
   border-radius: 5px;
@@ -579,4 +590,6 @@ const mostrarNavMovil = () => {
 .menu__movil:hover {
   color: var(--primary-hover);
 }
+
+
 </style>

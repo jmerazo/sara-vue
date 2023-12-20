@@ -1,12 +1,12 @@
 import { ref, reactive, computed, watch } from "vue";
 import { defineStore } from "pinia";
 import { useRouter } from "vue-router";
-import { useModalStore } from "@/stores/modal";
-
+import {ordenarPorFechas} from '@/helpers'
 import APIService from "@/services/APIService";
 
 export const useSpecieMonitoriong = defineStore("especieMonitoreo", () => {
-  const modal = useModalStore();
+
+  const cargando = ref(false);
   const router = useRouter();
   //monitoreos especie
   const monitoreosEspecie = ref({});
@@ -19,15 +19,17 @@ export const useSpecieMonitoriong = defineStore("especieMonitoreo", () => {
   const currentPage = ref(1); // Página actual
   const itemsPerPage = ref(12); // Elementos por página
 
-  const cargando = ref(false);
+  
 
   //consultar monitoreos de una especie
   async function verMonitoreosEspecie(cod_especie, nombre_especie) {
     cargando.value = true;
     nombreEspecie.value = nombre_especie;
     const { data } = await APIService.lookMonitoringSpecie(cod_especie);
-    monitoreosEspecie.value = data.reverse();
-    monitoreosEspecieOriginal.value = data.reverse();
+    monitoreosEspecie.value = data
+    monitoreosEspecieOriginal.value = data
+    ordenarPorFechas(monitoreosEspecie.value,'fecha_monitoreo')
+    ordenarPorFechas(monitoreosEspecieOriginal.value,'fecha_monitoreo')
     router.push("/monitoring-species");
     cargando.value = false;
   }
@@ -93,6 +95,7 @@ export const useSpecieMonitoriong = defineStore("especieMonitoreo", () => {
     monitoreosEspecie.value = monitoreosEspecieOriginal.value;
   }
   return {
+    cargando,
     currentPage,
     itemsPerPage,
     totalPages,
