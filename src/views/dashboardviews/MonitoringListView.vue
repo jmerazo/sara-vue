@@ -1,11 +1,20 @@
 <script setup>
 import { computed} from "vue";
+import { onBeforeRouteLeave } from "vue-router";
+
 import { useGeneralMonitoring } from "@/stores/dashboard/reports/generalMonitoring";
 import { descargarExcel, descargarPdf, obtenerFecha } from "@/helpers";
 
 //componentes
 import LoadingData from "@/components/LoadingData.vue";
 const report = useGeneralMonitoring();
+
+
+//limpiar filtros antes de cambiar de vista
+onBeforeRouteLeave((to, from, next) => {
+  report.quitarFiltroBuscado();
+  next();
+});
 
 //botones paginador
 const displayedPageRange = computed(() => {
@@ -34,7 +43,7 @@ function toggleDetalles(contenedor) {
 
 <template>
   <div class="contenedor">
-    <h1 class="reporte__heading">Reporte general de monitoreos realizados</h1>
+    <h1 class="reporte__heading">Reporte general de monitoreos</h1>
     <div class="contenido__header">
       <div class="buscador">
         <div class="buscador__contenido"></div>
@@ -46,7 +55,7 @@ function toggleDetalles(contenedor) {
           placeholder="Escríbe un término de búsqueda"
         />
       </div>
-      <div class="botones__descarga" v-if="displayedPageRange.length > 1">
+      <div class="botones__descarga" v-if="displayedPageRange.length >= 1">
         <a
           @click="
             descargarExcel(
@@ -291,7 +300,7 @@ function toggleDetalles(contenedor) {
             <h4 class="datos__titulo">Crecimiento</h4>
            
             <p class="datos__item">
-              Medida Peso Frutos:
+              Medida-Peso Frutos:
               <span
                 class="dato"
                 :class="{ sinInfo: !monitoreo.medida_peso_frutos}"
@@ -303,7 +312,7 @@ function toggleDetalles(contenedor) {
               >
             </p>
             <p class="datos__item">
-              Medida Peso semillas:
+              Medida-Peso semillas:
               <span
                 class="dato"
                 :class="{ sinInfo: !monitoreo.medida_peso_sem}"

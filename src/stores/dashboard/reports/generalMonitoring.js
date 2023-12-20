@@ -88,15 +88,23 @@ export const useGeneralMonitoring = defineStore("generalMonitoring", () => {
       currentPage.value = page;
     }
   }
+
+  //quitar los filtros del motor de busqueda
+  function quitarFiltroBuscado() {
+    if (monitoringDataOriginal.value) {
+      monitoringData.value = monitoringDataOriginal.value;
+    }
+  }
   return {
     cargando,
     currentPage,
     itemsPerPage,
     totalPages,
+    displayedData,
     datosImport,
     monitoringData,
-    displayedData,
     buscarTermino,
-    changePage
+    changePage,
+    quitarFiltroBuscado
   };
 });
