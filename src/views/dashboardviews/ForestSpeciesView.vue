@@ -207,28 +207,28 @@ function truncateTextWords(text, limit) {
           <td>
             <div v-if="!especie.showFullText" class="text-preview">{{ truncateText(especie.otros_nombres, 10) }}</div>
             <div v-else>{{ especie.otros_nombres }}</div>
-            <button class="btn__showMoreText" v-if="especie.otros_nombres.length > 50" @click="toggleText(especie)">
+            <button class="btn__showMoreText" v-if="especie.otros_nombres.length > 10" @click="toggleText(especie)">
               {{ especie.showFullText ? 'Ver menos...' : 'Ver más...' }}
             </button>
           </td>
           <td>
             <div v-if="!especie.showFullTextDistribucion" class="text-preview">{{ truncateText(especie.distribucion, 15) }}</div>
             <div v-else>{{ especie.distribucion }}</div>
-            <button class="btn__showMoreText" v-if="especie.distribucion.length > 50" @click="toggleTextDistribucion(especie)">
+            <button class="btn__showMoreText" v-if="especie.distribucion.length > 15" @click="toggleTextDistribucion(especie)">
               {{ especie.showFullTextDistribucion ? 'Ver menos...' : 'Ver más...' }}
             </button>
           </td>
           <td>
             <div v-if="!especie.showFullTextHojas" class="text-preview">{{ truncateText(especie.hojas, 15) }}</div>
             <div v-else>{{ especie.hojas }}</div>
-            <button class="btn__showMoreText" v-if="especie.hojas.length > 100" @click="toggleTextHojas(especie)">
+            <button class="btn__showMoreText" v-if="especie.hojas.length > 15" @click="toggleTextHojas(especie)">
               {{ especie.showFullTextHojas ? 'Ver menos...' : 'Ver más...' }}
             </button>
           </td>
           <td>
             <div v-if="!especie.showFullTextFlor" class="text-preview">{{ truncateText(especie.flor, 15) }}</div>
             <div v-else>{{ especie.flor }}</div>
-            <button class="btn__showMoreText" v-if="especie.flor.length > 100" @click="toggleTextFlor(especie)">
+            <button class="btn__showMoreText" v-if="especie.flor.length > 15" @click="toggleTextFlor(especie)">
               {{ especie.showFullTextFlor ? 'Ver menos...' : 'Ver más...' }}
             </button>
           </td>
