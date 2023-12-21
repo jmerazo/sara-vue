@@ -1,11 +1,16 @@
 <script setup>
-import { onMounted, computed } from "vue";
+import { computed} from "vue";
+import { onBeforeRouteLeave } from "vue-router";
 import { useSamplesMade } from "@/stores/dashboard/reports/samplesMade";
+import { descargarExcel, descargarPdf, obtenerFecha } from "@/helpers";
+//componentes
+import LoadingData from "@/components/LoadingData.vue";
 
 const samples = useSamplesMade();
-
-onMounted(async () => {
-  await samples.fetchSamplesData();
+//limpiar filtros antes de cambiar de vista
+onBeforeRouteLeave((to, from, next) => {
+  samples.quitarFiltroBuscado();
+  next();
 });
 
 //botones paginador
@@ -35,29 +40,49 @@ function toggleDetalles(contenedor) {
 
 <template>
   <div class="contenedor">
-    <h1 class="reporte__heading">Reporte de muestras realizadas</h1>
+    <h1 class="reporte__heading">Reporte general de muestras </h1>
     <div class="contenido__header">
       <div class="buscador">
         <div class="buscador__contenido"></div>
         <label class="buscador__label">Buscar: </label>
         <input
+          @input="samples.buscarTermino($event.target.value)"
           class="buscador__input"
           type="text"
           placeholder="Escríbe un término de búsqueda"
         />
       </div>
-      <div class="botones__descarga">
-        <a class="boton" href="#"
+      <div class="botones__descarga" v-if="displayedPageRange.length >= 1">
+        <a
+          @click="
+            descargarExcel(
+              samples.datosImport,
+              `Reporte de muestras realizadas - ${obtenerFecha()}`
+            )
+          "
+          class="boton"
+          href="#"
           ><font-awesome-icon
             class="boton__excel"
             :icon="['fas', 'file-excel']"
         /></a>
-        <a class="boton" href="#"
+        <a
+          @click="
+            descargarPdf(
+              samples.datosImport,
+              `Reporte de muestras realizadas - ${obtenerFecha()}`,
+              6,
+              7
+            )
+          "
+          class="boton"
+          href="#"
           ><font-awesome-icon class="boton__pdf" :icon="['fas', 'file-pdf']"
         /></a>
       </div>
     </div>
     <hr />
+    <LoadingData v-if="samples.cargando" />
     <!-- contenido principal -->
     <main class="muestra__grid">
       <div
@@ -106,7 +131,6 @@ function toggleDetalles(contenedor) {
                 muestra.numero_placa ? muestra.numero_placa : "Sin placa"
               }}</span>
             </p>
-            
           </div>
 
           <!-- datos de la muestra -->
@@ -146,13 +170,15 @@ function toggleDetalles(contenedor) {
                   muestra.usos ? muestra.usos : "Sin datos"
                 }}</span>
               </p>
-              
+
               <p class="detalle__item">
                 <span class="dato" :class="{ sinInfo: !muestra.descripcion }">{{
                   muestra.descripcion ? muestra.descripcion : "Sin datos"
                 }}</span>
               </p>
-              <p @click="toggleDetalles(index + 'a')" class="recoger"><font-awesome-icon :icon="['fas', 'arrow-up-from-bracket']" /></p>
+              <p @click="toggleDetalles(index + 'a')" class="recoger">
+                <font-awesome-icon :icon="['fas', 'arrow-up-from-bracket']" />
+              </p>
             </div>
           </div>
           <!-- datos colectores -->
@@ -176,7 +202,9 @@ function toggleDetalles(contenedor) {
                 Colectores asociados:
                 <span class="dato">{{ muestra.nombres_colectores }}</span>
               </p>
-              <p @click="toggleDetalles(index + 'b')" class="recoger"><font-awesome-icon :icon="['fas', 'arrow-up-from-bracket']" /></p>
+              <p @click="toggleDetalles(index + 'b')" class="recoger">
+                <font-awesome-icon :icon="['fas', 'arrow-up-from-bracket']" />
+              </p>
             </div>
           </div>
           <!-- fin colectores -->
@@ -213,16 +241,26 @@ function toggleDetalles(contenedor) {
       </div>
     </section>
     <!--fin paginador -->
+    <!-- texto validacion buscador -->
+    <section class="validacion__contenido">
+      <h1
+        v-if="samples.samplesData.length == 0 && !samples.cargando"
+        class="validacion__heading"
+      >
+        No hay resultados de búsqueda
+      </h1>
+    </section>
+    <!--fin texto validacion buscador -->
   </div>
 </template>
 
 <style scoped>
-.recoger{
+.recoger {
   margin: 0;
   text-align: center;
   font-size: 1rem;
 }
-.recoger:hover{
+.recoger:hover {
   cursor: pointer;
   color: var(--primary);
 }
@@ -339,7 +377,7 @@ function toggleDetalles(contenedor) {
 .especie__info {
   padding: 0;
   margin: 0.1rem 0;
-  font-size: 0.75rem;
+  font-size: 0.89rem;
 }
 .nombre__comun {
   font-size: 1rem;
@@ -420,5 +458,4 @@ function toggleDetalles(contenedor) {
 .informacion__muestra.active .datos {
   display: block;
 }
-
 </style>

@@ -4,12 +4,17 @@ import { onBeforeRouteLeave } from "vue-router";
 import { useEspeciesData } from "@/stores/dashboard/reports/speciesData";
 import { descargarExcel, descargarPdf, obtenerFecha } from "@/helpers";
 
+//componentes
+import LoadingData from "@/components/LoadingData.vue";
+
 const especies = useEspeciesData();
+
 //limpiar filtros antes de cambiar de vista
 onBeforeRouteLeave((to, from, next) => {
   especies.quitarFiltroEspecie();
   next();
 });
+
 //botones paginador
 const displayedPageRange = computed(() => {
   const currentPage = especies.currentPage;
@@ -38,7 +43,7 @@ const displayedPageRange = computed(() => {
           @input="especies.buscarTermino($event.target.value)"
         />
       </div>
-      <div class="botones__descarga">
+      <div class="botones__descarga" v-if="displayedPageRange.length > 1">
         <a
           @click="descargarExcel(especies.datosImport, 'Datos generales')"
           class="boton"
@@ -58,6 +63,7 @@ const displayedPageRange = computed(() => {
       </div>
     </div>
     <hr />
+    <LoadingData v-if="especies.cargando"/>
     <!-- aqui el for para recorer la data del store -->
     <main class="reporte__grid">
       <div
@@ -135,7 +141,7 @@ const displayedPageRange = computed(() => {
     <!--fin paginador -->
     <!-- texto validacion buscador -->
     <section class="validacion__contenido">
-      <h1 v-if="especies.especiesData.length == 0" class="validacion__heading">
+      <h1 v-if="especies.especiesData.length == 0 && !especies.cargando" class="validacion__heading">
         No hay resultados de búsqueda
       </h1>
     </section>

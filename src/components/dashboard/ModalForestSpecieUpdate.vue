@@ -108,203 +108,163 @@ watch(() => speciesStore.specieSelected, () => {
 </script>
 
 <template>
-  <TransitionRoot as="template" :show="modal.modalForestSpecieUpdate">
-    <Dialog
-      as="div"
-      class="relative z-10"
-      @close="modal.handleClickModalUserUpdate()"
-    >
-      <TransitionChild
-        as="template"
-        enter="ease-out duration-300"
-        enter-from="opacity-0"
-        enter-to="opacity-100"
-        leave="ease-in duration-200"
-        leave-from="opacity-100"
-        leave-to="opacity-0"
-      >
-        <div
-          class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"
-        />
-      </TransitionChild>
-      <div class="fixed inset-0 z-10 overflow-y-auto">
-        <div
-          class="flex min-h-full items-end justify-center p-2 text-center sm:items-center sm:p-0"
-        >
-          <TransitionChild
-            as="template"
-            enter="ease-out duration-300"
-            enter-from="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-            enter-to="opacity-100 translate-y-0 sm:scale-100"
-            leave="ease-in duration-200"
-            leave-from="opacity-100 translate-y-0 sm:scale-100"
-            leave-to="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-          >
-            <DialogPanel
-              class="relative transform overflow-hidden rounded-lg bg-white px-2 pt-2 pb-2 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-3xl sm:p-6"
+  <div class="modal" v-if="modal.modalForestSpecieUpdate">
+    <div class="modal__contenido">
+      <div class="modal__encabezado">
+        <h2 class="modal__titulo">
+          Especie: <span>{{ speciesStore.especies[0].nom_comunes }}</span>
+          <hr />
+          <p class="modal__subtitulo">Datos del candidato</p>
+        </h2>
+      </div>
+      <!-- <Dialog
+        as="div"
+        class="relative z-10"
+        @close="modal.handleClickModalUserUpdate()"
+      > -->
+      <div class="modal__flex">
+        <div class="card">
+          <p class="card__info">
+            Nombre común:
+            <span class="card__dato">
+              {{ speciesStore.especies[0].nom_comunes }}
+            </span>
+            Nombre científico:
+            <span class="card__dato">
+              {{ speciesStore.especies[0].nombre_cientifico }}
+            </span>           
+          </p>
+
+          <p class="card__info">
+            Código especie:
+            <span class="card__dato">
+              {{ speciesStore.especies[0].cod_especie }}
+            </span>
+          </p>            
+          <hr />
+
+          <form @submit.prevent="forestSpecieUpdate">
+            <DialogTitle as="h3" class="text-gray-900 text-lg my-5 img__specie__dg">
+              <img class="img__specie__modal"  v-if="formData.img_general" :src="getFullImageUrl(formData.img_general)" >
+            </DialogTitle>
+            <DialogTitle as="h3" class="text-gray-900 text-lg my-5">
+              <font-awesome-icon :icon="['fas', 'list-ol']" /> <span class="font-bold"> Código especie: </span>
+              <input type="number" class="w-80" v-model="formData.cod_especie" required/>
+            </DialogTitle>
+            <DialogTitle as="h3" class="text-gray-900 text-lg my-5">
+              <font-awesome-icon :icon="['fas', 'signature']" /> <span class="font-bold"> Nombre común: </span>
+              <input type="text" class="w-80" v-model="formData.nom_comunes"/>
+            </DialogTitle>
+            <DialogTitle as="h3" class="text-gray-900 text-lg my-5">
+              <font-awesome-icon :icon="['fas', 'signature']" /> <span class="font-bold"> Nombre científico: </span>
+              <input type="text" class="w-80" v-model="formData.nombre_cientifico"/>
+            </DialogTitle>
+            <DialogTitle as="h3" class="text-gray-900 text-lg my-5">
+              <font-awesome-icon :icon="['fas', 'signature']" /> <span class="font-bold"> Otros nombres comunes: </span>
+              <input type="text" class="w-80" v-model="formData.otros_nombres"/>
+            </DialogTitle>
+            <DialogTitle as="h3" class="text-gray-900 text-lg my-5">
+              <font-awesome-icon :icon="['fab', 'hashnode']" /> <span class="font-bold"> Sinonimos: </span>
+              <input type="text" class="w-80" v-model="formData.sinonimos"/>
+            </DialogTitle>
+            <DialogTitle as="h3" class="text-gray-900 text-lg my-5">
+              <font-awesome-icon :icon="['fab', 'pagelines']" /> <span class="font-bold"> Familia: </span>
+              <input type="text" class="w-80" v-model="formData.familia"/>
+            </DialogTitle>
+            <DialogTitle as="h3" class="text-gray-900 text-lg my-5">
+              <font-awesome-icon :icon="['fas', 'earth-americas']" /> <span class="font-bold"> Distribución: </span>
+              <input type="text" class="w-80" v-model="formData.distribucion"/>
+            </DialogTitle>
+            <DialogTitle as="h3" class="text-gray-900 text-lg my-5">
+              <font-awesome-icon :icon="['fas', 'teeth']" /> <span class="font-bold"> Habito: </span>
+              <input type="text" class="w-80" v-model="formData.habito"/>
+            </DialogTitle>
+            <DialogTitle as="h3" class="text-gray-900 text-lg my-5">
+              <font-awesome-icon :icon="['fab', 'envira']" /> <span class="font-bold"> Follaje: </span>
+              <input type="text" class="w-80" v-model="formData.follaje"/>
+            </DialogTitle>
+            <DialogTitle as="h3" class="text-gray-900 text-lg my-5">
+              <font-awesome-icon :icon="['fas', 'tree']" /> <span class="font-bold"> Forma copa: </span>
+              <input type="text" class="w-80" v-model="formData.forma_copa"/>
+            </DialogTitle>
+            <DialogTitle as="h3" class="text-gray-900 text-lg my-5">
+              <font-awesome-icon :icon="['fas', 'leaf']" /> <span class="font-bold"> Tipo de hoja: </span>
+              <input type="text" class="w-80" v-model="formData.tipo_hoja"/>
+            </DialogTitle>
+            <DialogTitle as="h3" class="text-gray-900 text-lg my-5">
+              <font-awesome-icon :icon="['fas', 'seedling']" /> <span class="font-bold"> Disposición de las hojas: </span>
+              <input type="text" class="w-80" v-model="formData.disposicion_hojas"/>
+            </DialogTitle>
+            <DialogTitle as="h3" class="text-gray-900 text-lg my-5">
+              <font-awesome-icon :icon="['fab', 'envira']" /> <span class="font-bold"> Información de las hojas: </span>
+              <textarea class="w-full auto-resize-textarea" v-model="formData.hojas"></textarea>
+            </DialogTitle>
+            <DialogTitle as="h3" class="text-gray-900 text-lg my-5 img__specie__dg">
+              <img class="img__specie__modal" v-if="formData.img_leafs" :src="getFullImageUrl(formData.img_leafs)" >
+            </DialogTitle>
+            <DialogTitle as="h3" class="text-gray-900 text-lg my-5">
+              <font-awesome-icon :icon="['fas', 'spa']" /> <span class="font-bold"> Información de la flor: </span>
+              <textarea type="text" class="w-full auto-resize-textarea" v-model="formData.flor"></textarea>
+            </DialogTitle>
+            <DialogTitle as="h3" class="text-gray-900 text-lg my-5 img__specie__dg">
+              <img class="img__specie__modal" v-if="formData.img_flowers" :src="getFullImageUrl(formData.img_flowers)" >
+            </DialogTitle>
+            <DialogTitle as="h3" class="text-gray-900 text-lg my-5">
+              <font-awesome-icon :icon="['fab', 'apple']" /> <span class="font-bold"> Información de los frutos: </span>
+              <textarea type="text" class="w-full auto-resize-textarea" v-model="formData.frutos"></textarea>
+            </DialogTitle>
+            <DialogTitle as="h3" class="text-gray-900 text-lg my-5 img__specie__dg">
+              <img class="img__specie__modal" v-if="formData.img_fruits" :src="getFullImageUrl(formData.img_fruits)" >
+            </DialogTitle>
+            <DialogTitle as="h3" class="text-gray-900 text-lg my-5">
+              <font-awesome-icon :icon="['fas', 'seedling']" /> <span class="font-bold"> Información de las semillas: </span>
+              <textarea type="text" class="w-full auto-resize-textarea" v-model="formData.semillas"></textarea>
+            </DialogTitle>
+            <DialogTitle as="h3" class="text-gray-900 text-lg my-5 img__specie__dg">
+              <img class="img__specie__modal" v-if="formData.img_seeds" :src="getFullImageUrl(formData.img_seeds)" >
+            </DialogTitle>
+            <DialogTitle as="h3" class="text-gray-900 text-lg my-5">
+              <font-awesome-icon :icon="['fas', 'ticket-simple']" /> <span class="font-bold"> Información del tallo: </span>
+              <textarea type="text" class="w-full auto-resize-textarea" v-model="formData.tallo"></textarea>
+            </DialogTitle>
+            <DialogTitle as="h3" class="text-gray-900 text-lg my-5 img__specie__dg">
+              <img class="img__specie__modal" v-if="formData.img_stems" :src="getFullImageUrl(formData.img_stems)" >
+            </DialogTitle>
+            <DialogTitle as="h3" class="text-gray-900 text-lg my-5">
+              <font-awesome-icon :icon="['fas', 'mound']" /> <span class="font-bold"> Información de la raíz: </span>
+              <textarea type="text" class="w-full auto-resize-textarea" v-model="formData.raiz"></textarea>
+            </DialogTitle>
+            <DialogTitle as="h3" class="text-gray-900 text-lg my-5 img__specie__dg">
+              <img class="img__specie__modal" v-if="formData.img_landscape_one" :src="getFullImageUrl(formData.img_landscape_one)" >
+            </DialogTitle>
+            <DialogTitle as="h3" class="text-gray-900 text-lg my-5 img__specie__dg">
+              <img class="img__specie__modal" v-if="formData.img_landscape_two" :src="getFullImageUrl(formData.img_landscape_two)" >
+            </DialogTitle>
+            <DialogTitle as="h3" class="text-gray-900 text-lg my-5 img__specie__dg">
+              <img class="img__specie__modal" v-if="formData.img_landscape_three" :src="getFullImageUrl(formData.img_landscape_three)" >
+            </DialogTitle>
+            <button
+              type="submit"
+              class="shadow p-1 w-full rounded-lg bg-green-600 hover:bg-green-700 text-white uppercase font-bold"
             >
-              <div>
-                <div>
-                  <!-- llenar la info dinámica -->
-
-                  <div class="flex flex-wrap justify-center gap-6 mt-3">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke-width="1.5"
-                      stroke="currentColor"
-                      class="w-16 h-16"
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"
-                      />
-                    </svg>
-                    
-                  </div>
-
-                  <DialogTitle
-                    as="h4"
-                    class="text-gray-900 text-lg text-center font-extrabold"
-                  >
-                    {{ speciesStore.especies[0].nom_comunes }}
-                    {{ speciesStore.especies[0].nombre_cientifico }}
-                  </DialogTitle>
-                  <DialogTitle
-                    as="h4"
-                    class="text-gray-900 text-lg text-center font-extrabold mb-5"
-                  >
-                    {{ speciesStore.especies[0].cod_especie }}
-                  </DialogTitle>
-                  <hr />
-                  <form @submit.prevent="forestSpecieUpdate">
-                  <DialogTitle as="h3" class="text-gray-900 text-lg my-5 img__specie__dg">
-                    <img class="img__specie__modal"  v-if="formData.img_general" :src="getFullImageUrl(formData.img_general)" >
-                  </DialogTitle>
-                  <DialogTitle as="h3" class="text-gray-900 text-lg my-5">
-                    <font-awesome-icon :icon="['fas', 'list-ol']" /> <span class="font-bold"> Código especie: </span>
-                    <input type="number" class="w-80" v-model="formData.cod_especie" required/>
-                  </DialogTitle>
-                  <DialogTitle as="h3" class="text-gray-900 text-lg my-5">
-                    <font-awesome-icon :icon="['fas', 'signature']" /> <span class="font-bold"> Nombre común: </span>
-                    <input type="text" class="w-80" v-model="formData.nom_comunes"/>
-                  </DialogTitle>
-                  <DialogTitle as="h3" class="text-gray-900 text-lg my-5">
-                    <font-awesome-icon :icon="['fas', 'signature']" /> <span class="font-bold"> Nombre científico: </span>
-                    <input type="text" class="w-80" v-model="formData.nombre_cientifico"/>
-                  </DialogTitle>
-                  <DialogTitle as="h3" class="text-gray-900 text-lg my-5">
-                    <font-awesome-icon :icon="['fas', 'signature']" /> <span class="font-bold"> Otros nombres comunes: </span>
-                    <input type="text" class="w-80" v-model="formData.otros_nombres"/>
-                  </DialogTitle>
-                  <DialogTitle as="h3" class="text-gray-900 text-lg my-5">
-                    <font-awesome-icon :icon="['fab', 'hashnode']" /> <span class="font-bold"> Sinonimos: </span>
-                    <input type="text" class="w-80" v-model="formData.sinonimos"/>
-                  </DialogTitle>
-                  <DialogTitle as="h3" class="text-gray-900 text-lg my-5">
-                    <font-awesome-icon :icon="['fab', 'pagelines']" /> <span class="font-bold"> Familia: </span>
-                    <input type="text" class="w-80" v-model="formData.familia"/>
-                  </DialogTitle>
-                  <DialogTitle as="h3" class="text-gray-900 text-lg my-5">
-                    <font-awesome-icon :icon="['fas', 'earth-americas']" /> <span class="font-bold"> Distribución: </span>
-                    <input type="text" class="w-80" v-model="formData.distribucion"/>
-                  </DialogTitle>
-                  <DialogTitle as="h3" class="text-gray-900 text-lg my-5">
-                    <font-awesome-icon :icon="['fas', 'teeth']" /> <span class="font-bold"> Habito: </span>
-                    <input type="text" class="w-80" v-model="formData.habito"/>
-                  </DialogTitle>
-                  <DialogTitle as="h3" class="text-gray-900 text-lg my-5">
-                    <font-awesome-icon :icon="['fab', 'envira']" /> <span class="font-bold"> Follaje: </span>
-                    <input type="text" class="w-80" v-model="formData.follaje"/>
-                  </DialogTitle>
-                  <DialogTitle as="h3" class="text-gray-900 text-lg my-5">
-                    <font-awesome-icon :icon="['fas', 'tree']" /> <span class="font-bold"> Forma copa: </span>
-                    <input type="text" class="w-80" v-model="formData.forma_copa"/>
-                  </DialogTitle>
-                  <DialogTitle as="h3" class="text-gray-900 text-lg my-5">
-                    <font-awesome-icon :icon="['fas', 'leaf']" /> <span class="font-bold"> Tipo de hoja: </span>
-                    <input type="text" class="w-80" v-model="formData.tipo_hoja"/>
-                  </DialogTitle>
-                  <DialogTitle as="h3" class="text-gray-900 text-lg my-5">
-                    <font-awesome-icon :icon="['fas', 'seedling']" /> <span class="font-bold"> Disposición de las hojas: </span>
-                    <input type="text" class="w-80" v-model="formData.disposicion_hojas"/>
-                  </DialogTitle>
-                  <DialogTitle as="h3" class="text-gray-900 text-lg my-5">
-                    <font-awesome-icon :icon="['fab', 'envira']" /> <span class="font-bold"> Información de las hojas: </span>
-                    <textarea class="w-full auto-resize-textarea" v-model="formData.hojas"></textarea>
-                  </DialogTitle>
-                  <DialogTitle as="h3" class="text-gray-900 text-lg my-5 img__specie__dg">
-                    <img class="img__specie__modal" v-if="formData.img_leafs" :src="getFullImageUrl(formData.img_leafs)" >
-                  </DialogTitle>
-                  <DialogTitle as="h3" class="text-gray-900 text-lg my-5">
-                    <font-awesome-icon :icon="['fas', 'spa']" /> <span class="font-bold"> Información de la flor: </span>
-                    <textarea type="text" class="w-full auto-resize-textarea" v-model="formData.flor"></textarea>
-                  </DialogTitle>
-                  <DialogTitle as="h3" class="text-gray-900 text-lg my-5 img__specie__dg">
-                    <img class="img__specie__modal" v-if="formData.img_flowers" :src="getFullImageUrl(formData.img_flowers)" >
-                  </DialogTitle>
-                  <DialogTitle as="h3" class="text-gray-900 text-lg my-5">
-                    <font-awesome-icon :icon="['fab', 'apple']" /> <span class="font-bold"> Información de los frutos: </span>
-                    <textarea type="text" class="w-full auto-resize-textarea" v-model="formData.frutos"></textarea>
-                  </DialogTitle>
-                  <DialogTitle as="h3" class="text-gray-900 text-lg my-5 img__specie__dg">
-                    <img class="img__specie__modal" v-if="formData.img_fruits" :src="getFullImageUrl(formData.img_fruits)" >
-                  </DialogTitle>
-                  <DialogTitle as="h3" class="text-gray-900 text-lg my-5">
-                    <font-awesome-icon :icon="['fas', 'seedling']" /> <span class="font-bold"> Información de las semillas: </span>
-                    <textarea type="text" class="w-full auto-resize-textarea" v-model="formData.semillas"></textarea>
-                  </DialogTitle>
-                  <DialogTitle as="h3" class="text-gray-900 text-lg my-5 img__specie__dg">
-                    <img class="img__specie__modal" v-if="formData.img_seeds" :src="getFullImageUrl(formData.img_seeds)" >
-                  </DialogTitle>
-                  <DialogTitle as="h3" class="text-gray-900 text-lg my-5">
-                    <font-awesome-icon :icon="['fas', 'ticket-simple']" /> <span class="font-bold"> Información del tallo: </span>
-                    <textarea type="text" class="w-full auto-resize-textarea" v-model="formData.tallo"></textarea>
-                  </DialogTitle>
-                  <DialogTitle as="h3" class="text-gray-900 text-lg my-5 img__specie__dg">
-                    <img class="img__specie__modal" v-if="formData.img_stems" :src="getFullImageUrl(formData.img_stems)" >
-                  </DialogTitle>
-                  <DialogTitle as="h3" class="text-gray-900 text-lg my-5">
-                    <font-awesome-icon :icon="['fas', 'mound']" /> <span class="font-bold"> Información de la raíz: </span>
-                    <textarea type="text" class="w-full auto-resize-textarea" v-model="formData.raiz"></textarea>
-                  </DialogTitle>
-                  <DialogTitle as="h3" class="text-gray-900 text-lg my-5 img__specie__dg">
-                    <img class="img__specie__modal" v-if="formData.img_landscape_one" :src="getFullImageUrl(formData.img_landscape_one)" >
-                  </DialogTitle>
-                  <DialogTitle as="h3" class="text-gray-900 text-lg my-5 img__specie__dg">
-                    <img class="img__specie__modal" v-if="formData.img_landscape_two" :src="getFullImageUrl(formData.img_landscape_two)" >
-                  </DialogTitle>
-                  <DialogTitle as="h3" class="text-gray-900 text-lg my-5 img__specie__dg">
-                    <img class="img__specie__modal" v-if="formData.img_landscape_three" :src="getFullImageUrl(formData.img_landscape_three)" >
-                  </DialogTitle>
-                  <button
-                    type="submit"
-                    class="shadow p-1 w-full rounded-lg bg-green-600 hover:bg-green-700 text-white uppercase font-bold"
-                  >
-                    Actualizar
-                  </button>
-                </form>
-                  <hr />
-              
-                </div>
-              </div>
-              <div class="mt-8 sm:mt-6 flex justify-between gap-4">
-                <button
-                  type="button"
-                  class="shadow p-1 w-full rounded-lg bg-gray-700 hover:bg-gray-800 text-white uppercase font-bold"
-                  @click="modal.handleClickModalForestSpecieUpdate()"
-                >
-                  Cerrar
-                </button>
-              </div>
-            </DialogPanel>
-          </TransitionChild>
+              Actualizar
+            </button>
+          </form>
+          <hr />
+      
         </div>
       </div>
-    </Dialog>
-  </TransitionRoot>
+      <div class="mt-8 sm:mt-6 flex justify-between gap-4">
+        <button
+          type="button"
+          class="shadow p-1 w-full rounded-lg bg-gray-700 hover:bg-gray-800 text-white uppercase font-bold"
+          @click="modal.handleClickModalForestSpecieUpdate()"
+        >
+          Cerrar
+        </button>
+      </div>
+    </div>
+  </div>
 </template>
 
 <style>

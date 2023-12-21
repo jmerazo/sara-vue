@@ -2,9 +2,12 @@ import { ref, computed, watch } from "vue";
 import { defineStore } from "pinia";
 import { useRouter } from "vue-router";
 import { useModalStore } from "@/stores/modal";
+import {ordenarPorFechas} from '@/helpers/'
 import APIService from "@/services/APIService";
 
 export const useCantidateStore = defineStore("candidate", () => {
+
+
   const modal = useModalStore();
   const router = useRouter();
   const nombreEspecie = ref("");
@@ -30,6 +33,8 @@ export const useCantidateStore = defineStore("candidate", () => {
     const { data } = await APIService.lookCandidateSpecie(nombre_comun);
     candidatosEspecie.value = data;
     candidatosEspecieOriginal.value = data;
+    ordenarPorFechas(candidatosEspecie.value,'fecha_evaluacion')
+    ordenarPorFechas(candidatosEspecieOriginal.value,'fecha_evaluacion')
     router.push("/candidates-species");
     cargando.value = false;
   }
@@ -58,11 +63,7 @@ export const useCantidateStore = defineStore("candidate", () => {
     const { data } = await APIService.lookMonitoringCandidate(id);
     monitoreosCandidato.value = data;
     //ordenar fechas reciente - antigua
-    monitoreosCandidato.value.sort((a, b) => {
-      const fechaA = new Date(a.fecha_monitoreo);
-      const fechaB = new Date(b.fecha_monitoreo);
-      return fechaB - fechaA;
-    });
+    ordenarPorFechas(monitoreosCandidato.value,'fecha_monitoreo')
     modal.handleClickModalCandidate();
     cargando.value = false;
   }
@@ -127,6 +128,7 @@ export const useCantidateStore = defineStore("candidate", () => {
   }
 
   return {
+    cargando,
     currentPage,
     itemsPerPage,
     totalPagesCandidates,
@@ -135,7 +137,6 @@ export const useCantidateStore = defineStore("candidate", () => {
     candidatosEspecie,
     infoCandidato,
     displayedCandidates,
-    cargando,
     datosImport,
     idCandidato,
     verCandidatosEspecie,

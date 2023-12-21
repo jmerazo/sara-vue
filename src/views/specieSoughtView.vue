@@ -477,6 +477,7 @@ scrollToTop();
   }
 }
 /* contenido especie (hojas, flores y frutos) */
+
 .especie__contenido {
   background-color: var(--gris-claro);
   margin: 1rem 0;

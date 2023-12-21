@@ -1,13 +1,13 @@
 import {ref, onMounted,computed} from 'vue'
 import {defineStore} from 'pinia'
 import {useModalStore} from '@/stores/modal'
-import {useConsultaStore} from '@/stores/consulta'
+
 import APIService from '@/services/APIService'
-import api from '@/api/axios';
+
 
 export const useEspeciesStore = defineStore('especies', () => {
     const modal = useModalStore();
-    const consulta = useConsultaStore()
+    const cargando = ref(false)
     const especies = ref([]);
     const especie = ref([]);
     const specieSelected = ref([])
@@ -22,7 +22,7 @@ export const useEspeciesStore = defineStore('especies', () => {
 
 
     onMounted(async () => {
-      consulta.cargando = true
+      cargando.value = true
       const { data } = await APIService.getSpecies();
       especies.value = data;
       especiesOriginales.value = data;
@@ -32,7 +32,7 @@ export const useEspeciesStore = defineStore('especies', () => {
         nombre_cientifico: especie.nombre_cientifico,
         cod_especie: especie.cod_especie,
       }));
-      consulta.cargando = false
+      cargando.value = false
     });
     
    
@@ -97,14 +97,11 @@ export const useEspeciesStore = defineStore('especies', () => {
     }
 
     function selectedForestSpecieUpdate(id) {
-      console.log('shortcut id: ', id)
       specieSelected.value =  especies.value.filter(especie => especie.ShortcutID === id)
-      console.log('data specie: ', specieSelected.value)
       modal.handleClickModalForestSpecieUpdate(specieSelected.value); 
     }
 
     const updateForestSpecie = async (sid, data) => {
-      console.log(sid, data)
       const specieIndex = especies.value.findIndex((specie) => specie.ShortcutID === sid);
       if (specieIndex !== -1) {
           Object.assign(especies.value[specieIndex], data);
@@ -121,7 +118,6 @@ export const useEspeciesStore = defineStore('especies', () => {
         if (response.status === 200) {
           // La respuesta del APIService fue satisfactoria
           especies.value.push(data); // Agrega el nuevo objeto al array
-          console.log('Especie agregada con éxito.');
         } else {
           console.error('Error al agregar la especie: ', response.statusText);
         }
@@ -131,6 +127,7 @@ export const useEspeciesStore = defineStore('especies', () => {
     };  
     
     return {
+      cargando,
       currentPage,
       itemsPerPage,
       totalPages,

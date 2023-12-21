@@ -1,5 +1,5 @@
 //import generales
-import {ref} from 'vue'
+import { ref } from "vue";
 
 //para funcion de getFullImageUrl
 import api from "@/api/axios";
@@ -10,7 +10,7 @@ import exportFromJSON from "export-from-json";
 //para funcion descargarPDF
 import pdfMake from "pdfmake/build/pdfmake";
 import * as pdfFonts from "pdfmake/build/vfs_fonts";
-pdfMake.vfs = pdfFonts.pdfMake.vfs;
+/* pdfMake.vfs = pdfFonts.pdfMake.vfs; */
 
 /*** funciones helpers ****/
 
@@ -33,15 +33,18 @@ export const descargarExcel = (datos, excelName) => {
 };
 
 //imprimir o descargar info en pdf
-export const descargarPdf = (datos, tituloTabla,columnas,inicio) => {
+export const descargarPdf = (datos, tituloTabla, columnas, inicio) => {
   const columnasMostrar = Math.min(columnas, Object.keys(datos[0]).length);
   const ordenado = ref(0);
-  
-  ordenado.value = inicio
+
+  ordenado.value = inicio;
 
   if (columnasMostrar > 0) {
     try {
-      const headers = Object.keys(datos[0]).slice(ordenado.value, columnasMostrar + ordenado.value);
+      const headers = Object.keys(datos[0]).slice(
+        ordenado.value,
+        columnasMostrar + ordenado.value
+      );
       //ojo esta varible no se puede cambiar la solicita la liberia
       const documentDefinition = {
         pageOrientation: "landscape", //para vertical seria: portrait
@@ -89,13 +92,34 @@ export const descargarPdf = (datos, tituloTabla,columnas,inicio) => {
   } else {
     console.error("No hay suficientes columnas en los datos para mostrar.");
   }
- 
-}
+};
 
 //formatear fecha actual
 export const obtenerFecha = () => {
-  const opcionesFormato = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+  const opcionesFormato = {
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  };
   const fechaActual = new Date();
-  const fechaFormateada = fechaActual.toLocaleDateString('es-ES', opcionesFormato);
+  const fechaFormateada = fechaActual.toLocaleDateString(
+    "es-ES",
+    opcionesFormato
+  );
   return fechaFormateada;
+};
+
+//ordena arrays por fecha mas reciente
+export const ordenarPorFechas = (dataArray, campoFecha) => {
+  
+  try {
+    return dataArray.sort((a, b) => {
+      const fechaA = new Date(a[campoFecha]);
+      const fechaB = new Date(b[campoFecha]);
+      return fechaB - fechaA;
+    });
+  } catch {
+    console.log("los parametros recibidos no son válidos");
+  }
 }
