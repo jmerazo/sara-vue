@@ -110,13 +110,13 @@ watch(() => speciesStore.specieSelected, () => {
 <template>
   <div class="modal" v-if="modal.modalForestSpecieUpdate">
     <div class="modal__contenido">
-      <div class="modal__encabezado">
+      <!-- <div class="modal__encabezado">
         <h2 class="modal__titulo">
           Especie: <span>{{ speciesStore.especies[0].nom_comunes }}</span>
           <hr />
           <p class="modal__subtitulo">Datos del candidato</p>
         </h2>
-      </div>
+      </div> -->
       <!-- <Dialog
         as="div"
         class="relative z-10"
@@ -128,7 +128,7 @@ watch(() => speciesStore.specieSelected, () => {
             Nombre común:
             <span class="card__dato">
               {{ speciesStore.especies[0].nom_comunes }}
-            </span>
+            </span><br>
             Nombre científico:
             <span class="card__dato">
               {{ speciesStore.especies[0].nombre_cientifico }}
@@ -144,120 +144,171 @@ watch(() => speciesStore.specieSelected, () => {
           <hr />
 
           <form @submit.prevent="forestSpecieUpdate">
-            <DialogTitle as="h3" class="text-gray-900 text-lg my-5 img__specie__dg">
-              <img class="img__specie__modal"  v-if="formData.img_general" :src="getFullImageUrl(formData.img_general)" >
-            </DialogTitle>
-            <DialogTitle as="h3" class="text-gray-900 text-lg my-5">
-              <font-awesome-icon :icon="['fas', 'list-ol']" /> <span class="font-bold"> Código especie: </span>
-              <input type="number" class="w-80" v-model="formData.cod_especie" required/>
-            </DialogTitle>
-            <DialogTitle as="h3" class="text-gray-900 text-lg my-5">
-              <font-awesome-icon :icon="['fas', 'signature']" /> <span class="font-bold"> Nombre común: </span>
-              <input type="text" class="w-80" v-model="formData.nom_comunes"/>
-            </DialogTitle>
-            <DialogTitle as="h3" class="text-gray-900 text-lg my-5">
-              <font-awesome-icon :icon="['fas', 'signature']" /> <span class="font-bold"> Nombre científico: </span>
-              <input type="text" class="w-80" v-model="formData.nombre_cientifico"/>
-            </DialogTitle>
-            <DialogTitle as="h3" class="text-gray-900 text-lg my-5">
-              <font-awesome-icon :icon="['fas', 'signature']" /> <span class="font-bold"> Otros nombres comunes: </span>
-              <input type="text" class="w-80" v-model="formData.otros_nombres"/>
-            </DialogTitle>
-            <DialogTitle as="h3" class="text-gray-900 text-lg my-5">
-              <font-awesome-icon :icon="['fab', 'hashnode']" /> <span class="font-bold"> Sinonimos: </span>
-              <input type="text" class="w-80" v-model="formData.sinonimos"/>
-            </DialogTitle>
-            <DialogTitle as="h3" class="text-gray-900 text-lg my-5">
-              <font-awesome-icon :icon="['fab', 'pagelines']" /> <span class="font-bold"> Familia: </span>
-              <input type="text" class="w-80" v-model="formData.familia"/>
-            </DialogTitle>
-            <DialogTitle as="h3" class="text-gray-900 text-lg my-5">
-              <font-awesome-icon :icon="['fas', 'earth-americas']" /> <span class="font-bold"> Distribución: </span>
-              <input type="text" class="w-80" v-model="formData.distribucion"/>
-            </DialogTitle>
-            <DialogTitle as="h3" class="text-gray-900 text-lg my-5">
-              <font-awesome-icon :icon="['fas', 'teeth']" /> <span class="font-bold"> Habito: </span>
-              <input type="text" class="w-80" v-model="formData.habito"/>
-            </DialogTitle>
-            <DialogTitle as="h3" class="text-gray-900 text-lg my-5">
-              <font-awesome-icon :icon="['fab', 'envira']" /> <span class="font-bold"> Follaje: </span>
-              <input type="text" class="w-80" v-model="formData.follaje"/>
-            </DialogTitle>
-            <DialogTitle as="h3" class="text-gray-900 text-lg my-5">
-              <font-awesome-icon :icon="['fas', 'tree']" /> <span class="font-bold"> Forma copa: </span>
-              <input type="text" class="w-80" v-model="formData.forma_copa"/>
-            </DialogTitle>
-            <DialogTitle as="h3" class="text-gray-900 text-lg my-5">
-              <font-awesome-icon :icon="['fas', 'leaf']" /> <span class="font-bold"> Tipo de hoja: </span>
-              <input type="text" class="w-80" v-model="formData.tipo_hoja"/>
-            </DialogTitle>
-            <DialogTitle as="h3" class="text-gray-900 text-lg my-5">
-              <font-awesome-icon :icon="['fas', 'seedling']" /> <span class="font-bold"> Disposición de las hojas: </span>
-              <input type="text" class="w-80" v-model="formData.disposicion_hojas"/>
-            </DialogTitle>
-            <DialogTitle as="h3" class="text-gray-900 text-lg my-5">
-              <font-awesome-icon :icon="['fab', 'envira']" /> <span class="font-bold"> Información de las hojas: </span>
-              <textarea class="w-full auto-resize-textarea" v-model="formData.hojas"></textarea>
-            </DialogTitle>
-            <DialogTitle as="h3" class="text-gray-900 text-lg my-5 img__specie__dg">
+            <div class="card__info_imgGeneral">
+              <img class="img__specie__modal"  v-if="formData.img_general" :src="getFullImageUrl(formData.img_general)">
+            </div>
+
+            <div class="columns">
+              <div class="column">
+                <p class="card__info">
+                  <font-awesome-icon :icon="['fas', 'list-ol']" /> 
+                  <span class="card__dato"> Código especie: </span>
+                  <input type="number" v-model="formData.cod_especie" required/>
+                </p>
+
+                <p class="card__info">
+                  <font-awesome-icon :icon="['fas', 'signature']" /> 
+                  <span class="card__dato"> Nombre común: </span>
+                  <input type="text" v-model="formData.nom_comunes"/>
+                </p>
+
+                <p class="card__info">
+                  <font-awesome-icon :icon="['fas', 'signature']" /> 
+                  <span class="card__dato"> Nombre científico: </span>
+                  <input type="text" v-model="formData.nombre_cientifico"/>
+                </p>
+
+                <p class="card__info">
+                  <font-awesome-icon :icon="['fas', 'signature']" /> 
+                  <span class="card__dato"> Otros nombres comunes: </span>
+                  <input type="text" v-model="formData.otros_nombres"/>
+                </p>
+
+                <p class="card__info">
+                  <font-awesome-icon :icon="['fab', 'hashnode']" /> 
+                  <span class="card__dato"> Sinonimos: </span>
+                  <input type="text" v-model="formData.sinonimos"/>
+                </p>
+
+                <p class="card__info">
+                  <font-awesome-icon :icon="['fab', 'pagelines']" /> 
+                  <span class="card__dato"> Familia: </span>
+                  <input type="text" v-model="formData.familia"/>
+                </p>
+              </div>
+
+              <div class="column">
+                <p class="card__info">
+                  <font-awesome-icon :icon="['fas', 'earth-americas']" /> 
+                  <span class="card__dato"> Distribución: </span>
+                  <input type="text" v-model="formData.distribucion"/>
+                </p>
+
+                <p class="card__info">
+                  <font-awesome-icon :icon="['fas', 'teeth']" /> 
+                  <span class="card__dato"> Habito: </span>
+                  <input type="text" v-model="formData.habito"/>
+                </p>
+
+                <p class="card__info">
+                  <font-awesome-icon :icon="['fab', 'envira']" /> 
+                  <span class="card__dato"> Follaje: </span>
+                  <input type="text" v-model="formData.follaje"/>
+                </p>
+
+                <p class="card__info">
+                  <font-awesome-icon :icon="['fas', 'tree']" /> 
+                  <span class="card__dato"> Forma copa: </span>
+                  <input type="text" v-model="formData.forma_copa"/>
+                </p>
+
+                <p class="card__info">
+                  <font-awesome-icon :icon="['fas', 'leaf']" /> 
+                  <span class="card__dato"> Tipo de hoja: </span>
+                  <input type="text" v-model="formData.tipo_hoja"/>
+                </p>
+
+                <p class="card__info">
+                  <font-awesome-icon :icon="['fas', 'seedling']" /> 
+                  <span class="card__dato"> Disposición de las hojas: </span>
+                  <input type="text" v-model="formData.disposicion_hojas"/>
+                </p>
+              </div>                
+            </div>
+
+            <p class="card__info">
+              <font-awesome-icon :icon="['fab', 'envira']" /> 
+              <span class="card__dato"> Información de las hojas: </span><br>
+              <textarea v-model="formData.hojas"></textarea>
+            </p>
+
+            <p class="card__info">
               <img class="img__specie__modal" v-if="formData.img_leafs" :src="getFullImageUrl(formData.img_leafs)" >
-            </DialogTitle>
-            <DialogTitle as="h3" class="text-gray-900 text-lg my-5">
-              <font-awesome-icon :icon="['fas', 'spa']" /> <span class="font-bold"> Información de la flor: </span>
-              <textarea type="text" class="w-full auto-resize-textarea" v-model="formData.flor"></textarea>
-            </DialogTitle>
-            <DialogTitle as="h3" class="text-gray-900 text-lg my-5 img__specie__dg">
+            </p>
+
+            <p class="card__info">
+              <font-awesome-icon :icon="['fas', 'spa']" /> 
+              <span class="card__dato"> Información de la flor: </span><br>
+              <textarea type="text" v-model="formData.flor"></textarea>
+            </p>
+
+            <p class="card__info">
               <img class="img__specie__modal" v-if="formData.img_flowers" :src="getFullImageUrl(formData.img_flowers)" >
-            </DialogTitle>
-            <DialogTitle as="h3" class="text-gray-900 text-lg my-5">
-              <font-awesome-icon :icon="['fab', 'apple']" /> <span class="font-bold"> Información de los frutos: </span>
-              <textarea type="text" class="w-full auto-resize-textarea" v-model="formData.frutos"></textarea>
-            </DialogTitle>
-            <DialogTitle as="h3" class="text-gray-900 text-lg my-5 img__specie__dg">
+            </p>
+
+            <p class="card__info">
+              <font-awesome-icon :icon="['fab', 'apple']" /> 
+              <span class="card__dato"> Información de los frutos: </span><br>
+              <textarea type="text" v-model="formData.frutos"></textarea>
+            </p>
+
+            <p class="card__info">
               <img class="img__specie__modal" v-if="formData.img_fruits" :src="getFullImageUrl(formData.img_fruits)" >
-            </DialogTitle>
-            <DialogTitle as="h3" class="text-gray-900 text-lg my-5">
-              <font-awesome-icon :icon="['fas', 'seedling']" /> <span class="font-bold"> Información de las semillas: </span>
-              <textarea type="text" class="w-full auto-resize-textarea" v-model="formData.semillas"></textarea>
-            </DialogTitle>
-            <DialogTitle as="h3" class="text-gray-900 text-lg my-5 img__specie__dg">
+            </p>
+
+            <p class="card__info">
+              <font-awesome-icon :icon="['fas', 'seedling']" /> 
+              <span class="card__dato"> Información de las semillas: </span><br>
+              <textarea type="text" v-model="formData.semillas"></textarea>
+            </p>
+
+            <p class="card__info">
               <img class="img__specie__modal" v-if="formData.img_seeds" :src="getFullImageUrl(formData.img_seeds)" >
-            </DialogTitle>
-            <DialogTitle as="h3" class="text-gray-900 text-lg my-5">
-              <font-awesome-icon :icon="['fas', 'ticket-simple']" /> <span class="font-bold"> Información del tallo: </span>
-              <textarea type="text" class="w-full auto-resize-textarea" v-model="formData.tallo"></textarea>
-            </DialogTitle>
-            <DialogTitle as="h3" class="text-gray-900 text-lg my-5 img__specie__dg">
+            </p>
+
+            <p class="card__info">
+              <font-awesome-icon :icon="['fas', 'ticket-simple']" /> 
+              <span class="card__dato"> Información del tallo: </span><br>
+              <textarea type="text" v-model="formData.tallo"></textarea>
+            </p>
+
+            <p class="card__info">
               <img class="img__specie__modal" v-if="formData.img_stems" :src="getFullImageUrl(formData.img_stems)" >
-            </DialogTitle>
-            <DialogTitle as="h3" class="text-gray-900 text-lg my-5">
-              <font-awesome-icon :icon="['fas', 'mound']" /> <span class="font-bold"> Información de la raíz: </span>
-              <textarea type="text" class="w-full auto-resize-textarea" v-model="formData.raiz"></textarea>
-            </DialogTitle>
-            <DialogTitle as="h3" class="text-gray-900 text-lg my-5 img__specie__dg">
+            </p>
+
+            <p class="card__info">
+              <font-awesome-icon :icon="['fas', 'mound']" /> 
+              <span class="card__dato"> Información de la raíz: </span><br>
+              <textarea type="text" v-model="formData.raiz"></textarea>
+            </p>
+
+            <p class="card__info">
               <img class="img__specie__modal" v-if="formData.img_landscape_one" :src="getFullImageUrl(formData.img_landscape_one)" >
-            </DialogTitle>
-            <DialogTitle as="h3" class="text-gray-900 text-lg my-5 img__specie__dg">
+            </p>
+
+            <p class="card__info">
               <img class="img__specie__modal" v-if="formData.img_landscape_two" :src="getFullImageUrl(formData.img_landscape_two)" >
-            </DialogTitle>
-            <DialogTitle as="h3" class="text-gray-900 text-lg my-5 img__specie__dg">
+            </p>
+
+            <p class="card__info">
               <img class="img__specie__modal" v-if="formData.img_landscape_three" :src="getFullImageUrl(formData.img_landscape_three)" >
-            </DialogTitle>
+            </p>
+
             <button
               type="submit"
-              class="shadow p-1 w-full rounded-lg bg-green-600 hover:bg-green-700 text-white uppercase font-bold"
+              class="modal__boton"
             >
               Actualizar
             </button>
           </form>
-          <hr />
-      
+          <hr />      
         </div>
       </div>
-      <div class="mt-8 sm:mt-6 flex justify-between gap-4">
+
+      <div class="modal__botones">
         <button
           type="button"
-          class="shadow p-1 w-full rounded-lg bg-gray-700 hover:bg-gray-800 text-white uppercase font-bold"
+          class="modal__boton"
           @click="modal.handleClickModalForestSpecieUpdate()"
         >
           Cerrar
@@ -267,20 +318,131 @@ watch(() => speciesStore.specieSelected, () => {
   </div>
 </template>
 
-<style>
-  .auto-resize-textarea {
-    overflow: hidden;
-  }
+<style scoped>
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  overflow: auto;
+  z-index: 2;
+}
 
-  .img__specie__modal {
-    border-radius: 15px;
-    max-height: 200px;
-    width: auto;
+.modal__contenido {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+  text-align: center;
+  width: 80%;
+  max-height: 90vh;
+  overflow-y: auto;
+  transform: translate(-50%, -50%);
+  z-index: 1000;
+  margin-top: 4rem;
+}
+@media (min-width: 992px) {
+  .modal__contenido {
+    width: 50%;
+    margin-top: 1rem;
   }
+}
+@media (min-width: 1440px) {
+  .modal__contenido {
+    width: 30%;
+  }
+}
+.modal__titulo {
+  font-size: 1rem;
+  margin: 0 auto;
+  padding: 0;
+}
+.modal__subtitulo {
+  font-size: 1rem;
+  margin: 0 auto;
+}
 
-  .img__specie__dg {
-    text-align: center;
-    vertical-align: middle;
-  }
+.modal__flex {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.modal__boton {
+  font-weight: 700;
+  color: var(--blanco);
+  background-color: var(--secondary);
+  width: 95%;
+  border-radius: 5px;
+  margin-top: 2rem;
+  padding: 0.4rem;
+  transition: background-color 0.3s ease;
+}
+.modal__boton:hover {
+  background-color: var(--secondary-hover);
+}
+/* card modal */
+.card {
+  padding: 0.5rem;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+.card__info {
+  font-size: 0.8rem;
+  margin: 0.2rem;
+  padding: 0;
+}
+
+.card__dato {
+  font-weight: 700;
+}
+.card__dato--resultado {
+  color: var(--primary);
+}
+.card:first-of-type {
+  margin-top: 2rem;
+}
+
+.img__specie__dg {
+  text-align: center;
+  vertical-align: middle;
+}
+
+/* Estilos para columnas */
+.columns {
+  display: flex;
+  gap: 20px; /* Espacio entre las columnas */
+  justify-content: left;
+  align-items: left;
+}
+
+.column {
+  flex: 1; /* Ocupar el espacio disponible en la columna */
+}
+
+/* Estilos para alinear el texto a la izquierda */
+.column .card__info {
+  text-align: left;
+}
+
+.card__info_imgGeneral {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* Si quieres aplicar bordes o ajustes adicionales al contenedor de la imagen, puedes hacerlo aquí */
+}
+
+.img__specie__modal {
+  border-radius: 15px;
+  max-height: 200px;
+  width: auto;
+  /* Asegúrate de que la imagen no exceda los límites del contenedor */
+  object-fit: contain; /* o object-fit: cover; dependiendo del comportamiento que desees */
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
 </style>
 
