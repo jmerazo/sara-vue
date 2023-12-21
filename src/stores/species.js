@@ -67,6 +67,7 @@ export const useEspeciesStore = defineStore('especies', () => {
       }
     }
     
+    //busqueda por teremino
     function buscarTermino(termino) {
       changePage(1)
       especies.value = especiesOriginales.value.filter(term => {
