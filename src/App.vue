@@ -5,7 +5,8 @@ import { useAuthToken } from '@/stores/auth'
 import Footer from "@/components/Footer.vue";
 import Modal from '@/components/Modal.vue';
 import ModalFamily from "@/components/ModalFamily.vue";
-import ModalUser from '@/components/dashboard/ModalUser.vue';
+
+import ModalUserUpdate from "@/components/dashboard/ModalUserUpdate.vue";
 import ModalCandidate from '@/components/dashboard/ModalCandidates.vue'
 import ModalInfoCandidate from '@/components/dashboard/ModalInfoCandidate.vue';
 import Dashboard from '@/views/dashboardviews/DashboardMainView.vue'
@@ -25,13 +26,17 @@ const store = useAuthToken()
   <Footer/> 
   <Modal/>
   <ModalFamily/>
-  <ModalUser/>
+  <ModalUserUpdate/>
   <ModalCandidate/>
   <ModalInfoCandidate/>
   
 </template>
 
 <style >
+
+.texto__sara {
+  color: var(--primary);
+}
 /* buscador */
 .header__label {
   font-weight: 700;

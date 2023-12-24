@@ -1,22 +1,12 @@
 <script setup>
 import { watch, onMounted, ref } from "vue";
-import {
-  Dialog,
-  DialogPanel,
-  DialogTitle,
-  TransitionChild,
-  TransitionRoot,
-} from "@headlessui/vue";
+
 import { useModalStore } from "@/stores/modal";
 import { useEspeciesStore } from "@/stores/species";
-import api from '../../api/axios';
+import { getFullImageUrl } from "@/helpers";
 
 const modal = useModalStore();
 const speciesStore = useEspeciesStore();
-
-const getFullImageUrl = (relativePath) => {
-  return `${api.defaults.baseURL}/${relativePath.replace(/\\/g, '/')}`;
-};
 
 const formData = ref({
   cod_especie: "",
@@ -45,12 +35,15 @@ const formData = ref({
   raiz: "",
   img_landscape_one: "",
   img_landscape_two: "",
-  img_landscape_three: ""
+  img_landscape_three: "",
 });
 
 async function forestSpecieUpdate() {
-  speciesStore.updateForestSpecie(speciesStore.specieSelected[0].ShortcutID, formData.value);
-  modal.handleClickModalForestSpecieUpdate()
+  speciesStore.updateForestSpecie(
+    speciesStore.specieSelected[0].ShortcutID,
+    formData.value
+  );
+  modal.handleClickModalForestSpecieUpdate();
 }
 
 const adjustTextareaHeight = (event) => {
@@ -89,7 +82,7 @@ const initializeFormData = () => {
       raiz: selectedForestSpecie.raiz || "",
       img_landscape_one: selectedForestSpecie.img_landscape_one || "",
       img_landscape_two: selectedForestSpecie.img_landscape_two || "",
-      img_landscape_three: selectedForestSpecie.img_landscape_three || ""
+      img_landscape_three: selectedForestSpecie.img_landscape_three || "",
     };
   }
 };
@@ -102,218 +95,384 @@ onMounted(() => {
   });
 });
 
-watch(() => speciesStore.specieSelected, () => {
-      initializeFormData();
-    });
+watch(
+  () => speciesStore.specieSelected,
+  () => {
+    initializeFormData();
+  }
+);
+
+//mostrar u ocultar detalles de las listas
+function toggleDetalles(idLista) {
+  const detalles = document.getElementById(idLista);
+  detalles.classList.toggle("visible");
+}
+
+//conocer el tamaño de una imagen
+const height = ref(0);
+const handleImageLoad = (event) => {
+  height.value = event.target.height;
+  return console.log(height.value);
+};
 </script>
 
 <template>
   <div class="modal" v-if="modal.modalForestSpecieUpdate">
     <div class="modal__contenido">
-      <!-- <div class="modal__encabezado">
-        <h2 class="modal__titulo">
-          Especie: <span>{{ speciesStore.especies[0].nom_comunes }}</span>
-          <hr />
-          <p class="modal__subtitulo">Datos del candidato</p>
-        </h2>
-      </div> -->
-      <!-- <Dialog
-        as="div"
-        class="relative z-10"
-        @close="modal.handleClickModalUserUpdate()"
-      > -->
-      <div class="modal__flex">
-        <div class="card">
-          <p class="card__info">
-            Nombre común:
-            <span class="card__dato">
-              {{ speciesStore.especies[0].nom_comunes }}
-            </span><br>
-            Nombre científico:
-            <span class="card__dato">
-              {{ speciesStore.especies[0].nombre_cientifico }}
-            </span>           
-          </p>
-
-          <p class="card__info">
-            Código especie:
-            <span class="card__dato">
-              {{ speciesStore.especies[0].cod_especie }}
-            </span>
-          </p>            
-          <hr />
-
-          <form @submit.prevent="forestSpecieUpdate">
-            <div class="card__info_imgGeneral">
-              <img class="img__specie__modal"  v-if="formData.img_general" :src="getFullImageUrl(formData.img_general)">
-            </div>
-
-            <div class="columns">
-              <div class="column">
-                <p class="card__info">
-                  <font-awesome-icon :icon="['fas', 'list-ol']" /> 
-                  <span class="card__dato"> Código especie: </span>
-                  <input type="number" v-model="formData.cod_especie" required/>
-                </p>
-
-                <p class="card__info">
-                  <font-awesome-icon :icon="['fas', 'signature']" /> 
-                  <span class="card__dato"> Nombre común: </span>
-                  <input type="text" v-model="formData.nom_comunes"/>
-                </p>
-
-                <p class="card__info">
-                  <font-awesome-icon :icon="['fas', 'signature']" /> 
-                  <span class="card__dato"> Nombre científico: </span>
-                  <input type="text" v-model="formData.nombre_cientifico"/>
-                </p>
-
-                <p class="card__info">
-                  <font-awesome-icon :icon="['fas', 'signature']" /> 
-                  <span class="card__dato"> Otros nombres comunes: </span>
-                  <input type="text" v-model="formData.otros_nombres"/>
-                </p>
-
-                <p class="card__info">
-                  <font-awesome-icon :icon="['fab', 'hashnode']" /> 
-                  <span class="card__dato"> Sinonimos: </span>
-                  <input type="text" v-model="formData.sinonimos"/>
-                </p>
-
-                <p class="card__info">
-                  <font-awesome-icon :icon="['fab', 'pagelines']" /> 
-                  <span class="card__dato"> Familia: </span>
-                  <input type="text" v-model="formData.familia"/>
-                </p>
-              </div>
-
-              <div class="column">
-                <p class="card__info">
-                  <font-awesome-icon :icon="['fas', 'earth-americas']" /> 
-                  <span class="card__dato"> Distribución: </span>
-                  <input type="text" v-model="formData.distribucion"/>
-                </p>
-
-                <p class="card__info">
-                  <font-awesome-icon :icon="['fas', 'teeth']" /> 
-                  <span class="card__dato"> Habito: </span>
-                  <input type="text" v-model="formData.habito"/>
-                </p>
-
-                <p class="card__info">
-                  <font-awesome-icon :icon="['fab', 'envira']" /> 
-                  <span class="card__dato"> Follaje: </span>
-                  <input type="text" v-model="formData.follaje"/>
-                </p>
-
-                <p class="card__info">
-                  <font-awesome-icon :icon="['fas', 'tree']" /> 
-                  <span class="card__dato"> Forma copa: </span>
-                  <input type="text" v-model="formData.forma_copa"/>
-                </p>
-
-                <p class="card__info">
-                  <font-awesome-icon :icon="['fas', 'leaf']" /> 
-                  <span class="card__dato"> Tipo de hoja: </span>
-                  <input type="text" v-model="formData.tipo_hoja"/>
-                </p>
-
-                <p class="card__info">
-                  <font-awesome-icon :icon="['fas', 'seedling']" /> 
-                  <span class="card__dato"> Disposición de las hojas: </span>
-                  <input type="text" v-model="formData.disposicion_hojas"/>
-                </p>
-              </div>                
-            </div>
-
-            <p class="card__info">
-              <font-awesome-icon :icon="['fab', 'envira']" /> 
-              <span class="card__dato"> Información de las hojas: </span><br>
-              <textarea v-model="formData.hojas"></textarea>
-            </p>
-
-            <p class="card__info">
-              <img class="img__specie__modal" v-if="formData.img_leafs" :src="getFullImageUrl(formData.img_leafs)" >
-            </p>
-
-            <p class="card__info">
-              <font-awesome-icon :icon="['fas', 'spa']" /> 
-              <span class="card__dato"> Información de la flor: </span><br>
-              <textarea type="text" v-model="formData.flor"></textarea>
-            </p>
-
-            <p class="card__info">
-              <img class="img__specie__modal" v-if="formData.img_flowers" :src="getFullImageUrl(formData.img_flowers)" >
-            </p>
-
-            <p class="card__info">
-              <font-awesome-icon :icon="['fab', 'apple']" /> 
-              <span class="card__dato"> Información de los frutos: </span><br>
-              <textarea type="text" v-model="formData.frutos"></textarea>
-            </p>
-
-            <p class="card__info">
-              <img class="img__specie__modal" v-if="formData.img_fruits" :src="getFullImageUrl(formData.img_fruits)" >
-            </p>
-
-            <p class="card__info">
-              <font-awesome-icon :icon="['fas', 'seedling']" /> 
-              <span class="card__dato"> Información de las semillas: </span><br>
-              <textarea type="text" v-model="formData.semillas"></textarea>
-            </p>
-
-            <p class="card__info">
-              <img class="img__specie__modal" v-if="formData.img_seeds" :src="getFullImageUrl(formData.img_seeds)" >
-            </p>
-
-            <p class="card__info">
-              <font-awesome-icon :icon="['fas', 'ticket-simple']" /> 
-              <span class="card__dato"> Información del tallo: </span><br>
-              <textarea type="text" v-model="formData.tallo"></textarea>
-            </p>
-
-            <p class="card__info">
-              <img class="img__specie__modal" v-if="formData.img_stems" :src="getFullImageUrl(formData.img_stems)" >
-            </p>
-
-            <p class="card__info">
-              <font-awesome-icon :icon="['fas', 'mound']" /> 
-              <span class="card__dato"> Información de la raíz: </span><br>
-              <textarea type="text" v-model="formData.raiz"></textarea>
-            </p>
-
-            <p class="card__info">
-              <img class="img__specie__modal" v-if="formData.img_landscape_one" :src="getFullImageUrl(formData.img_landscape_one)" >
-            </p>
-
-            <p class="card__info">
-              <img class="img__specie__modal" v-if="formData.img_landscape_two" :src="getFullImageUrl(formData.img_landscape_two)" >
-            </p>
-
-            <p class="card__info">
-              <img class="img__specie__modal" v-if="formData.img_landscape_three" :src="getFullImageUrl(formData.img_landscape_three)" >
-            </p>
-
-            <button
-              type="submit"
-              class="modal__boton"
-            >
-              Actualizar
-            </button>
-          </form>
-          <hr />      
+      <div class="modal__encabezado">
+        <div class="modal__imagen">
+          <img
+            v-if="formData.img_general"
+            :src="getFullImageUrl(formData.img_general)"
+            alt="imagen___especie"
+          />
         </div>
-      </div>
+        <h4 class="modal__titulo">
+          {{ speciesStore.especies[0].nom_comunes }}
+        </h4>
+        <p class="modal__titulo">
+          {{ speciesStore.especies[0].nombre_cientifico }}
+        </p>
 
-      <div class="modal__botones">
-        <button
+        <p class="modal__titulo">
+          Código especie:
+          <span class="card__dato">
+            {{ speciesStore.especies[0].cod_especie }}
+          </span>
+        </p>
+      </div>
+      <hr />
+
+      <form @submit.prevent="forestSpecieUpdate" class="formulario">
+        <p class="formulario__titulo texto__sara">
+          Despligue la sección a editar
+        </p>
+        <!-- lista de informacion general -->
+        <ul class="lista">
+          <li class="opciones">
+            <h2 class="card__titulo" @click="toggleDetalles('generales')">
+              Información general
+            </h2>
+            <div id="generales" class="detalles">
+              <div class="formulario__campo">
+                <label for="comun" class="formulario__label"
+                  >Nombre Común:</label
+                >
+                <input
+                  v-model="formData.nom_comunes"
+                  id="comun"
+                  type="text"
+                  class="formulario__input"
+                  required
+                />
+              </div>
+              <div class="formulario__campo">
+                <label for="cientifico" class="formulario__label"
+                  >Nombre científico:</label
+                >
+                <input
+                  v-model="formData.nombre_cientifico"
+                  id="cientifico"
+                  type="text"
+                  class="formulario__input"
+                  required
+                />
+              </div>
+              <div class="formulario__campo">
+                <label for="codigo" class="formulario__label"
+                  >Código especie:</label
+                >
+                <input
+                  v-model="formData.cod_especie"
+                  id="codigo"
+                  type="text"
+                  class="formulario__input"
+                  required
+                />
+              </div>
+              <div class="formulario__campo">
+                <label for="otros" class="formulario__label"
+                  >Otros Nombres:</label
+                >
+                <input
+                  v-model="formData.otros_nombres"
+                  id="otros"
+                  type="text"
+                  class="formulario__input"
+                />
+              </div>
+              <div class="formulario__campo">
+                <label for="sinonimos" class="formulario__label"
+                  >Sinónimos:</label
+                >
+              </div>
+              <div class="formulario__campo fomulario__campo--textarea">
+                <textarea
+                  v-model="formData.sinonimos"
+                  id="sinonimos"
+                  type="text"
+                  class="formulario__textarea"
+                ></textarea>
+              </div>
+              <div class="formulario__campo">
+                <label for="distribucion" class="formulario__label"
+                  >Distribución:</label
+                >
+                <input
+                  v-model="formData.distribucion"
+                  id="distribucion"
+                  type="text"
+                  class="formulario__input"
+                />
+              </div>
+            </div>
+          </li>
+        </ul>
+        <!-- lista de atributos -->
+        <ul class="lista">
+          <li class="opciones">
+            <h2 class="card__titulo" @click="toggleDetalles('atributos')">
+              Atributos
+            </h2>
+            <div id="atributos" class="detalles">
+              <div class="formulario__campo">
+                <label for="habito" class="formulario__label">Hábito:</label>
+                <input
+                  v-model="formData.habito"
+                  id="habito"
+                  type="text"
+                  class="formulario__input"
+                />
+              </div>
+              <div class="formulario__campo">
+                <label for="follaje" class="formulario__label">Follaje:</label>
+                <input
+                  v-model="formData.follaje"
+                  id="follaje"
+                  type="text"
+                  class="formulario__input"
+                />
+              </div>
+              <div class="formulario__campo">
+                <label for="forma-copa" class="formulario__label"
+                  >Forma copa:</label
+                >
+                <input
+                  v-model="formData.forma_copa"
+                  id="foma-copa"
+                  type="text"
+                  class="formulario__input"
+                />
+              </div>
+              <div class="formulario__campo">
+                <label for="tipo-hoja" class="formulario__label"
+                  >Tipo de hoja:</label
+                >
+                <input
+                  v-model="formData.tipo_hoja"
+                  id="tipo-hoja"
+                  type="text"
+                  class="formulario__input"
+                />
+              </div>
+              <div class="formulario__campo">
+                <label for="disposicion-hojas" class="formulario__label"
+                  >Disposición de las hojas:</label
+                >
+                <input
+                  v-model="formData.disposicion_hojas"
+                  id="disposicion-hojas"
+                  type="text"
+                  class="formulario__input"
+                />
+              </div>
+            </div>
+          </li>
+        </ul>
+        <!-- lista de características -->
+        <ul class="lista">
+          <li class="opciones">
+            <h2 class="card__titulo" @click="toggleDetalles('caracteristicas')">
+              Características
+            </h2>
+            <div id="caracteristicas" class="detalles">
+              <!-- info hojas -->
+              <div class="formulario__campo">
+                <label for="hojas" class="formulario__label"
+                  >Información de las hojas:</label
+                >
+              </div>
+              <div class="formulario__campo fomulario__campo--textarea">
+                <textarea
+                  v-model="formData.hojas"
+                  id="hojas"
+                  type="text"
+                  class="formulario__textarea"
+                ></textarea>
+              </div>
+              <!-- info flor -->
+              <div class="formulario__campo">
+                <label for="flor" class="formulario__label"
+                  >Información de la flor:</label
+                >
+              </div>
+              <div class="formulario__campo fomulario__campo--textarea">
+                <textarea
+                  v-model="formData.flor"
+                  id="flor"
+                  type="text"
+                  class="formulario__textarea"
+                ></textarea>
+              </div>
+              <!-- info frutos -->
+              <div class="formulario__campo">
+                <label for="frutos" class="formulario__label"
+                  >Información de los frutos:</label
+                >
+              </div>
+              <div class="formulario__campo fomulario__campo--textarea">
+                <textarea
+                  v-model="formData.frutos"
+                  id="frutos"
+                  type="text"
+                  class="formulario__textarea"
+                ></textarea>
+              </div>
+              <!-- info semillas -->
+              <div class="formulario__campo">
+                <label for="semillas" class="formulario__label"
+                  >Información de las semillas:</label
+                >
+              </div>
+              <div class="formulario__campo fomulario__campo--textarea">
+                <textarea
+                  v-model="formData.semillas"
+                  id="semillas"
+                  type="text"
+                  class="formulario__textarea"
+                ></textarea>
+              </div>
+              <!-- info tallo -->
+              <div class="formulario__campo">
+                <label for="tallo" class="formulario__label"
+                  >Información del tallo:</label
+                >
+              </div>
+              <div class="formulario__campo fomulario__campo--textarea">
+                <textarea
+                  v-model="formData.tallo"
+                  id="tallo"
+                  type="text"
+                  class="formulario__textarea"
+                ></textarea>
+              </div>
+              <!-- info raiz -->
+              <div class="formulario__campo">
+                <label for="raiz" class="formulario__label"
+                  >Información de la raíz:</label
+                >
+              </div>
+              <div class="formulario__campo fomulario__campo--textarea">
+                <textarea
+                  v-model="formData.raiz"
+                  id="tallo"
+                  type="text"
+                  class="formulario__textarea"
+                ></textarea>
+              </div>
+            </div>
+          </li>
+        </ul>
+        <!-- lista de galería -->
+        <ul class="lista">
+          <li class="opciones">
+            <h2 class="card__titulo" @click="toggleDetalles('galeria')">
+              Ver Galeria
+            </h2>
+            <div id="galeria" class="detalles">
+              <div class="galeria__grid">
+                <div
+                  :class="{
+                    img__vertical: height > 420,
+                  }"
+                  class="galeria__imagen"
+                  v-if="formData.img_general"
+                >
+                  <img
+                    @load="handleImageLoad"
+                    :src="getFullImageUrl(formData.img_general)"
+                    alt="imagen especie"
+                  />
+                </div>
+                <div class="galeria__imagen" v-if="formData.img_leafs">
+                  <img
+                    :src="getFullImageUrl(formData.img_leafs)"
+                    alt="imagen hojas"
+                  />
+                </div>
+                <div class="galeria__imagen" v-if="formData.img_flowers">
+                  <img
+                    :src="getFullImageUrl(formData.img_flowers)"
+                    alt="imagen flores"
+                  />
+                </div>
+                <div class="galeria__imagen" v-if="formData.img_fruits">
+                  <img
+                    :src="getFullImageUrl(formData.img_fruits)"
+                    alt="imagen frutos"
+                  />
+                </div>
+                <div class="galeria__imagen" v-if="formData.img_seeds">
+                  <img
+                    :src="getFullImageUrl(formData.img_seeds)"
+                    alt="imagen semillas"
+                  />
+                </div>
+                <div class="galeria__imagen" v-if="formData.img_stems">
+                  <img
+                    :src="getFullImageUrl(formData.img_stems)"
+                    alt="imagen tallo"
+                  />
+                </div>
+                <div class="galeria__imagen" v-if="formData.img_landscape_one">
+                  <img
+                    :src="getFullImageUrl(formData.img_landscape_one)"
+                    alt="imagen panoramica 1"
+                  />
+                </div>
+                <div class="galeria__imagen" v-if="formData.img_landscape_two">
+                  <img
+                    :src="getFullImageUrl(formData.img_landscape_two)"
+                    alt="imagen panoramica 2"
+                  />
+                </div>
+                <div
+                  class="galeria__imagen"
+                  v-if="formData.img_landscape_three"
+                >
+                  <img
+                    :src="getFullImageUrl(formData.img_landscape_three)"
+                    alt="imagen panoramica 3"
+                  />
+                </div>
+              </div>
+            </div>
+          </li>
+        </ul>
+        <div class="formulario__botones">
+          <button type="submit" class="formulario__boton">Actualizar</button>
+          <button
           type="button"
-          class="modal__boton"
+          class="formulario__boton formulario__boton--cerrar"
           @click="modal.handleClickModalForestSpecieUpdate()"
         >
           Cerrar
         </button>
-      </div>
+        </div>
+        
+      </form>
+
+      
     </div>
   </div>
 </template>
@@ -338,12 +497,11 @@ watch(() => speciesStore.specieSelected, () => {
   padding: 20px;
   border-radius: 10px;
   text-align: center;
-  width: 80%;
+  width: 95%;
   max-height: 90vh;
   overflow-y: auto;
   transform: translate(-50%, -50%);
   z-index: 1000;
-  margin-top: 4rem;
 }
 @media (min-width: 992px) {
   .modal__contenido {
@@ -353,96 +511,154 @@ watch(() => speciesStore.specieSelected, () => {
 }
 @media (min-width: 1440px) {
   .modal__contenido {
+    width: 40%;
+  }
+}
+@media (min-width: 1820px) {
+  .modal__contenido {
     width: 30%;
   }
 }
-.modal__titulo {
-  font-size: 1rem;
-  margin: 0 auto;
-  padding: 0;
-}
-.modal__subtitulo {
-  font-size: 1rem;
-  margin: 0 auto;
-}
-
-.modal__flex {
+.modal__encabezado {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+}
+.modal__imagen img{
+  width: 15rem;
+  max-height: 17rem;
+  margin: 0 auto;
+}
+.modal__titulo {
+  font-size: 0.95rem;
+  margin: 0 auto;
+  padding: 0;
+  font-weight: 700;
 }
 
-.modal__boton {
-  font-weight: 700;
-  color: var(--blanco);
-  background-color: var(--secondary);
-  width: 95%;
-  border-radius: 5px;
-  margin-top: 2rem;
-  padding: 0.4rem;
-  transition: background-color 0.3s ease;
+/* formulario  */
+.formulario__campo {
+  margin-bottom: 0.5rem;
+  margin: 0 auto;
 }
-.modal__boton:hover {
+.fomulario__campo--textarea {
+  border: 1px solid var(--primary);
+  width: 98%;
+  border-radius: 5px;
+}
+.formulario__label {
+  margin: 0.5rem auto 0 auto;
+  width: 97%;
+  display: block;
+  text-align: left;
+  font-weight: 700;
+  font-size: 0.8rem;
+}
+.formulario__select,
+.formulario__input {
+  border: 1px solid var(--primary);
+  border-radius: 5px;
+  width: 97%;
+  font-size: 0.9rem;
+  padding: 0.3rem;
+}
+.formulario__textarea {
+  border: none;
+  font-size: 0.9rem;
+  width: 97%;
+  height: 3rem;
+  outline: none;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+.formulario__botones {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin: 1.3rem 0 0 0;
+}
+
+.formulario__boton {
+  border-radius: 5px;
+  font-weight: 700;
+  padding: 0.3rem;
+  font-size: 1rem;
+  color: var(--blanco);
+  background-color: var(--primary);
+}
+.formulario__boton--cerrar {
+  background-color: var(--secondary);
+}
+.formulario__boton:hover{
+  background-color: var(--primary-hover);
+}
+.formulario__boton--cerrar:hover{
   background-color: var(--secondary-hover);
 }
-/* card modal */
-.card {
-  padding: 0.5rem;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+.alerta {
+  background-color: var(--rojo);
 }
-.card__info {
-  font-size: 0.8rem;
-  margin: 0.2rem;
-  padding: 0;
-}
-
-.card__dato {
+/* card */
+.card__titulo {
+  font-size: 1rem;
+  border: 1px solid var(--secondary);
+  padding: 0.3rem;
   font-weight: 700;
+  cursor: pointer;
+  border-radius: 10px;
+  width: 100%;
+  margin: 0.4rem 0;
+  transition: background-color 0.3s ease;
 }
-.card__dato--resultado {
-  color: var(--primary);
-}
-.card:first-of-type {
-  margin-top: 2rem;
-}
-
-.img__specie__dg {
-  text-align: center;
-  vertical-align: middle;
+.card__titulo:hover {
+  background-color: var(--secondary);
+  color: var(--blanco);
 }
 
-/* Estilos para columnas */
-.columns {
-  display: flex;
-  gap: 20px; /* Espacio entre las columnas */
-  justify-content: left;
-  align-items: left;
+/* lista y opciones */
+.lista {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.opciones {
+  border-radius: 5px;
+  margin: 0;
+  padding: 0;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+.detalles {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease-in-out;
 }
 
-.column {
-  flex: 1; /* Ocupar el espacio disponible en la columna */
+.detalles.visible {
+  max-height: 9500px; /* Ajusta la altura máxima según tus necesidades */
+  transition: max-height 0.3s ease-in-out;
 }
 
-/* Estilos para alinear el texto a la izquierda */
-.column .card__info {
-  text-align: left;
+.galeria__grid {
+  display: grid;
 }
-
-.card__info_imgGeneral {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  /* Si quieres aplicar bordes o ajustes adicionales al contenedor de la imagen, puedes hacerlo aquí */
+.galeria__imagen {
+  width: 18rem;
 }
-
-.img__specie__modal {
-  border-radius: 15px;
-  max-height: 200px;
-  width: auto;
-  /* Asegúrate de que la imagen no exceda los límites del contenedor */
-  object-fit: contain; /* o object-fit: cover; dependiendo del comportamiento que desees */
-  margin-top: 10px;
-  margin-bottom: 10px;
+.img__vertical{
+  width: 18rem;
+  height: 15rem;
+  max-height: 15rem;
+}
+@media (min-width:768px){
+  .galeria__grid{
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(2,1fr);
+    gap: 1rem;
+  }
+  .img__vertical{
+    grid-column: 1/2;
+    grid-row: 1/4;
+  }
 }
 </style>
 

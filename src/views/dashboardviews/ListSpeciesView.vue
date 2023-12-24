@@ -50,7 +50,11 @@ const displayedPageRange = computed(() => {
     </div>
     <!-- fin encabezado vista -->
     <hr />
-    <LoadingData v-if="especies.cargando || especieMonitoreos.cargando  || candidatos.cargando" />
+    <LoadingData
+      v-if="
+        especies.cargando || especieMonitoreos.cargando || candidatos.cargando
+      "
+    />
     <div v-else>
       <!-- listado de cards -->
       <main class="reporte__grid">
