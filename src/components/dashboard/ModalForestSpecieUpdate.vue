@@ -226,61 +226,65 @@ watch(() => speciesStore.specieSelected, () => {
               </div>                
             </div>
 
-            <p class="card__info">
-              <font-awesome-icon :icon="['fab', 'envira']" /> 
-              <span class="card__dato"> Información de las hojas: </span><br>
-              <textarea v-model="formData.hojas"></textarea>
-            </p>
+            <div class="columns_imgText">
+              <div class="column_imgText">
+                <p class="card__info">
+                  <font-awesome-icon :icon="['fab', 'envira']" /> 
+                  <span class="card__dato"> Información de las hojas: </span><br>
+                  <textarea class="text__area" v-model="formData.hojas"></textarea>
+                </p>
 
-            <p class="card__info">
-              <img class="img__specie__modal" v-if="formData.img_leafs" :src="getFullImageUrl(formData.img_leafs)" >
-            </p>
+                <p class="card__info">
+                  <img class="img__specie__modal" v-if="formData.img_leafs" :src="getFullImageUrl(formData.img_leafs)" >
+                </p>
 
-            <p class="card__info">
-              <font-awesome-icon :icon="['fas', 'spa']" /> 
-              <span class="card__dato"> Información de la flor: </span><br>
-              <textarea type="text" v-model="formData.flor"></textarea>
-            </p>
+                <p class="card__info">
+                  <font-awesome-icon :icon="['fas', 'spa']" /> 
+                  <span class="card__dato"> Información de la flor: </span><br>
+                  <textarea class="text__area" type="text" v-model="formData.flor"></textarea>
+                </p>
 
-            <p class="card__info">
-              <img class="img__specie__modal" v-if="formData.img_flowers" :src="getFullImageUrl(formData.img_flowers)" >
-            </p>
+                <p class="card__info">
+                  <img class="img__specie__modal" v-if="formData.img_flowers" :src="getFullImageUrl(formData.img_flowers)" >
+                </p>
 
-            <p class="card__info">
-              <font-awesome-icon :icon="['fab', 'apple']" /> 
-              <span class="card__dato"> Información de los frutos: </span><br>
-              <textarea type="text" v-model="formData.frutos"></textarea>
-            </p>
+                <p class="card__info">
+                  <font-awesome-icon :icon="['fab', 'apple']" /> 
+                  <span class="card__dato"> Información de los frutos: </span><br>
+                  <textarea class="text__area" type="text" v-model="formData.frutos"></textarea>
+                </p>
 
-            <p class="card__info">
-              <img class="img__specie__modal" v-if="formData.img_fruits" :src="getFullImageUrl(formData.img_fruits)" >
-            </p>
+                <p class="card__info">
+                  <img class="img__specie__modal" v-if="formData.img_fruits" :src="getFullImageUrl(formData.img_fruits)" >
+                </p>
 
-            <p class="card__info">
-              <font-awesome-icon :icon="['fas', 'seedling']" /> 
-              <span class="card__dato"> Información de las semillas: </span><br>
-              <textarea type="text" v-model="formData.semillas"></textarea>
-            </p>
+                <p class="card__info">
+                  <font-awesome-icon :icon="['fas', 'seedling']" /> 
+                  <span class="card__dato"> Información de las semillas: </span><br>
+                  <textarea class="text__area" type="text" v-model="formData.semillas"></textarea>
+                </p>
 
-            <p class="card__info">
-              <img class="img__specie__modal" v-if="formData.img_seeds" :src="getFullImageUrl(formData.img_seeds)" >
-            </p>
+                <p class="card__info">
+                  <img class="img__specie__modal" v-if="formData.img_seeds" :src="getFullImageUrl(formData.img_seeds)" >
+                </p>
 
-            <p class="card__info">
-              <font-awesome-icon :icon="['fas', 'ticket-simple']" /> 
-              <span class="card__dato"> Información del tallo: </span><br>
-              <textarea type="text" v-model="formData.tallo"></textarea>
-            </p>
+                <p class="card__info">
+                  <font-awesome-icon :icon="['fas', 'ticket-simple']" /> 
+                  <span class="card__dato"> Información del tallo: </span><br>
+                  <textarea class="text__area" type="text" v-model="formData.tallo"></textarea>
+                </p>
 
-            <p class="card__info">
-              <img class="img__specie__modal" v-if="formData.img_stems" :src="getFullImageUrl(formData.img_stems)" >
-            </p>
+                <p class="card__info">
+                  <img class="img__specie__modal" v-if="formData.img_stems" :src="getFullImageUrl(formData.img_stems)" >
+                </p>
 
-            <p class="card__info">
-              <font-awesome-icon :icon="['fas', 'mound']" /> 
-              <span class="card__dato"> Información de la raíz: </span><br>
-              <textarea type="text" v-model="formData.raiz"></textarea>
-            </p>
+                <p class="card__info">
+                  <font-awesome-icon :icon="['fas', 'mound']" /> 
+                  <span class="card__dato"> Información de la raíz: </span><br>
+                  <textarea class="text__area" type="text" v-model="formData.raiz"></textarea>
+                </p>
+              </div>
+            </div>
 
             <p class="card__info">
               <img class="img__specie__modal" v-if="formData.img_landscape_one" :src="getFullImageUrl(formData.img_landscape_one)" >
@@ -394,6 +398,7 @@ watch(() => speciesStore.specieSelected, () => {
   font-size: 0.8rem;
   margin: 0.2rem;
   padding: 0;
+  break-inside: avoid;
 }
 
 .card__dato {
@@ -443,6 +448,24 @@ watch(() => speciesStore.specieSelected, () => {
   object-fit: contain; /* o object-fit: cover; dependiendo del comportamiento que desees */
   margin-top: 10px;
   margin-bottom: 10px;
+  display: block; 
 }
+
+.columns_imgText {
+  column-count: 2; /* Dividir en dos columnas */
+  column-gap: 10px; /* Espacio entre las columnas, puedes ajustarlo según tu diseño */
+}
+
+.column_imgText {
+  display: inline-block; /* Garantiza que las columnas ocupen solo el espacio necesario */
+  width: 100%; /* Ajusta el ancho según tu diseño */
+}
+
+.text__area {
+  width: 16rem; /* Ancho máximo del textarea */
+  height: auto; /* Altura automática según el contenido */
+  overflow: hidden; /* Oculta el contenido que excede el tamaño del textarea */
+}
+
 </style>
 
