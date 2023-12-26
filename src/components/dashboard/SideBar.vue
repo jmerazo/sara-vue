@@ -12,9 +12,9 @@ const userData = JSON.parse(userDataString);
     id="sidebar"
   >
     <!-- Brand Logo -->
-    <a href="#" class="brand-link enlace">
+    <a href="#" class="brand-link enlace center">
       <img class="user" src="/icons/user.png" alt="mapa" />
-      <span class="brand-text font-weight-light text-ellipsis">{{
+      <span class="brand-text font-weight-light text-ellipsis my-2">{{
         userData.first_name + " " + userData.last_name
       }}</span>
     </a>

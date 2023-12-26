@@ -42,7 +42,7 @@ onBeforeUnmount(() => {
   top: 0;
   left: 0;
   right: 0;
-  z-index: 1000;
+  z-index: 1;
   background-color: var(--blanco); /* Puedes ajustar el color de fondo según tus preferencias */
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5); /* Agregar una sombra opcional */
   display: flex;
