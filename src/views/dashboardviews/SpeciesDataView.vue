@@ -54,7 +54,12 @@ const displayedPageRange = computed(() => {
         /></a>
         <a
           @click="
-            descargarPdf(especies.datosImport, `Datos generales - ${obtenerFecha()}`, 6,0)
+            descargarPdf(
+              especies.datosImport,
+              `Datos generales - ${obtenerFecha()}`,
+              6,
+              0
+            )
           "
           class="boton"
           href="#"
@@ -63,7 +68,7 @@ const displayedPageRange = computed(() => {
       </div>
     </div>
     <hr />
-    <LoadingData v-if="especies.cargando"/>
+    <LoadingData v-if="especies.cargando" />
     <!-- aqui el for para recorer la data del store -->
     <main class="reporte__grid">
       <div
@@ -72,6 +77,9 @@ const displayedPageRange = computed(() => {
         :key="especie.cod_especie"
       >
         <div class="card__encabezado">
+          <div class="card__imagen">
+            <img src="/icons/icono-data.png" alt="especies" />
+          </div>
           <p class="card__nombre">
             {{ especie.nom_comunes }}
           </p>
@@ -141,7 +149,10 @@ const displayedPageRange = computed(() => {
     <!--fin paginador -->
     <!-- texto validacion buscador -->
     <section class="validacion__contenido">
-      <h1 v-if="especies.especiesData.length == 0 && !especies.cargando" class="validacion__heading">
+      <h1
+        v-if="especies.especiesData.length == 0 && !especies.cargando"
+        class="validacion__heading"
+      >
         No hay resultados de búsqueda
       </h1>
     </section>
@@ -251,6 +262,14 @@ const displayedPageRange = computed(() => {
   align-items: center;
   align-content: center;
 }
+.card__imagen {
+  width: 3rem;
+}
+@media (min-width: 992px) {
+  .card__imagen {
+    width: 4rem;
+  }
+}
 .card__nombre {
   font-weight: 900;
   margin: 0;
@@ -265,12 +284,13 @@ const displayedPageRange = computed(() => {
 .card__datos {
   display: flex;
   justify-content: space-between;
+  
 }
 .card__dato {
   font-weight: 900;
 }
 .card__dato,
 .card__descripcion {
-  margin: 4px 0;
+  margin: 0;
 }
 </style>

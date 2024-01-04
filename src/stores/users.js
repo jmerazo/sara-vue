@@ -5,12 +5,14 @@ import {useModalStore} from '@/stores/modal'
 
 export const useUsersStore = defineStore("useUsersStore", () => {
   const modal = useModalStore();
-  const users = ref({});
-  const usersOriginal = ref([]);
+  const users = ref([]);
+  const usersOriginal = ref({});
   const userSelected = ref([]);
   const totalUsers = ref(0);
   const idUser = ref();
   const newState = ref();
+  const datosImport = ref([]);
+  const cargando = ref(false)
   const noResultados = computed(() => users.value.length === 0 );
 
   // variables para paginación
@@ -18,30 +20,39 @@ export const useUsersStore = defineStore("useUsersStore", () => {
   const itemsPerPage = ref(12); // Elementos por página
 
   onMounted(async () => {
+    cargando.value = true
     const { data } = await APIService.getUsers();
     users.value = data;
     usersOriginal.value = data;
     totalUsers.value = usersOriginal.value.length;
+    cargando.value = false
   });
+
+  function cargarData() {
+    users.value.forEach((dato) => {
+      datosImport.value.push(dato);
+    });
+  }
+
+  //cargar datos de importacion
+  watch(
+    () => users.value,
+    () => {
+      datosImport.value = [];
+      cargarData();
+    },
+    { deep: true }
+  );
 
   
 
   //seleccionar un usuario para mostrar en el modal
-  function seleccionarUsuario(id) {
-    userSelected.value =  usersOriginal.value.filter(user => user.id === id)
-    modal.handleClickModalUser(); 
-  }
-
-  //seleccionar un usuario para mostrar en el modal
   function selectedUserUpdate(id) {
     userSelected.value =  usersOriginal.value.filter(user => user.id === id)
-    console.log('user id', id)
-    console.log('user select ', userSelected.value)
     modal.handleClickModalUserUpdate(userSelected.value); 
   }
 
   const changeStateUser = async (id, nuevoEstado) => {
-      console.log(id, nuevoEstado)
       // Encuentra el índice del usuario en el array basado en su ID
       const userIndex = users.value.findIndex((usuario) => usuario.id === id);
       if (userIndex !== -1) {
@@ -83,12 +94,18 @@ export const useUsersStore = defineStore("useUsersStore", () => {
   function buscarTermino(termino) {
     users.value = usersOriginal.value.filter((term) => {
       const lowerTermino = termino.toLowerCase();
-      const lowerNombre = term.fullname ? term.fullname.toLowerCase() : "";
+      const lowerNombre = term.first_name ? term.first_name.toLowerCase() : "";
+      const lowerApellido = term.last_name ? term.last_name.toLowerCase() : "";
+      const lowerEntidad = term.entity ? term.entity.toLowerCase() : "";
+      const lowerDepartamento = term.name ? term.name.toLowerCase() : "";
       const lowerRol = term.rol ? term.rol.toLowerCase() : "";
       const lowerEmail = term.email ? term.email.toLowerCase() : "";
 
       return (
         lowerNombre.includes(lowerTermino) ||
+        lowerApellido.includes(lowerTermino) ||
+        lowerEntidad.includes(lowerTermino) ||
+        lowerDepartamento.includes(lowerTermino) ||
         lowerRol.includes(lowerTermino) ||
         lowerEmail.includes(lowerTermino)
       );
@@ -108,6 +125,7 @@ export const useUsersStore = defineStore("useUsersStore", () => {
     return { message: "Usuario eliminado con éxito" };
   }
 
+  
   return {
     currentPage,
     itemsPerPage,
@@ -115,16 +133,17 @@ export const useUsersStore = defineStore("useUsersStore", () => {
     displayedUsers,
     users,
     userSelected,
+    idUser,
+    newState,
     totalUsers,
     noResultados,
+    datosImport,
+    cargando,
     buscarTermino,
     quitarFiltroUsuario,
     changePage,
-    seleccionarUsuario,
     selectedUserUpdate,
     changeStateUser,
-    idUser,
-    newState,
     deleteUser
   };
 });

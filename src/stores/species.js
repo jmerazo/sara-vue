@@ -1,4 +1,4 @@
-import {ref, onMounted,computed} from 'vue'
+import {ref, onMounted,computed,watch} from 'vue'
 import {defineStore} from 'pinia'
 import {useModalStore} from '@/stores/modal'
 
@@ -11,7 +11,7 @@ export const useEspeciesStore = defineStore('especies', () => {
     const especies = ref([]);
     const especie = ref([]);
     const specieSelected = ref([])
-   
+    const datosImport = ref([]);
     const noResultados = computed(() => especies.value.length === 0 );
     const especiesOriginales = ref([]);
     const uniqueNomComunes = ref([]);
@@ -34,7 +34,22 @@ export const useEspeciesStore = defineStore('especies', () => {
       }));
       cargando.value = false
     });
-    
+
+    function cargarData() {
+      especies.value.forEach((dato) => {
+        datosImport.value.push(dato);
+      });
+    }
+  
+    //cargar datos de importacion
+    watch(
+      () => especies.value,
+      () => {
+        datosImport.value = [];
+        cargarData();
+      },
+      { deep: true }
+    );
    
     // Calcula el número total de páginas en función de los datos
     const totalPages = computed(() => Math.ceil(especies.value.length / itemsPerPage.value));
@@ -139,6 +154,7 @@ export const useEspeciesStore = defineStore('especies', () => {
       especiesOriginales,
       uniqueNomComunes,
       specieSelected,
+      datosImport,
       seleccionarEspecie,
       buscarTermino,
       quitarFiltroEspecie,

@@ -1,9 +1,9 @@
 <script setup>
 import { ref } from "vue";
 
-import { useModalStore } from "../stores/modal";
-import { useEspeciesStore } from "../stores/species";
-import { useConsultaStore } from "../stores/consulta";
+import { useModalStore } from "@/stores/modal";
+import { useEspeciesStore } from "@/stores/species";
+import { useConsultaStore } from "@/stores/consulta";
 import { getFullImageUrl} from '@/helpers/'
 
 const modal = useModalStore();
