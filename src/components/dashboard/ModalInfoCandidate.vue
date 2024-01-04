@@ -124,7 +124,7 @@ const consulta = useCantidateStore();
   height: 100%;
   background-color: rgba(0, 0, 0, 0.5);
   overflow: auto;
-  z-index: 2;
+  z-index: 11000;
 }
 
 .modal__contenido {

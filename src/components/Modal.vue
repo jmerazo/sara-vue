@@ -127,6 +127,7 @@ const limpiarModal = ()=>{
   height: 100%;
   background-color: rgba(0, 0, 0, 0.5);
   overflow: auto;
+  z-index: 11000;
 }
 
 .modal__contenido {
@@ -142,6 +143,7 @@ const limpiarModal = ()=>{
   overflow-y: auto;
   transform: translate(-200%, -200%);
   transition: transform 10s ease-in-out;
+  z-index: 11000;
 }
 
 @media (min-width: 768px) {
