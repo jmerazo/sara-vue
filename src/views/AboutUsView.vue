@@ -4,6 +4,14 @@ import { usePageContent } from "../stores/page";
 
 const pageStore = usePageContent();
 
+onMounted(async () => {
+  await pageStore.fetchData();
+});
+
+function contenidoCompleto() {
+  // Reemplaza los saltos de línea con etiquetas <br>
+  return pageStore.contenidoNosotros[0].content.replace(/\n/g, '<br>');
+}
 </script>
 
 <template>
@@ -65,6 +73,14 @@ const pageStore = usePageContent();
       </section>
     </div>
   </main>
+  <section v-if="pageStore.contenidoNosotros.length > 0" class="contenedor proyecto">
+    <div class="proyecto__contenido">
+      <h2 class="proyecto__heading">{{ pageStore.contenidoNosotros[0].title }}</h2>
+      <p class="proyecto__texto">
+        <div v-html="contenidoCompleto()"></div>
+      </p>
+    </div>
+  </section>
   <div class="nosotros__imagenes">
     <img
       class="nosotros__img"

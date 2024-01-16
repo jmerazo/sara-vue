@@ -1,15 +1,18 @@
 import {ref} from 'vue'
 import {defineStore} from 'pinia'
 
+import algarroboImage from '@/assets/media/algarrobo.jpg';
+import nogalCafeteroImage from '@/assets/media/nogal_cafetero.jpg';
+import otroImage from '@/assets/media/pi3.jpg';
+
 
 export const useHomeStore = defineStore('home',()=>{
 
     const urlImagenesHome = ref([
-        {nombreEspecie:'Gualanday',url:'../../src/assets/media/algarrobo.jpg'},
-        {nombreEspecie:'Algarrobo',url:'../../src/assets/media/algarrobo.jpg'},
-        {nombreEspecie:'Nogal Cafetero',url:'../../src/assets/media/nogal_cafetero.jpg'},
-        {nombreEspecie:'NombreComun',url:'../../src/assets/media/pi3.jpg'},
-      
+        {nombreEspecie:'Gualanday',img: algarroboImage},
+        {nombreEspecie:'Algarrobo',img: nogalCafeteroImage},
+        {nombreEspecie:'Nogal Cafetero',img: nogalCafeteroImage},
+        {nombreEspecie:'NombreComun',img: otroImage},
     ])
 
     const colaboradores = ref([
