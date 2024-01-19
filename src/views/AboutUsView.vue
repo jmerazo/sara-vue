@@ -8,9 +8,12 @@ onMounted(async () => {
   await pageStore.fetchData();
 });
 
-function contenidoCompleto() {
+function contenidoCompleto(text) {
   // Reemplaza los saltos de línea con etiquetas <br>
-  return pageStore.contenidoNosotros[0].content.replace(/\n/g, '<br>');
+  var fixedText = "";
+  fixedText = text.replace(/\n/g, '<br>')
+  /* pageStore.contenidoNosotros[0].content.replace(/\n/g, '<br>'); */
+  return fixedText
 }
 </script>
 
@@ -73,14 +76,25 @@ function contenidoCompleto() {
       </section>
     </div>
   </main>
-  <section v-if="pageStore.contenidoNosotros.length > 0" class="contenedor proyecto">
-    <div class="proyecto__contenido">
-      <h2 class="proyecto__heading">{{ pageStore.contenidoNosotros[0].title }}</h2>
-      <p class="proyecto__texto">
-        <div v-html="contenidoCompleto()"></div>
+
+  <section class="proyectoctei" v-if="pageStore.contenidoNosotros.length > 0">
+    <div class="proyectoctei__contenido">
+      <h2 class="proyectoctei__heading">{{ pageStore.contenidoNosotros[0].title }}</h2>
+      <p class="proyectoctei__texto">
+        <div v-html="contenidoCompleto(pageStore.contenidoNosotros[0].content)"></div>
       </p>
     </div>
   </section>
+
+  <section class="financiadores" v-if="pageStore.contenidoNosotros.length > 0">
+    <div class="financiadores__contenido">
+      <h2 class="financiadores__heading">{{ pageStore.contenidoNosotros[7].title }}</h2>
+      <p class="financiadores__texto">
+        <div v-html="contenidoCompleto(pageStore.contenidoNosotros[7].content)"></div>
+      </p>
+    </div>
+  </section>
+  
   <div class="nosotros__imagenes">
     <img
       class="nosotros__img"
@@ -221,5 +235,21 @@ function contenidoCompleto() {
   .valores__contenido {
     grid-column: 2/3;
   }
+}
+
+/* proyecto_ctei */
+.proyectoctei {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 5rem 5rem;
+}
+
+/* financiadores */
+.financiadores {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 5rem 5rem;
 }
 </style>

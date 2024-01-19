@@ -73,6 +73,12 @@ export default {
     pageContentDelete(pid){
         return api.delete(`/page/content/${pid}`)
     },
+    pageCountVisit(code){
+        return api.get(`/page/count/${code}`)
+    },
+    pageTopSpecies(code){
+        return api.get(`/page/top_species`)
+    },
     getDownloadDataSpecie(code){
         return api.get(`especie_forestal/export/${code}`)
     },

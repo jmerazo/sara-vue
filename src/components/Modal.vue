@@ -83,7 +83,8 @@ const limpiarModal = ()=>{
           {{ especie.nom_comunes }}
         </h3>
         <p class="modal__texto">
-          {{ especie.nombre_cientifico}}
+          <span class="nombre__cientifico">{{ especie.nombre_cientifico_especie }}</span>
+          <span class="nombre__autor">{{ " " + especie.nombre_autor_especie }}</span>
         </p>
         <p class="modal__texto">
           {{ especie.familia}}
@@ -262,5 +263,14 @@ const limpiarModal = ()=>{
 .modal__imagen img{
   width: 500px;
   height: 375px;
+}
+
+.nombre__cientifico {
+    font-style: italic; /* Cursiva */
+    font-weight: bold; /* Negrita */
+}
+
+.nombre__autor {
+    font-weight: bold; /* Negrita */
 }
 </style>

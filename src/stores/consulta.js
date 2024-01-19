@@ -57,6 +57,7 @@ export const useConsultaStore = defineStore("consulta", () => {
     cargando.value = true;
     const { data } = await APIService.lookSpecie(cod_especie);
     especie.value = data;
+    APIService.pageCountVisit(cod_especie);
     cargando.value = false;
   }
 

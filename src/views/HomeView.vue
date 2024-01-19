@@ -1,22 +1,31 @@
 <script setup>
-import { onMounted, ref } from "vue";
+import { onMounted, ref, computed } from "vue";
+import { getFullImageUrl} from '@/helpers/'
 import { useGeoCandidateTrees } from "@/stores/candidate";
 import { useAverageSpecie } from "@/stores/average";
 import { useHomeStore } from "@/stores/home";
 import { usePageContent } from "../stores/page";
-
+import { useConsultaStore } from "../stores/consulta";
 
 const pageStore = usePageContent();
 const geoStore = useGeoCandidateTrees();
 const averageStore = useAverageSpecie();
 const homeStore = useHomeStore();
+const consulta = useConsultaStore();
+
+const consultar = (nombre_comun) => {
+  consulta.consulta.categoria = "Nombre Común";
+  consulta.consulta.vrBuscar = nombre_comun;
+  consulta.mostrarConsulta();
+};
 
 const mostrarTodo = ref(false)
 
 onMounted(async () => {
-  await geoStore.fetchData();
+/*   await geoStore.fetchData(); */
   await averageStore.fetchData();
   await pageStore.fetchData();
+  await homeStore.fetchData();
 });
 
 //top de especies
@@ -45,14 +54,14 @@ function contenidoResumido() {
       <!-- especie -->
       <div
         class="topEspecie__contenido"
-        v-for="(item, index) in homeStore.urlImagenesHome"
-        :key="index"
+        v-for="specie in homeStore.topSpecies" 
+        :key="specie.cod_especie"
       >
         <div
           class="topEspecie__contenido-imagen"
-          :style="{ backgroundImage: 'url(' + item.img + ')' }"
+          :style="{ backgroundImage: 'url(' + getFullImageUrl(specie.img_general) + ')' }"
         ></div>
-        <a class="topEspeice__enlace">{{ item.nombreEspecie }}</a>
+        <a class="topEspeice__enlace" @click="consultar(specie.cod_especie)">{{ specie.nom_comunes }}</a>
       </div>
       <!--fin especie -->
     </div>

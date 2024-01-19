@@ -22,7 +22,10 @@ defineProps({
 
     <div class="especie__informacion">
       <p class="especie__nombre-comun">{{ especie.nom_comunes }}</p>
-      <p class="especie__nombre-cientifico">{{ especie.nombre_cientifico }}</p>
+      <p class="especie__nombre-cientifico">
+          <span class="nombre__cientifico">{{ especie.nombre_cientifico_especie }}</span>
+          <span class="nombre__autor">{{ " " + especie.nombre_autor_especie }}</span>
+      </p>
       <p class="especie__familia">
         <span>Familia: </span>{{ especie.familia }}
       </p>
@@ -110,5 +113,12 @@ span {
 .especie__boton:hover {
   background-color: var(--primary-hover);
 }
+.nombre__cientifico {
+    font-style: italic; /* Cursiva */
+    font-weight: bold; /* Negrita */
+}
 
+.nombre__autor {
+    font-weight: bold; /* Negrita */
+}
 </style>
