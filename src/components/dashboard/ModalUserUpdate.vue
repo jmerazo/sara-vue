@@ -3,13 +3,13 @@ import { watch, computed, ref } from "vue";
 
 import { useModalStore } from "@/stores/modal";
 import { useUsersStore } from "@/stores/users";
-import { useAuthToken } from "@/stores/auth";
+import { useAuthTokenStore } from "@/stores/auth";
 import APIService from "../../services/APIService";
 import { useRouter } from "vue-router";
 
 
 const router = useRouter();
-const locates = useAuthToken();
+const locates = useAuthTokenStore();
 const modal = useModalStore();
 const usersStore = useUsersStore();
 const error = ref('')

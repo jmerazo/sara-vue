@@ -109,11 +109,7 @@ function createChart() {
     {
       name: "Altura comercial",
       value: commercialHeightSpecie.value,
-    },
-    {
-      name: "Altitud",
-      value: averageAltitude.value,
-    },
+    }
   ];
 
   const colors = d3
@@ -329,18 +325,22 @@ scrollToTop();
             <div class="estadistica">
               <div class="estadistica__contenido">
                 <span class="estadistica__titulo"
-                  >Alturas y altitud promedio de la especie</span
+                  >Altura total y comercial promedio de la especie</span
                 >
                 <div class="estadistica__grafico">
                   <div
                     class="grafico"
                     v-if="
                       !isNaN(Number(totalHeightSpecie)) ||
-                      !isNaN(Number(commercialHeightSpecie)) ||
-                      !isNaN(Number(averageAltitude))
+                      !isNaN(Number(commercialHeightSpecie))
                     "
                     id="chart"
                   ></div>
+                </div>
+                <div class="estadistica__contenido">
+                <span class="estadistica__titulo"
+                  >Altitud promedio de la especie: </span
+                ><span>{{ averageAltitude + "m" }}</span>
                 </div>
               </div>
             </div>

@@ -1,8 +1,13 @@
 import api from '../api/axios';
+import { useAuthTokenStore } from '../stores/auth';
+
 
 export default {
     getAuthToken(credentials){
         return api.post('/auth/token/', credentials)
+    },
+    refreshAuthToken(credentials){
+        return api.post('/auth/token/refresh/', credentials)
     },
     getSpecies(){
         return api.get('/especie_forestal')
@@ -44,7 +49,12 @@ export default {
         return api.get(`/glossary`)
     },
     getGeoCandidateTrees(){
-        return api.get('/candidate/geolocation')
+        const store = useAuthTokenStore();
+        return api.get('/candidate/geolocation', {
+            headers: {
+                Authorization: `Bearer ${store.accessToken}`
+            }
+        })
     },
     getAverageCandidateTrees(){
         return api.get('/candidate/average')
@@ -107,7 +117,12 @@ export default {
         return api.get('/candidates/trees')
     },
     getMonitoringData(){
-        return api.get('/monitoring/report/data')
+        const store = useAuthTokenStore();
+        return api.get('/monitoring/report/data', {
+            headers: {
+                Authorization: `Bearer ${store.accessToken}`
+            }
+        })
     },
     getSamplesData(){
         return api.get('/samples/report/data')

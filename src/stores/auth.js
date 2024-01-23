@@ -1,67 +1,73 @@
-import { onMounted, ref } from "vue";
-import { defineStore } from "pinia";
-import { useRouter } from "vue-router";
-import APIService from "../services/APIService";
+import { ref, onMounted } from 'vue';
+import { defineStore } from 'pinia';
+import { useRouter } from 'vue-router';
+import APIService from '../services/APIService';
 
-export const useAuthToken = defineStore("authToken", () => {
-  const router = useRouter();
-  const accessToken = ref(localStorage.getItem("access_token") || null);
-  const refreshToken = ref(localStorage.getItem("refresh_token") || null);
-  const userData = ref();
+export const useAuthTokenStore = defineStore('authToken', () => {
+  const accessToken = ref(null);
+  const refreshToken = ref(localStorage.getItem('refresh_token') || null);
+  const userData = ref(null);
   const errorAuth = ref(null);
   const authActive = ref(false);
 
   const departments = ref({});
   const cities = ref({});
 
+  const router = useRouter();
+  const isRehydrated = ref(false);
+
+  const rehydrateAuth = async () => {
+    if (refreshToken.value) {
+      console.log('rehydrate token: ', refreshToken.value)
+      try {
+        const response = await APIService.refreshAuthToken({ refresh: refreshToken.value });
+        if (response.status === 200 && response.data.access) {
+          accessToken.value = response.data.access;
+          userData.value = response.data.user_data;
+          authActive.value = true;
+          isRehydrated.value = true;
+        } else {
+          throw new Error('Failed to refresh token');
+        }
+      } catch (error) {
+        console.error('Error al rehidratar la autenticación:', error);
+        logout();  // Si hay un error, asegúrate de limpiar el estado
+      }
+    } else {
+      console.log('No refresh token available');
+    }
+  };
+
   const login = async (credentials) => {
     try {
       const response = await APIService.getAuthToken(credentials);
-      console.log('User data: ', response.data)
       if (response.status === 200) {
         accessToken.value = response.data.access;
         refreshToken.value = response.data.refresh;
-        localStorage.setItem("access_token", response.data.access);
-        localStorage.setItem("refresh_token", response.data.refresh);
-        localStorage.setItem("user_data", JSON.stringify(response.data.user_data));
         userData.value = response.data.user_data;
         authActive.value = true;
         errorAuth.value = null;
+        localStorage.setItem('refresh_token', response.data.refresh);
         return { success: true };
       } else {
-        errorAuth.value = "Credenciales incorrectas";
+        errorAuth.value = 'Credenciales incorrectas';
         return { success: false };
       }
     } catch (error) {
-      console.error("Error en el inicio de sesión:", error);
+      console.error('Error en el inicio de sesión:', error);
       errorAuth.value = error;
       return { success: false, error };
     }
   };
 
   const logout = () => {
-    localStorage.removeItem("hasReloaded");
+    localStorage.removeItem('refresh_token');
     accessToken.value = null;
     refreshToken.value = null;
-    localStorage.removeItem("access_token");
-    localStorage.removeItem("refresh_token");
+    userData.value = null;
     authActive.value = false;
-    router.push("/");
+    router.push('/');
   };
-
-  onMounted(async () => {
-    isAuth();
-
-    try {
-      const departmentsResponse = await APIService.getDepartments();
-      departments.value = departmentsResponse.data;
-
-      const citiesResponse = await APIService.getCities();
-      cities.value = citiesResponse.data;
-    } catch (error) {
-      console.error("Error al obtener datos: ", error);
-    }
-  });
 
   function isAuth() {
     const auth = accessToken.value;
@@ -71,17 +77,35 @@ export const useAuthToken = defineStore("authToken", () => {
       authActive.value = false;
     }
   }
+
+  onMounted(async () => {
+    isAuth();
+    await rehydrateAuth();     
+
+    try {
+      const departmentsResponse = await APIService.getDepartments();
+      departments.value = departmentsResponse.data;
+
+      const citiesResponse = await APIService.getCities();
+      cities.value = citiesResponse.data;
+    } catch (error) {
+      console.error('Error al obtener datos:', error);
+    }
+  });
+
   return {
     accessToken,
     refreshToken,
     userData,
     errorAuth,
     authActive,
-    useAuthToken,
+    useAuthTokenStore,
+    isRehydrated,
     departments,
     cities,
     login,
     logout,
     isAuth,
+    rehydrateAuth,
   };
 });

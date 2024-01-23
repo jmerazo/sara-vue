@@ -1,9 +1,9 @@
 <script setup>
 import { RouterLink } from "vue-router";
-import { useAuthToken } from "@/stores/auth";
+import { useAuthTokenStore } from "@/stores/auth";
 import { ref, onMounted, onBeforeUnmount } from 'vue';
 
-const storeAuth = useAuthToken();
+const storeAuth = useAuthTokenStore();
 
 const isFixed = ref(false);
 

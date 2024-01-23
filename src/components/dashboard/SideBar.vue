@@ -1,8 +1,8 @@
 <script setup>
 import { RouterLink } from "vue-router";
-import { useAuthToken } from "@/stores/auth";
+import { useAuthTokenStore } from "@/stores/auth";
 
-const store = useAuthToken();
+const store = useAuthTokenStore();
 const userDataString = localStorage.getItem("user_data");
 const userData = JSON.parse(userDataString);
 </script>
