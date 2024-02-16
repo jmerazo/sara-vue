@@ -47,6 +47,7 @@ export const useAuthTokenStore = defineStore('authToken', () => {
         authActive.value = true;
         errorAuth.value = null;
         localStorage.setItem('refresh_token', response.data.refresh);
+        localStorage.setItem('user_data', JSON.stringify(response.data.user_data));
         return { success: true };
       } else {
         errorAuth.value = 'Credenciales incorrectas';

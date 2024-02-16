@@ -5,6 +5,7 @@ import { useAuthTokenStore } from "@/stores/auth";
 const store = useAuthTokenStore();
 const userDataString = localStorage.getItem("user_data");
 const userData = JSON.parse(userDataString);
+console.log('userData: ', userData)
 </script>
 <template>
   <aside
