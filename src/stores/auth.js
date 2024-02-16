@@ -18,7 +18,6 @@ export const useAuthTokenStore = defineStore('authToken', () => {
 
   const rehydrateAuth = async () => {
     if (refreshToken.value) {
-      console.log('rehydrate token: ', refreshToken.value)
       try {
         const response = await APIService.refreshAuthToken({ refresh: refreshToken.value });
         if (response.status === 200 && response.data.access) {

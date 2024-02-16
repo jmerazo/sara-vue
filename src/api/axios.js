@@ -7,12 +7,11 @@ const api = axios.create({
 })
 
 /* api.interceptors.request.use(config => {
-    const store = useAuthTokenStore();
-    console.log('api store: ', store.refreshToken)
-    const accessToken = store.refreshToken;
+    const authStore = useAuthTokenStore();
+    const { accessToken } = authStore; // Usa destructuración para obtener accessToken
 
-    if (accessToken) {
-        config.headers.Authorization = `Bearer ${accessToken}`;
+    if (accessToken.value) {
+        config.headers.Authorization = `Bearer ${accessToken.value}`;
     }
 
     return config;

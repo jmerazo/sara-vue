@@ -216,6 +216,65 @@ const userData = JSON.parse(userDataString);
             class="nav-header navegacion__titulo"
             id="administracion"
           >
+            REGISTRAR
+          </li>
+
+          <RouterLink :to="{ name: 'add-candidates' }">
+            <li
+              v-if="
+                userData.rol == 'ADMINISTRADOR' &&
+                userData.is_superuser == 1 &&
+                userData.is_staff == 1
+              "
+              class="nav-item"
+            >
+              <a data-widget="pushmenu" href="#" class="nav-link enlace">
+                <img src="/icons/icon-add-evaluation.png" alt="users" />
+                <p>Evaluación</p>
+              </a>
+            </li>
+          </RouterLink>
+          <RouterLink :to="{ name: 'species' }">
+            <li
+              v-if="
+                userData.rol == 'ADMINISTRADOR' &&
+                userData.is_superuser == 1 &&
+                userData.is_staff == 1
+              "
+              class="nav-item"
+            >
+              <a data-widget="pushmenu" href="#" class="nav-link enlace">
+                <img src="/icons/icon-add-monitoring.png" alt="users" />
+                <p>Monitoreo</p>
+              </a>
+            </li>
+          </RouterLink>
+          <RouterLink :to="{ name: 'species' }">
+            <li
+              v-if="
+                userData.rol == 'ADMINISTRADOR' &&
+                userData.is_superuser == 1 &&
+                userData.is_staff == 1
+              "
+              class="nav-item"
+            >
+              <a data-widget="pushmenu" href="#" class="nav-link enlace">
+                <img src="/icons/icon-add-sample.png" alt="users" />
+                <p>Muestra</p>
+              </a>
+            </li>
+          </RouterLink>
+
+
+          <li
+            v-if="
+              userData.rol == 'ADMINISTRADOR' &&
+              userData.is_superuser == 1 &&
+              userData.is_staff == 1
+            "
+            class="nav-header navegacion__titulo"
+            id="administracion"
+          >
             ADMINISTRAR
           </li>
 

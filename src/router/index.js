@@ -90,6 +90,15 @@ const router = createRouter({
       }
     },
     {
+      path:'/add-candidates',
+      name:'add-candidates',
+      component: () => import('../views/dashboardviews/AddCandidateView.vue'),
+      meta: {
+        auth: true,
+        roles: ['ADMINISTRADOR', 'is_superuser', 'is_staff']
+      }
+    },
+    {
       path:'/monitoring-species',
       name:'monitoring-species',
       component: () => import('../views/dashboardviews/MonitoringSpecieView.vue'),

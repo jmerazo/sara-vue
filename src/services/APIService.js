@@ -1,73 +1,163 @@
 import api from '../api/axios';
 import { useAuthTokenStore } from '../stores/auth';
 
-
 export default {
+    /* ==================================================================================================================== */
+    /* ==================================================================================================================== */
+    // ENDPOINT →→ AUTHENTICATION
+    // Obtiene el token -- http://localhost:8000/api/auth/token
     getAuthToken(credentials){
         return api.post('/auth/token/', credentials)
     },
+    // Refresca el token -- http://localhost:8000/api/auth/refresh
     refreshAuthToken(credentials){
         return api.post('/auth/token/refresh/', credentials)
     },
+    /* ==================================================================================================================== */
+    /* ==================================================================================================================== */
+    // ENDPOINT →→ CRUD FORREST SPECIES
+    // Lista todas las especies registradas -- http://localhost:8000/api/species/
     getSpecies(){
-        return api.get('/especie_forestal')
+        return api.get('/species/') 
     },
+    // Crea una especie -- http://localhost:8000/api/species/ + data
     addForestSpecies(data){
-        return api.post(`/especie_forestal/`, data)
+        return api.post(`/species/`, data) 
     },
+    // Actualiza una especie -- http://localhost:8000/api/species/params_id/ + data
     updateForestSpecies(sid, data){
-        return api.put(`/especie_forestal/${sid}`, data)
+        return api.put(`/species/${sid}`, data) 
     },
+    // Elimina una especie -- http://localhost:8000/api/species/params_id/
     deleteSpecies(pk){
-        return api.delete(`/especie_forestal/${pk}`)
+        return api.delete(`/species/${pk}`) 
     },
+    // MORE FORREST SPECIES
+    // Busca una especie por su código -- http://localhost:8000/api/species/code/789
+    lookSpecie(code){
+        return api.get(`/species/search/code/${code}`) 
+    },
+    // SUGGERTS OR FILTERS
+    // Validar y eliminar -- http://localhost:8000/api/species/family/filter
     getFamilies(){
-        return api.get('especie_forestal/familia/filter')
+        return api.get('/species/family/filter')
     },
-    getSpeciesData(){
-        return api.get('/specie/report/data')
+    getFamiliesData(){
+        return api.get('/species/families')
     },
-    lookSpecie(nombre_comun){
-        return api.get(`/especie_forestal/search/nombre_comun/${nombre_comun}`)
-    },
+    // # Busca una especie por su nombre científico -- http://localhost:8000/api/species/search/scientific_name/Bauhinia%20tarapotensis%20Benth.
     lookScientificName(scientific_name){
-        return api.get(`/especie_forestal/search/scientificname/${scientific_name}`)
+        return api.get(`/species/search/scientific_name/${scientific_name}`) 
     },
-    lookMonitoringSpecie(cod_especie){
-        return api.get(`monitoring/search/specie/${cod_especie}`)
-    },
-    lookCandidateSpecie(nombre_comun){
-        return api.get(`specie/search/candidates/${nombre_comun}`)
-    },
-    lookMonitoringCandidate(id){
-        return api.get(`candidates/search/monitorings/${id}`)
-    },
+    // Retorna las especies buscadas por su nombre de familia -- http://localhost:8000/api/species/search/family/BIGNONIACEAE
     lookFamily(n_familia){
-        return api.get(`/especie_forestal/search/familia/${n_familia}`)
+        return api.get(`/species/search/family/${n_familia}`)
     },
-    getGlossary(){
-        return api.get(`/glossary`)
+    // Exporta en PDF el perfil de la especie forestal -- http://localhost:8000/api/species/perfil/export/789
+    getDownloadDataSpecie(code){
+        return api.get(`/species/profile/export/${code}`)
     },
+    // Retorna la cantidad realizada de monitoreos, muestras y evaluaciones -- http://localhost:8000/api/species/report/general
+    getSpeciesData(){
+        return api.get('/species/report/general')
+    },
+    // Busca y retorn los individuos evaluados de cada especie en base a su nombre común -- http://localhost:8000/api/species/candidates/search/name_specie
+    lookCandidateSpecie(nombre_comun){
+        return api.get(`/species/candidates/search/${nombre_comun}`)
+    },
+
+
+    /* ==================================================================================================================== */
+    /* ==================================================================================================================== */
+    // ENDPOINT →→ CANDIDATES TREES
+    // Retorna los individuos con sus coordenadas y datos de ubicación -- http://localhost:8000/api/candidates/geolocation
     getGeoCandidateTrees(){
+        return api.get('/candidates/geolocation')
+    },
+    //Retorna datos de altura total, comercial, cobertura, altitud para promedios -- http://localhost:8000/api/candidates/average
+    getAverageCandidateTrees(){
+        return api.get('/candidates/average')
+    },
+    // (PROTECT) Lista los individuos evaluados totales -- http://localhost:8000/api/candidates/trees
+    getAssessmentData(){
         const store = useAuthTokenStore();
-        return api.get('/candidate/geolocation', {
+        return api.get('/candidates/trees', {
             headers: {
                 Authorization: `Bearer ${store.accessToken}`
             }
         })
     },
-    getAverageCandidateTrees(){
-        return api.get('/candidate/average')
+    // (PROTECT) Exporta en excel los individuos evaluados totales -- http://localhost:8000/api/candidates/export/all
+    candidateExportXLSX(){
+        const store = useAuthTokenStore();
+        return api.get('/candidates/export/all', {
+            headers: {
+                Authorization: `Bearer ${store.accessToken}`
+            }
+        })
     },
-    getValuesByDepartment(){
-        return api.get('/monitoring/report/general/total')
+    /* ==================================================================================================================== */
+    /* ==================================================================================================================== */
+    // ENDPOINT →→ MONITORING
+    // (PROTECT) Retorna la cantidad mensual de monitoreos realizados, pendientes y total -- http://localhost:8000/api/monitoring/report/month
+    lookMonitoringMonth(){
+        const store = useAuthTokenStore();
+        return api.get(`monitoring/report/month`, {
+            headers: {
+                Authorization: `Bearer ${store.accessToken}`
+            }
+        })
     },
+    // (PROTECT) Retorna la cantidad mensual de monitoreos realizados, pendientes y total por municipios -- http://localhost:8000/api/monitoring/report/month/locates
     getValuesByDepartmentLocates(){
-        return api.get('/monitoring/report/month/locates')
+        const store = useAuthTokenStore();
+        return api.get('/monitoring/report/month/locates', {
+            headers: {
+                Authorization: `Bearer ${store.accessToken}`
+            }
+        })
     },
-    getSamplesReport(){
-        return api.get('/samples/report/general')
+    // (PROTECT) Retorna la cantidad mensual de monitoreos realizados, pendientes y total por municipios -- http://localhost:8000/api/monitoring/report/general/total
+    getValuesByDepartment(){
+        const store = useAuthTokenStore();
+        return api.get('/monitoring/report/general/total', {
+            headers: {
+                Authorization: `Bearer ${store.accessToken}`
+            }
+        })
     },
+    // (PROTECT) Retorna la cantidad mensual de monitoreos realizados, pendientes y total por municipios -- http://localhost:8000/api/monitoring/data
+    getMonitoringData(){
+        const store = useAuthTokenStore();
+        return api.get('/monitoring/report/data', {
+            headers: {
+                Authorization: `Bearer ${store.accessToken}`
+            }
+        })
+    },
+    // Retorna el listado de monitoreos del individuo consultado -- http://localhost:8000/api/monitoring/search/code
+    lookMonitoringCandidate(id){
+        return api.get(`/monitoring/candidate/search/${id}`)
+    },
+    // Retorna el listado de monitoreos por la especie consultada -- http://localhost:8000/api/monitoring/specie/search/code_especie
+    lookMonitoringSpecie(cod_especie){
+        return api.get(`/monitoring/specie/search/${cod_especie}`)
+    },
+    /* ==================================================================================================================== */
+    /* ==================================================================================================================== */
+
+
+    /* ==================================================================================================================== */
+    /* ==================================================================================================================== */
+    // ENDPOINT →→ GLOSSARY
+    // Retorna el listado de palabras con su significado
+    getGlossary(){
+        return api.get(`/glossary`)
+    },
+    /* ==================================================================================================================== */
+    /* ==================================================================================================================== */
+    // ENDPOINT →→ PAGE
+    // CRUD para listar el contenido de la página
     getPageContent(){
         return api.get('/page/content')
     },
@@ -89,9 +179,25 @@ export default {
     pageTopSpecies(code){
         return api.get(`/page/top_species`)
     },
-    getDownloadDataSpecie(code){
-        return api.get(`especie_forestal/export/${code}`)
+    /* ==================================================================================================================== */
+    /* ==================================================================================================================== */
+    // ENDPOINT →→ SAMPLES
+    // (PROTECT) Exporta todas las muestras registradas -- http://localhost:8000/api/samples/report/data
+    getSamplesData(){
+        const store = useAuthTokenStore();
+        return api.get('/samples/report/data', {
+            headers: {
+                Authorization: `Bearer ${store.accessToken}`
+            }
+        })
     },
+    // Retorna el total de muestras por municipio -- http://localhost:8000/api/samples/report/general
+    getSamplesReport(){
+        return api.get('/samples/report/general')
+    },
+    /* ==================================================================================================================== */
+    /* ==================================================================================================================== */
+    // ENDPOINT →→ USERS
     getUsers(){
         return api.get('/users/')
     },
@@ -113,19 +219,4 @@ export default {
     getCities(){
         return api.get(`/cities/`)
     },
-    getAssessmentData(){
-        return api.get('/candidates/trees')
-    },
-    getMonitoringData(){
-        const store = useAuthTokenStore();
-        return api.get('/monitoring/report/data', {
-            headers: {
-                Authorization: `Bearer ${store.accessToken}`
-            }
-        })
-    },
-    getSamplesData(){
-        return api.get('/samples/report/data')
-    },
-
 }
