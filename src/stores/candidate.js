@@ -12,6 +12,7 @@ export const useGeoCandidateTrees = defineStore('geoCandidateTrees', () => {
     const coordinatesKML = ref([])
     const departments = ref([])
     const cities = ref([])
+    const candidates = ref([])
 
     const fetchData = async () => {
         if (!isDataLoaded) {
@@ -34,6 +35,21 @@ export const useGeoCandidateTrees = defineStore('geoCandidateTrees', () => {
             }));
         }
     }
+
+    const addCandidate = async (data) => {
+      try {
+        const response = await APIService.addCandidate(data);
+    
+        if (response.status === 200) {
+          // La respuesta del APIService fue satisfactoria
+          candidates.value.push(data); // Agrega el nuevo objeto al array
+        } else {
+          console.error('Error al agregar la especie: ', response.statusText);
+        }
+      } catch (error) {
+        console.error('Error al comunicarse con el servidor: ', error);
+      }
+    };  
 
     // Función para calcular el Convex Hull utilizando el algoritmo de Jarvis March
     function convexHullJarvisMarch(points) {
@@ -243,6 +259,7 @@ export const useGeoCandidateTrees = defineStore('geoCandidateTrees', () => {
         geoDataNew,
         coordinatesPolygon,
         coordinatesKML,
+        addCandidate,
         departments,
         cities,
         fetchData,

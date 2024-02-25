@@ -5,7 +5,7 @@ import { useAuthTokenStore } from "@/stores/auth";
 const store = useAuthTokenStore();
 const userDataString = localStorage.getItem("user_data");
 const userData = JSON.parse(userDataString);
-console.log('userData: ', userData)
+
 </script>
 <template>
   <aside
@@ -103,42 +103,7 @@ console.log('userData: ', userData)
               </a>
             </li>
           </RouterLink>
-          <!-- <li class="nav-item">
-            <a href="#" class="nav-link">
-              <i class="nav-icon far fa-image"></i>
-              <p>Galería</p>
-            </a>
-          </li> -->
 
-          <!-- <li class="nav-item">
-            <a href="#" class="nav-link">
-              <i class="nav-icon far fa-envelope"></i>
-              <p>
-                Correo Sara
-                <i class="fas fa-angle-left right"></i>
-              </p>
-            </a>
-            <ul class="nav nav-treeview">
-              <li class="nav-item">
-                <a href="#" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Recibidos</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="#" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Enviados</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="#" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Redactar</p>
-                </a>
-              </li>
-            </ul>
-          </li> -->
           <li class="nav-header" id="reportes">REPORTES</li>
 
           <RouterLink :to="{ name: 'assessment' }">
@@ -357,6 +322,15 @@ console.log('userData: ', userData)
 }
 #sidebar {
   position: fixed;
+  max-height: 100vh; /* Altura máxima basada en la altura de la ventana del navegador */
+  overflow-y: auto; /* Habilita el desplazamiento vertical si el contenido excede la altura máxima */
+}
+
+/* Estilos adicionales para responsividad */
+@media (max-width: 768px) {
+  .sidebar {
+    max-height: 60vh; /* Puedes ajustar la altura máxima para dispositivos móviles */
+  }
 }
 #cerrar.cerrar {
   color: var(--blanco);

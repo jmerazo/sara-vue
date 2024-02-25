@@ -87,6 +87,9 @@ export default {
             }
         })
     },
+    addCandidate(data){
+        return api.post(`/candidates/trees`, data) 
+    },
     // (PROTECT) Exporta en excel los individuos evaluados totales -- http://localhost:8000/api/candidates/export/all
     candidateExportXLSX(){
         const store = useAuthTokenStore();
