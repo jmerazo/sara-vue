@@ -1,22 +1,21 @@
 <script setup>
 import { RouterLink } from "vue-router";
-import { useAuthToken } from "../../stores/auth";
+import { useAuthTokenStore } from "@/stores/auth";
 
-const store = useAuthToken();
+const store = useAuthTokenStore();
 const userDataString = localStorage.getItem("user_data");
 const userData = JSON.parse(userDataString);
+
 </script>
 <template>
-  <aside class="main-sidebar sidebar-dark-primary elevation-4 rounded">
+  <aside
+    class="main-sidebar sidebar-dark-primary elevation-4 rounded"
+    id="sidebar"
+  >
     <!-- Brand Logo -->
-    <a href="#" class="brand-link">
-      <img
-        src="@/adminlte/img/user.jpg"
-        alt="AdminLTE Logo"
-        class="brand-image img-circle elevation-3"
-        style="opacity: 0.8"
-      />
-      <span class="brand-text font-weight-light text-ellipsis">{{
+    <a href="#" class="brand-link enlace center">
+      <img class="user" src="/icons/user.png" alt="mapa" />
+      <span class="brand-text font-weight-light text-ellipsis my-2">{{
         userData.first_name + " " + userData.last_name
       }}</span>
     </a>
@@ -35,16 +34,17 @@ const userData = JSON.parse(userDataString);
                with font-awesome or any other icon font library -->
           <RouterLink :to="{ name: 'panel' }">
             <li class="nav-item">
-              <a href="#" class="nav-link">
-                <i class="nav-icon fas fa-tachometer-alt"></i>
+              <a data-widget="pushmenu" href="#" class="nav-link enlace">
+                <img src="/icons/icono-panel.png" alt="panel" />
+
                 <p>Panel Principal</p>
               </a>
             </li>
           </RouterLink>
 
           <li class="nav-item">
-            <a href="#" class="nav-link">
-              <i class="nav-icon fas fa-tree"></i>
+            <a href="#" class="nav-link enlace">
+              <img src="/icons/icon-arbol.png" alt="especies" />
               <p>
                 Especies
                 <i class="fas fa-angle-left right"></i>
@@ -53,7 +53,7 @@ const userData = JSON.parse(userDataString);
             <ul class="nav nav-treeview">
               <RouterLink :to="{ name: 'familias' }">
                 <li class="nav-item">
-                  <a href="#" class="nav-link">
+                  <a data-widget="pushmenu" href="#" class="nav-link">
                     <i class="far fa-circle nav-icon"></i>
                     <p>Familias</p>
                   </a>
@@ -61,7 +61,7 @@ const userData = JSON.parse(userDataString);
               </RouterLink>
               <RouterLink :to="{ name: 'especies' }">
                 <li class="nav-item">
-                  <a href="#" class="nav-link">
+                  <a data-widget="pushmenu" href="#" class="nav-link">
                     <i class="far fa-circle nav-icon"></i>
                     <p>Especies</p>
                   </a>
@@ -70,65 +70,32 @@ const userData = JSON.parse(userDataString);
             </ul>
           </li>
           <li class="nav-item">
-            <a href="#" class="nav-link">
-              <i class="nav-icon fas fa-edit"></i>
+            <a href="#" class="nav-link enlace">
+              <img src="/icons/icono-publicaciones.png" alt="publicaciones" />
+
               <p>
                 Publicaciones
                 <i class="fas fa-angle-left right"></i>
               </p>
             </a>
             <ul class="nav nav-treeview">
-              <li class="nav-item">
-                <a href="#" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Noticias</p>
-                </a>
-              </li>
               <RouterLink :to="{ name: 'glossary' }">
                 <li class="nav-item">
-                  <a href="#" class="nav-link">
+                  <a data-widget="pushmenu" href="#" class="nav-link">
                     <i class="far fa-circle nav-icon"></i>
                     <p>Glosario</p>
                   </a>
                 </li>
               </RouterLink>
-              <li class="nav-item">
-                <a href="#" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Notificaciones</p>
-                </a>
-              </li>
             </ul>
           </li>
-          <li class="nav-item">
-            <a href="#" class="nav-link">
-              <i class="nav-icon fas fa-table"></i>
-              <p>
-                Tablas
-                <i class="fas fa-angle-left right"></i>
-              </p>
-            </a>
-            <ul class="nav nav-treeview">
-              <li class="nav-item">
-                <a href="#" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Crear especie</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="#" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Crear familia</p>
-                </a>
-              </li>
-            </ul>
-          </li>
-          <li class="nav-header font-bold bg-white">EVENTOS</li>
+
+          <li class="nav-header" id="eventos">EVENTOS</li>
 
           <RouterLink :to="{ name: 'calendar' }">
             <li class="nav-item">
-              <a href="#" class="nav-link">
-                <i class="nav-icon far fa-calendar-alt"></i>
+              <a data-widget="pushmenu" href="#" class="nav-link enlace">
+                <img src="/icons/icono-calendario.png" alt="calendario" />
                 <p>
                   Calendario ambiental
                   <span class="badge badge-info right">1</span>
@@ -136,48 +103,14 @@ const userData = JSON.parse(userDataString);
               </a>
             </li>
           </RouterLink>
-          <li class="nav-item">
-            <a href="#" class="nav-link">
-              <i class="nav-icon far fa-image"></i>
-              <p>Galería</p>
-            </a>
-          </li>
-         
-          <!-- <li class="nav-item">
-            <a href="#" class="nav-link">
-              <i class="nav-icon far fa-envelope"></i>
-              <p>
-                Correo Sara
-                <i class="fas fa-angle-left right"></i>
-              </p>
-            </a>
-            <ul class="nav nav-treeview">
-              <li class="nav-item">
-                <a href="#" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Recibidos</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="#" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Enviados</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="#" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Redactar</p>
-                </a>
-              </li>
-            </ul>
-          </li> -->
-          <li class="nav-header font-bold bg-white">REPORTES</li>
+
+          <li class="nav-header" id="reportes">REPORTES</li>
 
           <RouterLink :to="{ name: 'assessment' }">
             <li class="nav-item">
-              <a href="#" class="nav-link">
-                <font-awesome-icon :icon="['fas', 'list-check']" />
+              <a data-widget="pushmenu" href="#" class="nav-link enlace">
+                <img src="/icons/icono-evalucacion.png" alt="" />
+
                 <p>Evaluaciones realizadas</p>
               </a>
             </li>
@@ -185,8 +118,8 @@ const userData = JSON.parse(userDataString);
 
           <RouterLink :to="{ name: 'monitoring_data' }">
             <li class="nav-item">
-              <a href="#" class="nav-link">
-                <font-awesome-icon :icon="['fas', 'folder-tree']" />
+              <a data-widget="pushmenu" href="#" class="nav-link enlace">
+                <img src="/icons/icon-arbol-lupa.png" alt="" />
                 <p>Monitoreos realizados</p>
               </a>
             </li>
@@ -194,8 +127,8 @@ const userData = JSON.parse(userDataString);
 
           <RouterLink :to="{ name: 'samples_data' }">
             <li class="nav-item">
-              <a href="#" class="nav-link">
-                <font-awesome-icon :icon="['fas', 'chart-simple']" />
+              <a data-widget="pushmenu" href="#" class="nav-link enlace">
+                <img src="/icons/icon-muestra.jpg" alt="" />
                 <p>Muestras realizadas</p>
               </a>
             </li>
@@ -210,8 +143,8 @@ const userData = JSON.parse(userDataString);
               "
               class="nav-item"
             >
-              <a href="#" class="nav-link">
-                <font-awesome-icon :icon="['fab', 'pagelines']" />
+              <a data-widget="pushmenu" href="#" class="nav-link enlace">
+                <img src="/icons/icon-arbol.png" alt="especies" />
                 <p>Especies forestales</p>
               </a>
             </li>
@@ -225,16 +158,16 @@ const userData = JSON.parse(userDataString);
               "
               class="nav-item"
             >
-              <a href="#" class="nav-link">
-                <font-awesome-icon :icon="['fab', 'pagelines']" />
+              <a data-widget="pushmenu" href="#" class="nav-link enlace">
+                <img src="/icons/icono-data.png" alt="especies" />
                 <p>Datos generales especies</p>
               </a>
             </li>
           </RouterLink>
           <RouterLink :to="{ name: 'map-general' }">
             <li class="nav-item">
-              <a href="#" class="nav-link">
-                <font-awesome-icon :icon="['fas', 'map-location']" />
+              <a data-widget="pushmenu" href="#" class="nav-link enlace">
+                <img src="/icons/icono-mapa.png" alt="mapa" />
                 <p>Mapa General</p>
               </a>
             </li>
@@ -246,9 +179,69 @@ const userData = JSON.parse(userDataString);
               userData.is_superuser == 1 &&
               userData.is_staff == 1
             "
-            class="nav-header font-bold bg-white"
+            class="nav-header navegacion__titulo"
+            id="administracion"
           >
-            ADMINISTRACIÓN
+            REGISTRAR
+          </li>
+
+          <RouterLink :to="{ name: 'add-candidates' }">
+            <li
+              v-if="
+                userData.rol == 'ADMINISTRADOR' &&
+                userData.is_superuser == 1 &&
+                userData.is_staff == 1
+              "
+              class="nav-item"
+            >
+              <a data-widget="pushmenu" href="#" class="nav-link enlace">
+                <img src="/icons/icon-add-evaluation.png" alt="users" />
+                <p>Evaluación</p>
+              </a>
+            </li>
+          </RouterLink>
+          <RouterLink :to="{ name: 'species' }">
+            <li
+              v-if="
+                userData.rol == 'ADMINISTRADOR' &&
+                userData.is_superuser == 1 &&
+                userData.is_staff == 1
+              "
+              class="nav-item"
+            >
+              <a data-widget="pushmenu" href="#" class="nav-link enlace">
+                <img src="/icons/icon-add-monitoring.png" alt="users" />
+                <p>Monitoreo</p>
+              </a>
+            </li>
+          </RouterLink>
+          <RouterLink :to="{ name: 'species' }">
+            <li
+              v-if="
+                userData.rol == 'ADMINISTRADOR' &&
+                userData.is_superuser == 1 &&
+                userData.is_staff == 1
+              "
+              class="nav-item"
+            >
+              <a data-widget="pushmenu" href="#" class="nav-link enlace">
+                <img src="/icons/icon-add-sample.png" alt="users" />
+                <p>Muestra</p>
+              </a>
+            </li>
+          </RouterLink>
+
+
+          <li
+            v-if="
+              userData.rol == 'ADMINISTRADOR' &&
+              userData.is_superuser == 1 &&
+              userData.is_staff == 1
+            "
+            class="nav-header navegacion__titulo"
+            id="administracion"
+          >
+            ADMINISTRAR
           </li>
 
           <RouterLink :to="{ name: 'users' }">
@@ -260,8 +253,8 @@ const userData = JSON.parse(userDataString);
               "
               class="nav-item"
             >
-              <a href="#" class="nav-link">
-                <font-awesome-icon :icon="['fas', 'users-gear']" />
+              <a data-widget="pushmenu" href="#" class="nav-link enlace">
+                <img src="/icons/icono-users.png" alt="users" />
                 <p>Usuarios</p>
               </a>
             </li>
@@ -275,12 +268,18 @@ const userData = JSON.parse(userDataString);
               "
               class="nav-item"
             >
-              <a href="#" class="nav-link">
-                <font-awesome-icon :icon="['fas', 'clipboard-check']" />
+              <a data-widget="pushmenu" href="#" class="nav-link enlace">
+                <img src="/icons/tabla-especie.png" alt="users" />
                 <p>Especies forestales</p>
               </a>
             </li>
           </RouterLink>
+
+          <li class="nav-item">
+            <a @click="store.logout()" class="nav-link  enlace cerrar " href="#" id="cerrar">
+              <img src="/icons/salir.png" alt="users" /> <p>Cerrar sesión</p></a
+            >
+          </li>
         </ul>
       </nav>
     </div>
@@ -291,15 +290,64 @@ const userData = JSON.parse(userDataString);
 @import url("@/adminlte/dist/css/adminlte.min.css");
 @import url("@/adminlte/plugins/fontawesome-free/css/all.min.css");
 @import url("@/adminlte/plugins/ekko-lightbox/ekko-lightbox.css");
-.brand-link {
+
+
+.enlace {
   display: flex;
-  align-items: center;
+  margin: 0;
+  padding: 0;
+  color: var(--blanco) !important;
+  font-size: 1rem;
+}
+.enlace img {
+  width: 1.5rem;
+}
+@media (min-width:1440px){
+  .enlace{
+    font-size: 1.1rem;
+  }
+}
+#administracion,
+#reportes,
+#eventos {
+  color: var(--blanco);
+  background-color: var(--primary);
+  text-align: center;
+  padding: 0.3rem;
+  font-weight: 700;
+  margin: 1rem 0;
+}
+.enlace .user {
+  width: 3rem;
+}
+#sidebar {
+  position: fixed;
+  max-height: 100vh; /* Altura máxima basada en la altura de la ventana del navegador */
+  overflow-y: auto; /* Habilita el desplazamiento vertical si el contenido excede la altura máxima */
 }
 
-.brand-text {
-  flex: 1;
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
+/* Estilos adicionales para responsividad */
+@media (max-width: 768px) {
+  .sidebar {
+    max-height: 60vh; /* Puedes ajustar la altura máxima para dispositivos móviles */
+  }
 }
+#cerrar.cerrar {
+  color: var(--blanco);
+  border: 1px solid var(--blanco);
+  width: auto;
+  padding: 0.3rem;
+  margin-top: 1.5rem;
+}
+#cerrar.cerrar:hover {
+  color: var(--negro)!important;
+  background-color: var(--blanco);
+}
+@media (min-width:768px){
+  #cerrar.cerrar {
+  
+  margin-top: 4rem;
+}
+}
+
 </style>

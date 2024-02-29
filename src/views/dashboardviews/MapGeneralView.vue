@@ -1,18 +1,18 @@
 <script setup>
-import { onMounted, ref, computed } from 'vue';
-import RenderGeo from '../../components/RenderGeoMap.vue'
-import { useGeoCandidateTrees } from '../../stores/candidate'
-import { useEspeciesStore } from '../../stores/species'
-import { locatesColombia } from "../../stores/locates";
+import { onMounted, ref, computed } from "vue";
+import RenderGeo from "@/components/RenderGeoMap.vue";
+import { useGeoCandidateTrees } from "@/stores/candidate";
+import { useEspeciesStore } from "@/stores/species";
+import { locatesColombia } from "@/stores/locates";
 
 const locates = locatesColombia();
 const geoStore = useGeoCandidateTrees();
 const especies = useEspeciesStore();
 
 const renderGeoMapRef = ref(null);
-const codeFind = ref('');
-const department = ref({ code: '', name: '' });
-const city = ref('');
+const codeFind = ref("");
+const department = ref({ code: "", name: "" });
+const city = ref("");
 
 onMounted(async () => {
   await geoStore.fetchData();
@@ -25,10 +25,14 @@ function callOnlyPerimeter() {
 }
 
 const filterGeoData = () => {
-/*   console.log('department: ', department.value.name, " city: ", city.value) */
-  geoStore.filterGeo(department.value.name, city.value, codeFind.value)
-  geoStore.calculatePerimeterCoordinates(department.value.name, city.value, codeFind.value)
-}
+  /*   console.log('department: ', department.value.name, " city: ", city.value) */
+  geoStore.filterGeo(department.value.name, city.value, codeFind.value);
+  geoStore.calculatePerimeterCoordinates(
+    department.value.name,
+    city.value,
+    codeFind.value
+  );
+};
 
 const filteredCities = computed(() => {
   if (department.value.code) {
@@ -41,106 +45,229 @@ const filteredCities = computed(() => {
 });
 
 function delParameters() {
-  codeFind.value = '';
-  department.value = { code: '', name: '' };
-  city.value = '';
+  codeFind.value = "";
+  department.value = { code: "", name: "" };
+  city.value = "";
 }
 
-function execDeleteParameter(){
+function execDeleteParameter() {
   delParameters();
   geoStore.deleteFilterGeo();
 }
 </script>
 
 <template>
-    <div class="shadow-lg bg-gray-50 p-2 rounded-lg mb-2 mt-2">
-        <div class="text-center">
-            <h1 class="font-bold text-lg my-auto mb-3">MAPA GENERAL DE LAS ESPECIES FORESTALES</h1>
-        </div>
-        <div class="space-y-4 mb-5">
-          <label class="block text-black uppercase font-bold" for="parametro">
-            <font-awesome-icon :icon="['fas', 'filter']" class="mr-2 ml-2" />
-            Filtrar especie
-          </label>
-
-          <div class="flex custom-select">
-            <!-- departamento -->
-              <select
-                class="text-lg p-3 w-full rounded-lg focus:outline-none flex-1"
-                id="department"
-                v-model="department"
-                @change="filterGeoData"
-              >
-                <option :value="{ code: '', name: '' }" disabled>Seleccione un departamento...</option>
-                <option
-                  v-for="loc in locates.departments"
-                  :key="loc.id"
-                  :value="{ code: loc.code, name: loc.name }"
-                >
-                  {{ loc.name }}
-                </option>
-              </select>
-
-              <!-- ciudad -->
-              <div v-if="filteredCities.length > 0">
-                <select
-                  class="text-lg p-3 w-full rounded-lg focus:outline-none flex-1"
-                  id="city"
-                  v-model="city"
-                  @change="filterGeoData"
-                >
-                  <option value="" disabled selected>Seleccione un municipio...</option>
-                  <option
-                    v-for="city in filteredCities"
-                    :key="city.id"
-                    :value="city.name"
-                  >
-                    {{ city.name }}
-                  </option>
-                </select>
-              </div>
-
-            <select
-              id="especie"
-              class="text-lg p-3 w-full rounded-lg focus:outline-none flex-1"
-              @change="filterGeoData"
-              v-model="codeFind"
+  <div class="contenedor">
+    <h1 class="reporte__heading">
+      Mapa general de especies forestales
+    </h1>
+    <hr>
+    <div class="mapa__grid">
+      <div class="mapaOpciones">
+        <fieldset class="menu">
+          <legend class="menu__titulo">Filtrar</legend>
+          <!-- departamento -->
+          <select
+            class="filtro__select"
+            id="department"
+            v-model="department"
+            @change="filterGeoData"
+          >
+            <option :value="{ code: '', name: '' }" disabled>
+              Seleccione un departamento...
+            </option>
+            <option
+              v-for="loc in locates.departments"
+              :key="loc.id"
+              :value="{ code: loc.code, name: loc.name }"
             >
-              <option value="" selected disabled>Seleccione una especie...</option>
+              {{ loc.name }}
+            </option>
+          </select>
+
+          <!-- ciudad -->
+          <div v-if="filteredCities.length > 0">
+            <select
+              class="filtro__select"
+              id="city"
+              v-model="city"
+              @change="filterGeoData"
+            >
+              <option value="" disabled selected>
+                Seleccione un municipio...
+              </option>
               <option
-                v-for="especie in especies.uniqueNomComunes"
-                :key="especie.cod_especie"
-                :value="especie.cod_especie"
+                v-for="city in filteredCities"
+                :key="city.id"
+                :value="city.name"
               >
-                {{ especie.nom_comunes + " | " + especie.nombre_cientifico }}
+                {{ city.name }}
               </option>
             </select>
-<!--             <button type="submit" class="btn-form-search-header cursor-pointer font-bold rounded-lg pl-2 pr-2 ml-3" @click="filterGeoData()"><font-awesome-icon :icon="['fas', 'filter']" class="mr-2"/> Filtrar</button>
- -->            <button type="submit" class="btn-form-search-header cursor-pointer font-bold rounded-lg pl-2 pr-2 ml-3" @click="execDeleteParameter"><font-awesome-icon :icon="['fas', 'filter-circle-xmark']" class="mr-2"/> Eliminar filtro</button>
-            <button type="submit" class="btn-form-search-header cursor-pointer font-bold rounded-lg pl-2 pr-2 ml-3" @click="geoStore.exportToKML(geoStore.coordinatesKML)"><font-awesome-icon :icon="['fas', 'arrows-to-eye']" class="mr-2"/> Exportar KML/KMZ</button>
-            <button type="submit" class="btn-form-search-header cursor-pointer font-bold rounded-lg pl-2 pr-2 ml-3" @click="callOnlyPerimeter"><font-awesome-icon :icon="['fas', 'draw-polygon']" class="mr-2"/> Perímetro</button>
           </div>
-        </div>      
+          <!-- especie -->
+          <select
+            id="especie"
+            class="filtro__select"
+            @change="filterGeoData"
+            v-model="codeFind"
+          >
+            <option value="" selected disabled>
+              Seleccione una especie...
+            </option>
+            <option
+              v-for="especie in especies.uniqueNomComunes"
+              :key="especie.cod_especie"
+              :value="especie.cod_especie"
+            >
+              {{ especie.nom_comunes + " | " + especie.nombre_cientifico }}
+            </option>
+          </select>
+          <div class="menu__botones">
+            <button
+              type="submit"
+              class="filtro__boton"
+              @click="execDeleteParameter"
+            >
+              <font-awesome-icon
+                :icon="['fas', 'filter-circle-xmark']"
+                class="mr-2"
+              />
+              Eliminar filtro
+            </button>
+          </div>
+
+          <!-- meun exportar -->
+        </fieldset>
+        <fieldset class="menu">
+          <legend class="menu__titulo">Opciones</legend>
+          <div class="menu__botones">
+            <button
+              type="submit"
+              class="menu__boton"
+              @click="geoStore.exportToKML(geoStore.coordinatesKML)"
+            >
+              <font-awesome-icon
+                :icon="['fas', 'arrows-to-eye']"
+                class="mr-2"
+              />
+              Exportar KML/KMZ
+            </button>
+            <button
+              type="submit"
+              class="menu__boton"
+              @click="callOnlyPerimeter"
+            >
+              <font-awesome-icon :icon="['fas', 'draw-polygon']" class="mr-2" />
+              Ver Perímetro
+            </button>
+          </div>
+        </fieldset>
+      </div>
+      <div class="mapa" >
         <RenderGeo ref="renderGeoMapRef"/>
-    </div>   
+      </div>
+    </div>
+  </div>
 </template>
 
 <style scoped>
-/* Estilos para el componente */
-.custom-select {
+.reporte__heading {
+  font-size: 1rem;
+  margin: 2rem 0 1rem 0;
+}
+@media (min-width: 768px) {
+  .reporte__heading {
+    font-size: 1.5rem;
+    margin: 3rem 0 2rem 0;
+  }
+}
+.mapa__grid {
+  display: grid;
+  margin-top: 1rem;
+}
+
+@media (min-width: 1440px) {
+  .mapa__grid {
+    grid-template-columns: 3fr 1fr;
+    gap: 2rem;
+  }
+  .mapa {
+    grid-row: 1/3;
+  }
+}
+.menu {
+  border: 1px solid var(--primary);
+  margin-bottom: 1rem;
+  border-radius: 5px;
+}
+.menu__titulo {
+  background-color: var(--primary);
+  width: 50%;
+  text-align: center;
+  color: var(--blanco);
+  text-transform: uppercase;
+  font-weight: 700;
+  padding: 0.1rem;
+  font-size: 0.9rem;
+  margin-bottom: 0.1rem;
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
+}
+
+.menu__botones {
+  margin: 0.5rem 0 0 0;
   display: flex;
-  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
 }
 
-/* Estilos para el select */
-select {
-  padding: 10px;
-  font-family: inherit;
+.menu__boton,
+.filtro__boton {
+  background-color: var(--secondary);
+  color: var(--blanco);
+  padding: 0.4rem;
+  border-radius: 5px;
+  font-size: 0.7rem;
+  transition: background-color .3s ease;
+}
+
+.menu__boton:hover,
+.filtro__boton:hover{
+  background-color: var(--secondary-hover);
+}
+
+
+.filtro__select {
   width: 100%;
-  max-width: 500px;
+  border-radius: 5px;
+  font-size: .8rem;
+  font-weight: 700;
+  margin: 0.5rem 0;
 }
 
-select option {
-  color: black;
+@media (min-width: 1440px) {
+  .mapa__grid {
+    margin-top: 2rem;
+  }
+  .menu {
+    margin-bottom: 2rem;
+  }
+  .menu__botones {
+    margin: 1rem 0 0 0;
+  }
+  .menu__boton,
+  .filtro__boton {
+    font-size: 0.7rem;
+  }
+  .filtro__select {
+    font-size: .9rem;
+  }
+}
+@media (min-width: 1820px){
+  .menu__boton,
+  .filtro__boton {
+    font-size: 0.9rem;
+  }
 }
 </style>

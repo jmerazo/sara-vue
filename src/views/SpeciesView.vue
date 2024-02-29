@@ -87,8 +87,8 @@ const displayedPageRange = computed(() => {
     </section>
     <!--fin paginador -->
     <!-- texto validacion buscador -->
-    <section class="validacion__contenido">
-      <h1 v-if="especies.noResultados" class="validacion__heading">
+    <section class="validacion__contenido" v-if="especies.noResultados">
+      <h1  class="validacion__heading">
         No hay resultados de búsqueda
       </h1>
     </section>

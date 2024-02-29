@@ -40,7 +40,7 @@ export const useGeneralEvaluations = defineStore("generalEvaluations", () => {
     { deep: true }
   );
 
-  //motor de busqueda para el reporte de monitoreos realizados
+  //motor de busqueda para el reporte de evaluaciones realizadas
   function buscarTermino(termino) {
     changePage(1);
     evaluacionData.value = evaluacionDataOriginal.value.filter((term) => {

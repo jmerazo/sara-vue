@@ -3,6 +3,7 @@ import { computed} from "vue";
 import { onBeforeRouteLeave } from "vue-router";
 import { useSamplesMade } from "@/stores/dashboard/reports/samplesMade";
 import { descargarExcel, descargarPdf, obtenerFecha } from "@/helpers";
+
 //componentes
 import LoadingData from "@/components/LoadingData.vue";
 
@@ -131,6 +132,7 @@ function toggleDetalles(contenedor) {
                 muestra.numero_placa ? muestra.numero_placa : "Sin placa"
               }}</span>
             </p>
+            
           </div>
 
           <!-- datos de la muestra -->

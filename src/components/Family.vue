@@ -28,9 +28,7 @@ defineProps({
     <div class="familia__informacion">
       <p class="familia__caracteristicas">
         <span>Caraterísticas similares:</span>
-        Flores vistosas y grandes, hojas palmeadas o lobuladas, frutos en
-        cápsulas, distribución global en climas cálidos, importancia ornamental
-        y en productos (algodón, okra), polinización por insectos.
+        {{ familia.description }}
       </p>
       <button
         class="familia__boton"

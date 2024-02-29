@@ -258,7 +258,7 @@ const displayedPageRange = computed(() => {
 
 /* buscador */
 .buscador {
-  border: 1px solid var(--gris);
+  border: 1px solid var(--primary);
 }
 
 .buscador:last-of-type {

@@ -18,7 +18,15 @@
         <a href="https://powo.science.kew.org/" target="_blank" class="relacionados__enlace">
           <img src="../assets/powo.png" title="Plants of the World Online">
         </a>
-      
+        <a href="https://www.sinchi.org.co/coah/tablero-de-control-herbario" target="_blank" class="relacionados__enlace">
+          <img src="../assets/logos/sinchi.png" title="SINCHI">
+        </a>
+        <a href="https://www.gbif.org/es/" target="_blank" class="relacionados__enlace">
+          <img src="../assets/logos/gbif.png" title="GBIF">
+        </a>
+        <a href="https://biodiversidad.co/" target="_blank" class="relacionados__enlace">
+          <img src="../assets/logos/SIB.png" title="SIB Colombia">
+        </a>      
     </div>
   </div>
 </template>

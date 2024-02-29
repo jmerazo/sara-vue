@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
+import { useAuthTokenStore } from '@/stores/auth'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -89,6 +90,15 @@ const router = createRouter({
       }
     },
     {
+      path:'/add-candidates',
+      name:'add-candidates',
+      component: () => import('../views/dashboardviews/AddCandidateView.vue'),
+      meta: {
+        auth: true,
+        roles: ['ADMINISTRADOR', 'is_superuser', 'is_staff']
+      }
+    },
+    {
       path:'/monitoring-species',
       name:'monitoring-species',
       component: () => import('../views/dashboardviews/MonitoringSpecieView.vue'),
@@ -154,19 +164,21 @@ const router = createRouter({
   ]
 })
 
-router.beforeEach((to, from, next) => {
-  const access_token = localStorage.getItem("access_token")
-  const refresh_token = localStorage.getItem("refresh_token")
+router.beforeEach(async (to, from, next) => {
+  const store = useAuthTokenStore();
 
-  if (to.matched.some(record => record.meta.auth)){
-    if (!access_token || !refresh_token){
-      next('/auth')
+  if (to.matched.some(record => record.meta.auth)) {
+    if (!store.refreshToken) {
+      next('/auth'); // Redirige si no hay refreshToken
     } else {
-      next() // Llama a next solo si la ruta requiere autenticación y los tokens están presentes
+      if (!store.accessToken) {
+        await store.rehydrateAuth(); // Intenta obtener un nuevo accessToken
+      }
+      next(); // Continúa si el refreshToken está presente (y ahora también el accessToken)
     }
   } else {
-    next() // Llama a next para otras rutas que no requieren autenticación
+    next(); // Rutas que no requieren autenticación
   }
-})
+});
 
 export default router

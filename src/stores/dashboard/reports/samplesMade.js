@@ -38,6 +38,7 @@ export const useSamplesMade = defineStore("samplesMade", () => {
     },
     { deep: true }
   );
+
   
 
   //motor de busqueda para el reporte de muestras realizadas
@@ -66,13 +67,9 @@ export const useSamplesMade = defineStore("samplesMade", () => {
     });
   }
 
-  // Calcula el número total de páginas del objeto monitoreos por especie
-  const totalPages = computed(() =>
-    Math.ceil(samplesData.value.length / itemsPerPage.value)
-  );
-
-  // Calcula el numero de páginas a monitoreos por especie
+  // Calcula el numero de páginas
   const displayedSamples = computed(() => {
+   
     try {
       const start = (currentPage.value - 1) * itemsPerPage.value;
       const end = start + itemsPerPage.value;
@@ -82,7 +79,12 @@ export const useSamplesMade = defineStore("samplesMade", () => {
     }
   });
 
-  //función para cambiar de página monitoreos por especie
+  // Calcula el número total de páginas del objeto
+  const totalPages = computed(() =>
+    Math.ceil(samplesData.value.length / itemsPerPage.value)
+  );
+
+  //función para cambiar de página
   function changePage(page) {
     if (page >= 1 && page <= totalPages.value) {
       currentPage.value = page;

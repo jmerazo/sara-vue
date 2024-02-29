@@ -190,6 +190,7 @@ const displayedPageRange = computed(() => {
     margin: 0 1rem 2rem 1rem;
   }
 }
+
 .reporte__grid {
   display: grid;
   gap: 1rem;

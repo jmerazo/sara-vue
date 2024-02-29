@@ -19,12 +19,19 @@
               <h3 class="footer__heading">
                 <font-awesome-icon :icon="['fas', 'building-wheat']" /> Sedes
               </h3>
-              <p class="footer__texto footer__texto--titulo">Sede Principal:</p>
-              <p class="footer__texto">Cra. 17 14-85 Mocoa - Putumayo</p>
+              <p class="footer__texto footer__texto--titulo">Sede Principal Mocoa - Putumayo:</p>
+              <p class="footer__texto">Cra. 17 14-85</p>
               <p class="footer__texto">
                 <span class="footer__texto footer__texto--titulo">Tel: </span>
-                +57 608 4296395, 4296396, 4296642, 4296641, 4295255.
+                +57 608 4201535, 4296642.
               </p>
+
+              <p class="footer__texto footer__texto--titulo">Sede Territorial Amazonas:</p>
+              <p class="footer__texto">Leticia, Cra. 11 12-45</p>
+
+              <p class="footer__texto footer__texto--titulo">Sede Territorial Caqueta:</p>
+              <p class="footer__texto">Florencia, Cra. 11 No. 5-67
+Km 3 vía aeropuerto.</p>
             </div>
             <!-- fin footer sedes -->
 
@@ -48,7 +55,7 @@
                 Correo Electrónico:
               </p>
 
-              <p class="footer__texto">Email: info@miempresa.com</p>
+              <p class="footer__texto">Email: correspondencia@corpoamazonia.gov.co</p>
             </div>
             <!--fin footer contacto -->
 

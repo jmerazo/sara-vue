@@ -1,9 +1,9 @@
 <script setup>
 import { ref } from "vue";
 
-import { useModalStore } from "../stores/modal";
-import { useEspeciesStore } from "../stores/species";
-import { useConsultaStore } from "../stores/consulta";
+import { useModalStore } from "@/stores/modal";
+import { useEspeciesStore } from "@/stores/species";
+import { useConsultaStore } from "@/stores/consulta";
 import { getFullImageUrl} from '@/helpers/'
 
 const modal = useModalStore();
@@ -83,7 +83,8 @@ const limpiarModal = ()=>{
           {{ especie.nom_comunes }}
         </h3>
         <p class="modal__texto">
-          {{ especie.nombre_cientifico}}
+          <span class="nombre__cientifico">{{ especie.nombre_cientifico_especie }}</span>
+          <span class="nombre__autor">{{ " " + especie.nombre_autor_especie }}</span>
         </p>
         <p class="modal__texto">
           {{ especie.familia}}
@@ -127,6 +128,7 @@ const limpiarModal = ()=>{
   height: 100%;
   background-color: rgba(0, 0, 0, 0.5);
   overflow: auto;
+  z-index: 11000;
 }
 
 .modal__contenido {
@@ -142,6 +144,7 @@ const limpiarModal = ()=>{
   overflow-y: auto;
   transform: translate(-200%, -200%);
   transition: transform 10s ease-in-out;
+  z-index: 11000;
 }
 
 @media (min-width: 768px) {
@@ -260,5 +263,14 @@ const limpiarModal = ()=>{
 .modal__imagen img{
   width: 500px;
   height: 375px;
+}
+
+.nombre__cientifico {
+    font-style: italic; /* Cursiva */
+    font-weight: bold; /* Negrita */
+}
+
+.nombre__autor {
+    font-weight: bold; /* Negrita */
 }
 </style>

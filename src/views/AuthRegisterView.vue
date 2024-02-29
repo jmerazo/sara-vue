@@ -2,9 +2,9 @@
 import { registerables } from "chart.js";
 import { ref, computed } from "vue";
 import APIService from "../services/APIService";
-import { useAuthToken } from "../stores/auth";
+import { useAuthTokenStore } from "../stores/auth";
 
-const locates = useAuthToken();
+const locates = useAuthTokenStore();
 
 // Datos del formulario
 const formData = ref({

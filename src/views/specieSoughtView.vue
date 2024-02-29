@@ -14,6 +14,7 @@ import PagesQueries from "@/components/PagesQueries.vue";
 import RenderGeo from "@/components/RenderGeo.vue";
 
 const especie = useConsultaStore();
+console.log('especie especie: ', especie.especie)
 const router = useRouter();
 const geoStore = useGeoCandidateTrees();
 const averageStore = useAverageSpecie();
@@ -108,11 +109,7 @@ function createChart() {
     {
       name: "Altura comercial",
       value: commercialHeightSpecie.value,
-    },
-    {
-      name: "Altitud",
-      value: averageAltitude.value,
-    },
+    }
   ];
 
   const colors = d3
@@ -194,6 +191,8 @@ onMounted(async () => {
 const {
   nom_comunes,
   nombre_cientifico,
+  nombre_cientifico_especie,
+  nombre_autor_especie,
   otros_nombres,
   familia,
   hojas,
@@ -248,7 +247,8 @@ scrollToTop();
                   {{ nom_comunes }}
                 </h1>
                 <h1 class="header__heading header__heading--subtitulo">
-                  {{ nombre_cientifico }}
+                  <span class="nombre__cientifico">{{ nombre_cientifico_especie }}</span>
+                  <span class="nombre__autor">{{ " " + nombre_autor_especie }}</span>
                 </h1>
                 <h3 class="header__titulo">
                   <span>Otros nombres:</span> {{ otros_nombres }}
@@ -325,18 +325,22 @@ scrollToTop();
             <div class="estadistica">
               <div class="estadistica__contenido">
                 <span class="estadistica__titulo"
-                  >Alturas y altitud promedio de la especie</span
+                  >Altura total y comercial promedio de la especie</span
                 >
                 <div class="estadistica__grafico">
                   <div
                     class="grafico"
                     v-if="
                       !isNaN(Number(totalHeightSpecie)) ||
-                      !isNaN(Number(commercialHeightSpecie)) ||
-                      !isNaN(Number(averageAltitude))
+                      !isNaN(Number(commercialHeightSpecie))
                     "
                     id="chart"
                   ></div>
+                </div>
+                <div class="estadistica__contenido">
+                <span class="estadistica__titulo"
+                  >Altitud promedio de la especie: </span
+                ><span>{{ averageAltitude + "m" }}</span>
                 </div>
               </div>
             </div>
@@ -677,5 +681,14 @@ scrollToTop();
 
 .noResultados__boton:hover {
   background-color: var(--primary-hover);
+}
+
+.nombre__cientifico {
+    font-style: italic; /* Cursiva */
+    font-weight: bold; /* Negrita */
+}
+
+.nombre__autor {
+    font-weight: bold; /* Negrita */
 }
 </style>

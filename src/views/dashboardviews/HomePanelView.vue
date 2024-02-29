@@ -8,6 +8,9 @@ import { useChartSamples } from "@/stores/dashboard/chartSamples";
 import CardsHome from "@/components/dashboard/CardsHome.vue";
 import PresenceMap from "@/components/dashboard/PresenceMap.vue";
 
+//Spinner
+import LoadingData from "@/components/LoadingData.vue";
+
 //monitoreos mensual
 import monthlyDepartmentMonitoring from "@/components/dashboard/charts/monthlyDepartmentMonitoring.vue";
 import monthlyMunicipalMonitoring from "@/components/dashboard/charts/monthlyMunicipalMonitoring.vue";
@@ -63,6 +66,7 @@ onMounted(() => {
               v-if="chartStore.departamentos.length > 0"
             />
             <totalMunicipalMonitoring v-if="chartStore.municipios.length > 0" />
+              <LoadingData v-else />
           </div>
 
           <div class="grafico">
@@ -72,6 +76,7 @@ onMounted(() => {
             <totalSamplesMunicipalities
               v-if="chartSamples.CantidadMunicipio.length > 0"
             />
+            <LoadingData v-else />
           </div>
           <div class="grafico">
             <monthlyDepartmentMonitoring
@@ -80,6 +85,7 @@ onMounted(() => {
             <monthlyMunicipalMonitoring
               v-if="chartLocateStore.todosMunicipios.length > 0"
             />
+            <LoadingData v-else />
           </div>
         </div>
         <!-- fin graficos modificados -->

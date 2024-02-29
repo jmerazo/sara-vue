@@ -14,8 +14,9 @@ export const useFamiliasStore = defineStore('familias',()=>{
 
     onMounted(async ()=>{
         consulta.cargando = true
-        const {data} = await APIService.getFamilies()
+        const {data} = await APIService.getFamiliesData()
         familias.value = data
+        console.log('families: ', familias.value)
         familiasOriginal.value = data
         consulta.cargando = false
     })

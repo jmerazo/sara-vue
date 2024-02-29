@@ -1,10 +1,10 @@
 <script setup>
 import { ref } from "vue";
-import { useAuthToken } from "../stores/auth";
+import { useAuthTokenStore } from "../stores/auth";
 import { useRouter } from "vue-router";
 import Alerta from "@/components/Alerta.vue";
 
-const store = useAuthToken();
+const store = useAuthTokenStore();
 const router = useRouter();
 const email = ref("");
 const password = ref("");
@@ -20,11 +20,9 @@ const handleLogin = async () => {
     const response = await store.login(credentials);
 
     if (response.success) {
-      const user = response.user;
       router
         .push({
           name: "panel", // Nombre de la ruta de la vista del panel
-          params: response.user, // Envía response.data como parámetros
         })
         .catch((err) => {});
     } else {

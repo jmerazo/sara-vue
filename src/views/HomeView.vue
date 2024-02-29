@@ -1,30 +1,49 @@
 <script setup>
-import { onMounted } from "vue";
+import { onMounted, ref, computed } from "vue";
+import { getFullImageUrl} from '@/helpers/'
 import { useGeoCandidateTrees } from "@/stores/candidate";
 import { useAverageSpecie } from "@/stores/average";
 import { useHomeStore } from "@/stores/home";
+import { usePageContent } from "../stores/page";
+import { useConsultaStore } from "../stores/consulta";
 
+const pageStore = usePageContent();
 const geoStore = useGeoCandidateTrees();
 const averageStore = useAverageSpecie();
 const homeStore = useHomeStore();
+const consulta = useConsultaStore();
+
+const consultar = (nombre_comun) => {
+  consulta.consulta.categoria = "Nombre Común";
+  consulta.consulta.vrBuscar = nombre_comun;
+  consulta.mostrarConsulta();
+};
+
+const mostrarTodo = ref(false)
 
 onMounted(async () => {
-  await geoStore.fetchData();
+/*   await geoStore.fetchData(); */
   await averageStore.fetchData();
+  await pageStore.fetchData();
+  await homeStore.fetchData();
 });
 
 //top de especies
+
+function contenidoResumido() {
+  // Divide el texto en el primer punto aparte
+  const splitText = pageStore.contenidoNosotros[0].content.split('.');
+  return splitText[0] + '.';
+}
 </script>
 
 <template>
-  <section class="contenedor proyecto">
+  <section v-if="pageStore.contenidoNosotros.length > 0" class="contenedor proyecto">
     <div class="proyecto__contenido">
-      <h2 class="proyecto__heading">PROYECTO SEMILLAS CTEI</h2>
-      <p class="proyecto__texto">
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Sit fugiat
-        adipisci facere quis! Provident molestiae non minus inventore ex
-        perspiciatis in saepe impedit quae facilis, molestias quas praesentium
-        consectetur quibusdam!
+      <h2 class="proyecto__heading">{{ pageStore.contenidoNosotros[0].title }}</h2>
+      <p class="proyecto__texto" v-if="!mostrarTodo">
+        {{ contenidoResumido() }}
+        <a><RouterLink :to="{ name: 'aboutus' }">Ver más...</RouterLink></a>
       </p>
     </div>
   </section>
@@ -35,14 +54,14 @@ onMounted(async () => {
       <!-- especie -->
       <div
         class="topEspecie__contenido"
-        v-for="(item, index) in homeStore.urlImagenesHome"
-        :key="index"
+        v-for="specie in homeStore.topSpecies" 
+        :key="specie.cod_especie"
       >
         <div
           class="topEspecie__contenido-imagen"
-          :style="{ backgroundImage: 'url(' + item.url + ')' }"
+          :style="{ backgroundImage: 'url(' + getFullImageUrl(specie.img_general) + ')' }"
         ></div>
-        <a class="topEspeice__enlace">{{ item.nombreEspecie }}</a>
+        <a class="topEspeice__enlace" @click="consultar(specie.cod_especie)">{{ specie.nom_comunes }}</a>
       </div>
       <!--fin especie -->
     </div>

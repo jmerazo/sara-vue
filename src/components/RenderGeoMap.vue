@@ -1,37 +1,85 @@
-<template>
+<template >
   <div class="map-container" ref="mapContainer"></div>
-  <div class="info-container" ref="infoContainer">
-    <div v-if="selectedFeature">
-      <p><span class="font-bold"><font-awesome-icon :icon="['fas', 'fingerprint']" /> Código especie:</span> {{ selectedFeature.getProperties().codigo }}</p>
-      <p><span class="font-bold"><font-awesome-icon :icon="['fab', 'glide']" /> Nombre común:</span> {{ selectedFeature.getProperties().nombre_comun }}</p>
-      <p><span class="font-bold"><font-awesome-icon :icon="['fas', 'signature']" /> Nombre científico:</span> {{ selectedFeature.getProperties().nombre_cientifico }}</p>
-      <p><span class="font-bold"><font-awesome-icon :icon="['fas', 'hashtag']" /> Número de placa:</span> {{ selectedFeature.getProperties().numero_placa }}</p>
-      <p><span class="font-bold"><font-awesome-icon :icon="['fas', 'location-crosshairs']" /> Coordenadas:</span> {{ selectedFeature.getProperties().coordenadas }}</p>
-      <p><span class="font-bold"><font-awesome-icon :icon="['fab', 'squarespace']" /> Departamento:</span> {{ selectedFeature.getProperties().departamento }}</p>
-      <p><span class="font-bold"><font-awesome-icon :icon="['fab', 'squarespace']" /> Municipio:</span> {{ selectedFeature.getProperties().municipio }}</p>
-      <p><span class="font-bold"><font-awesome-icon :icon="['fab', 'squarespace']" /> Vereda:</span> {{ selectedFeature.getProperties().vereda }}</p>
-      <p><span class="font-bold"><font-awesome-icon :icon="['fas', 'location-dot']" /> Nombre del predio:</span> {{ selectedFeature.getProperties().nombre_del_predio }}</p>
-      <p><span class="font-bold"><font-awesome-icon :icon="['fas', 'star']" /> Puntaje evaluación:</span> {{ selectedFeature.getProperties().resultado }}</p>
+  <div class="info__map" ref="infoContainer">
+    <div v-if="selectedFeature" class="contenedor">
+      <p class="map__datos">
+        <font-awesome-icon :icon="['fas', 'fingerprint']" />
+        Código especie:
+        <span class="dato">{{ selectedFeature.getProperties().codigo }} </span>
+      </p>
+      <p class="map__datos">
+        <font-awesome-icon :icon="['fab', 'glide']" /> Nombre común:
+        <span class="dato">{{
+          selectedFeature.getProperties().nombre_comun
+        }}</span>
+      </p>
+      <p class="map__datos">
+        <font-awesome-icon :icon="['fas', 'signature']" /> Nombre científico:
+        <span class="dato">{{
+          selectedFeature.getProperties().nombre_cientifico
+        }}</span>
+      </p>
+      <p class="map__datos">
+        <font-awesome-icon :icon="['fas', 'hashtag']" /> Número de placa:
+        <span class="dato">{{
+          selectedFeature.getProperties().numero_placa
+        }}</span>
+      </p>
+      <p class="map__datos">
+        <font-awesome-icon :icon="['fas', 'location-crosshairs']" />
+        Coordenadas:
+        <span class="dato">{{
+          selectedFeature.getProperties().coordenadas
+        }}</span>
+      </p>
+      <p class="map__datos">
+        <font-awesome-icon :icon="['fab', 'squarespace']" /> Departamento:
+        <span class="dato">{{
+          selectedFeature.getProperties().departamento
+        }}</span>
+      </p>
+      <p class="map__datos">
+        <font-awesome-icon :icon="['fab', 'squarespace']" /> Municipio:
+        <span class="dato">{{
+          selectedFeature.getProperties().municipio
+        }}</span>
+      </p>
+      <p class="map__datos">
+        <font-awesome-icon :icon="['fab', 'squarespace']" /> Vereda:
+        <span class="dato">{{ selectedFeature.getProperties().vereda }}</span>
+      </p>
+      <p class="map__datos">
+        <font-awesome-icon :icon="['fas', 'location-dot']" /> Nombre del predio:
+        <span class="dato">{{
+          selectedFeature.getProperties().nombre_del_predio
+        }}</span>
+      </p>
+      <p class="map__datos">
+        <font-awesome-icon :icon="['fas', 'star']" /> Puntaje evaluación:
+        <span class="dato">{{
+          selectedFeature.getProperties().resultado
+        }}</span>
+      </p>
     </div>
   </div>
 </template>
 
 <script setup>
-import { onMounted, ref, watch } from 'vue';
-import { defineExpose } from 'vue';
-import Map from 'ol/Map';
-import View from 'ol/View';
-import TileLayer from 'ol/layer/Tile';
-import OSM from 'ol/source/OSM';
-import VectorLayer from 'ol/layer/Vector';
-import VectorSource from 'ol/source/Vector';
-import { Style, Icon, Stroke, Fill } from 'ol/style';
-import { fromLonLat } from 'ol/proj';
-import Point from 'ol/geom/Point';
-import Feature from 'ol/Feature';
-import Polygon from 'ol/geom/Polygon.js';
-import treeIconPath from '../assets/icons/icon_tree_cg.png';
-import { useGeoCandidateTrees } from '../stores/candidate';
+import { onMounted, ref, watch } from "vue";
+import { defineExpose } from "vue";
+import Map from "ol/Map";
+import View from "ol/View";
+import TileLayer from "ol/layer/Tile";
+import OSM from "ol/source/OSM";
+import VectorLayer from "ol/layer/Vector";
+import VectorSource from "ol/source/Vector";
+import { Style, Icon, Stroke, Fill } from "ol/style";
+import { fromLonLat } from "ol/proj";
+import Point from "ol/geom/Point";
+import Feature from "ol/Feature";
+import Polygon from "ol/geom/Polygon.js";
+import treeIconPath from "../assets/icons/icon_tree_cg.png";
+import { useGeoCandidateTrees } from "../stores/candidate";
 
 const geoStore = useGeoCandidateTrees();
 
@@ -52,12 +100,12 @@ function onlyPerimeter() {
 }
 
 defineExpose({
-  onlyPerimeter
-})
+  onlyPerimeter,
+});
 
 function drawPerimeter(perimeterCoords) {
   if (perimeterCoords && perimeterCoords.length > 0) {
-    const lineCoords = perimeterCoords.map(coord => fromLonLat(coord));
+    const lineCoords = perimeterCoords.map((coord) => fromLonLat(coord));
 
     // Crear una Polygon a partir de las coordenadas
     const polygon = new Polygon([lineCoords]);
@@ -71,11 +119,11 @@ function drawPerimeter(perimeterCoords) {
     polygonFeature.setStyle(
       new Style({
         stroke: new Stroke({
-          color: 'green',
+          color: "green",
           width: 2,
         }),
         fill: new Fill({
-          color: 'rgba(0, 255, 0, 0.1)',
+          color: "rgba(0, 255, 0, 0.1)",
         }),
       })
     );
@@ -88,10 +136,13 @@ onMounted(() => {
   updateMap();
 });
 
-watch(() => geoStore.geoDataNew, () => {
-  updateVectorSource();
-  updateMap();
-});
+watch(
+  () => geoStore.geoDataNew,
+  () => {
+    updateVectorSource();
+    updateMap();
+  }
+);
 
 function updateVectorSource() {
   const newFeatures = geoStore.geoDataNew.map((point) => {
@@ -124,13 +175,16 @@ function updateMap() {
       mapInstance = null;
     }
     updateVectorSource();
-    geoStore.calculatePerimeterCoordinates()
+    geoStore.calculatePerimeterCoordinates();
     const perimeterCoordinates = geoStore.coordinatesPolygon;
     drawMap(perimeterCoordinates, vectorSource);
   }
 }
-
+//tamaños y coordenadas del mapa 
+let initialZoom = 8.4;
 function drawMap(perimeterCoordinates, vectorSource) {
+  const center = [-75.5277, 1.1961];
+  const newCenter = [center[0] - .3, center[1]]; // se crea esta variación para realizar el responsive
   mapInstance = new Map({
     target: mapContainer.value,
     layers: [
@@ -141,14 +195,16 @@ function drawMap(perimeterCoordinates, vectorSource) {
       }),
     ],
     view: new View({
-      center: fromLonLat([perimeterCoordinates[0][0], perimeterCoordinates[0][1]]),
-      zoom: 9,
-      minZoom: 7,
+      center: fromLonLat(newCenter),
+      zoom: initialZoom,
+      minZoom: 7.15,
       maxZoom: 30,
     }),
   });
 
-  mapInstance.getViewport().style.cursor = 'pointer';
+  
+  //fin tamaños y coordenadas
+  mapInstance.getViewport().style.cursor = "pointer";
 
   const treeIcon = new Icon({
     src: treeIconPath,
@@ -163,7 +219,7 @@ function drawMap(perimeterCoordinates, vectorSource) {
     }),
   });
 
-  const lineCoords = perimeterCoordinates.map(coord => fromLonLat(coord));
+  const lineCoords = perimeterCoordinates.map((coord) => fromLonLat(coord));
 
   // Crear una Polygon a partir de las coordenadas
   const polygon = new Polygon([lineCoords]);
@@ -177,11 +233,11 @@ function drawMap(perimeterCoordinates, vectorSource) {
   polygonFeature.setStyle(
     new Style({
       stroke: new Stroke({
-        color: 'green',
+        color: "green",
         width: 2,
       }),
       fill: new Fill({
-        color: 'rgba(0, 255, 0, 0.1)',
+        color: "rgba(0, 255, 0, 0.1)",
       }),
     })
   );
@@ -191,26 +247,48 @@ function drawMap(perimeterCoordinates, vectorSource) {
 
   mapInstance.addLayer(vectorLayer);
 
-  mapInstance.on('pointermove', (event) => {
+  mapInstance.on("pointermove", (event) => {
     mapInstance.getView().setZoom(mapInstance.getView().getZoom());
     const pixel = mapInstance.getEventPixel(event.originalEvent);
     const feature = mapInstance.forEachFeatureAtPixel(pixel, (f) => f);
 
     if (feature && feature.getGeometry() instanceof Point) {
-      mapInstance.getViewport().style.cursor = 'pointer';
+      mapInstance.getViewport().style.cursor = "pointer";
       selectedFeature.value = feature;
 
       if (infoContainer.value) {
-        infoContainer.value.style.display = 'block';
+        infoContainer.value.style.display = "block";
       }
     } else {
-      mapInstance.getViewport().style.cursor = '';
+      mapInstance.getViewport().style.cursor = "";
       if (infoContainer.value) {
-        infoContainer.value.style.display = 'none';
+        infoContainer.value.style.display = "none";
       }
     }
   });
+
+
+  // lógica mara el manejar el tamaño del mapa según la pantalla del dispositivo
+  window.addEventListener("resize", handleResize);
+
+  // Manejar el evento resize
+  function handleResize() {
+    // Verificar si mapInstance es null o undefined antes de acceder a getView()
+    if (mapInstance && mapInstance.getView()) {
+      // Modificar el zoom según el ancho de la pantalla
+      if (window.innerWidth < 768) {
+        mapInstance.getView().setZoom(5.5);
+      } else {
+        mapInstance.getView().setZoom(initialZoom);
+      }
+    }
+  }
+
+  // Ejecutar la función handleResize al inicio para establecer el zoom inicial
+  handleResize();
 }
+
+
 </script>
 
 
@@ -218,17 +296,32 @@ function drawMap(perimeterCoordinates, vectorSource) {
 .map-container {
   position: relative;
   width: auto;
-  height: 68vh;
-  border-radius: 25px;
+  height: 70vh;
+  border-radius: 10px;
 }
 
-.info-container {
+.info__map {
   position: absolute;
-  top: 185px; /* Ajusta la posición vertical según necesites */
-  right: 20px; /* Ajusta la posición horizontal según necesites */
+  top: 50%; /* Ajusta la posición vertical según necesites */
+  right: 2%; /* Ajusta la posición horizontal según necesites */
   background-color: white;
   border: 1px solid #ccc;
-  padding: 10px;
+  padding: 0.1rem;
   display: none;
+  border-radius: 5px;
+}
+@media (min-width: 992px) {
+  .info__map {
+    right: 5.5%;
+    top: 57%;
+    max-width: 21.5%;
+  }
+}
+.map__datos {
+  margin: 0.1rem;
+  padding: 0;
+}
+.dato {
+  font-weight: 700;
 }
 </style>
