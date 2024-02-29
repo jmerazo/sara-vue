@@ -99,30 +99,30 @@ const displayedPageRange = computed(() => {
 <style scoped>
 /* header */
 .header__especies {
-  margin-top: 2rem;
+  margin-top: 1rem;
 }
 
 @media (min-width: 768px) {
   .header__especies {
-    margin-top: 5rem;
+    margin-top: 2rem;
   }
 }
 
 .especies__heading {
-  font-size: 2rem;
-  margin-bottom: 2rem;
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
 }
 
 @media (min-width: 768px) {
   .especies__heading {
-    font-size: 3rem;
+    font-size: 1.4rem;
   }
 }
 
 .header__contenido {
   display: flex;
   gap: 1rem;
-  margin: 3rem 0 1.5rem 0;
+  margin: 2rem 0 1.5rem 0;
   align-items: center;
 }
 
@@ -130,49 +130,25 @@ const displayedPageRange = computed(() => {
   .header__contenido {
     display: flex;
     gap: 1rem;
-    margin: 5rem 0 2rem 0;
+    margin: 3rem 0 2rem 0;
     justify-content: flex-end;
   }
 }
 
-/* buscador */
-.header__label {
-  font-weight: 700;
-  color: var(--gris);
-}
 
-@media (min-width: 768px) {
-  .header__label {
-    font-size: 1.5rem;
-  }
-}
-
-.header__buscador {
-  border: 1px solid var(--gris);
-  padding: 0.5rem;
-  border-radius: 8px;
-}
-
-@media (min-width: 768px) {
-  .header__buscador {
-    border: 2px solid var(--gris);
-    padding: 1rem;
-    width: 33rem;
-  }
-}
 
 /* main */
 .especies {
-  margin-top: 4rem;
+  margin-top: 2rem;
 }
 @media (min-width: 768px) {
   .especies {
-    margin-top: 6rem;
+    margin-top: 3rem;
   }
 }
 .especies__grid {
   display: grid;
-  gap: 2rem;
+  gap: 1.5rem;
 }
 @media (min-width: 768px) {
   .especies__grid {
@@ -184,6 +160,7 @@ const displayedPageRange = computed(() => {
   .especies__grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
   }
 }
 @media (min-width: 1500px) {
@@ -192,38 +169,12 @@ const displayedPageRange = computed(() => {
     grid-template-columns: repeat(4, 1fr);
   }
 }
-
-/* Paginador */
-.paginador {
-  margin: 3rem 0;
-  
-}
-.paginador__botones {
-  display: flex;
-  justify-content: center;
-  
-  
-}
-.paginador__boton{
-  font-weight: 700;
-  font-size: 2rem;
-  padding: 1rem;
-}
-.paginador__boton-actual{
-  background-color: var(--primary);
-}
-.paginador__boton--anterior{
-  border-bottom-left-radius: 20px;
-}
-.paginador__boton--siguiente{
-  border-bottom-right-radius: 20px;
+@media (min-width: 1820px) {
+  .especies__grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+  }
 }
 
-/* validacion */
-.validacion__contenido{
-  margin-bottom: 8rem;
-}
-.validacion__heading{
-  font-size: 2rem;
-}
+
 </style>

@@ -2,11 +2,17 @@
 import { computed } from "vue";
 import { onBeforeRouteLeave } from "vue-router";
 import { useEspeciesStore } from "@/stores/species";
-import { useConsultaStore } from "@/stores/consulta";
+import { useCantidateStore } from "@/stores/dashboard/reports/SpecieCanditates";
+import { useSpecieMonitoriong } from "@/stores/dashboard/reports/SpecieMonitoring";
+import { getFullImageUrl } from "@/helpers";
+
+//componentes
+import LoadingData from "@/components/LoadingData.vue";
 
 const especies = useEspeciesStore();
-const consulta = useConsultaStore();
 
+const candidatos = useCantidateStore();
+const especieMonitoreos = useSpecieMonitoriong();
 //limpiar filtros antes de cambiar de vista
 onBeforeRouteLeave((to, from, next) => {
   especies.quitarFiltroEspecie();
@@ -24,9 +30,6 @@ const displayedPageRange = computed(() => {
     (_, index) => rangeStart + index
   );
 });
-
-//url dinámica de ejemplo
-const url = "/img/arbol__especie.jpg";
 </script>
 <template>
   <div class="contenedor">
@@ -37,125 +40,121 @@ const url = "/img/arbol__especie.jpg";
         <div class="buscador__contenido"></div>
         <label class="buscador__label">Buscar: </label>
         <input
-        class="buscador__input"
+          class="buscador__input"
           type="text"
           placeholder="Escríbe un término de búsqueda"
           @input="especies.buscarTermino($event.target.value)"
         />
       </div>
-      <div class="botones__descarga">
-       <!--<a class="boton" href="#"
-          ><font-awesome-icon
-            class="boton__excel"
-            :icon="['fas', 'file-excel']"
-        /></a>
-        <a class="boton" href="#"
-          ><font-awesome-icon class="boton__pdf" :icon="['fas', 'file-pdf']"
-        /></a>
-        <a class="boton" href="#"
-          ><font-awesome-icon class="boton__print" :icon="['fas', 'print']"
-        /></a>--> 
-      </div>
+      <div class="botones__descarga"></div>
     </div>
     <!-- fin encabezado vista -->
     <hr />
-    <!-- listado de cards -->
-    <main class="reporte__grid">
-      <div
-        class="card"
-        v-for="especie in especies.displayedEspecies"
-        v-bind:key="especie.cod_especie"
-      >
-        <div class="card__grid" v-if="especie.cod_especie">
-          <div
-            class="card__imagen"
-            :style="{ backgroundImage: `url(${url})` }"
-          ></div>
-          <div class="card__contenido">
-            <p class="card__titulo">{{ especie.nom_comunes }}</p>
-            <p class="card__subtitulo">{{ especie.nombre_cientifico }}</p>
-            <p class="card__subtitulo">
-              Familia: <span class="card__dato">{{ especie.familia }}</span>
-            </p>
-            <p class="card__subtitulo">
-              Código de especie:
-              <span class="card__dato">{{ especie.cod_especie }}</span>
-            </p>
-            <div class="card__botones">
-              <button
-                class="boton__primario"
-                @click="consulta.verCandidatosEspecie(especie.nom_comunes)"
-              >
-                <font-awesome-icon :icon="['fas', 'leaf']" /> Ver candidatos
-              </button>
-              <button
-                class="boton__secundario"
-                @click="
-                  consulta.verMonitoreosEspecie(
-                    especie.cod_especie,
-                    especie.nom_comunes
-                  )
-                "
-              >
-                <font-awesome-icon :icon="['fas', 'eye']" /> Ver Monitoreos
-              </button>
+    <LoadingData v-if="especies.cargando || especieMonitoreos.cargando  || candidatos.cargando" />
+    <div v-else>
+      <!-- listado de cards -->
+      <main class="reporte__grid">
+        <div
+          class="card"
+          v-for="especie in especies.displayedEspecies"
+          v-bind:key="especie.cod_especie"
+        >
+          <div class="card__grid" v-if="especie.cod_especie">
+            <div
+              class="card__imagen"
+              :style="{
+                backgroundImage: `url(${getFullImageUrl(especie.img_general)})`,
+              }"
+            ></div>
+            <div class="card__contenido">
+              <p class="card__titulo">{{ especie.nom_comunes }}</p>
+              <p class="card__subtitulo">{{ especie.nombre_cientifico }}</p>
+              <p class="card__subtitulo">
+                Familia: <span class="card__dato">{{ especie.familia }}</span>
+              </p>
+              <p class="card__subtitulo">
+                Código de especie:
+                <span class="card__dato">{{ especie.cod_especie }}</span>
+              </p>
+              <div class="card__botones">
+                <button
+                  class="boton__primario"
+                  @click="candidatos.verCandidatosEspecie(especie.nom_comunes)"
+                >
+                  <font-awesome-icon :icon="['fas', 'leaf']" /> Ver candidatos
+                </button>
+                <button
+                  class="boton__secundario"
+                  @click="
+                    especieMonitoreos.verMonitoreosEspecie(
+                      especie.cod_especie,
+                      especie.nom_comunes
+                    )
+                  "
+                >
+                  <font-awesome-icon :icon="['fas', 'eye']" /> Ver Monitoreos
+                </button>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    </main>
-    <!-- fin listado de cards -->
-  </div>
+      </main>
+      <!-- fin listado de cards -->
+      <!-- paginador -->
+      <section class="paginador">
+        <div class="paginador__botones">
+          <button
+            class="paginador__boton paginador__boton--anterior"
+            v-if="especies.currentPage > 1"
+            @click="especies.changePage(especies.currentPage - 1)"
+          >
+            <font-awesome-icon :icon="['fas', 'angles-left']" />
+          </button>
 
-  <!-- paginador -->
-  <section class="paginador">
-    <div class="paginador__botones">
-      <button
-        class="paginador__boton paginador__boton--anterior"
-        v-if="especies.currentPage > 1"
-        @click="especies.changePage(especies.currentPage - 1)"
-      >
-        <font-awesome-icon :icon="['fas', 'angles-left']" />
-      </button>
-
-      <button
-        v-for="page in displayedPageRange"
-        :key="page"
-        @click="especies.changePage(page)"
-        class="paginador__boton"
-        :class="{ 'paginador__boton-actual': page === especies.currentPage }"
-      >
-        {{ page }}
-      </button>
-      <button
-        class="paginador__boton paginador__boton--siguiente"
-        v-if="especies.currentPage < especies.totalPages"
-        @click="especies.changePage(especies.currentPage + 1)"
-      >
-        <font-awesome-icon :icon="['fas', 'angles-right']" />
-      </button>
+          <button
+            v-for="page in displayedPageRange"
+            :key="page"
+            @click="especies.changePage(page)"
+            class="paginador__boton"
+            :class="{
+              'paginador__boton-actual': page === especies.currentPage,
+            }"
+          >
+            {{ page }}
+          </button>
+          <button
+            class="paginador__boton paginador__boton--siguiente"
+            v-if="especies.currentPage < especies.totalPages"
+            @click="especies.changePage(especies.currentPage + 1)"
+          >
+            <font-awesome-icon :icon="['fas', 'angles-right']" />
+          </button>
+        </div>
+      </section>
+      <!--fin paginador -->
+      <!-- texto validacion buscador -->
+      <section class="validacion__contenido">
+        <h1
+          v-if="especies.noResultados && !especies.cargando"
+          class="validacion__heading"
+        >
+          No hay resultados de búsqueda
+        </h1>
+      </section>
+      <!--fin texto validacion buscador -->
     </div>
-  </section>
-  <!--fin paginador -->
-  <!-- texto validacion buscador -->
-  <section class="validacion__contenido">
-    <h1 v-if="especies.noResultados" class="validacion__heading">
-      No hay resultados de búsqueda
-    </h1>
-  </section>
-  <!--fin texto validacion buscador -->
+  </div>
 </template>
 
 <style scope>
-
 /* encabezado de la vista */
 .reporte__heading {
-  font-size: 1.3rem;
+  font-size: 1.1rem;
   margin: 2rem;
 }
 @media (min-width: 768px) {
   .reporte__heading {
-    font-size: 1.8rem;
+    font-size: 1.3rem;
     margin: 3rem;
   }
 }
@@ -189,7 +188,6 @@ const url = "/img/arbol__especie.jpg";
   }
 }
 
-
 /* buscador */
 .buscador__label {
   display: none;
@@ -214,8 +212,6 @@ const url = "/img/arbol__especie.jpg";
   }
 }
 
-
-
 /* cards */
 .card {
   background-color: var(--blanco);
@@ -225,9 +221,9 @@ const url = "/img/arbol__especie.jpg";
 .card__grid {
   display: grid;
   grid-template-rows: 0.9fr 1fr;
-  transition: transform .3s ease;
+  transition: transform 0.3s ease;
 }
-.card__grid:hover{
+.card__grid:hover {
   transform: scale(1.02);
 }
 @media (min-width: 768px) {
@@ -237,16 +233,16 @@ const url = "/img/arbol__especie.jpg";
   }
 }
 .card__contenido {
-  padding: 1rem 1rem 0  1rem;
+  padding: 1rem 1rem 0 1rem;
   display: flex;
-  gap: .3rem;
+  gap: 0.3rem;
   flex-direction: column;
   justify-content: space-between;
   align-content: center;
 }
-@media (min-width: 768px){
-  .card__contenido{
-    gap: .5rem;
+@media (min-width: 768px) {
+  .card__contenido {
+    gap: 0.5rem;
     padding: 1rem;
   }
 }
@@ -254,48 +250,48 @@ const url = "/img/arbol__especie.jpg";
   background-size: cover;
   background-repeat: no-repeat;
 }
-.card__titulo{
+.card__titulo {
   font-weight: 900;
   margin: 0;
   padding: 0;
   text-align: center;
   font-size: 1.2rem;
 }
-.card__subtitulo{
+.card__subtitulo {
   margin: 0;
   padding: 0;
   text-align: center;
 }
-.card__dato{
+.card__dato {
   font-weight: 900;
 }
-.boton__primario{
+.boton__primario {
   color: var(--blanco);
   background-color: var(--primary);
   border-radius: 3px;
-  padding: .3rem;
+  padding: 0.3rem;
 }
 
-.boton__secundario{
+.boton__secundario {
   color: var(--blanco);
   background-color: var(--secondary);
   border-radius: 3px;
-  padding: .3rem;
+  padding: 0.3rem;
 }
 .boton__primario,
-.boton__secundario{
-  transition: background-color .3s ease;
+.boton__secundario {
+  transition: background-color 0.3s ease;
 }
-.boton__primario:hover{
+.boton__primario:hover {
   background-color: var(--primary-hover);
 }
-.boton__secundario:hover{
+.boton__secundario:hover {
   background-color: var(--secondary-hover);
 }
-.card__botones{
+.card__botones {
   display: flex;
   flex-direction: column;
-  gap: .5rem;
+  gap: 0.5rem;
   margin-top: 1rem;
 }
 /* Paginador */

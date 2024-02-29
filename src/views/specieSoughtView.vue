@@ -1,20 +1,22 @@
 <script setup>
-import { ref, onMounted, computed } from 'vue';
-import { useConsultaStore } from '../stores/consulta';
+import { ref, onMounted, computed } from "vue";
+import { useConsultaStore } from "@/stores/consulta";
 import { useRouter } from "vue-router";
-import { useGeoCandidateTrees } from '../stores/candidate'
-import { useAverageSpecie } from '../stores/average'
-import APIService from '../services/APIService'
-import * as d3 from 'd3'
+import { useGeoCandidateTrees } from "@/stores/candidate";
+import { useAverageSpecie } from "@/stores/average";
+import { getFullImageUrl} from '@/helpers/'
 
-import QuoteButton from '../components/QuoteButton.vue'
-import PagesQueries from '../components/PagesQueries.vue';
-import RenderGeo from '../components/RenderGeo.vue'
+import APIService from "@/services/APIService";
+import * as d3 from "d3";
 
-const especie = useConsultaStore()
+import QuoteButton from "@/components/QuoteButton.vue";
+import PagesQueries from "@/components/PagesQueries.vue";
+import RenderGeo from "@/components/RenderGeo.vue";
+
+const especie = useConsultaStore();
 const router = useRouter();
 const geoStore = useGeoCandidateTrees();
-const averageStore = useAverageSpecie()
+const averageStore = useAverageSpecie();
 
 const dateNow = new Date();
 const year = dateNow.getFullYear();
@@ -22,25 +24,25 @@ const month = dateNow.getMonth() + 1; // Los meses comienzan desde 0, por lo que
 const day = dateNow.getDate();
 const formatDate = `${day}-${month}-${year}`;
 
-const codigo = especie.especie.cod_especie
-const name_specie = especie.especie.nom_comunes
+const codigo = especie.especie.cod_especie;
+const name_specie = especie.especie.nom_comunes;
 const filteredData = ref([]);
-const totalHeightSpecie = ref(0)
-const commercialHeightSpecie = ref(0)
-const averageAltitude = ref(0)
+const totalHeightSpecie = ref(0);
+const commercialHeightSpecie = ref(0);
+const averageAltitude = ref(0);
 
 async function downloadDataSpecie() {
   try {
     const response = await APIService.getDownloadDataSpecie(codigo);
-    console.log('url data', response.headers)
+    console.log("url data", response.headers);
 
-    if (response.headers['content-type'] === 'application/pdf') {
-      const blob = new Blob([response.data], { type: 'application/pdf' });
+    if (response.headers["content-type"] === "application/pdf") {
+      const blob = new Blob([response.data], { type: "application/pdf" });
       const url = window.URL.createObjectURL(blob);
 
       // Obtén el nombre del archivo del encabezado Content-Disposition si está presente
-      const contentDisposition = response.headers['content-disposition'];
-      let fileName = name_specie+"_"+codigo+"_"+formatDate; // Nombre predeterminado
+      const contentDisposition = response.headers["content-disposition"];
+      let fileName = name_specie + "_" + codigo + "_" + formatDate; // Nombre predeterminado
 
       if (contentDisposition) {
         const fileNameMatch = contentDisposition.match(/filename="(.+)"/);
@@ -49,43 +51,52 @@ async function downloadDataSpecie() {
         }
       }
 
-      const a = document.createElement('a');
+      const a = document.createElement("a");
       a.href = url;
       a.download = fileName;
 
-      a.style.display = 'none';
+      a.style.display = "none";
       document.body.appendChild(a);
       a.click();
 
       window.URL.revokeObjectURL(url);
       document.body.removeChild(a);
     } else {
-      console.error('La respuesta no es un archivo PDF.');
+      console.error("La respuesta no es un archivo PDF.");
     }
   } catch (error) {
-    console.error('Error al descargar el archivo PDF:', error);
+    console.error("Error al descargar el archivo PDF:", error);
     // Manejar errores si es necesario
   }
 }
 
-
 async function filterGeo(codigo, data) {
-    return await data.filter(item => item.codigo === codigo)
-             .map(item => ({ lon: item.lon, lat: item.lat }));
+  return await data
+    .filter((item) => item.codigo === codigo)
+    .map((item) => ({ lon: item.lon, lat: item.lat }));
 }
 
-async function filterDataAverage(codigo, data){
-    const dataSpecieAverage = await data.filter(item => item.codigo === codigo)
-    const countData = dataSpecieAverage.length;
-    const totalHeightSpecie = dataSpecieAverage.reduce((sum, item) => sum + item.altura_total, 0) / countData;
-    const commercialHeightSpecie = dataSpecieAverage.reduce((sum, item) => sum + item.altura_comercial, 0) / countData;
-    const averageAltitude = dataSpecieAverage.reduce((sum, item) => sum + item.altitud, 0) / countData;
+async function filterDataAverage(codigo, data) {
+  const dataSpecieAverage = await data.filter((item) => item.codigo === codigo);
+  const countData = dataSpecieAverage.length;
+  const totalHeightSpecie =
+    dataSpecieAverage.reduce((sum, item) => sum + item.altura_total, 0) /
+    countData;
+  const commercialHeightSpecie =
+    dataSpecieAverage.reduce((sum, item) => sum + item.altura_comercial, 0) /
+    countData;
+  const averageAltitude =
+    dataSpecieAverage.reduce((sum, item) => sum + item.altitud, 0) / countData;
 
-    const totalHeightSpecieRounded = Math.round(totalHeightSpecie);
-    const commercialHeightSpecieRounded = Math.round(commercialHeightSpecie);
-    const averageAltitudeRounded = Math.round(averageAltitude);
+  const totalHeightSpecieRounded = Math.round(totalHeightSpecie);
+  const commercialHeightSpecieRounded = Math.round(commercialHeightSpecie);
+  const averageAltitudeRounded = Math.round(averageAltitude);
 
-    return { totalHeightSpecie: totalHeightSpecieRounded, commercialHeightSpecie : commercialHeightSpecieRounded, averageAltitude : averageAltitudeRounded};
+  return {
+    totalHeightSpecie: totalHeightSpecieRounded,
+    commercialHeightSpecie: commercialHeightSpecieRounded,
+    averageAltitude: averageAltitudeRounded,
+  };
 }
 
 function createChart() {
@@ -104,94 +115,116 @@ function createChart() {
     },
   ];
 
-  const colors = d3.scaleOrdinal()
-    .domain(data.map(d => d.name))
+  const colors = d3
+    .scaleOrdinal()
+    .domain(data.map((d) => d.name))
     .range(["#1f77b4", "#ff7f0e", "#2ca02c"]);
 
   const margin = { top: 20, right: 20, bottom: 30, left: 40 };
   const width = 400;
   const height = 200;
 
-  const x = d3.scaleBand()
-    .domain(data.map(d => d.name))
+  const x = d3
+    .scaleBand()
+    .domain(data.map((d) => d.name))
     .range([margin.left, width - margin.right])
     .padding(0.1);
 
-  const y = d3.scaleLinear()
-    .domain([0, d3.max(data, d => d.value)])
+  const y = d3
+    .scaleLinear()
+    .domain([0, d3.max(data, (d) => d.value)])
     .nice()
     .range([height - margin.bottom, margin.top]);
 
-  const chart = d3.select("#chart")
+  const chart = d3
+    .select("#chart")
     .append("svg")
     .attr("width", width)
     .attr("height", height);
 
-  chart.selectAll(".bar")
+  chart
+    .selectAll(".bar")
     .data(data)
     .enter()
     .append("rect")
     .attr("class", "bar")
-    .attr("x", d => x(d.name))
-    .attr("y", d => y(d.value))
+    .attr("x", (d) => x(d.name))
+    .attr("y", (d) => y(d.value))
     .attr("width", x.bandwidth())
-    .attr("height", d => height - margin.bottom - y(d.value))
-    .attr("fill", d => colors(d.name));
+    .attr("height", (d) => height - margin.bottom - y(d.value))
+    .attr("fill", (d) => colors(d.name));
 
-  chart.selectAll(".label")
+  chart
+    .selectAll(".label")
     .data(data)
     .enter()
     .append("text")
     .attr("class", "label")
-    .attr("x", d => x(d.name) + x.bandwidth() / 2)
-    .attr("y", d => y(d.value) - 5)
+    .attr("x", (d) => x(d.name) + x.bandwidth() / 2)
+    .attr("y", (d) => y(d.value) - 5)
     .attr("text-anchor", "middle")
-    .text(d => d.value);
+    .text((d) => d.value);
 
-  chart.append("g")
+  chart
+    .append("g")
     .attr("transform", `translate(0, ${height - margin.bottom})`)
     .call(d3.axisBottom(x));
 
-  chart.append("g")
+  chart
+    .append("g")
     .attr("transform", `translate(${margin.left}, 0)`)
     .call(d3.axisLeft(y));
 }
 
 onMounted(async () => {
-    await geoStore.fetchData();  // Llama a fetchData para cargar los datos
-    filteredData.value = await filterGeo(codigo, geoStore.geoCandidateData);
-    const { totalHeightSpecie: totalHeight, commercialHeightSpecie: commercialHeight, averageAltitude: average } = await filterDataAverage(codigo, averageStore.averageCandidateData);
-    totalHeightSpecie.value = totalHeight;
-    commercialHeightSpecie.value = commercialHeight;
-    averageAltitude.value = average;
+  await geoStore.fetchData(); // Llama a fetchData para cargar los datos
+  filteredData.value = await filterGeo(codigo, geoStore.geoCandidateData);
+  const {
+    totalHeightSpecie: totalHeight,
+    commercialHeightSpecie: commercialHeight,
+    averageAltitude: average,
+  } = await filterDataAverage(codigo, averageStore.averageCandidateData);
+  totalHeightSpecie.value = totalHeight;
+  commercialHeightSpecie.value = commercialHeight;
+  averageAltitude.value = average;
 
-    createChart();
+  createChart();
 });
 
 const {
-    nom_comunes,
-    nombre_cientifico,
-    otros_nombres,
-    familia,
-    hojas,
-    tipo_hoja,
-    flor,
-    frutos,
-    semillas,
-    tallo,
-    follaje,
-    forma_copa,
-    disposicion_hojas,
-    distribucion,
-    habito,
-    sinonimos
-} = especie.especie
+  nom_comunes,
+  nombre_cientifico,
+  otros_nombres,
+  familia,
+  hojas,
+  tipo_hoja,
+  flor,
+  frutos,
+  semillas,
+  tallo,
+  follaje,
+  forma_copa,
+  disposicion_hojas,
+  distribucion,
+  habito,
+  sinonimos,
+  img_general,
+  img_leafs,
+  img_flowers,
+  img_fruits,
+  img_seeds,
+  img_stem,
+  img_landscape_one,
+  img_landscape_two,
+  img_landscape_three,
+
+} = especie.especie;
 
 const scrollToTop = () => {
   // para cuando se consulta desde la vista Especies
   window.scrollTo(0, 0);
-}
-scrollToTop()
+};
+scrollToTop();
 </script>
 
 <template>
@@ -204,7 +237,10 @@ scrollToTop()
             <div class="composicion__general">
               <!-- imagen principal -->
               <div class="imagen__principal">
-                <img src="/img/arbol__especie.jpg" alt="imagen principal" />
+                <img
+                  :src="getFullImageUrl(img_general)"
+                  alt="imagen principal"
+                />
               </div>
               <!-- contenido header -->
               <div class="header">
@@ -245,10 +281,7 @@ scrollToTop()
               <!-- hojas -->
               <div class="especie__contenido">
                 <div class="especie__imagen">
-                  <img
-                    src="https://inaturalist-open-data.s3.amazonaws.com/photos/24715/large.jpg"
-                    alt=""
-                  />
+                  <img :src="getFullImageUrl(img_leafs)" alt="" />
                 </div>
                 <div class="especie__info">
                   <h4 class="especie__titulo">Hojas</h4>
@@ -258,10 +291,7 @@ scrollToTop()
               <!-- flores -->
               <div class="especie__contenido">
                 <div class="especie__imagen">
-                  <img
-                    src="https://img.freepik.com/fotos-premium/flores-amarillas-arbol-hoja-perenne-cassia-isla_136404-734.jpg"
-                    alt=""
-                  />
+                  <img :src="getFullImageUrl(img_flowers)" alt="" />
                 </div>
                 <div class="especie__info">
                   <h4 class="especie__titulo">Flores</h4>
@@ -272,7 +302,7 @@ scrollToTop()
               <div class="especie__contenido">
                 <div class="especie__imagen">
                   <img
-                    src="https://img.freepik.com/fotos-premium/fruta-granada-madura-colgando-jardin-espacio-copiar_150101-4103.jpg"
+                    :src="getFullImageUrl(img_fruits)"
                     alt=""
                   />
                 </div>
@@ -330,11 +360,11 @@ scrollToTop()
               <h2 class="galeria__titulo">Galeria de la especie</h2>
               <div class="galeria__flex">
                 <div class="galeria__imagen">
-                  <img src="/img/arbol__especie.jpg" alt="imagen galeria" />
+                  <img :src="getFullImageUrl(img_landscape_one)" alt="imagen galeria" />
                 </div>
                 <div class="galeria__imagen-flex">
-                  <img src="/img/arbol__especie.jpg" alt="imagen galeria" />
-                  <img src="/img/arbol__especie.jpg" alt="imagen galeria" />
+                  <img :src="getFullImageUrl(img_landscape_two)" alt="imagen galeria" />
+                  <img :src="getFullImageUrl(img_landscape_three)" alt="imagen galeria" />
                 </div>
               </div>
             </section>
@@ -363,7 +393,6 @@ scrollToTop()
 </template>
 
 <style scoped>
-
 /* header */
 .header {
   margin-top: 2rem;
@@ -448,6 +477,7 @@ scrollToTop()
   }
 }
 /* contenido especie (hojas, flores y frutos) */
+
 .especie__contenido {
   background-color: var(--gris-claro);
   margin: 1rem 0;
@@ -612,34 +642,36 @@ scrollToTop()
   background-color: var(--gris-claro);
   width: 80%;
   margin: 5rem auto;
-  border-bottom-left-radius: 20px;
-  border-bottom-right-radius: 20px;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
   display: flex;
   gap: 1rem;
   flex-direction: column;
   justify-content: space-between;
-  box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
+  box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.4);
 }
 
 @media (min-width: 992px) {
   .noResultados {
-    width: 40%;
+    width: 30%;
   }
 }
 
 .noResultados__heading {
-  font-size: 1.5rem;
+  font-size: 1rem;
   margin: 2rem auto;
   color: var(--gris);
+  padding: 0;
 }
 
 .noResultados__boton {
   background-color: var(--primary);
   color: var(--blanco);
   font-weight: 700;
-  padding: 1rem;
-  border-bottom-left-radius: 20px;
-  border-bottom-right-radius: 20px;
+  padding: .8rem;
+  font-size: 1rem;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
   transition: background-color 0.3s;
 }
 

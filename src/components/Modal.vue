@@ -1,31 +1,18 @@
 <script setup>
-import { watchEffect, computed, ref } from "vue";
+import { ref } from "vue";
 
 import { useModalStore } from "../stores/modal";
 import { useEspeciesStore } from "../stores/species";
 import { useConsultaStore } from "../stores/consulta";
+import { getFullImageUrl} from '@/helpers/'
 
 const modal = useModalStore();
 const especies = useEspeciesStore();
 const consulta = useConsultaStore();
+const imagen = ref("");
 
-const imgDefault = ref('https://static.vecteezy.com/system/resources/previews/000/527/023/non_2x/tree-with-roots-vector.jpg')
-
-const imagenModal = ref({
-    imgEspecie:'https://static.vecteezy.com/system/resources/previews/000/527/023/non_2x/tree-with-roots-vector.jpg',
-    imgHojas:'https://inaturalist-open-data.s3.amazonaws.com/photos/24715/large.jpg',
-    imgTallo:'https://www.researchgate.net/profile/Gerardo-Robledo/publication/274314363/figure/fig1/AS:669424336007177@1536614607961/Figura-3-Tejidos-que-constituyen-el-tronco-de-un-arbol-corte-transversal-En-el-centro.jpg',
-    imgFlores:'https://img.freepik.com/fotos-premium/flores-amarillas-arbol-hoja-perenne-cassia-isla_136404-734.jpg',
-    imgFrutos:'https://img.freepik.com/fotos-premium/fruta-granada-madura-colgando-jardin-espacio-copiar_150101-4103.jpg',
-    sinImagen: '/img/sin_imagen.jpg'
-})
-
-const cambiarImagenModal = (nuevaImagen) => {
-  if (nuevaImagen) {
-    imagenModal.value.imgEspecie = nuevaImagen;
-  } else {
-    imagenModal.value.imgEspecie = imagenModal.value.sinImagen;
-  }
+const verImg = (url) => {
+  imagen.value = getFullImageUrl(url);
 };
 
 const consultar = (nombre_comun) => {
@@ -33,78 +20,102 @@ const consultar = (nombre_comun) => {
   consulta.consulta.vrBuscar = nombre_comun;
   consulta.mostrarConsulta();
 };
+
+const limpiarModal = ()=>{
+  imagen.value=''
+}
 </script>
 
 <template>
   <div class="modal" v-if="modal.modal">
-    <div class="modal__contenido" :class="{ showModal: modal.modal }">
+    <div
+      class="modal__contenido"
+      :class="{ showModal: modal.modal }"
+      v-for="especie in especies.especie"
+      :key="especie.cod_especie"
+    >
       <div class="modal__flex">
         <div class="modal__imagen">
           <img
-            :src="imagenModal.imgEspecie"
-            :alt="'imagen de ' + especies.especies.nom_comunes"
-            @click="cambiarImagenModal(imgDefault)"
+            :src="
+              imagen ? imagen : getFullImageUrl(especie.img_general)
+            "
+            :alt="'imagen de ' + especie.nom_comunes"
+            @click="verImg(especie.img_general)"
           />
         </div>
         <div class="modal__iconos">
           <img
-            @click="cambiarImagenModal(imagenModal.imgHojas)"
+            @click="verImg(especie.img_leafs)"
             class="modal__icono"
-            src="https://img.icons8.com/external-flaticons-lineal-color-flat-icons/64/external-leaves-plants-flaticons-lineal-color-flat-icons-2.png"
+            src="/icons/hojas.png"
             alt="external-leaves-plants-flaticons-lineal-color-flat-icons-2"
           />
           <img
-            @click="cambiarImagenModal(imagenModal.imgFlores)"
+            @click="verImg(especie.img_flowers)"
             class="modal__icono"
-            src="https://img.icons8.com/external-flatart-icons-lineal-color-flatarticons/64/external-flowers-valentines-day-flatart-icons-lineal-color-flatarticons.png"
+            src="/icons/flores.png"
             alt="external-flowers-valentines-day-flatart-icons-lineal-color-flatarticons"
           />
           <img
-            @click="cambiarImagenModal(imagenModal.imgFrutos)"
+            @click="verImg(especie.img_fruits)"
             class="modal__icono"
-            src="https://img.icons8.com/external-flaticons-lineal-color-flat-icons/64/external-fruits-farm-flaticons-lineal-color-flat-icons-2.png"
+            src="/icons/frutos.png"
             alt="external-fruits-farm-flaticons-lineal-color-flat-icons-2"
           />
           <img
-            @click="cambiarImagenModal(imagenModal.imgTallo)"
+            @click="verImg(especie.img_seeds)"
             class="modal__icono"
-            src="https://img.icons8.com/external-flaticons-lineal-color-flat-icons/64/external-stem-plants-flaticons-lineal-color-flat-icons-2.png"
+            src="/icons/semillas.png"
+            alt="external-fruits-farm-flaticons-lineal-color-flat-icons-2"
+          />
+          <img
+            @click="verImg(especie.img_stem)"
+            class="modal__icono"
+            src="/icons/tallo.png"
             alt="external-stem-plants-flaticons-lineal-color-flat-icons-2"
           />
         </div>
       </div>
 
       <div class="modal__info">
-        <h3 @click="cambiarImagenModal(imgDefault)" class="modal__heading">
-          {{ especies.especie.nom_comunes }}
+        <h3 @click="verImg(especie.img_general)" class="modal__heading">
+          {{ especie.nom_comunes }}
         </h3>
+        <p class="modal__texto">
+          {{ especie.nombre_cientifico}}
+        </p>
+        <p class="modal__texto">
+          {{ especie.familia}}
+        </p>
         <h3 class="modal__titulo">Otros nombres:</h3>
 
         <p class="modal__texto">
-          {{ especies.especie.otros_nombres }}
+          {{ especie.otros_nombres }}
         </p>
         <h3 class="modal__titulo">Sinónimos:</h3>
         <p class="modal__texto">
-          {{ especies.especie.sinonimos }}
+          {{ especie.sinonimos }}
         </p>
       </div>
       <div class="modal__botones">
         <button
           type="button"
-          class="modal__botonMas"
-          @click="consultar(especies.especie.nom_comunes)"
+          class="modal__Mas"
+          @click="consultar(especie.cod_especie),limpiarModal()"
         >
           Ver Descripción completa
         </button>
         <button
           type="button"
-          class="modal__botonCerrar"
-          @click="modal.handleClickModal(), cambiarImagenModal(imgDefault)"
+          class="modal__Cerrar"
+          @click="modal.handleClickModal(), verImg(especie.img_general),limpiarModal()"
         >
           Cerrar
         </button>
       </div>
     </div>
+    
   </div>
 </template>
 <style scoped>
@@ -133,16 +144,25 @@ const consultar = (nombre_comun) => {
   transition: transform 10s ease-in-out;
 }
 
-@media (min-width: 830px) {
+@media (min-width: 768px) {
   .modal__contenido {
-    width: 45%;
+    width: 70%;
   }
   .modal__flex {
     display: flex;
     flex-direction: row-reverse;
-    
     justify-content: center;
-    gap: 2rem;
+    gap: 1.5rem;
+  }
+}
+@media (min-width: 992px) {
+  .modal__contenido {
+    width: 35%;
+  }
+}
+@media (min-width: 1820px) {
+  .modal__contenido {
+    width: 30%;
   }
 }
 .showModal {
@@ -152,73 +172,93 @@ const consultar = (nombre_comun) => {
 .modal__iconos {
   display: flex;
   justify-content: space-evenly;
-  gap: 2px;
   margin-top: 1rem;
 }
-@media (min-width: 830px) {
+@media (min-width: 768px) {
   .modal__iconos {
     flex-direction: column;
-    justify-content: space-evenly;
     margin-top: 1rem;
   }
 }
 .modal__icono {
+  width: 2.3rem;
   border: 1px solid var(--primary);
-  transition: transform 0.4s;
+  transition: transform 0.3s;
 }
 .modal__icono:hover {
-  transform: scale(1.2);
+  transform: scale(1.1);
 }
 
 .modal__heading {
-  font-size: 2rem;
-  margin-top: 2rem;
+  font-size: 1rem;
+  margin: 2rem auto .5rem auto;
   color: var(--primary);
   cursor: pointer;
 }
 
 .modal__titulo {
   font-weight: 700;
-  font-size: 1.2rem;
+  font-size: .8rem;
   border-top: 1px solid gray;
-  padding: 1rem;
+  padding: .3rem;
   margin-bottom: 2px;
 }
 
 .modal__texto {
-  line-height: 1.8;
-  text-align: center;
+  line-height: 1.2;
+  font-size: .8rem;
   font-weight: 700;
-  color: var(--secondary);
+  text-align: center;
+  color: var(--gris);
 }
 .modal__botones {
   display: flex;
   flex-direction: column;
-  gap: 2rem;
+ 
 }
-
-.modal__botonCerrar {
+@media (min-width: 992px){
+  .modal__botones{
+    flex-direction: row;
+     gap: 1rem;
+  }
+}
+.modal__Cerrar {
+  transition: background-color 0.3s;
+  font-size: 1rem;
+  margin-top: 1rem;
   background-color: var(--secondary);
   color: var(--blanco);
-  padding: 1rem;
+  padding: .6rem;
   font-weight: 700;
-  border-radius: 10px;
+  border-radius: 5px;
+  width: 100%;
   transition: background-color 0.3s;
 }
-.modal__botonCerrar:hover {
+@media (min-width: 992px){
+  .modal__Cerrar {
+    margin-top: 3rem;
+  }
+}
+.modal__Cerrar:hover {
   background-color: var(--secondary-hover);
 }
-.modal__botonMas {
+.modal__Mas {
+  font-size: 1rem;
   margin-top: 3rem;
   background-color: var(--primary);
   color: var(--blanco);
-  padding: 1rem;
+  padding: .6rem;
   font-weight: 700;
-  border-radius: 10px;
+  border-radius: 5px;
+  width: 100%;
   transition: background-color 0.3s;
 }
 
-.modal__botonMas:hover {
+.modal__Mas:hover {
   background-color: var(--primary-hover);
+}
+.modal__imagen img{
+  width: 500px;
+  height: 375px;
 }
 </style>

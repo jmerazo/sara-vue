@@ -1,14 +1,20 @@
 <script setup>
 import { computed } from "vue";
 import { onBeforeRouteLeave } from "vue-router";
-import { useEspeciesData } from "@/stores/dashboard/speciesData";
+import { useEspeciesData } from "@/stores/dashboard/reports/speciesData";
+import { descargarExcel, descargarPdf, obtenerFecha } from "@/helpers";
+
+//componentes
+import LoadingData from "@/components/LoadingData.vue";
 
 const especies = useEspeciesData();
+
 //limpiar filtros antes de cambiar de vista
 onBeforeRouteLeave((to, from, next) => {
   especies.quitarFiltroEspecie();
   next();
 });
+
 //botones paginador
 const displayedPageRange = computed(() => {
   const currentPage = especies.currentPage;
@@ -37,21 +43,27 @@ const displayedPageRange = computed(() => {
           @input="especies.buscarTermino($event.target.value)"
         />
       </div>
-      <div class="botones__descarga">
-        <a class="boton" href="#"
+      <div class="botones__descarga" v-if="displayedPageRange.length > 1">
+        <a
+          @click="descargarExcel(especies.datosImport, 'Datos generales')"
+          class="boton"
+          href="#"
           ><font-awesome-icon
             class="boton__excel"
             :icon="['fas', 'file-excel']"
         /></a>
-        <a class="boton" href="#"
+        <a
+          @click="
+            descargarPdf(especies.datosImport, `Datos generales - ${obtenerFecha()}`, 6,0)
+          "
+          class="boton"
+          href="#"
           ><font-awesome-icon class="boton__pdf" :icon="['fas', 'file-pdf']"
-        /></a>
-        <a class="boton" href="#"
-          ><font-awesome-icon class="boton__print" :icon="['fas', 'print']"
         /></a>
       </div>
     </div>
     <hr />
+    <LoadingData v-if="especies.cargando"/>
     <!-- aqui el for para recorer la data del store -->
     <main class="reporte__grid">
       <div
@@ -129,7 +141,7 @@ const displayedPageRange = computed(() => {
     <!--fin paginador -->
     <!-- texto validacion buscador -->
     <section class="validacion__contenido">
-      <h1 v-if="especies.especiesData.length == 0" class="validacion__heading">
+      <h1 v-if="especies.especiesData.length == 0 && !especies.cargando" class="validacion__heading">
         No hay resultados de búsqueda
       </h1>
     </section>
@@ -139,12 +151,12 @@ const displayedPageRange = computed(() => {
 
 <style scoped>
 .reporte__heading {
-  font-size: 1.3rem;
+  font-size: 1.1rem;
   margin: 2rem;
 }
 @media (min-width: 768px) {
   .reporte__heading {
-    font-size: 1.8rem;
+    font-size: 1.3rem;
     margin: 3rem;
   }
 }
@@ -153,7 +165,7 @@ const displayedPageRange = computed(() => {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1.2rem;
+  gap: 1rem;
   margin-bottom: 0.6rem;
 }
 @media (min-width: 768px) {
@@ -171,7 +183,7 @@ const displayedPageRange = computed(() => {
 @media (min-width: 768px) {
   .buscador__label {
     display: inline;
-    margin-right: 1rem;
+    margin-right: 0.5rem;
   }
 }
 .buscador__input {
@@ -206,9 +218,6 @@ const displayedPageRange = computed(() => {
 .boton__pdf {
   color: rgb(184, 50, 50);
 }
-.boton__print {
-  color: rgb(87, 82, 82);
-}
 
 /* estilos contenido main */
 
@@ -216,7 +225,7 @@ const displayedPageRange = computed(() => {
 .reporte__grid {
   display: grid;
   gap: 1rem;
-  margin-top: 2rem;
+  margin-top: 1.5rem;
 }
 @media (min-width: 768px) {
   .reporte__grid {
@@ -263,45 +272,5 @@ const displayedPageRange = computed(() => {
 .card__dato,
 .card__descripcion {
   margin: 4px 0;
-}
-
-/* Paginador */
-.paginador {
-  margin: 2rem 0 0 0;
-}
-.paginador__botones {
-  display: flex;
-  justify-content: center;
-}
-.paginador__boton {
-  font-weight: 700;
-  font-size: 1rem;
-  padding: 0.3rem;
-}
-@media (min-width: 768px) {
-  .paginador__boton {
-    font-size: 1.3rem;
-  }
-}
-.paginador__boton-actual {
-  background-color: rgb(183, 211, 183);
-}
-.paginador__boton--anterior {
-  border-bottom-left-radius: 10px;
-  color: var(--blanco);
-  background-color: var(--primary);
-}
-.paginador__boton--siguiente {
-  border-bottom-right-radius: 10px;
-  color: var(--blanco);
-  background-color: var(--primary);
-}
-
-/* validacion */
-.validacion__contenido {
-  margin-bottom: 8rem;
-}
-.validacion__heading {
-  font-size: 1.5rem;
 }
 </style>

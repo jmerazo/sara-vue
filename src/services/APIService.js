@@ -105,5 +105,6 @@ export default {
     },
     getSamplesData(){
         return api.get('/samples/report/data')
-    }
+    },
+
 }

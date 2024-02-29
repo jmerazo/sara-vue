@@ -53,7 +53,7 @@ const irFamilias = () => {
               <button
                 class="tabla__boton"
                 @click="
-                  consultar(especie.nom_comunes), modal.handleClickModalFamily()
+                  consultar(especie.cod_especie), modal.handleClickModalFamily()
                 "
               >
                 Ver especie
@@ -88,33 +88,41 @@ const irFamilias = () => {
   display: flex;
   flex-direction: column;
   background-color: var(--gris-claro);
-  border-radius: 20px;
-  gap: 1rem;
+  border-radius: 10px;
   margin-bottom: 1rem;
 }
-
-@media (min-width: 768px) {
-  .tabla {
+.tabla {
     width: 100%;
   }
+
+@media (min-width: 768px) {
+
   .tabla__fila {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     align-items: center;
+    gap: 1rem;
   }
 }
 
 .tabla__dato {
   font-weight: 700;
+  font-size: .8rem;
   color: var(--gris);
   padding: 0 10px;
+}
+@media (min-width: 1820px){
+  .tabla__dato{
+    font-size: 1rem;
+  }
 }
 .tabla__boton {
   background-color: #066964;
   color: var(--blanco);
+  font-size: .8rem;
   font-weight: 700;
-  border-radius: 10px;
-  padding: 10px 55px;
+  border-radius: 5px;
+  padding: 8px 40px;
   transition: background-color 0.3s;
 }
 .tabla__boton:hover {
@@ -125,6 +133,7 @@ const irFamilias = () => {
   .tabla__boton{
     background-color: var(--blanco);
     color: var(--gris);
+    font-size: 1rem;
     transition-property: background-color color;
     transition-duration: .4s;
   }
@@ -151,7 +160,7 @@ const irFamilias = () => {
   padding: 20px;
   border-radius: 10px;
   text-align: center;
-  width: 80%;
+  width: 85%;
   max-height: 90vh;
   overflow-y: auto;
   transform: translate(-50%, -50%);
@@ -164,31 +173,40 @@ const irFamilias = () => {
 }
 
 .modal__heading {
-  font-size: 2rem;
+  font-size: 1.1rem;
   margin: 3rem 0 1.5rem 0;
   color: var(--primary);
 }
 
 .modal__texto {
   line-height: 1.5;
+  font-size: .8rem;
   text-align: center;
   font-weight: 700;
   color: var(--secondary);
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
 }
 .modal__botones {
-  margin-top: 3rem;
+  margin-top: 1.3rem;
   display: flex;
   flex-direction: column;
-  gap: 2rem;
+  gap: 1.3rem;
 }
-
+@media (min-width: 992px){
+  .modal__botones{
+    flex-direction: row;
+     gap: .6rem;
+  }
+}
 .modal__botonCerrar {
   background-color: var(--secondary);
   color: var(--blanco);
-  padding: 1rem;
+  padding: .5rem;
   font-weight: 700;
-  border-radius: 20px;
+  font-size: 1rem;
+  border-radius: 5px;
+  width: 95%;
+  margin: 0 auto;
   transition: background-color 0.3s;
 }
 .modal__botonCerrar:hover {
@@ -197,9 +215,12 @@ const irFamilias = () => {
 .modal__botonMas {
   background-color: var(--primary);
   color: var(--blanco);
-  padding: 1rem;
+  padding: .5rem;
+  font-size: 1rem;
+  width: 95%;
+  margin: 0 auto;
   font-weight: 700;
-  border-radius: 20px;
+  border-radius: 5px;
   transition: background-color 0.3s;
 }
 
