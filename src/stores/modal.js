@@ -8,10 +8,10 @@ export const useModalStore = defineStore('modal',()=>{
     const modalFamily = ref(false)
     const modalUserUpdate = ref(false)
     const modalCandidates = ref(false)
+    const modalCandidatesAdd = ref(false)
     const modalForestSpecieUpdate = ref(false)
     const modalForestSpecieAdd = ref(false)
-    const modalInfoCandidate = ref(false)
-    
+    const modalInfoCandidate = ref(false)    
     
     //modal especie
     function handleClickModal(){
@@ -33,6 +33,11 @@ export const useModalStore = defineStore('modal',()=>{
     //modal monitoreo candidato especie dashboard
     function handleClickModalCandidate(){
         modalCandidates.value = !modalCandidates.value
+    }
+
+    //modal monitoreo candidato especie dashboard
+    function handleClickModalCandidateAdd(){
+        modalCandidatesAdd.value = !modalCandidatesAdd.value
     }
 
     //modal informacion candidato especie dashboard
@@ -65,6 +70,8 @@ export const useModalStore = defineStore('modal',()=>{
         handleClickModalForestSpecieUpdate,
         modalForestSpecieUpdate,
         handleClickModalForestSpecieAdd,
-        modalForestSpecieAdd
+        modalForestSpecieAdd,
+        handleClickModalCandidateAdd,
+        modalCandidatesAdd
     }
 })

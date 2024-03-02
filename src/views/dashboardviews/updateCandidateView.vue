@@ -104,7 +104,14 @@ const userDataString = localStorage.getItem("user_data");
 if (userDataString) {
     userData.value = JSON.parse(userDataString);
 }
-console.log('data user: ', userData.value)
+
+
+watch(
+  () => usersStore.userSelected,
+  () => {
+    initializeFormData();
+  }
+);
 
 onMounted(() => {
   const hoy = new Date();

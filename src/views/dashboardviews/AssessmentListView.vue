@@ -3,9 +3,13 @@ import { computed } from "vue";
 import { onBeforeRouteLeave } from "vue-router";
 import { useGeneralEvaluations } from "@/stores/dashboard/reports/generalEvaluations";
 import { descargarExcel, descargarPdf, obtenerFecha } from "@/helpers";
+import { useModalStore } from "../../stores/modal";
 //componentes
 import LoadingData from "@/components/LoadingData.vue";
+//import ModalForestSpecieUpdate from "@/components/dashboard/ModalForestSpecieUpdate.vue";
+import ModalCandidateAdd from "@/components/dashboard/ModalCandidateAdd.vue";
 
+const modal = useModalStore();
 const report = useGeneralEvaluations();
 
 //limpiar filtros antes de cambiar de vista
@@ -484,6 +488,11 @@ function toggleDetalles(contenedor) {
         </button>
       </div>
     </section>
+
+    <div
+      @click="modal.handleClickModalCandidateAdd()"
+      class="agregar"
+    ></div>
     <!--fin paginador -->
     <!-- texto validacion buscador -->
     <section class="validacion__contenido">
@@ -495,10 +504,55 @@ function toggleDetalles(contenedor) {
       </h1>
     </section>
     <!--fin texto validacion buscador -->
+
+    <ModalCandidateAdd/>
   </div>
 </template>
 
 <style scoped>
+.agregar {
+  background-image: url("/icons/icon-add.png");
+  padding: 0;
+  margin: 0;
+  height: 3rem;
+  background-position: center;
+  background-size: cover;
+  position: fixed;
+  bottom: 10%;
+  right: -1px;
+  z-index: 2;
+  width: 4rem;
+  transition: transform 0.3s ease-out, box-shadow 0.3s ease-out;
+}
+.agregar:hover {
+  transform: scale(1.08);
+}
+
+@media (min-width: 768px) {
+  .agregar {
+    right: 1%;
+    height: 4rem;
+    overflow: hidden;
+    border-radius: 50%;
+  }
+  .agregar::before {
+    content: "";
+    display: block;
+    width: 100%;
+    height: 100%;
+    background-image: url("/icons/icon-add.png");
+    background-position: center;
+    background-size: cover;
+    border-radius: 50%;
+    transition: transform 0.3s ease-out;
+  }
+  .agregar:hover::before {
+    transform: scale(1.08);
+  }
+  .agregar:hover {
+    box-shadow: 0 0 0 5px rgba(0, 0, 0, 0.2);
+  }
+}
 /* generales */
 .dato {
   font-weight: 900;
