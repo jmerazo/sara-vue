@@ -182,7 +182,7 @@ const userData = JSON.parse(userDataString);
             class="nav-header navegacion__titulo"
             id="administracion"
           >
-            REGISTRAR
+            PÁGINA
           </li>
 
           <RouterLink :to="{ name: 'add-candidates' }">
@@ -195,8 +195,8 @@ const userData = JSON.parse(userDataString);
               class="nav-item"
             >
               <a data-widget="pushmenu" href="#" class="nav-link enlace">
-                <img src="/icons/icon-add-evaluation.png" alt="users" />
-                <p>Evaluación</p>
+                <img src="/icons/icon-pages.png" alt="users" />
+                <p>Páginas</p>
               </a>
             </li>
           </RouterLink>
@@ -210,27 +210,11 @@ const userData = JSON.parse(userDataString);
               class="nav-item"
             >
               <a data-widget="pushmenu" href="#" class="nav-link enlace">
-                <img src="/icons/icon-add-monitoring.png" alt="users" />
-                <p>Monitoreo</p>
+                <img src="/icons/icon-sections.png" alt="users" />
+                <p>Secciónes</p>
               </a>
             </li>
           </RouterLink>
-          <RouterLink :to="{ name: 'species' }">
-            <li
-              v-if="
-                userData.rol == 'ADMINISTRADOR' &&
-                userData.is_superuser == 1 &&
-                userData.is_staff == 1
-              "
-              class="nav-item"
-            >
-              <a data-widget="pushmenu" href="#" class="nav-link enlace">
-                <img src="/icons/icon-add-sample.png" alt="users" />
-                <p>Muestra</p>
-              </a>
-            </li>
-          </RouterLink>
-
 
           <li
             v-if="

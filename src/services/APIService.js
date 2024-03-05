@@ -182,6 +182,30 @@ export default {
     pageTopSpecies(code){
         return api.get(`/page/top_species`)
     },
+    pagesGet(){
+        return api.get(`/page`)
+    },
+    pagesUpdate(pid){
+        return api.put(`/page/${pid}`)
+    },
+    pagesCreate(data){
+        return api.post(`/page`, data)
+    },
+    pagesDelete(pid){
+        return api.delete(`/page/${pid}`)
+    },
+    sectionGet(){
+        return api.get(`/page/section`)
+    },
+    sectionUpdate(pid){
+        return api.put(`/page/section/${pid}`)
+    },
+    sectionCreate(data){
+        return api.post(`/page/section`, data)
+    },
+    sectionDelete(pid){
+        return api.delete(`/page/section/${pid}`)
+    },
     /* ==================================================================================================================== */
     /* ==================================================================================================================== */
     // ENDPOINT →→ SAMPLES
