@@ -185,7 +185,7 @@ const userData = JSON.parse(userDataString);
             PÁGINA
           </li>
 
-          <RouterLink :to="{ name: 'add-candidates' }">
+          <RouterLink :to="{ name: 'pages' }">
             <li
               v-if="
                 userData.rol == 'ADMINISTRADOR' &&
@@ -200,7 +200,7 @@ const userData = JSON.parse(userDataString);
               </a>
             </li>
           </RouterLink>
-          <RouterLink :to="{ name: 'species' }">
+          <RouterLink :to="{ name: 'sections' }">
             <li
               v-if="
                 userData.rol == 'ADMINISTRADOR' &&

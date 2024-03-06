@@ -160,7 +160,25 @@ const router = createRouter({
         auth: true,
         roles: ['ADMINISTRADOR', 'is_superuser', 'is_staff']
       }
-    }   
+    },  
+    {
+      path:'/pages',
+      name:'pages',
+      component: () => import('../views/dashboardviews/PagesListView.vue'),
+      meta: {
+        auth: true,
+        roles: ['ADMINISTRADOR', 'is_superuser', 'is_staff']
+      }
+    },  
+    {
+      path:'/sections',
+      name:'sections',
+      component: () => import('../views/dashboardviews/SectionsListView.vue'),
+      meta: {
+        auth: true,
+        roles: ['ADMINISTRADOR', 'is_superuser', 'is_staff']
+      }
+    }     
   ]
 })
 
