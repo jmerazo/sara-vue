@@ -12,6 +12,10 @@ export const useModalStore = defineStore('modal',()=>{
     const modalForestSpecieUpdate = ref(false)
     const modalForestSpecieAdd = ref(false)
     const modalInfoCandidate = ref(false)    
+    const modalPageAdd = ref(false)  
+    const modalPageUpdate = ref(false)  
+    const modalSectionAdd = ref(false)  
+    const modalSectionUpdate = ref(false)  
     
     //modal especie
     function handleClickModal(){
@@ -21,9 +25,7 @@ export const useModalStore = defineStore('modal',()=>{
     //modal Familia
     function handleClickModalFamily(){
         modalFamily.value = !modalFamily.value
-    }
-    
-   
+    } 
 
     //modal user dashboard
     function handleClickModalUserUpdate(){
@@ -54,6 +56,24 @@ export const useModalStore = defineStore('modal',()=>{
         modalForestSpecieAdd.value = !modalForestSpecieAdd.value
     }
 
+    //modal especie page dashboard
+    function handleClickModalPageUpdate(){
+        modalPageUpdate.value = !modalPageUpdate.value
+    }
+    //modal agregar page forestal
+    function handleClickModalPageAdd(){
+        modalPageAdd.value = !modalPageAdd.value
+    }
+
+    //modal especie section dashboard
+    function handleClickModalSectionUpdate(){
+        modalSectionUpdate.value = !modalSectionUpdate.value
+    }
+    //modal agregar section forestal
+    function handleClickModalSectionAdd(){
+        modalSectionAdd.value = !modalSectionAdd.value
+    }
+
     return {
         modal,
         modalFamily,
@@ -72,6 +92,14 @@ export const useModalStore = defineStore('modal',()=>{
         handleClickModalForestSpecieAdd,
         modalForestSpecieAdd,
         handleClickModalCandidateAdd,
-        modalCandidatesAdd
+        modalCandidatesAdd,
+        handleClickModalPageUpdate,
+        modalPageUpdate,
+        handleClickModalPageAdd,
+        modalPageAdd,
+        handleClickModalSectionUpdate,
+        modalSectionUpdate,
+        handleClickModalSectionAdd,
+        modalSectionAdd
     }
 })

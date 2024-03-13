@@ -182,7 +182,7 @@ const userData = JSON.parse(userDataString);
             class="nav-header navegacion__titulo"
             id="administracion"
           >
-            PÁGINA
+            CONTENIDO
           </li>
 
           <RouterLink :to="{ name: 'pages' }">

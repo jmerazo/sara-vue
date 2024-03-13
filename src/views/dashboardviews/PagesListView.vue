@@ -3,10 +3,13 @@ import { computed, onMounted } from "vue";
 import { onBeforeRouteLeave } from "vue-router";
 import { descargarExcel, descargarPdf, obtenerFecha } from "@/helpers";
 import { usePageContent } from "../../stores/page";
+import { useModalStore } from "@/stores/modal";
 //componentes
 import LoadingData from "@/components/LoadingData.vue";
+import ModalPageAdd from "@/components/dashboard/ModalPageAdd.vue";
 
 const page = usePageContent();
+const modal = useModalStore();
 console.log('pages sc: ', page)
 
 onMounted(() => {
@@ -71,9 +74,10 @@ onMounted(() => {
       </main>
     </div>
     <div
-      @click="modal.handleClickModalForestSpecieAdd()"
+      @click="modal.handleClickModalPageAdd()"
       class="agregar"
     ></div>
+    <ModalPageAdd/>
   </div>
 </template>
 

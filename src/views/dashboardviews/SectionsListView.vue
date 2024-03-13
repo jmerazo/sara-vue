@@ -3,10 +3,13 @@ import { computed, onMounted } from "vue";
 import { onBeforeRouteLeave } from "vue-router";
 import { descargarExcel, descargarPdf, obtenerFecha } from "@/helpers";
 import { usePageContent } from "../../stores/page";
+import { useModalStore } from "@/stores/modal";
 //componentes
 import LoadingData from "@/components/LoadingData.vue";
+import ModalSectionAdd from "@/components/dashboard/ModalSectionAdd.vue";
 
 const section = usePageContent();
+const modal = useModalStore();
 
 onMounted(() => {
     section.sectionsData();
@@ -70,9 +73,10 @@ onMounted(() => {
       </main>
     </div>
     <div
-      @click="modal.handleClickModalForestSpecieAdd()"
+      @click="modal.handleClickModalSectionAdd()"
       class="agregar"
     ></div>
+    <ModalSectionAdd/>
   </div>
 </template>
 
