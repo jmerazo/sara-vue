@@ -14,20 +14,35 @@ const formData = ref({
   image: "",
   content_type: "",
   order: "",
-  fontStyle: "",
-  fontSize: "",
-  textColor: "#000000",
-  textAlignment: "",
+
+  sectionTitleStyles: {
+      fontStyle: "",
+      fontSize: 12,
+      textColor: "#000000",
+      textAlignment: "",
+  },
+  contentStyles: {
+      fontStyle: "",
+      fontSize: 12,
+      textColor: "#000000",
+      textAlignment: "",
+  },
 });
 
 async function sectionAdd() {
 
-    const styles = {
-        fontStyle: formData.value.fontStyle,
-        fontSize: formData.value.fontSize + 'px', // Asegúrate de agregar 'px' para tamaños
-        color: formData.value.textColor,
-        textAlign: formData.value.textAlignment,
-        // ...otros estilos...
+    const titleStyles = {
+        fontStyle: formData.value.sectionTitleStyles.fontStyle, // Accede a los valores anidados directamente
+        fontSize: formData.value.sectionTitleStyles.fontSize + 'px',
+        color: formData.value.sectionTitleStyles.textColor,
+        textAlign: formData.value.sectionTitleStyles.textAlignment,
+    };
+
+    const contentStyles = {
+        fontStyle: formData.value.contentStyles.fontStyle, // Igual aquí
+        fontSize: formData.value.contentStyles.fontSize + 'px',
+        color: formData.value.contentStyles.textColor,
+        textAlign: formData.value.contentStyles.textAlignment,
     };
 
     const dataToSend = {
@@ -37,12 +52,19 @@ async function sectionAdd() {
         image: formData.value.image,
         order: formData.value.order,
         content_type: formData.value.content_type,
-        styles: styles // Envía esto como una cadena JSON al backend
+        styles: {
+            titleStyles: titleStyles,
+            contentStyles: contentStyles
+        } // Aquí guardas ambos conjuntos de estilos como un objeto
     };
 
     pageStore.addSection(dataToSend);
     modal.handleClickModalSectionAdd();
 }
+
+onMounted(() => {
+  pageStore.pagesData();
+});
 </script>
 
 <template>
@@ -53,21 +75,21 @@ async function sectionAdd() {
         <div class="modal__imagen">
           <img src="/icons/icon-design-page.png" alt="modal-icono" />
         </div>
-        <h4 class="modal__titulo">Crear nueva página</h4>
+        <h4 class="modal__titulo">Crear nueva sección</h4>
       </div>
       <hr />
       <!-- modal contenido -->
       <form @submit.prevent="sectionAdd" class="formulario">
         <div class="formulario__campo">
-          <label for="codigo" class="formulario__label">Vista</label>
-          <select v-model="formData.router" id="fontStyle" class="formulario__input">
-                <option value="" selected disabled>Seleccionar una opción...</option>
-                <option value="home">Inicio</option>
-                <option value="family">Familias</option>
-                <option value="glosary">Glosario</option>
-                <option value="aboutus">Acerca de nosotros</option>
-            </select>
+          <label class="formulario__label" for="species">Página</label>
+          <select id="departamento" class="formulario__input formulario__input--select"  v-model="formData.page_id">
+            <option value="" selected disabled>Seleccionar una opción...</option>
+            <option v-for="p in pageStore.pageData" :key="p.id" :value="p.id">
+                {{ p.title }}
+            </option>
+          </select>        
         </div>
+        
         <div class="formulario__campo">
           <label for="comun" class="formulario__label">Título de la sección</label>
           <input
@@ -78,9 +100,10 @@ async function sectionAdd() {
             required
           />
         </div>
+
         <div class="formulario__campo">
             <label for="fontStyle" class="formulario__label">Estilo de Fuente</label>
-            <select v-model="formData.fontStyle" id="fontStyle" class="formulario__input">
+            <select v-model="formData.sectionTitleStyles.fontStyle" id="fontStyle" class="formulario__input">
                 <option value="" selected disabled>Seleccionar una opción...</option>
                 <option value="normal">Normal</option>
                 <option value="italic">Cursiva</option>
@@ -88,17 +111,25 @@ async function sectionAdd() {
             </select>
         </div>
         <div class="formulario__campo">
-            <label for="fontSize" class="formulario__label">Tamaño de Fuente</label>
-            <input type="number" v-model="formData.fontSize" id="fontSize" class="formulario__input" />
+            <label for="fontSizeSlider" class="formulario__label">Tamaño de Fuente</label>
+            <input 
+                type="range" 
+                v-model="formData.sectionTitleStyles.fontSize" 
+                id="fontSizeSlider" 
+                class="formulario__slider"
+                min="9" 
+                max="72" 
+                step="1" />
+            <p>Valor seleccionado: {{ formData.sectionTitleStyles.fontSize }}px</p>
         </div>
         <div class="formulario__campo">
             <label for="textColor" class="formulario__label">Color de Texto</label>
-            <input type="color" v-model="formData.textColor" id="textColor" class="formulario__input" />
+            <input type="color" v-model="formData.sectionTitleStyles.textColor" id="textColor" class="formulario__input" />
         </div>
 
         <div class="formulario__campo">
             <label for="textAlignment" class="formulario__label">Alineación del Texto</label>
-            <select v-model="formData.textAlignment" id="textAlignment" class="formulario__input">
+            <select v-model="formData.sectionTitleStyles.textAlignment" id="textAlignment" class="formulario__input">
                 <option value="" selected disabled>Seleccionar una opción...</option>
                 <option value="left">Izquierda</option>
                 <option value="center">Centro</option>
@@ -107,10 +138,91 @@ async function sectionAdd() {
             </select>
         </div>
 
+        <div class="formulario__campo">
+          <label for="comun" class="formulario__label">Contenido</label>
+          <textarea
+            v-model="formData.content"
+            id="comun"
+            type="text"
+            class="formulario__input"
+            required
+          ></textarea>
+        </div>
+
+        <div class="formulario__campo">
+            <label for="fontStyle" class="formulario__label">Estilo de Fuente</label>
+            <select v-model="formData.contentStyles.fontStyle" id="fontStyle" class="formulario__input">
+                <option value="" selected disabled>Seleccionar una opción...</option>
+                <option value="normal">Normal</option>
+                <option value="italic">Cursiva</option>
+                <option value="bold">Negrita</option>
+            </select>
+        </div>
+        <div class="formulario__campo">
+            <label for="fontSizeSlider" class="formulario__label">Tamaño de Fuente</label>
+            <input 
+                type="range" 
+                v-model="formData.contentStyles.fontSize" 
+                id="fontSizeSlider" 
+                class="formulario__slider"
+                min="9" 
+                max="72" 
+                step="1" />
+            <p>Valor seleccionado: {{ formData.contentStyles.fontSize }}px</p>
+        </div>
+
+        <div class="formulario__campo">
+            <label for="textColor" class="formulario__label">Color de Texto</label>
+            <input type="color" v-model="formData.contentStyles.textColor" id="textColor" class="formulario__input" />
+        </div>
+
+        <div class="formulario__campo">
+            <label for="textAlignment" class="formulario__label">Alineación del Texto</label>
+            <select v-model="formData.contentStyles.textAlignment" id="textAlignment" class="formulario__input">
+                <option value="" selected disabled>Seleccionar una opción...</option>
+                <option value="left">Izquierda</option>
+                <option value="center">Centro</option>
+                <option value="right">Derecha</option>
+                <option value="justify">Justificado</option>
+            </select>
+        </div>
+
+        <div class="formulario__campo">
+          <label for="comun" class="formulario__label">URL Imagen</label>
+          <input
+            v-model="formData.image"
+            id="comun"
+            type="text"
+            class="formulario__input"
+          />
+        </div>
+
+        <div class="formulario__campo">
+          <label for="comun" class="formulario__label">Tipo de contenido</label>
+          <input
+            v-model="formData.content_type"
+            id="comun"
+            type="text"
+            class="formulario__input"
+            required
+          />
+        </div>
+
+        <div class="formulario__campo">
+          <label for="comun" class="formulario__label">Order</label>
+          <input
+            v-model="formData.order"
+            id="comun"
+            type="number"
+            class="formulario__input"
+            required
+          />
+        </div>
+
         <div class="formulario__botones">
           <button type="submit" class="formulario__boton">Guardar</button>
           <button
-            @click="modal.handleClickModalPageAdd()"
+            @click="modal.handleClickModalSectionAdd()"
             type="button"
             class="formulario__boton formulario__boton--cerrar"
           >
