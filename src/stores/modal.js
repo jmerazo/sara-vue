@@ -16,6 +16,7 @@ export const useModalStore = defineStore('modal',()=>{
     const modalPageUpdate = ref(false)  
     const modalSectionAdd = ref(false)  
     const modalSectionUpdate = ref(false)  
+    const modalFormMonitoring = ref(false)  
     
     //modal especie
     function handleClickModal(){
@@ -54,6 +55,10 @@ export const useModalStore = defineStore('modal',()=>{
     //modal agregar especie forestal
     function handleClickModalForestSpecieAdd(){
         modalForestSpecieAdd.value = !modalForestSpecieAdd.value
+    }
+    //modal for create or update moniroting 
+    function handleClickModalFormMonitoring(){
+        modalFormMonitoring.value = !modalFormMonitoring.value
     }
 
     //modal especie page dashboard
@@ -100,6 +105,8 @@ export const useModalStore = defineStore('modal',()=>{
         handleClickModalSectionUpdate,
         modalSectionUpdate,
         handleClickModalSectionAdd,
-        modalSectionAdd
+        modalSectionAdd,
+        handleClickModalFormMonitoring,
+        modalFormMonitoring,
     }
 })

@@ -22,6 +22,7 @@ export const useAuthTokenStore = defineStore('authToken', () => {
         const response = await APIService.refreshAuthToken({ refresh: refreshToken.value });
         if (response.status === 200 && response.data.access) {
           accessToken.value = response.data.access;
+          
           userData.value = response.data.user_data;
           authActive.value = true;
           isRehydrated.value = true;

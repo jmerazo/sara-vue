@@ -1,7 +1,7 @@
 <script setup>
 //components
-import SideBar from "@/components/dashboard/SideBar.vue";
-import NavBar from "@/components/dashboard/NavBar.vue";
+import SideBar from "@/components/dashboard/base/SideBar.vue";
+import NavBar from "@/components/dashboard/base/NavBar.vue";
 //librery
 import "@/adminlte/plugins/jquery/jquery.min.js";
 import "@/adminlte/plugins/bootstrap/js/bootstrap.bundle.min.js";

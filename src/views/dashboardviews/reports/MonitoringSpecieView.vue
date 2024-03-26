@@ -1,6 +1,6 @@
 <script setup>
 import { ref,computed } from "vue";
-import Alerta from "@/components/dashboard/Alert.vue";
+import Alerta from "@/components/dashboard/base/Alert.vue";
 import { useSpecieMonitoriong } from "@/stores/dashboard/reports/SpecieMonitoring";
 
 import { descargarExcel, descargarPdf, obtenerFecha } from "@/helpers";
