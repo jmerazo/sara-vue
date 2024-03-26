@@ -1,8 +1,8 @@
 <script setup>
 import { ref, onMounted, computed, watch } from 'vue';
-import { useAuthTokenStore } from "../../stores/auth";
-import { useEspeciesStore } from "../../stores/species";
-import { useGeoCandidateTrees } from "../../stores/candidate";
+import { useAuthTokenStore } from "../../../stores/auth";
+import { useEspeciesStore } from "../../../stores/species";
+import { useGeoCandidateTrees } from "../../../stores/candidate";
 import { useModalStore } from "@/stores/modal";
 
 const locates = useAuthTokenStore();
@@ -121,7 +121,7 @@ function resetForm() {
 }
 
 const handleSubmit = () => {
-  console.log('data send: ', formData.value)
+  
   try {
     candidates.addCandidate(formData.value);
     resetForm();

@@ -1,7 +1,7 @@
 <script setup>
 import { onBeforeRouteLeave } from "vue-router";
 import { useEspeciesStore } from "../stores/species";
-import { ref, onMounted, computed } from "vue";
+import { computed } from "vue";
 
 import Species from "@/components/Species.vue";
 
