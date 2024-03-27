@@ -152,6 +152,17 @@ const mostrarNavMovil = () => {
           >
             Glosario
           </RouterLink>
+          <a
+            href="http://viveros.corpoamazonia.gov.co/"
+            class="navegacion__link"
+            :class="{
+              pagina__inicio: paginaInicio,
+              pagina__otro: !paginaInicio,
+            }"
+            target="_blank"
+          >
+            Viveros
+          </a>
           <RouterLink
             :to="{ name: 'aboutus' }"
             class="navegacion__link"

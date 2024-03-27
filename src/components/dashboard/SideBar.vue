@@ -185,7 +185,7 @@ const userData = JSON.parse(userDataString);
             CONTENIDO
           </li>
 
-          <RouterLink :to="{ name: 'pages' }">
+          <!-- <RouterLink :to="{ name: 'pages' }">
             <li
               v-if="
                 userData.rol == 'ADMINISTRADOR' &&
@@ -199,7 +199,7 @@ const userData = JSON.parse(userDataString);
                 <p>Páginas</p>
               </a>
             </li>
-          </RouterLink>
+          </RouterLink> -->
           <RouterLink :to="{ name: 'sections' }">
             <li
               v-if="

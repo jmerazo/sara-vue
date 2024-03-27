@@ -69,15 +69,6 @@ function contenidoResumido() {
 
   <section class="colaboradores">
     <div class="colaboradores__contenido">
-      <div class="colaboradores__descripcion">
-        <h2 class="colaboradores__heading">Nuestros Colaboradores</h2>
-        <p class="colaboradores__texto">
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptatibus
-          at est qui! Cupiditate harum non quia, fuga aliquid porro saepe omnis
-          libero tenetur veritatis atque, officia minus? Accusamus, vero illum?
-        </p>
-      </div>
-
       <div class="colaboradores__grid">
         <!-- colaborador -->
         <div
@@ -246,68 +237,46 @@ function contenidoResumido() {
   background-color: var(--primary-hover);
   color: var(--blanco);
 }
-/* colaboradores */
-.colaboradores {
-  /* background-color: #eaf2ed; */
-  margin: 4rem auto;
-  max-width: 95%;
 
+.colaboradores {
+  margin: 4rem 0;
+  width: 100%;
 }
-.colaboradores__heading {
-  font-size: 1rem;
-  margin-bottom: 1rem;
-  line-height: 1.2;
-}
+
 .colaboradores__contenido {
-  display: grid;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start; /* Alinea el encabezado a la izquierda */
   padding: 1rem;
 }
-@media (min-width: 992px) {
-  .colaboradores__contenido {
-    grid-template-columns: 1fr 1fr;
-    gap: 3rem;
-  }
 
-  .colaboradores__grid {
-    grid-column: 1/2;
-    grid-row: 1/2;
-  }
-  .colaboradores__descripcion {
-    grid-column: 2/3;
-    grid-row: 1/2;
-  }
+.colaboradores__heading {
+  font-size: 1rem;
+  line-height: 1.2;
+  width: 100%; /* Asegúrate de que el encabezado ocupe todo el ancho */
+  text-align: left; /* Alinea el texto a la izquierda */
+  margin-bottom: 2rem; /* Espacio entre el encabezado y los logos */
 }
 
 .colaboradores__grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  display: flex;
+  flex-wrap: wrap; /* Permite múltiples líneas si hay muchos logos */
   gap: 2rem;
-  margin: 2rem auto 0 auto;
+  justify-content: center; /* Centra los logos horizontalmente */
+  width: 100%; /* Ocupa todo el ancho disponible */
+  align-items: center;
 }
 
 .colaborador {
   width: 4rem;
-  transition-property: scale(1.1);
-  transition-duration: .3s;
+  transition: transform 0.3s;
 }
 
-.colaborador:hover{
+.colaborador:hover {
   transform: scale(1.05);
 }
 
 @media (min-width: 768px) {
-  .colaborador {
-    width: 5rem;
-  }
-}
-@media (min-width: 992px) {
-
-  .colaboradores__grid {
-    display: flex;
-    gap: 2rem;
-    margin: 2rem auto;
-    align-items: center;
-  }
   .colaborador {
     width: 5rem;
   }

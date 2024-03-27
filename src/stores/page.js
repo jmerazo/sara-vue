@@ -1,13 +1,17 @@
 import {ref, onMounted} from 'vue'
 import {defineStore} from 'pinia'
 import APIService from '../services/APIService'
+import { useModalStore } from "@/stores/modal";
 
 export const usePageContent = defineStore('pageContent',()=>{
 
+    
+    const modal = useModalStore();
     const contenidoNosotros = ref([]);
     const informacionUsuario = ref([]);
     const pageData = ref([]);
     const sectionData = ref([]);
+    const sectionSelected = ref([])
 
     const fetchData = async () => {
         if (contenidoNosotros.value.length === 0) {
@@ -84,8 +88,14 @@ export const usePageContent = defineStore('pageContent',()=>{
             console.error('Error al comunicarse con el servidor: ', error);
         }
     };
+
+    function selectedSectionUpdate(id) {
+        sectionSelected.value =  sectionData.value.filter(section => section.id === id)
+        modal.handleClickModalSectionUpdate(sectionSelected.value); 
+    }
     
     const updateSection = async (sid, data) => {
+        console.log('id sectio: ', sid, data)
         const sectionIndex = sectionData.value.findIndex((sc) => sc.id === sid);
         if (sectionIndex !== -1) {
             Object.assign(sectionData.value[sectionIndex], data);
@@ -122,6 +132,8 @@ export const usePageContent = defineStore('pageContent',()=>{
         deletePage,
         addSection,
         updateSection,
-        deleteSection
+        deleteSection,
+        selectedSectionUpdate,
+        sectionSelected
     }
 })

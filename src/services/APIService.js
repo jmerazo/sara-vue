@@ -197,8 +197,8 @@ export default {
     sectionGet(){
         return api.get(`/page/section`)
     },
-    sectionUpdate(pid){
-        return api.put(`/page/section/${pid}`)
+    sectionUpdate(pid, data){
+        return api.put(`/page/section/${pid}`, data)
     },
     sectionCreate(data){
         return api.post(`/page/section`, data)

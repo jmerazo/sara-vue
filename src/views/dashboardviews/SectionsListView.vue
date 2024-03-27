@@ -7,6 +7,7 @@ import { useModalStore } from "@/stores/modal";
 //componentes
 import LoadingData from "@/components/LoadingData.vue";
 import ModalSectionAdd from "@/components/dashboard/ModalSectionAdd.vue";
+import ModalSectionUpdate from "@/components/dashboard/ModalSectionUpdate.vue";
 
 const section = usePageContent();
 const modal = useModalStore();
@@ -15,6 +16,26 @@ onMounted(() => {
     section.sectionsData();
 });
 
+//prueba para proteccion de eliminacion de una especie
+const deleteSection = (id) => {
+  const confirmed = window.confirm(
+    "¿Estás seguro de que deseas eliminar la sección?"
+  );
+
+  if (confirmed) {
+    const securityCode = window.prompt("Ingresa el código de seguridad:");
+
+    // Verifica el código de seguridad
+    if (securityCode === "123456") {
+      section.deleteSection(id)
+      // Elimina el registro
+     return
+    } else {
+      // Código de seguridad incorrecto
+      alert("Código de seguridad incorrecto");
+    }
+  }
+};
 </script>
 
 <template>
@@ -57,12 +78,12 @@ onMounted(() => {
               </p>
               <div class="card__botones">
                 <button
-                  class="boton__primario"
+                  class="boton__primario" @click="section.selectedSectionUpdate(s.id)"
                 >
                   <font-awesome-icon :icon="['fas', 'pen-to-square']" />
                 </button>
                 <button
-                  class="boton__primario"
+                  class="boton__primario"  @click="deleteSection(s.id)"
                 >
                   <font-awesome-icon :icon="['fas', 'trash']" />
                 </button>
@@ -76,6 +97,7 @@ onMounted(() => {
       @click="modal.handleClickModalSectionAdd()"
       class="agregar"
     ></div>
+    <ModalSectionUpdate/>
     <ModalSectionAdd/>
   </div>
 </template>
