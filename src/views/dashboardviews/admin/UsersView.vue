@@ -2,6 +2,7 @@
 import { computed } from "vue";
 import { onBeforeRouteLeave } from "vue-router";
 import { useUsersStore } from "@/stores/users";
+import ModalUserUpdate from "@/components/dashboard/modals/ModalUserUpdate.vue";
 
 import { descargarExcel, descargarPdf, obtenerFecha } from "@/helpers";
 
@@ -15,7 +16,6 @@ onBeforeRouteLeave((to, from, next) => {
   usersStore.quitarFiltroUsuario();
   next();
 });
-
 
 function changeUserState(id, state) {
   const confirmState = window.confirm(
@@ -196,6 +196,7 @@ const displayedPageRange = computed(() => {
       <!--fin texto validacion buscador -->
       
     </main>
+    <ModalUserUpdate/>
   </div>
 </template>
 

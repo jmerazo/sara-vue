@@ -1,14 +1,9 @@
 <script setup>
 import { Icon } from '@iconify/vue';
 import {useChartsStore} from '@/stores/dashboard/charts'
-import {useUsersStore} from '@/stores/users'
 import {useEspeciesStore} from '@/stores/species'
-import {useChartSamples} from '@/stores/dashboard/chartSamples'
-
 const species = useEspeciesStore()
 const charts = useChartsStore()
-const samples = useChartSamples()
-const users = useUsersStore()
 
 </script>
 <template>

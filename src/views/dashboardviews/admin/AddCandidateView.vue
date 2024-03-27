@@ -1,8 +1,8 @@
 <script setup>
 import { ref, onMounted, computed, watch } from 'vue';
-import { useAuthTokenStore } from "../../stores/auth";
-import { useEspeciesStore } from "../../stores/species"
-import { useGeoCandidateTrees } from "../../stores/candidate"
+import { useAuthTokenStore } from "@/stores/auth";
+import { useEspeciesStore } from "@/stores/species"
+import { useGeoCandidateTrees } from "@/stores/candidate"
 
 const locates = useAuthTokenStore();
 const species = useEspeciesStore();
@@ -104,14 +104,7 @@ const userDataString = localStorage.getItem("user_data");
 if (userDataString) {
     userData.value = JSON.parse(userDataString);
 }
-
-
-watch(
-  () => usersStore.userSelected,
-  () => {
-    initializeFormData();
-  }
-);
+console.log('data user: ', userData.value)
 
 onMounted(() => {
   const hoy = new Date();

@@ -1,9 +1,11 @@
 <script setup>
-
 import { computed } from "vue";
-import {useCantidateStore} from '@/stores/dashboard/reports/SpecieCanditates'
-
 import { descargarExcel, descargarPdf, obtenerFecha } from "@/helpers";
+import {useCantidateStore} from '@/stores/dashboard/reports/SpecieCanditates'
+import ModalInfoCandidate from '@/components/dashboard/modals/ModalInfoCandidate.vue';
+import ModalCandidates from '@/components/dashboard/modals/ModalCandidates.vue'
+
+
 
 const consulta = useCantidateStore();
 
@@ -161,6 +163,8 @@ const displayedPageRange = computed(() => {
       </h1>
     </section>
     <!--fin texto validacion buscador -->
+    <ModalCandidates/>
+    <ModalInfoCandidate/>
   </div>
 </template>
 

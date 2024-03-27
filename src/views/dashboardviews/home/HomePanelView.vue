@@ -5,8 +5,8 @@ import { useChartsStore } from "@/stores/dashboard/charts";
 import { useChartLocateStore } from "@/stores/dashboard/chartLocate";
 import { useChartSamples } from "@/stores/dashboard/chartSamples";
 
-import CardsHome from "@/components/dashboard/CardsHome.vue";
-import PresenceMap from "@/components/dashboard/PresenceMap.vue";
+import HomeCard from "@/components/dashboard/cards/HomeCard.vue";
+import PresenceMap from "@/components/dashboard/base/PresenceMap.vue";
 
 //Spinner
 import LoadingData from "@/components/LoadingData.vue";
@@ -93,7 +93,7 @@ onMounted(() => {
       <section class="columna__derecha">
         <!-- card -->
         <div class="card__generales">
-          <CardsHome />
+          <HomeCard />
         </div>
         <!-- fin card -->
         <!-- mapa -->
