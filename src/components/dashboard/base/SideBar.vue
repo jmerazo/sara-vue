@@ -1,11 +1,28 @@
 <script setup>
 import { RouterLink } from "vue-router";
 import { useAuthTokenStore } from "@/stores/auth";
+import { computed } from 'vue';
 
 const store = useAuthTokenStore();
 const userDataString = localStorage.getItem("user_data");
 const userData = JSON.parse(userDataString);
 
+const authStore = useAuthTokenStore();
+const storedPermissions = JSON.parse(localStorage.getItem('user_permissions') || '{}');
+console.log('permissions:', storedPermissions);
+
+// Agrupa los módulos por sección
+const sections = computed(() => {
+  const groupedSections = {};
+  for (const mod of storedPermissions.modules) {
+    const section = mod.page_section || 'GENERAL';
+    if (!groupedSections[section]) {
+      groupedSections[section] = [];
+    }
+    groupedSections[section].push(mod);
+  }
+  return groupedSections;
+});
 </script>
 <template>
   <aside
@@ -137,7 +154,7 @@ const userData = JSON.parse(userDataString);
           <RouterLink :to="{ name: 'list-species' }">
             <li
               v-if="
-                userData.rol == 'ADMINISTRADOR' &&
+                userData.role == 'ADMINISTRADOR' &&
                 userData.is_superuser == 1 &&
                 userData.is_staff == 1
               "
@@ -152,7 +169,7 @@ const userData = JSON.parse(userDataString);
           <RouterLink :to="{ name: 'species-data' }">
             <li
               v-if="
-                userData.rol == 'ADMINISTRADOR' &&
+                userData.role == 'ADMINISTRADOR' &&
                 userData.is_superuser == 1 &&
                 userData.is_staff == 1
               "
@@ -175,7 +192,7 @@ const userData = JSON.parse(userDataString);
 
           <li
             v-if="
-              userData.rol == 'ADMINISTRADOR' &&
+              userData.role == 'ADMINISTRADOR' &&
               userData.is_superuser == 1 &&
               userData.is_staff == 1
             "
@@ -203,7 +220,7 @@ const userData = JSON.parse(userDataString);
           <RouterLink :to="{ name: 'sections' }">
             <li
               v-if="
-                userData.rol == 'ADMINISTRADOR' &&
+                userData.role == 'ADMINISTRADOR' &&
                 userData.is_superuser == 1 &&
                 userData.is_staff == 1
               "
@@ -218,7 +235,7 @@ const userData = JSON.parse(userDataString);
 
           <li
             v-if="
-              userData.rol == 'ADMINISTRADOR' &&
+              userData.role == 'ADMINISTRADOR' &&
               userData.is_superuser == 1 &&
               userData.is_staff == 1
             "
@@ -231,7 +248,7 @@ const userData = JSON.parse(userDataString);
           <RouterLink :to="{ name: 'users' }">
             <li
               v-if="
-                userData.rol == 'ADMINISTRADOR' &&
+                userData.role == 'ADMINISTRADOR' &&
                 userData.is_superuser == 1 &&
                 userData.is_staff == 1
               "
@@ -246,7 +263,7 @@ const userData = JSON.parse(userDataString);
           <RouterLink :to="{ name: 'species' }">
             <li
               v-if="
-                userData.rol == 'ADMINISTRADOR' &&
+                userData.role == 'ADMINISTRADOR' &&
                 userData.is_superuser == 1 &&
                 userData.is_staff == 1
               "
@@ -259,11 +276,25 @@ const userData = JSON.parse(userDataString);
             </li>
           </RouterLink>
 
+          <div v-for="(modules, section) in sections" :key="section">
+            <li class="navheader__section">{{ section }}</li>
+          <!-- Iterar sobre las páginas permitidas -->
+              <li v-for="mod in modules" :key="mod.page_id" class="nav-item">
+                <RouterLink :to="{ name: mod.page_router }">
+                  <a href="#" class="nav-link enlace">
+                    <img :src="mod.page_icon" :alt="mod.page_name" />
+                    <p>{{ mod.page_name }}</p>
+                  </a>
+                </RouterLink>
+              </li>
+          </div> 
+
           <li class="nav-item">
             <a @click="store.logout()" class="nav-link  enlace cerrar " href="#" id="cerrar">
               <img src="/icons/salir.png" alt="users" /> <p>Cerrar sesión</p></a
             >
           </li>
+                   
         </ul>
       </nav>
     </div>
@@ -301,6 +332,16 @@ const userData = JSON.parse(userDataString);
   font-weight: 700;
   margin: 1rem 0;
 }
+
+.navheader__section {
+  color: var(--blanco);
+  background-color: var(--primary);
+  text-align: center;
+  padding: 0.3rem;
+  font-weight: 700;
+  margin: 1rem 0;
+}
+
 .enlace .user {
   width: 3rem;
 }

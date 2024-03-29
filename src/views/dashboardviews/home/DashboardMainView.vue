@@ -8,17 +8,15 @@ import "@/adminlte/plugins/bootstrap/js/bootstrap.bundle.min.js";
 import "@/adminlte/plugins/ekko-lightbox/ekko-lightbox.min.js";
 import "@/adminlte/dist/js/adminlte.min.js";
 
-
   $(document).on("click", '[data-toggle="lightbox"]', function (event) {
     event.preventDefault();
     $(this).ekkoLightbox({
       alwaysShowClose: true,
     });
   });
-
-
 import { RouterView } from "vue-router";
 </script>
+
 <template >
   <body class="sidebar-mini">
     <div class="wrapper">

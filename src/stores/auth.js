@@ -10,11 +10,32 @@ export const useAuthTokenStore = defineStore('authToken', () => {
   const errorAuth = ref(null);
   const authActive = ref(false);
 
+  const userPermissions = ref(null); 
+  const isLoadingPermissions = ref(false);
+
   const departments = ref({});
   const cities = ref({});
 
   const router = useRouter();
   const isRehydrated = ref(false);
+
+  // Método para cargar los permisos del usuario
+  const loadUserPermissions = async () => {
+    isLoadingPermissions.value = true;  // Comienza la carga
+    try {
+      const response = await APIService.modulesUser(); // Asume que este método realiza la llamada API al endpoint
+      if (response.status === 200) {
+        userPermissions.value = response.data;
+        localStorage.setItem('user_permissions', JSON.stringify(response.data));
+      } else {
+        console.error('Error al cargar los permisos del usuario:', response.statusText);
+      }
+    } catch (error) {
+      console.error('Error al realizar la solicitud de permisos:', error);
+    } finally {
+      isLoadingPermissions.value = false;  // Finaliza la carga
+    }
+  };
 
   const rehydrateAuth = async () => {
     if (refreshToken.value) {
@@ -49,6 +70,7 @@ export const useAuthTokenStore = defineStore('authToken', () => {
         errorAuth.value = null;
         localStorage.setItem('refresh_token', response.data.refresh);
         localStorage.setItem('user_data', JSON.stringify(response.data.user_data));
+        await loadUserPermissions(); 
         return { success: true };
       } else {
         errorAuth.value = 'Credenciales incorrectas';
@@ -108,5 +130,8 @@ export const useAuthTokenStore = defineStore('authToken', () => {
     logout,
     isAuth,
     rehydrateAuth,
+    userPermissions,
+    isLoadingPermissions,
+    loadUserPermissions
   };
 });

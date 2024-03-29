@@ -23,6 +23,20 @@ import totalSamplesMunicipalities from "@/components/dashboard/charts/totalSampl
 import totalDepartmentMonitoring from "@/components/dashboard/charts/totalDepartmentMonitoring.vue";
 import totalMunicipalMonitoring from "@/components/dashboard/charts/totalMunicipalMonitoring.vue";
 
+import { useAuthTokenStore } from '../../../stores/auth';
+import { watch } from 'vue';
+
+const authStore = useAuthTokenStore();
+
+watch(() => authStore.userPermissions, (newPermissions) => {
+  if (newPermissions) {
+    console.log('Permisos actualizados:', newPermissions);
+    // Realizar acciones en base a los nuevos permisos
+  }
+}, { immediate: true });
+const storedPermissions = JSON.parse(localStorage.getItem('user_permissions') || '{}');
+
+
 const chartStore = useChartsStore();
 const chartLocateStore = useChartLocateStore();
 const chartSamples = useChartSamples();

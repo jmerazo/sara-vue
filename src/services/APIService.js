@@ -237,6 +237,18 @@ export default {
     deleteUsers(uid){
         return api.delete(`/users/${uid}`)
     },
+    // Retorna los permisos del usuario -- http://localhost:8000/api/users/modules
+    modulesUser(){ 
+        const store = useAuthTokenStore();
+        return api.get(`/users/modules`, {
+            headers: {
+                Authorization: `Bearer ${store.accessToken}`
+            }
+    }) 
+    },
+    /* ==================================================================================================================== */
+    /* ==================================================================================================================== */
+    // ENDPOINT →→ OTHERS
     stateUsers(uid, state){
         return api.put(`/users/state/${uid}`, state)
     },
