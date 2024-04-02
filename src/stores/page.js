@@ -11,7 +11,8 @@ export const usePageContent = defineStore('pageContent',()=>{
     const informacionUsuario = ref([]);
     const pageData = ref([]);
     const sectionData = ref([]);
-    const sectionSelected = ref([])
+    const sectionSelected = ref([]);
+    const sectionSelectedView = ref([])
 
     const fetchData = async () => {
         if (contenidoNosotros.value.length === 0) {
@@ -94,6 +95,11 @@ export const usePageContent = defineStore('pageContent',()=>{
         modal.handleClickModalSectionUpdate(sectionSelected.value); 
     }
     
+    function selectedSectionView(id) {
+        sectionSelectedView.value =  sectionData.value.filter(section => section.id === id)
+        modal.handleClickModalSectionView(sectionSelectedView.value); 
+    }
+
     const updateSection = async (sid, data) => {
         console.log('id sectio: ', sid, data)
         const sectionIndex = sectionData.value.findIndex((sc) => sc.id === sid);
@@ -134,6 +140,8 @@ export const usePageContent = defineStore('pageContent',()=>{
         updateSection,
         deleteSection,
         selectedSectionUpdate,
-        sectionSelected
+        sectionSelected,
+        selectedSectionView,
+        sectionSelectedView
     }
 })

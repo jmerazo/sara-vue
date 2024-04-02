@@ -47,234 +47,6 @@ const sections = computed(() => {
           role="menu"
           data-accordion="false"
         >
-          <!-- Add icons to the links using the .nav-icon class
-               with font-awesome or any other icon font library -->
-          <RouterLink :to="{ name: 'panel' }">
-            <li class="nav-item">
-              <a data-widget="pushmenu" href="#" class="nav-link enlace">
-                <img src="/icons/icono-panel.png" alt="panel" />
-
-                <p>Panel Principal</p>
-              </a>
-            </li>
-          </RouterLink>
-
-          <li class="nav-item">
-            <a href="#" class="nav-link enlace">
-              <img src="/icons/icon-arbol.png" alt="especies" />
-              <p>
-                Especies
-                <i class="fas fa-angle-left right"></i>
-              </p>
-            </a>
-            <ul class="nav nav-treeview">
-              <RouterLink :to="{ name: 'familias' }">
-                <li class="nav-item">
-                  <a data-widget="pushmenu" href="#" class="nav-link">
-                    <i class="far fa-circle nav-icon"></i>
-                    <p>Familias</p>
-                  </a>
-                </li>
-              </RouterLink>
-              <RouterLink :to="{ name: 'especies' }">
-                <li class="nav-item">
-                  <a data-widget="pushmenu" href="#" class="nav-link">
-                    <i class="far fa-circle nav-icon"></i>
-                    <p>Especies</p>
-                  </a>
-                </li>
-              </RouterLink>
-            </ul>
-          </li>
-          <li class="nav-item">
-            <a href="#" class="nav-link enlace">
-              <img src="/icons/icono-publicaciones.png" alt="publicaciones" />
-
-              <p>
-                Publicaciones
-                <i class="fas fa-angle-left right"></i>
-              </p>
-            </a>
-            <ul class="nav nav-treeview">
-              <RouterLink :to="{ name: 'glossary' }">
-                <li class="nav-item">
-                  <a data-widget="pushmenu" href="#" class="nav-link">
-                    <i class="far fa-circle nav-icon"></i>
-                    <p>Glosario</p>
-                  </a>
-                </li>
-              </RouterLink>
-            </ul>
-          </li>
-
-          <li class="nav-header" id="eventos">EVENTOS</li>
-
-          <RouterLink :to="{ name: 'calendar' }">
-            <li class="nav-item">
-              <a data-widget="pushmenu" href="#" class="nav-link enlace">
-                <img src="/icons/icono-calendario.png" alt="calendario" />
-                <p>
-                  Calendario ambiental
-                  <span class="badge badge-info right">1</span>
-                </p>
-              </a>
-            </li>
-          </RouterLink>
-
-          <li class="nav-header" id="reportes">REPORTES</li>
-
-          <RouterLink :to="{ name: 'assessment' }">
-            <li class="nav-item">
-              <a data-widget="pushmenu" href="#" class="nav-link enlace">
-                <img src="/icons/icono-evalucacion.png" alt="" />
-
-                <p>Evaluaciones realizadas</p>
-              </a>
-            </li>
-          </RouterLink>
-
-          <RouterLink :to="{ name: 'monitoring_data' }">
-            <li class="nav-item">
-              <a data-widget="pushmenu" href="#" class="nav-link enlace">
-                <img src="/icons/icon-arbol-lupa.png" alt="" />
-                <p>Monitoreos realizados</p>
-              </a>
-            </li>
-          </RouterLink>
-
-          <RouterLink :to="{ name: 'samples_data' }">
-            <li class="nav-item">
-              <a data-widget="pushmenu" href="#" class="nav-link enlace">
-                <img src="/icons/icon-muestra.jpg" alt="" />
-                <p>Muestras realizadas</p>
-              </a>
-            </li>
-          </RouterLink>
-
-          <RouterLink :to="{ name: 'list-species' }">
-            <li
-              v-if="
-                userData.role == 'ADMINISTRADOR' &&
-                userData.is_superuser == 1 &&
-                userData.is_staff == 1
-              "
-              class="nav-item"
-            >
-              <a data-widget="pushmenu" href="#" class="nav-link enlace">
-                <img src="/icons/icon-arbol.png" alt="especies" />
-                <p>Especies forestales</p>
-              </a>
-            </li>
-          </RouterLink>
-          <RouterLink :to="{ name: 'species-data' }">
-            <li
-              v-if="
-                userData.role == 'ADMINISTRADOR' &&
-                userData.is_superuser == 1 &&
-                userData.is_staff == 1
-              "
-              class="nav-item"
-            >
-              <a data-widget="pushmenu" href="#" class="nav-link enlace">
-                <img src="/icons/icono-data.png" alt="especies" />
-                <p>Datos generales especies</p>
-              </a>
-            </li>
-          </RouterLink>
-          <RouterLink :to="{ name: 'map-general' }">
-            <li class="nav-item">
-              <a data-widget="pushmenu" href="#" class="nav-link enlace">
-                <img src="/icons/icono-mapa.png" alt="mapa" />
-                <p>Mapa General</p>
-              </a>
-            </li>
-          </RouterLink>
-
-          <li
-            v-if="
-              userData.role == 'ADMINISTRADOR' &&
-              userData.is_superuser == 1 &&
-              userData.is_staff == 1
-            "
-            class="nav-header navegacion__titulo"
-            id="administracion"
-          >
-            CONTENIDO
-          </li>
-
-          <!-- <RouterLink :to="{ name: 'pages' }">
-            <li
-              v-if="
-                userData.rol == 'ADMINISTRADOR' &&
-                userData.is_superuser == 1 &&
-                userData.is_staff == 1
-              "
-              class="nav-item"
-            >
-              <a data-widget="pushmenu" href="#" class="nav-link enlace">
-                <img src="/icons/icon-pages.png" alt="users" />
-                <p>Páginas</p>
-              </a>
-            </li>
-          </RouterLink> -->
-          <RouterLink :to="{ name: 'sections' }">
-            <li
-              v-if="
-                userData.role == 'ADMINISTRADOR' &&
-                userData.is_superuser == 1 &&
-                userData.is_staff == 1
-              "
-              class="nav-item"
-            >
-              <a data-widget="pushmenu" href="#" class="nav-link enlace">
-                <img src="/icons/icon-sections.png" alt="users" />
-                <p>Secciónes</p>
-              </a>
-            </li>
-          </RouterLink>
-
-          <li
-            v-if="
-              userData.role == 'ADMINISTRADOR' &&
-              userData.is_superuser == 1 &&
-              userData.is_staff == 1
-            "
-            class="nav-header navegacion__titulo"
-            id="administracion"
-          >
-            ADMINISTRAR
-          </li>
-
-          <RouterLink :to="{ name: 'users' }">
-            <li
-              v-if="
-                userData.role == 'ADMINISTRADOR' &&
-                userData.is_superuser == 1 &&
-                userData.is_staff == 1
-              "
-              class="nav-item"
-            >
-              <a data-widget="pushmenu" href="#" class="nav-link enlace">
-                <img src="/icons/icono-users.png" alt="users" />
-                <p>Usuarios</p>
-              </a>
-            </li>
-          </RouterLink>
-          <RouterLink :to="{ name: 'species' }">
-            <li
-              v-if="
-                userData.role == 'ADMINISTRADOR' &&
-                userData.is_superuser == 1 &&
-                userData.is_staff == 1
-              "
-              class="nav-item"
-            >
-              <a data-widget="pushmenu" href="#" class="nav-link enlace">
-                <img src="/icons/tabla-especie.png" alt="users" />
-                <p>Especies forestales</p>
-              </a>
-            </li>
-          </RouterLink>
 
           <div v-for="(modules, section) in sections" :key="section">
             <li class="navheader__section">{{ section }}</li>
@@ -283,9 +55,22 @@ const sections = computed(() => {
                 <RouterLink :to="{ name: mod.page_router }">
                   <a href="#" class="nav-link enlace">
                     <img :src="mod.page_icon" :alt="mod.page_name" />
-                    <p>{{ mod.page_name }}</p>
+                    <p>
+                      {{ mod.page_name }} 
+                      <!--i v-if="mod.page_subtitle && mod.page_subtitle.length" class="fas fa-angle-left right"></i-->
+                    </p>
                   </a>
                 </RouterLink>
+                <ul v-if="mod.page_subtitle" class="nav nav-treeview">
+                  <li v-for="sub in mod.page_subtitle" :key="sub.subtitle" class="nav-item">
+                    <RouterLink :to="{ name: sub.router }">
+                      <a data-widget="pushmenu" href="#" class="nav-link">
+                        <i :class="sub.style"></i>
+                        <p>{{ sub.subtitle }}</p>
+                      </a>
+                    </RouterLink>
+                  </li>
+                </ul>
               </li>
           </div> 
 

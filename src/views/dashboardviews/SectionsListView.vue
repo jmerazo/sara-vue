@@ -1,5 +1,5 @@
 <script setup>
-import { computed, onMounted } from "vue";
+import { computed, onMounted, ref } from "vue";
 import { onBeforeRouteLeave } from "vue-router";
 import { descargarExcel, descargarPdf, obtenerFecha } from "@/helpers";
 import { usePageContent } from "../../stores/page";
@@ -8,6 +8,7 @@ import { useModalStore } from "@/stores/modal";
 import LoadingData from "@/components/LoadingData.vue";
 import ModalSectionAdd from "@/components/dashboard/ModalSectionAdd.vue";
 import ModalSectionUpdate from "@/components/dashboard/ModalSectionUpdate.vue";
+import ModalSectionView from "@/components/dashboard/ModalSectionView.vue"
 
 const section = usePageContent();
 const modal = useModalStore();
@@ -15,6 +16,8 @@ const modal = useModalStore();
 onMounted(() => {
     section.sectionsData();
 });
+
+const MAX_LENGTH = 50;
 
 //prueba para proteccion de eliminacion de una especie
 const deleteSection = (id) => {
@@ -68,15 +71,20 @@ const deleteSection = (id) => {
         >
           <div class="card__grid" v-if="s.id">
             <div class="card__contenido">
+              <div class="card__content__data">
+                <p class="card__subtitulo">
+                  Título sección: <span class="card__dato">{{ s.section_title }}</span>
+                </p>
+                <p>
+                  Contenido:
+                  <span class="card__content">{{ s.content }}</span>
+                </p>
+              </div>
 
-              <p class="card__subtitulo">
-                Título sección: <span class="card__dato">{{ s.section_title }}</span>
-              </p>
-              <p class="card__subtitulo">
-                Contenido:
-                <span class="card__dato">{{ s.content }}</span>
-              </p>
-              <div class="card__botones">
+              <div class="card__botones">                
+                <button v-if="s.content?.length > MAX_LENGTH" @click="section.selectedSectionView(s.id)">
+                  Ver más...
+                </button>
                 <button
                   class="boton__primario" @click="section.selectedSectionUpdate(s.id)"
                 >
@@ -93,16 +101,63 @@ const deleteSection = (id) => {
         </div>
       </main>
     </div>
+
     <div
       @click="modal.handleClickModalSectionAdd()"
       class="agregar"
     ></div>
     <ModalSectionUpdate/>
     <ModalSectionAdd/>
+    <ModalSectionView/>
   </div>
 </template>
 
 <style scoped>
+.card {
+  background-color: white; /* o cualquier otro color de fondo */
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* sombra sutil */
+  border-radius: 10px; /* bordes redondeados */
+  overflow: hidden; /* para mantener todo dentro de los bordes redondeados */
+  transition: transform 0.2s; /* para efecto al hacer hover */
+  padding: 2rem;
+  height: 20rem;
+  max-height: 20rem;
+  width: 20rem;
+  position: relative;
+}
+
+.card__contenido {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* Distribuye el espacio entre contenido y botones */
+  height: 100%; /* Ocupa toda la altura de la tarjeta */
+}
+
+.card__content__data {
+  overflow: auto; /* Permite el desplazamiento si el contenido es demasiado largo */
+  margin-bottom: 1rem; /* Espacio antes de los botones */
+}
+
+.card__botones {
+  display: flex;
+  position: absolute; /* Posicionamiento absoluto dentro de la tarjeta */
+  bottom: 10px; /* Espacio desde la parte inferior de la tarjeta */
+  right: 10px; /* Espacio desde la parte derecha de la tarjeta */
+}
+
+.card:hover {
+  transform: scale(1.05); /* un ligero crecimiento al hacer hover */
+}
+
+.card__titulo {
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.card__subtitulo {
+  color: gray;
+  font-size: 1rem;
+}
 /* encabezado de la vista */
 .reporte__heading {
   font-size: 1.3rem;
@@ -134,15 +189,60 @@ const deleteSection = (id) => {
   gap: 1rem;
   margin-top: 2rem;
   margin-bottom: 2rem;
+  /* Por defecto, utiliza un layout de 3 columnas en pantallas pequeñas */
+  grid-template-columns: repeat(6, minmax(20rem, 1fr));
 }
+
+@media (max-width: 480px) {
+  .reporte__grid {
+    grid-template-columns: repeat(auto-fill, minmax(10rem, 1fr));
+  }
+  .card{
+    width: 8rem;
+    height: 8rem;
+  }
+}
+
 @media (min-width: 768px) {
   .reporte__grid {
-    grid-template-columns: repeat(2fr, 1fr);
+    grid-template-columns: repeat(auto-fill, minmax(10rem, 1fr));
+  }
+
+  .card{
+    width: 12rem;
+    height: 12rem;
   }
 }
 @media (min-width: 992px) {
   .reporte__grid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(3, minmax(15rem, 1fr));
+  }
+
+  .card{
+    width: 18rem;
+    height: 18rem;
+  }
+}
+
+@media (min-width: 1200px) {
+  .reporte__grid {
+    grid-template-columns: repeat(4, minmax(15rem, 1fr));
+  }
+
+  .card{
+    width: 19rem;
+    height: 19rem;
+  }
+}
+
+@media (min-width: 1920px) {
+  .reporte__grid {
+    grid-template-columns: repeat(6, minmax(15rem, 1fr));
+  }
+
+  .card{
+    width: 19rem;
+    height: 19rem;
   }
 }
 
@@ -187,29 +287,6 @@ const deleteSection = (id) => {
 }
 .boton__pdf {
   color: rgb(184, 50, 50);
-}
-
-.card {
-  background-color: white; /* o cualquier otro color de fondo */
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* sombra sutil */
-  border-radius: 10px; /* bordes redondeados */
-  overflow: hidden; /* para mantener todo dentro de los bordes redondeados */
-  transition: transform 0.2s; /* para efecto al hacer hover */
-  padding: 2rem;
-}
-
-.card:hover {
-  transform: scale(1.05); /* un ligero crecimiento al hacer hover */
-}
-
-.card__titulo {
-  font-size: 1.2rem;
-  font-weight: bold;
-}
-
-.card__subtitulo {
-  color: gray;
-  font-size: 1rem;
 }
 
 /* boton agregar */

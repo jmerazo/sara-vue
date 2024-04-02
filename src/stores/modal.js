@@ -16,6 +16,7 @@ export const useModalStore = defineStore('modal',()=>{
     const modalPageUpdate = ref(false)  
     const modalSectionAdd = ref(false)  
     const modalSectionUpdate = ref(false)  
+    const modalSectionView = ref(false) 
     const modalFormMonitoring = ref(false)  
     
     //modal especie
@@ -79,6 +80,10 @@ export const useModalStore = defineStore('modal',()=>{
         modalSectionAdd.value = !modalSectionAdd.value
     }
 
+    function handleClickModalSectionView(){
+        modalSectionView.value = !modalSectionView.value
+    }
+
     return {
         modal,
         modalFamily,
@@ -108,5 +113,7 @@ export const useModalStore = defineStore('modal',()=>{
         modalSectionAdd,
         handleClickModalFormMonitoring,
         modalFormMonitoring,
+        handleClickModalSectionView,
+        modalSectionView
     }
 })
