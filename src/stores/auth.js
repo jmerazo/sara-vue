@@ -9,8 +9,11 @@ export const useAuthTokenStore = defineStore('authToken', () => {
   const userData = ref(null);
   const errorAuth = ref(null);
   const authActive = ref(false);
+<<<<<<< HEAD
   const socialData = ref(false);
 
+=======
+>>>>>>> modal
   const userPermissions = ref(null); 
   const isLoadingPermissions = ref(false);
 
@@ -44,7 +47,6 @@ export const useAuthTokenStore = defineStore('authToken', () => {
         const response = await APIService.refreshAuthToken({ refresh: refreshToken.value });
         if (response.status === 200 && response.data.access) {
           accessToken.value = response.data.access;
-          
           userData.value = response.data.user_data;
           authActive.value = true;
           isRehydrated.value = true;
@@ -70,6 +72,7 @@ export const useAuthTokenStore = defineStore('authToken', () => {
         authActive.value = true;
         errorAuth.value = null;
         localStorage.setItem('refresh_token', response.data.refresh);
+        console.log(response.data.user_data)
         localStorage.setItem('user_data', JSON.stringify(response.data.user_data));
         await loadUserPermissions(); 
         return { success: true };
@@ -117,8 +120,7 @@ export const useAuthTokenStore = defineStore('authToken', () => {
 
   onMounted(async () => {
     isAuth();
-    await rehydrateAuth();     
-
+    await rehydrateAuth();
     try {
       const departmentsResponse = await APIService.getDepartments();
       departments.value = departmentsResponse.data;

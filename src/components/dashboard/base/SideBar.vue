@@ -48,7 +48,7 @@ const sections = computed(() => {
         >
 
           <div v-for="(modules, section) in sections" :key="section">
-            <li class="navheader__section">{{ section }}</li>
+            <li class="navheader__section">{{ section}}</li>
           <!-- Iterar sobre las páginas permitidas -->
               <li v-for="mod in modules" :key="mod.page_id" class="nav-item">
                 <RouterLink :to="{ name: mod.page_router }">
