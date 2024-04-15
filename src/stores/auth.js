@@ -9,6 +9,7 @@ export const useAuthTokenStore = defineStore('authToken', () => {
   const userData = ref(null);
   const errorAuth = ref(null);
   const authActive = ref(false);
+  const socialData = ref(false);
 
   const userPermissions = ref(null); 
   const isLoadingPermissions = ref(false);
@@ -59,9 +60,9 @@ export const useAuthTokenStore = defineStore('authToken', () => {
     }
   };
 
-  const login = async (credentials) => {
+  const login = async (credentials, authType) => {
     try {
-      const response = await APIService.getAuthToken(credentials);
+      const response = await APIService.getAuthToken(credentials, authType);
       if (response.status === 200) {
         accessToken.value = response.data.access;
         refreshToken.value = response.data.refresh;
@@ -82,6 +83,19 @@ export const useAuthTokenStore = defineStore('authToken', () => {
       return { success: false, error };
     }
   };
+
+  const loginSocial = async (code) => {
+    try{
+      const data = await APIService.socialAuth(code)
+      if(data.status === 200) {
+          socialData.value = data.data;
+          console.log('data: ', socialData.value)
+          await loadUserPermissions(); 
+      }
+    }catch (error) {
+      return { success: false, error}
+    }
+  }
 
   const logout = () => {
     localStorage.removeItem('refresh_token');
@@ -132,6 +146,7 @@ export const useAuthTokenStore = defineStore('authToken', () => {
     rehydrateAuth,
     userPermissions,
     isLoadingPermissions,
-    loadUserPermissions
+    loadUserPermissions,
+    loginSocial
   };
 });

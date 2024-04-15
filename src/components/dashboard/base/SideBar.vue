@@ -7,7 +7,6 @@ const store = useAuthTokenStore();
 const userDataString = localStorage.getItem("user_data");
 const userData = JSON.parse(userDataString);
 
-const authStore = useAuthTokenStore();
 const storedPermissions = JSON.parse(localStorage.getItem('user_permissions') || '{}');
 console.log('permissions:', storedPermissions);
 

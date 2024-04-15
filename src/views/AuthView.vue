@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 import { useAuthTokenStore } from "../stores/auth";
 import { useRouter } from "vue-router";
 import Alerta from "@/components/Alerta.vue";
@@ -17,7 +17,7 @@ const handleLogin = async () => {
     password: password.value,
   };
   try {
-    const response = await store.login(credentials);
+    const response = await store.login(credentials, 'local');
 
     if (response.success) {
       router
@@ -41,6 +41,25 @@ const showLoginError = (message) => {
 };
 
 localStorage.removeItem("hasReloaded");
+
+const handleGoogleLogin = () => {
+  const client_id = '380670980217-3l26isub1k577ctqmqilu75lc9ea5em8.apps.googleusercontent.com';
+  const redirect_uri = 'https://sara.corpoamazonia.gov.co/auth/callback';
+  const scope = 'email profile openid';
+  const response_type = 'code';
+  const state = generateRandomString(); // Genera un string aleatorio seguro
+  localStorage.setItem('oauth_state', state); // Almacena el state en el almacenamiento local para verificarlo luego
+
+  const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?response_type=${response_type}&client_id=${encodeURIComponent(client_id)}&redirect_uri=${encodeURIComponent(redirect_uri)}&scope=${encodeURIComponent(scope)}&state=${encodeURIComponent(state)}`;
+
+  window.location.href = authUrl; // Redirigir al usuario a la URL de Google
+}
+
+function generateRandomString() {
+  const array = new Uint32Array(10);
+  window.crypto.getRandomValues(array);
+  return array.join('');
+}
 </script>
 
 <template>
@@ -51,52 +70,62 @@ localStorage.removeItem("hasReloaded");
     <hr />
     
       <div class="formulario__contenido">
-        <form @submit.prevent="handleLogin" class="formulario">
-          <div class="formulario__encabezado">
-            <div class="logo">
-              <img src="/icons/sara.png" alt="Logotipo" />
+        <div class="formulario">
+          <form @submit.prevent="handleLogin" >
+            <div class="formulario__encabezado">
+              <div class="logo">
+                <img src="/icons/sara.png" alt="Logotipo" />
+              </div>
+              <p>Bienvenidos</p>
             </div>
-            <p>Bienvenidos</p>
-          </div>
-          <hr />
-          <div class="formulario__campo">
-            <label class="formulario__label" for="email">Email</label>
-            <input
-              class="formulario__input"
-              type="email"
-              name="email"
-              id="email"
-              v-model="email"
-              placeholder="Escribe tu email"
-            />
-          </div>
-          <div class="formulario__campo">
-            <label class="formulario__label" for="pass">Contraseña</label>
-            <input
-              class="formulario__input"
-              type="password"
-              id="password"
-              v-model="password"
-              placeholder="Ingresar contraseña"
-              required
-            />
-          </div>
-          <div class="formulario__botones">
-            <input
-              class="formulario__btn"
-              type="submit"
-              name="ingresar"
-              id="ingresar"
-              :class="{ show: error }"
-              :value="error ? error : 'Ingresar'"
-            />
-          </div>
-          <RouterLink :to="{ name: 'register' }" class="formulario__enlace">
-            <span>Solicitud de registro</span>
-          </RouterLink>
-        </form>
+            <hr />
+            <div class="formulario__campo">
+              <label class="formulario__label" for="email">Email</label>
+              <input
+                class="formulario__input"
+                type="email"
+                name="email"
+                id="email"
+                v-model="email"
+                placeholder="Escribe tu email"
+              />
+            </div>
+            <div class="formulario__campo">
+              <label class="formulario__label" for="pass">Contraseña</label>
+              <input
+                class="formulario__input"
+                type="password"
+                id="password"
+                v-model="password"
+                placeholder="Ingresar contraseña"
+                required
+              />
+            </div>
+            <div class="formulario__botones">
+              <input
+                class="formulario__btn"
+                type="submit"
+                name="ingresar"
+                id="ingresar"
+                :class="{ show: error }"
+                :value="error ? error : 'Ingresar'"
+              />
+            </div>
+            <RouterLink :to="{ name: 'register' }" class="formulario__enlace">
+              <span>Solicitud de registro</span>
+            </RouterLink>  
+          </form>
+          <div class="login-container">
+            <div class="login-social">
+              <span>Iniciar sesión con:</span>
+              <button @click="handleGoogleLogin" class="google-login-btn">
+                <img src="/icons/google.png" alt="Google login" class="google-icon">
+                Google
+              </button>
+            </div>   
+          </div> 
+        </div>        
       </div>
-   
   </div>
 </template>
 
@@ -196,4 +225,52 @@ localStorage.removeItem("hasReloaded");
   cursor: pointer;
 }
 
+.login-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 90%;
+  max-width: 400px;
+  margin-top: 1rem; /* Añadido espacio entre el formulario y el botón de Google */
+  padding: 1rem;
+}
+
+.login-social {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Asegura que los elementos hijos se alineen al centro horizontalmente */
+  width: 100%; /* Opcional, depende de cómo quieras manejar el ancho */
+}
+
+.google-login-btn {
+  background-color: #ffffff; /* Color de Google */
+  color: #000000;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  transition: background-color 0.3s, box-shadow 0.3s;
+  margin: 0 auto; /* Centra el botón en el contenedor */
+}
+
+.google-login-btn:hover {
+  background-color: #f5f5f5; /* Color más oscuro al pasar el mouse */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.google-icon {
+  width: 20px; /* Tamaño del icono de Google */
+}
+
+.login-social span {
+  margin-bottom: 0.5rem; /* Espacio entre la etiqueta y el botón */
+  font-size: 1rem; /* Tamaño de la fuente para 'Iniciar sesión con' */
+}
 </style>

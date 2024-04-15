@@ -6,12 +6,15 @@ export default {
     /* ==================================================================================================================== */
     // ENDPOINT →→ AUTHENTICATION
     // Obtiene el token -- http://localhost:8000/api/auth/token
-    getAuthToken(credentials){
-        return api.post('/auth/token/', credentials)
+    getAuthToken(credentials, authType){
+        return api.post('/auth/token/', credentials, authType)
     },
     // Refresca el token -- http://localhost:8000/api/auth/refresh
     refreshAuthToken(credentials){
         return api.post('/auth/token/refresh/', credentials)
+    },
+    socialAuth(code){
+        return api.post('/auth/callback', { code: code })
     },
     /* ==================================================================================================================== */
     /* ==================================================================================================================== */

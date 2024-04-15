@@ -95,7 +95,7 @@ function contenidoResumido() {
 .proyecto {
   display: grid;
   grid-template-rows: repeat(2, 1fr);
-  background-image: url("/img/P001.jpg");
+  background-image: url("/img/pi2.jpg");
   background-repeat: no-repeat;
   background-position: bottom center;
   margin-top: 3rem;

@@ -31,7 +31,7 @@ const validarcampos = () => {
 };
 
 //carrusel de imagenes header
-const images = ["/img/P001.jpg", "/img/pi1.jpg", "/img/pi2.jpg"];
+const images = ["/img/slider_1.jpg", "/img/slider_2.jpg", "/img/slider_3.jpg", "/img/slider_4.jpg"];
 
 //carusel de imagenes header
 const currentImage = ref(images[0]);
@@ -419,6 +419,7 @@ const mostrarNavMovil = () => {
   padding: 0.2rem;
   text-transform: uppercase;
   transition: background-color 0.3s;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
 }
 
 .navegacion__link:hover {
@@ -601,6 +602,4 @@ const mostrarNavMovil = () => {
 .menu__movil:hover {
   color: var(--primary-hover);
 }
-
-
 </style>
