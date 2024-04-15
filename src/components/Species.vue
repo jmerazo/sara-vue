@@ -1,9 +1,8 @@
 <script setup>
 import { useEspeciesStore } from "@/stores/species";
-import { getFullImageUrl} from '@/helpers/'
+import { getFullImageUrl } from "@/helpers/";
 
 const especies = useEspeciesStore();
-
 
 defineProps({
   especie: {
@@ -13,112 +12,123 @@ defineProps({
 </script>
 <template>
   <div class="especie">
-    <div class="especie__img">
-      <img
-        alt="imagen especie"
-        :src="getFullImageUrl(especie.img_general)"
-      />
-    </div>
-
-    <div class="especie__informacion">
-      <p class="especie__nombre-comun">{{ especie.nom_comunes }}</p>
-      <p class="especie__nombre-cientifico">
-          <span class="nombre__cientifico">{{ especie.nombre_cientifico_especie }}</span>
-          <span class="nombre__autor">{{ " " + especie.nombre_autor_especie }}</span>
-      </p>
-      <p class="especie__familia">
-        <span>Familia: </span>{{ especie.familia }}
-      </p>
-      <button
-        class="especie__boton"
-        type="button"
-        @click="especies.seleccionarEspecie(especie.cod_especie)"
+    <div class="card">
+      <article
+        class="card__contenido"
+        :style="
+          
+            { backgroundImage: 'url(' + getFullImageUrl(especie.img_general) + ')' }
+        "
       >
-        Ver Especie
-      </button>
+        <div class="card__data">
+          <h2 class="card__titulo">{{ especie.nom_comunes }}</h2>
+          <span class="card__descripcion"
+            >{{ especie.nombre_cientifico_especie }}
+            {{ especie.nombre_autor_especie }}</span
+          >
+          <span class="card__descripcion">familia: {{ especie.familia }}</span>
+          <button
+            class="card__boton animacion"
+            type="button"
+            @click="especies.seleccionarEspecie(especie.cod_especie)"
+          >
+           <span> Ver Especie</span>
+          </button>
+        </div>
+      </article>
     </div>
   </div>
 </template>
 <style scoped>
-.especie__img img{
-  height: 15rem;
-  width: 100%;
-  margin: 0 auto;
-}
-.especie {
+/* aritcle*/
+.card__contenido {
+  background-size: cover;
+  background-position: center top;
+  background-repeat: no-repeat;
+  height: 25rem;
+  border-radius: 1.5rem;
   position: relative;
   overflow: hidden;
-  background-color: #f3f1f1;
-  border-bottom-left-radius: 10px;
-  border-bottom-right-radius: 10px;
-}
-
-.especie:hover .especie__img {
-  transform: scale(1.08);
-}
-
-.especie__img {
-  transition: transform 0.6s ease;
-}
-
-.especie__informacion {
-  display: flex;
-  gap: .7rem;
-  flex-direction: column;
-  justify-content: space-between;
   
 }
-
-.especie__nombre-comun {
-  white-space: nowrap; /* Evita saltos de línea automáticos */
-  overflow: hidden; /* Oculta el contenido que desborda */
-  text-overflow: ellipsis; /* Agrega puntos suspensivos (...) para indicar que hay más contenido */
-  margin-top: 1rem;
-  margin-bottom: 0;
-  text-align: center;
-  font-weight: 700;
-  font-size: 1.1rem;
-  color: var(--gris);
+.card__contenido:hover .card__data{
+  bottom: 0.2rem;
 }
 
-.especie__nombre-cientifico {
-  white-space: nowrap; /* Evita saltos de línea automáticos */
-  overflow: hidden; /* Oculta el contenido que desborda */
-  text-overflow: ellipsis; /* Agrega puntos suspensivos (...) para indicar que hay más contenido */
+.card__data {
+  width: 70%;
+  max-width: 20rem;
+  height: 15rem;
+  background-color: rgb(253, 253, 253);
+  padding: .5rem;
+  box-shadow: 0 8px 24px hsla(0, 0%, 0%, 0.15);
+  border-radius: 1rem;
+  position: absolute;
+  bottom: -13rem;
+  left: 0;
+  right: 0;
+  margin-inline: auto;
+  transition: .6s ease-in-out all;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.card__data:hover {
+  bottom: 0.2rem;
+}
+
+.card__titulo {
+  margin: 0 0 1rem 0;
+  padding: 0;
+  text-align: center;
+  font-size: 1.5rem;
+}
+
+.card__descripcion {
+  padding: 0;
   text-align: center;
   font-size: 1rem;
-  font-weight: 500;
-  line-height: 1;
-  padding: 0 10px;
-  margin: 0;
-}
-.especie__familia {
-  text-align: center;
-  font-size: 1rem;
-  margin: 0;
-}
-span {
-  font-weight: 600;
-  color: var(--gris);
+  overflow: hidden;
 }
 
-.especie__boton {
-  background-color: var(--primary);
-  padding: .8rem;
+.card__boton {
+  display: inline-flex;
+  width: 93%;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+  height: 2rem;
+  background-color: var(--gris);
   color: var(--blanco);
   font-weight: 700;
-  transition: background-color .4s ease-in-out;
-  font-size: 1rem;
+  font-size: 1.2rem;
+  border: none;
+  cursor: pointer;
+  transition: 0.3s ease all;
+  border-radius: 0.5rem;
+  position: relative;
+  overflow: hidden;
 }
-.especie__boton:hover {
-  background-color: var(--primary-hover);
-}
-.nombre__cientifico {
-    font-style: italic; /* Cursiva */
-    font-weight: bold; /* Negrita */
+.card__boton span{
+  position: relative;
+  z-index: 2;
+  transition: 0.3s ease all;
 }
 
-.nombre__autor {
-    font-weight: bold; /* Negrita */
+.animacion::after {
+  content: "";
+  width: 100%;
+  position: absolute;
+  z-index: 1;
+  transition: 0.3s ease-in-out all;
+  top: 0;
+  left: calc(-100% - 75px); /* calc elemnt widht with border-right */
+  border-right: 80px solid transparent;
+  border-bottom: 40px solid var(--primary);
+  transition: 0.4s ease-in-out all;
+}
+.animacion:hover::after {
+  left: 0;
 }
 </style>

@@ -7,14 +7,16 @@ import ModalSpecie from '@/components/ModalSpecie.vue';
 import ModalFamily from "@/components/ModalFamily.vue";
 
 import Dashboard from '@/views/dashboardviews/home/DashboardMainView.vue'
+import NavBar from "./components/NavBar.vue";
 import Header from '@/components/Header.vue';
 const store = useAuthTokenStore()
 </script>
 
 <template>
-
-  <Dashboard v-if="store.authActive"/>
+  <NavBar/>
   <Header v-if="!store.authActive"/>
+  <Dashboard v-if="store.authActive"/>
+  
   
   <main v-if="!store.authActive" >
     <router-view v-if="!store.authActive" />
