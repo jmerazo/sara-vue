@@ -9,6 +9,7 @@ font-family: 'Roboto', sans-serif;
 
 :root {
   --primary: #10613e;
+  --navBar: #5e6872;
   --primary-hover:#0c4029;
   --secondary:#213343;
   --secondary-hover:#0c141a;
@@ -18,7 +19,8 @@ font-family: 'Roboto', sans-serif;
   --negro: #080E06;
   --blanco: #FFF;
   --fuente-principal: 'Montserrat', sans-serif;
-  --rojo: rgb(184, 50, 50)
+  --rojo: rgb(184, 50, 50);
+  --gris-fuente:#2c4357;
 }
 
 template {

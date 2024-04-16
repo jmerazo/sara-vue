@@ -1,38 +1,30 @@
 <script setup>
 import { ref, onMounted, computed, watch } from 'vue';
-import { useAuthTokenStore } from "../../stores/auth";
-import { useEspeciesStore } from "../../stores/species"
-import { useGeoCandidateTrees } from "../../stores/candidate"
+import { useAuthTokenStore } from "@/stores/auth";
+import { useEspeciesStore } from "@/stores/species"
+import { useGeoCandidateTrees } from "@/stores/candidate"
 
 const locates = useAuthTokenStore();
 const species = useEspeciesStore();
 const candidates = useGeoCandidateTrees();
-
-const userDataString = localStorage.getItem("user_data");
-const userData = JSON.parse(userDataString);
 
 //PS-1769-18-247-00f48a44-002-23
 // Propiedad computada para generar el código de la especie
 const codeSpecie = computed(() => {
   const myAlphanumericId = generateAlphanumericId(10);
   let folderNumber = ""
-  if(formData.value.departamento != "" && formData.value.departamento === 86){
-    folderNumber = "001"
-  }
-  if(formData.value.departamento != "" && formData.value.departamento === 18){
-    folderNumber = "002"
-  }
 
-  if(formData.value.departamento != "" && formData.value.departamento === 91){
-    folderNumber = "003"
-  }
+  if (formData.value.departamento === 86) folderNumber = "001";
+  if (formData.value.departamento === 18) folderNumber = "002";
+  if (formData.value.departamento === 91) folderNumber = "003";
+
   const year = new Date().getFullYear().toString().slice(-2);
 
   // Asignar myAlphanumericId a formData
   formData.value.ShortcutIDEV = myAlphanumericId;
   // Asegúrate de que formData.municipio o formData.cities se refiere al valor correcto que necesitas
   var code = `PS-${formData.value.cod_especie}-${formData.value.departamento}-${formData.value.municipio}-${myAlphanumericId}-${folderNumber}-${year}`
-  formData.cod_expediente = code;
+  formData.value.cod_expediente = code;
   return code;
 });
 
@@ -107,16 +99,40 @@ const formData = ref({
     observaciones : ''
 });
 
+const userData = ref({});
+const userDataString = localStorage.getItem("user_data");
+if (userDataString) {
+    userData.value = JSON.parse(userDataString);
+}
+console.log('data user: ', userData.value)
+
 onMounted(() => {
   const hoy = new Date();
   formData.value.fecha_evaluacion = hoy.toISOString().split('T')[0];
   formData.value.usuario_evaluador = userData.id;
 });
 
+function resetForm() {
+  Object.keys(formData.value).forEach(key => {
+    formData.value[key] = "";
+  });
+}
+
 const handleSubmit = () => {
-  candidates.addCandidate(formData.value);
-  console.log(formData.value);
-  // Aquí puedes manejar la lógica de envío de datos
+  console.log('data send: ', formData.value)
+  try {
+    candidates.addCandidate(formData.value);
+    console.log(formData.value);
+    resetForm();
+  } catch (error) {
+    if (error.response && error.response.data && error.response.data.error) {
+      // Si hay un mensaje de error en la respuesta, lo puedes mostrar
+      alert(error.response.data.error);
+    } else {
+      // En caso de un error inesperado
+      alert("Ocurrió un error al procesar la solicitud.");
+    }
+  }
 };
 
 const coordenadasDecimales = computed(() => {

@@ -1,9 +1,5 @@
 <script setup>
-import { RouterLink } from "vue-router";
-import { useAuthTokenStore } from "@/stores/auth";
 import { ref, onMounted, onBeforeUnmount } from 'vue';
-
-const storeAuth = useAuthTokenStore();
 
 const isFixed = ref(false);
 
@@ -34,10 +30,6 @@ onBeforeUnmount(() => {
   </nav>
 </template>
 <style scoped>
-/* Add your scoped styles here */
-@import url("@/adminlte/dist/css/adminlte.min.css");
-@import url("@/adminlte/plugins/fontawesome-free/css/all.min.css");
-@import url("@/adminlte/plugins/ekko-lightbox/ekko-lightbox.css");
 #barra-navegacion.navegacion{
   top: 0;
   left: 0;

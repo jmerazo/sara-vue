@@ -5,8 +5,8 @@ import { useChartsStore } from "@/stores/dashboard/charts";
 import { useChartLocateStore } from "@/stores/dashboard/chartLocate";
 import { useChartSamples } from "@/stores/dashboard/chartSamples";
 
-import CardsHome from "@/components/dashboard/CardsHome.vue";
-import PresenceMap from "@/components/dashboard/PresenceMap.vue";
+import HomeCard from "@/components/dashboard/cards/HomeCard.vue";
+import PresenceMap from "@/components/dashboard/base/PresenceMap.vue";
 
 //Spinner
 import LoadingData from "@/components/LoadingData.vue";
@@ -22,6 +22,20 @@ import totalSamplesMunicipalities from "@/components/dashboard/charts/totalSampl
 //monitoreos
 import totalDepartmentMonitoring from "@/components/dashboard/charts/totalDepartmentMonitoring.vue";
 import totalMunicipalMonitoring from "@/components/dashboard/charts/totalMunicipalMonitoring.vue";
+
+import { useAuthTokenStore } from '../../../stores/auth';
+import { watch } from 'vue';
+
+const authStore = useAuthTokenStore();
+
+watch(() => authStore.userPermissions, (newPermissions) => {
+  if (newPermissions) {
+    console.log('Permisos actualizados:', newPermissions);
+    // Realizar acciones en base a los nuevos permisos
+  }
+}, { immediate: true });
+const storedPermissions = JSON.parse(localStorage.getItem('user_permissions') || '{}');
+
 
 const chartStore = useChartsStore();
 const chartLocateStore = useChartLocateStore();
@@ -93,7 +107,7 @@ onMounted(() => {
       <section class="columna__derecha">
         <!-- card -->
         <div class="card__generales">
-          <CardsHome />
+          <HomeCard />
         </div>
         <!-- fin card -->
         <!-- mapa -->

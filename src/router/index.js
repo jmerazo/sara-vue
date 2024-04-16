@@ -6,6 +6,11 @@ const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
+      path: '/auth/callback', // Esta es tu URL de redireccionamiento
+      component: 'OAuthCallback',
+      component: ()=> import('../components/OAuthCallback.vue')
+    },
+    {
       path: '/',
       name: 'home',
       component:HomeView
@@ -34,7 +39,7 @@ const router = createRouter({
     {
       path: '/panel',
       name: 'panel',
-      component: ()=> import('../views/dashboardviews/HomePanelView.vue'),
+      component: ()=> import('../views/dashboardviews/home/HomePanelView.vue'),
       meta: {
         auth: true
       }
@@ -42,7 +47,7 @@ const router = createRouter({
     {
       path: '/calendar',
       name: 'calendar',
-      component: ()=> import('../views/dashboardviews/calendarView.vue')
+      component: ()=> import('../views/dashboardviews/base/calendarView.vue')
     },
     {
       path: '/acercade',
@@ -65,7 +70,7 @@ const router = createRouter({
     {
       path: '/users',
       name: 'users',
-      component: ()=> import('../views/dashboardviews/UsersView.vue'),
+      component: ()=> import('../views/dashboardviews/admin/UsersView.vue'),
       meta: {
         auth: true,
         roles: ['ADMINISTRADOR', 'is_superuser', 'is_staff']
@@ -74,7 +79,7 @@ const router = createRouter({
     {
       path: '/species',
       name: 'species',
-      component: ()=> import('../views/dashboardviews/ForestSpeciesView.vue'),
+      component: ()=> import('../views/dashboardviews/admin/ForestSpeciesView.vue'),
       meta: {
         auth: true,
         roles: ['ADMINISTRADOR', 'is_superuser', 'is_staff']
@@ -83,7 +88,7 @@ const router = createRouter({
     {
       path:'/list-species',
       name:'list-species',
-      component: () => import('../views/dashboardviews/ListSpeciesView.vue'),
+      component: () => import('../views/dashboardviews/reports/ListSpeciesView.vue'),
       meta: {
         auth: true,
         roles: ['ADMINISTRADOR', 'is_superuser', 'is_staff']
@@ -92,7 +97,7 @@ const router = createRouter({
     {
       path:'/add-candidates',
       name:'add-candidates',
-      component: () => import('../views/dashboardviews/AddCandidateView.vue'),
+      component: () => import('../views/dashboardviews/admin/AddCandidateView.vue'),
       meta: {
         auth: true,
         roles: ['ADMINISTRADOR', 'is_superuser', 'is_staff']
@@ -101,7 +106,7 @@ const router = createRouter({
     {
       path:'/monitoring-species',
       name:'monitoring-species',
-      component: () => import('../views/dashboardviews/MonitoringSpecieView.vue'),
+      component: () => import('../views/dashboardviews/reports/MonitoringSpecieView.vue'),
       meta: {
         auth: true,
         roles: ['ADMINISTRADOR', 'is_superuser', 'is_staff']
@@ -110,7 +115,7 @@ const router = createRouter({
     {
       path:'/candidates-species',
       name:'candidates-species',
-      component: () => import('../views/dashboardviews/ListCandidatesSpecie.vue'),
+      component: () => import('../views/dashboardviews/reports/ListCandidatesSpecie.vue'),
       meta: {
         auth: true,
         roles: ['ADMINISTRADOR', 'is_superuser', 'is_staff']
@@ -119,7 +124,7 @@ const router = createRouter({
     {
       path:'/species-data',
       name:'species-data',
-      component: () => import('../views/dashboardviews/SpeciesDataView.vue'),
+      component: () => import('../views/dashboardviews/reports/SpeciesDataView.vue'),
       meta: {
         auth: true,
         roles: ['ADMINISTRADOR', 'is_superuser', 'is_staff']
@@ -128,7 +133,7 @@ const router = createRouter({
     {
       path:'/map-general',
       name:'map-general',
-      component: () => import('../views/dashboardviews/MapGeneralView.vue'),
+      component: () => import('../views/dashboardviews/reports/MapGeneralView.vue'),
       meta: {
         auth: true,
         roles: ['ADMINISTRADOR', 'is_superuser', 'is_staff']
@@ -137,7 +142,7 @@ const router = createRouter({
     {
       path:'/assessment',
       name:'assessment',
-      component: () => import('../views/dashboardviews/AssessmentListView.vue'),
+      component: () => import('../views/dashboardviews/reports/AssessmentListView.vue'),
       meta: {
         auth: true,
         roles: ['ADMINISTRADOR', 'is_superuser', 'is_staff']
@@ -146,7 +151,7 @@ const router = createRouter({
     {
       path:'/monitoring_data',
       name:'monitoring_data',
-      component: () => import('../views/dashboardviews/MonitoringListView.vue'),
+      component: () => import('../views/dashboardviews/reports/MonitoringListView.vue'),
       meta: {
         auth: true,
         roles: ['ADMINISTRADOR', 'is_superuser', 'is_staff']
@@ -155,12 +160,30 @@ const router = createRouter({
     {
       path:'/samples_data',
       name:'samples_data',
-      component: () => import('../views/dashboardviews/SamplesListView.vue'),
+      component: () => import('../views/dashboardviews/reports/SamplesListView.vue'),
       meta: {
         auth: true,
         roles: ['ADMINISTRADOR', 'is_superuser', 'is_staff']
       }
-    }   
+    },  
+    {
+      path:'/pages',
+      name:'pages',
+      component: () => import('../views/dashboardviews/PagesListView.vue'),
+      meta: {
+        auth: true,
+        roles: ['ADMINISTRADOR', 'is_superuser', 'is_staff']
+      }
+    },  
+    {
+      path:'/sections',
+      name:'sections',
+      component: () => import('../views/dashboardviews/SectionsListView.vue'),
+      meta: {
+        auth: true,
+        roles: ['ADMINISTRADOR', 'is_superuser', 'is_staff']
+      }
+    }     
   ]
 })
 

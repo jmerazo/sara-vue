@@ -6,12 +6,15 @@ export default {
     /* ==================================================================================================================== */
     // ENDPOINT →→ AUTHENTICATION
     // Obtiene el token -- http://localhost:8000/api/auth/token
-    getAuthToken(credentials){
-        return api.post('/auth/token/', credentials)
+    getAuthToken(credentials, authType){
+        return api.post('/auth/token/', credentials, authType)
     },
     // Refresca el token -- http://localhost:8000/api/auth/refresh
     refreshAuthToken(credentials){
         return api.post('/auth/token/refresh/', credentials)
+    },
+    socialAuth(code){
+        return api.post('/auth/callback', { code: code })
     },
     /* ==================================================================================================================== */
     /* ==================================================================================================================== */
@@ -182,6 +185,30 @@ export default {
     pageTopSpecies(code){
         return api.get(`/page/top_species`)
     },
+    pagesGet(){
+        return api.get(`/page`)
+    },
+    pagesUpdate(pid){
+        return api.put(`/page/${pid}`)
+    },
+    pagesCreate(data){
+        return api.post(`/page`, data)
+    },
+    pagesDelete(pid){
+        return api.delete(`/page/${pid}`)
+    },
+    sectionGet(){
+        return api.get(`/page/section`)
+    },
+    sectionUpdate(pid, data){
+        return api.put(`/page/section/${pid}`, data)
+    },
+    sectionCreate(data){
+        return api.post(`/page/section`, data)
+    },
+    sectionDelete(pid){
+        return api.delete(`/page/section/${pid}`)
+    },
     /* ==================================================================================================================== */
     /* ==================================================================================================================== */
     // ENDPOINT →→ SAMPLES
@@ -213,6 +240,18 @@ export default {
     deleteUsers(uid){
         return api.delete(`/users/${uid}`)
     },
+    // Retorna los permisos del usuario -- http://localhost:8000/api/users/modules
+    modulesUser(){ 
+        const store = useAuthTokenStore();
+        return api.get(`/users/modules`, {
+            headers: {
+                Authorization: `Bearer ${store.accessToken}`
+            }
+    }) 
+    },
+    /* ==================================================================================================================== */
+    /* ==================================================================================================================== */
+    // ENDPOINT →→ OTHERS
     stateUsers(uid, state){
         return api.put(`/users/state/${uid}`, state)
     },

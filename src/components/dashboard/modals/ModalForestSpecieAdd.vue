@@ -221,7 +221,7 @@ function toggleDetalles(idLista) {
                 class="img__specieUploadPhoto"
               >
                 <img
-                  src="../../assets/prefabs/icon_upload_photo.png"
+                  src="../../../assets/prefabs/icon_upload_photo.png"
                   alt="Imagen de arrastre o clic"
                   style="width: 50px; height: auto; margin-bottom: 5px"
                 />
@@ -330,7 +330,7 @@ function toggleDetalles(idLista) {
                 class="img__specieUploadPhoto"
               >
                 <img
-                  src="../../assets/prefabs/icon_upload_photo.png"
+                  src="../../../assets/prefabs/icon_upload_photo.png"
                   alt="Imagen de arrastre o clic"
                   style="width: 50px; height: auto; margin-bottom: 5px"
                 />
@@ -391,7 +391,7 @@ function toggleDetalles(idLista) {
                 class="img__specieUploadPhoto"
               >
                 <img
-                  src="../../assets/prefabs/icon_upload_photo.png"
+                  src="../../../assets/prefabs/icon_upload_photo.png"
                   alt="Imagen de arrastre o clic"
                   style="width: 50px; height: auto; margin-bottom: 5px"
                 />
@@ -451,7 +451,7 @@ function toggleDetalles(idLista) {
                 class="img__specieUploadPhoto"
               >
                 <img
-                  src="../../assets/prefabs/icon_upload_photo.png"
+                  src="../../../assets/prefabs/icon_upload_photo.png"
                   alt="Imagen de arrastre o clic"
                   style="width: 50px; height: auto; margin-bottom: 5px"
                 />
@@ -511,7 +511,7 @@ function toggleDetalles(idLista) {
                 class="img__specieUploadPhoto"
               >
                 <img
-                  src="../../assets/prefabs/icon_upload_photo.png"
+                  src="../../../assets/prefabs/icon_upload_photo.png"
                   alt="Imagen de arrastre o clic"
                   style="width: 50px; height: auto; margin-bottom: 5px"
                 />
@@ -571,7 +571,7 @@ function toggleDetalles(idLista) {
                 class="img__specieUploadPhoto"
               >
                 <img
-                  src="../../assets/prefabs/icon_upload_photo.png"
+                  src="../../../assets/prefabs/icon_upload_photo.png"
                   alt="Imagen de arrastre o clic"
                   style="width: 50px; height: auto; margin-bottom: 5px"
                 />
@@ -641,7 +641,7 @@ function toggleDetalles(idLista) {
                       class="img__specieUploadPhoto"
                     >
                       <img
-                        src="../../assets/prefabs/icon_upload_photo.png"
+                        src="../../../assets/prefabs/icon_upload_photo.png"
                         alt="Imagen de arrastre o clic"
                         style="width: 50px; height: auto; margin-bottom: 5px"
                       />
@@ -696,7 +696,7 @@ function toggleDetalles(idLista) {
                       class="img__specieUploadPhoto"
                     >
                       <img
-                        src="../../assets/prefabs/icon_upload_photo.png"
+                        src="../../../assets/prefabs/icon_upload_photo.png"
                         alt="Imagen de arrastre o clic"
                         style="width: 50px; height: auto; margin-bottom: 5px"
                       />
@@ -751,7 +751,7 @@ function toggleDetalles(idLista) {
                       class="img__specieUploadPhoto"
                     >
                       <img
-                        src="../../assets/prefabs/icon_upload_photo.png"
+                        src="../../../assets/prefabs/icon_upload_photo.png"
                         alt="Imagen de arrastre o clic"
                         style="width: 50px; height: auto; margin-bottom: 5px"
                       />

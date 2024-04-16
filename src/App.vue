@@ -3,36 +3,77 @@
 import { RouterView} from "vue-router";
 import { useAuthTokenStore } from '@/stores/auth'
 import Footer from "@/components/Footer.vue";
-import Modal from '@/components/Modal.vue';
+import ModalSpecie from '@/components/ModalSpecie.vue';
 import ModalFamily from "@/components/ModalFamily.vue";
 
-import ModalUserUpdate from "@/components/dashboard/ModalUserUpdate.vue";
-import ModalCandidate from '@/components/dashboard/ModalCandidates.vue'
-import ModalInfoCandidate from '@/components/dashboard/ModalInfoCandidate.vue';
-import Dashboard from '@/views/dashboardviews/DashboardMainView.vue'
+import Dashboard from '@/views/dashboardviews/home/DashboardMainView.vue'
+import NavBar from "./components/NavBar.vue";
 import Header from '@/components/Header.vue';
 const store = useAuthTokenStore()
 </script>
 
 <template>
-
-  <Dashboard v-if="store.authActive"/>
+  <NavBar/>
   <Header v-if="!store.authActive"/>
+  <Dashboard v-if="store.authActive"/>
+  
+  
   <main v-if="!store.authActive" >
     <router-view v-if="!store.authActive" />
   </main> 
- 
+
   <Footer/> 
-  <Modal/>
+  <ModalSpecie/>
   <ModalFamily/>
-  <ModalUserUpdate/>
-  <ModalCandidate/>
-  <ModalInfoCandidate/>
-  
+
 </template>
 
 <style >
+/* boton agregar */
+.agregar {
+  background-image: url("/icons/icon-add.png");
+  padding: 0;
+  margin: 0;
+  height: 3rem;
+  background-position: center;
+  background-size: cover;
+  position: fixed;
+  bottom: 10%;
+  right: -1px;
+  z-index: 2;
+  width: 4rem;
+  transition: transform 0.3s ease-out, box-shadow 0.3s ease-out;
+}
+.agregar:hover {
+  transform: scale(1.08);
+}
 
+@media (min-width: 768px) {
+  .agregar {
+    right: 1%;
+    height: 4rem;
+    overflow: hidden;
+    border-radius: 50%;
+  }
+  .agregar::before {
+    content: "";
+    display: block;
+    width: 100%;
+    height: 100%;
+    background-image: url("/icons/icon-add.png");
+    background-position: center;
+    background-size: cover;
+    border-radius: 50%;
+    transition: transform 0.3s ease-out;
+  }
+  .agregar:hover::before {
+    transform: scale(1.08);
+  }
+  .agregar:hover {
+    box-shadow: 0 0 0 5px rgba(0, 0, 0, 0.2);
+  }
+}
+/* fin boton agregar */
 .texto__sara {
   color: var(--primary);
 }

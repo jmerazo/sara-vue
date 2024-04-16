@@ -1,13 +1,12 @@
 <script setup>
 //components
-import SideBar from "@/components/dashboard/SideBar.vue";
-import NavBar from "@/components/dashboard/NavBar.vue";
+import SideBar from "@/components/dashboard/base/SideBar.vue";
+import NavBar from "@/components/dashboard/base/NavBar.vue";
 //librery
 import "@/adminlte/plugins/jquery/jquery.min.js";
 import "@/adminlte/plugins/bootstrap/js/bootstrap.bundle.min.js";
 import "@/adminlte/plugins/ekko-lightbox/ekko-lightbox.min.js";
 import "@/adminlte/dist/js/adminlte.min.js";
-
 
   $(document).on("click", '[data-toggle="lightbox"]', function (event) {
     event.preventDefault();
@@ -15,10 +14,9 @@ import "@/adminlte/dist/js/adminlte.min.js";
       alwaysShowClose: true,
     });
   });
-
-
 import { RouterView } from "vue-router";
 </script>
+
 <template >
   <body class="sidebar-mini">
     <div class="wrapper">

@@ -8,10 +8,16 @@ export const useModalStore = defineStore('modal',()=>{
     const modalFamily = ref(false)
     const modalUserUpdate = ref(false)
     const modalCandidates = ref(false)
+    const modalCandidatesAdd = ref(false)
     const modalForestSpecieUpdate = ref(false)
     const modalForestSpecieAdd = ref(false)
-    const modalInfoCandidate = ref(false)
-    
+    const modalInfoCandidate = ref(false)    
+    const modalPageAdd = ref(false)  
+    const modalPageUpdate = ref(false)  
+    const modalSectionAdd = ref(false)  
+    const modalSectionUpdate = ref(false)  
+    const modalSectionView = ref(false) 
+    const modalFormMonitoring = ref(false)  
     
     //modal especie
     function handleClickModal(){
@@ -21,9 +27,7 @@ export const useModalStore = defineStore('modal',()=>{
     //modal Familia
     function handleClickModalFamily(){
         modalFamily.value = !modalFamily.value
-    }
-    
-   
+    } 
 
     //modal user dashboard
     function handleClickModalUserUpdate(){
@@ -33,6 +37,11 @@ export const useModalStore = defineStore('modal',()=>{
     //modal monitoreo candidato especie dashboard
     function handleClickModalCandidate(){
         modalCandidates.value = !modalCandidates.value
+    }
+
+    //modal monitoreo candidato especie dashboard
+    function handleClickModalCandidateAdd(){
+        modalCandidatesAdd.value = !modalCandidatesAdd.value
     }
 
     //modal informacion candidato especie dashboard
@@ -47,6 +56,32 @@ export const useModalStore = defineStore('modal',()=>{
     //modal agregar especie forestal
     function handleClickModalForestSpecieAdd(){
         modalForestSpecieAdd.value = !modalForestSpecieAdd.value
+    }
+    //modal for create or update moniroting 
+    function handleClickModalFormMonitoring(){
+        modalFormMonitoring.value = !modalFormMonitoring.value
+    }
+
+    //modal especie page dashboard
+    function handleClickModalPageUpdate(){
+        modalPageUpdate.value = !modalPageUpdate.value
+    }
+    //modal agregar page forestal
+    function handleClickModalPageAdd(){
+        modalPageAdd.value = !modalPageAdd.value
+    }
+
+    //modal especie section dashboard
+    function handleClickModalSectionUpdate(){
+        modalSectionUpdate.value = !modalSectionUpdate.value
+    }
+    //modal agregar section forestal
+    function handleClickModalSectionAdd(){
+        modalSectionAdd.value = !modalSectionAdd.value
+    }
+
+    function handleClickModalSectionView(){
+        modalSectionView.value = !modalSectionView.value
     }
 
     return {
@@ -65,6 +100,20 @@ export const useModalStore = defineStore('modal',()=>{
         handleClickModalForestSpecieUpdate,
         modalForestSpecieUpdate,
         handleClickModalForestSpecieAdd,
-        modalForestSpecieAdd
+        modalForestSpecieAdd,
+        handleClickModalCandidateAdd,
+        modalCandidatesAdd,
+        handleClickModalPageUpdate,
+        modalPageUpdate,
+        handleClickModalPageAdd,
+        modalPageAdd,
+        handleClickModalSectionUpdate,
+        modalSectionUpdate,
+        handleClickModalSectionAdd,
+        modalSectionAdd,
+        handleClickModalFormMonitoring,
+        modalFormMonitoring,
+        handleClickModalSectionView,
+        modalSectionView
     }
 })

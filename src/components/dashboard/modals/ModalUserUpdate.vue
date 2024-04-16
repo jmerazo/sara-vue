@@ -4,7 +4,7 @@ import { watch, computed, ref } from "vue";
 import { useModalStore } from "@/stores/modal";
 import { useUsersStore } from "@/stores/users";
 import { useAuthTokenStore } from "@/stores/auth";
-import APIService from "../../services/APIService";
+import APIService from "../../../services/APIService";
 import { useRouter } from "vue-router";
 
 
