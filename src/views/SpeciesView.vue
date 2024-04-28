@@ -2,10 +2,13 @@
 import { onBeforeRouteLeave } from "vue-router";
 import { useEspeciesStore } from "../stores/species";
 import { computed, ref } from "vue";
+import { useEspeciesData } from "../stores/dashboard/reports/speciesData";
+import { descargarExcel, descargarPdf, obtenerFecha, descargarPdfs } from "@/helpers";
 
 import Species from "@/components/Species.vue";
 
 const especies = useEspeciesStore();
+const reportGeneral = useEspeciesData();
 const valueSerached = ref("");
 const isSearching = computed(() => valueSerached.value !== "");
 //limpiar filtros antes de cambiar de vista
@@ -75,9 +78,20 @@ const displayedPageRange = computed(() => {
     </header>
 
     <!-- fin header vista especie -->
+
+    <div class="download__forestSpecies">
+      <span class="text__exportSF">Exportar listado especies forestales:</span>
+      <a @click="descargarExcel(reportGeneral.datosImport, `Listado_especies_forestales - ${obtenerFecha()}`)" class="button" href="#">
+        <font-awesome-icon class="button__excel" :icon="['fas', 'file-excel']"/>
+      </a>
+      
+      <a @click="descargarPdfs(reportGeneral.datosImport,`Listado especies forestales - ${obtenerFecha()}`, 6, 0)" class="button" href="#">
+        <font-awesome-icon class="button__pdf" :icon="['fas', 'file-pdf']"/>
+      </a>
+    </div>
   
     <!-- listado especies -->
-    <main class="especies">
+    <main class="especies">      
       <div class="especies__grid">
         <Species
           v-for="especie in especies.displayedEspecies"
@@ -270,4 +284,34 @@ const displayedPageRange = computed(() => {
   }
 }
 
+.paginador {
+  margin-bottom: 2rem;
+}
+
+.download__forestSpecies {
+  display: flex;
+  align-items: center; /* Alinea el botón verticalmente al centro, si es necesario */
+  justify-content: flex-end; /* Alinea el botón horizontalmente a la izquierda */
+  margin-top: 1rem;
+  margin-right: 1rem;
+}
+
+@media (max-width: 600px) {
+  .download__forestSpecies {
+    justify-content: center; /* Centra el botón en pantallas pequeñas, si es deseado */
+  }
+}
+
+.button{
+  margin: 0.4rem;
+}
+
+.button__excel, .button__pdf {
+  font-size: 2rem; /* O cualquier tamaño que prefieras */
+}
+
+.text__exportSF{
+  font-weight: bold;
+  margin-right: 0.4rem;
+}
 </style>
