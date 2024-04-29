@@ -13,7 +13,7 @@ const store = useAuthTokenStore()
 </script>
 
 <template>
-  <NavBar/>
+  <NavBar v-if="!store.authActive"/>
   <Header v-if="!store.authActive"/>
   <Dashboard v-if="store.authActive"/>
   

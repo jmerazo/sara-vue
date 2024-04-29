@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useAuthTokenStore } from "../stores/auth";
+//import { useAuthTokenStore } from "../stores/auth";
 
 const api = axios.create({
     //baseURL:'https://apisara.corpoamazonia.gov.co/api',
