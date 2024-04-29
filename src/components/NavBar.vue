@@ -248,6 +248,8 @@ window.addEventListener('scroll', function() {
 }
 
 .navegacion__link {
+  backdrop-filter: blur(2px);
+  background-color: rgba(255, 255, 255, 0.075);
   font-size: 0.7rem;
   font-weight: 700;
   padding: 0.2rem;
@@ -278,6 +280,11 @@ window.addEventListener('scroll', function() {
   max-width: 3.5rem;
   padding: 0 3rem;
 }
+.navegacion__logo img {
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.5);
+  filter: blur(2px);
+}
+
 @media (min-width: 1820px) {
   .navegacion__link {
     font-size: .9rem;
