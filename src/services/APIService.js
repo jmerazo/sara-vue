@@ -7,7 +7,11 @@ export default {
     // ENDPOINT →→ AUTHENTICATION
     // Obtiene el token -- http://localhost:8000/api/auth/token
     getAuthToken(credentials, authType){
-        return api.post('/auth/token/', credentials, authType)
+        const data = {
+            ...credentials, 
+            authType
+        }
+        return api.post('/auth/token/', data)
     },
     // Refresca el token -- http://localhost:8000/api/auth/refresh
     refreshAuthToken(credentials){

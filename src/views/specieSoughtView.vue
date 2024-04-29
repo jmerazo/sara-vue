@@ -1,23 +1,29 @@
 <script setup>
 import { ref, onMounted, computed } from "vue";
-import { useConsultaStore } from "@/stores/consulta";
 import { useRouter } from "vue-router";
+
+import { useConsultaStore } from "@/stores/consulta";
 import { useGeoCandidateTrees } from "@/stores/candidate";
 import { useAverageSpecie } from "@/stores/average";
-import { getFullImageUrl} from '@/helpers/'
+import { useModalStore } from "@/stores/modal";
 
 import APIService from "@/services/APIService";
-import * as d3 from "d3";
+
+import { getFullImageUrl } from "@/helpers/";
 
 import QuoteButton from "@/components/QuoteButton.vue";
 import PagesQueries from "@/components/PagesQueries.vue";
 import RenderGeo from "@/components/RenderGeo.vue";
+import ChartAverage from "@/components/ChartAverage.vue";
+import ImageSlider from "@/components/ImageSlider.vue";
+import ModalSpecieComponent from "@/components/ModalSpecieComponent.vue";
+
+const router = useRouter();
 
 const especie = useConsultaStore();
-console.log('especie especie: ', especie.especie)
-const router = useRouter();
 const geoStore = useGeoCandidateTrees();
 const averageStore = useAverageSpecie();
+const modal = useModalStore();
 
 const dateNow = new Date();
 const year = dateNow.getFullYear();
@@ -28,8 +34,7 @@ const formatDate = `${day}-${month}-${year}`;
 const codigo = especie.especie.cod_especie;
 const name_specie = especie.especie.nom_comunes;
 const filteredData = ref([]);
-const totalHeightSpecie = ref(0);
-const commercialHeightSpecie = ref(0);
+
 const averageAltitude = ref(0);
 
 async function downloadDataSpecie() {
@@ -77,115 +82,24 @@ async function filterGeo(codigo, data) {
     .map((item) => ({ lon: item.lon, lat: item.lat }));
 }
 
-async function filterDataAverage(codigo, data) {
-  const dataSpecieAverage = await data.filter((item) => item.codigo === codigo);
-  const countData = dataSpecieAverage.length;
-  const totalHeightSpecie =
-    dataSpecieAverage.reduce((sum, item) => sum + item.altura_total, 0) /
-    countData;
-  const commercialHeightSpecie =
-    dataSpecieAverage.reduce((sum, item) => sum + item.altura_comercial, 0) /
-    countData;
-  const averageAltitude =
-    dataSpecieAverage.reduce((sum, item) => sum + item.altitud, 0) / countData;
-
-  const totalHeightSpecieRounded = Math.round(totalHeightSpecie);
-  const commercialHeightSpecieRounded = Math.round(commercialHeightSpecie);
-  const averageAltitudeRounded = Math.round(averageAltitude);
-
-  return {
-    totalHeightSpecie: totalHeightSpecieRounded,
-    commercialHeightSpecie: commercialHeightSpecieRounded,
-    averageAltitude: averageAltitudeRounded,
-  };
-}
-
-function createChart() {
-  const data = [
-    {
-      name: "Altura",
-      value: totalHeightSpecie.value,
-    },
-    {
-      name: "Altura comercial",
-      value: commercialHeightSpecie.value,
-    }
-  ];
-
-  const colors = d3
-    .scaleOrdinal()
-    .domain(data.map((d) => d.name))
-    .range(["#1f77b4", "#ff7f0e", "#2ca02c"]);
-
-  const margin = { top: 20, right: 20, bottom: 30, left: 40 };
-  const width = 400;
-  const height = 200;
-
-  const x = d3
-    .scaleBand()
-    .domain(data.map((d) => d.name))
-    .range([margin.left, width - margin.right])
-    .padding(0.1);
-
-  const y = d3
-    .scaleLinear()
-    .domain([0, d3.max(data, (d) => d.value)])
-    .nice()
-    .range([height - margin.bottom, margin.top]);
-
-  const chart = d3
-    .select("#chart")
-    .append("svg")
-    .attr("width", width)
-    .attr("height", height);
-
-  chart
-    .selectAll(".bar")
-    .data(data)
-    .enter()
-    .append("rect")
-    .attr("class", "bar")
-    .attr("x", (d) => x(d.name))
-    .attr("y", (d) => y(d.value))
-    .attr("width", x.bandwidth())
-    .attr("height", (d) => height - margin.bottom - y(d.value))
-    .attr("fill", (d) => colors(d.name));
-
-  chart
-    .selectAll(".label")
-    .data(data)
-    .enter()
-    .append("text")
-    .attr("class", "label")
-    .attr("x", (d) => x(d.name) + x.bandwidth() / 2)
-    .attr("y", (d) => y(d.value) - 5)
-    .attr("text-anchor", "middle")
-    .text((d) => d.value);
-
-  chart
-    .append("g")
-    .attr("transform", `translate(0, ${height - margin.bottom})`)
-    .call(d3.axisBottom(x));
-
-  chart
-    .append("g")
-    .attr("transform", `translate(${margin.left}, 0)`)
-    .call(d3.axisLeft(y));
-}
-
 onMounted(async () => {
-  await geoStore.fetchData(); // Llama a fetchData para cargar los datos
-  filteredData.value = await filterGeo(codigo, geoStore.geoCandidateData);
-  const {
-    totalHeightSpecie: totalHeight,
-    commercialHeightSpecie: commercialHeight,
-    averageAltitude: average,
-  } = await filterDataAverage(codigo, averageStore.averageCandidateData);
-  totalHeightSpecie.value = totalHeight;
-  commercialHeightSpecie.value = commercialHeight;
-  averageAltitude.value = average;
+  if (!especie.especie.cod_especie) {
+    router.push({ name: "especies" });
+    return;
+  }
 
-  createChart();
+  averageStore.cod_especie = especie.especie.cod_especie;
+  await averageStore.fetchData(); //store graficar
+
+  geoStore.validateUrl([
+    getFullImageUrl(especie.especie.img_general),
+    getFullImageUrl(especie.especie.img_landscape_one),
+    getFullImageUrl(especie.especie.img_landscape_two),
+    getFullImageUrl(especie.especie.img_landscape_three),
+  ]);
+
+  await geoStore.fetchData();
+  filteredData.value = await filterGeo(codigo, geoStore.geoCandidateData); //coordenadas de los individuos de la especie consultada
 });
 
 const {
@@ -216,7 +130,6 @@ const {
   img_landscape_one,
   img_landscape_two,
   img_landscape_three,
-
 } = especie.especie;
 
 const scrollToTop = () => {
@@ -227,189 +140,222 @@ scrollToTop();
 </script>
 
 <template>
-  <div v-if="nom_comunes">
+  <div class="main">
     <QuoteButton></QuoteButton>
-    <div class="contenedor">
-      <main class="contenido">
-        <div class="contenido__grid">
-          <div class="contenido__derecha-arriba">
-            <div class="composicion__general">
-              <!-- imagen principal -->
-              <div class="imagen__principal">
-                <img
-                  :src="getFullImageUrl(img_general)"
-                  alt="imagen principal"
-                />
-              </div>
-              <!-- contenido header -->
-              <div class="header">
-                <h1 class="header__heading">
-                  {{ nom_comunes }}
-                </h1>
-                <h1 class="header__heading header__heading--subtitulo">
-                  <span class="nombre__cientifico">{{ nombre_cientifico_especie }}</span>
-                  <span class="nombre__autor">{{ " " + nombre_autor_especie }}</span>
-                </h1>
-                <h3 class="header__titulo">
-                  <span>Otros nombres:</span> {{ otros_nombres }}
-                </h3>
-                <h3 class="header__titulo">
-                  <span>Familia:</span> {{ familia }}
-                </h3>
-              </div>
-              <!-- fin header -->
-            </div>
-            <!-- composicion fisica -->
-            <div class="composicion__especie">
-              <p class="composicion__dato">
-                <span>Tipo hoja: </span>{{ tipo_hoja }}
+    <div class="contenido">
+      <!-- seccion 1 - informacion general -->
+      <section class="general">
+        <ImageSlider class="slider" v-if="geoStore.validImages.length > 0" />
+
+        <div class="general__informacion">
+          <div class="informacion">
+            <!-- contenido header -->
+            <div class="header">
+              <h1 class="header__heading">
+                {{ nom_comunes }}
+              </h1>
+              <h1 class="header__heading header__heading--subtitulo">
+                <span class="nombre__cientifico">{{
+                  nombre_cientifico_especie
+                }}</span>
+                <span class="nombre__autor">{{
+                  " " + nombre_autor_especie
+                }}</span>
+              </h1>
+              <h3 class="header__titulo">Otros Nombres:</h3>
+              <p class="header__texto">
+                {{ otros_nombres }}
               </p>
-              <p class="composicion__dato">
-                <span>Disposición de hojas: </span>{{ disposicion_hojas }}
-              </p>
-              <p class="composicion__dato">
-                <span>Follaje: </span>{{ follaje }}
-              </p>
-              <p class="composicion__dato">
-                <span>Forma de la copa: </span>{{ forma_copa }}
-              </p>
-              <p class="composicion__dato"><span>Hábito: </span>{{ habito }}</p>
+              <h3 class="header__titulo">Sinónimos:</h3>
+              <p class="header__texto">{{ sinonimos }}</p>
+              <h3 class="header__titulo">
+                <span>Familia:</span> {{ familia }}
+              </h3>
             </div>
-            <!-- fin composicion fisica -->
-            <!-- especie -->
-            <div class="especie">
-              <!-- hojas -->
-              <div class="especie__contenido">
-                <div class="especie__imagen">
-                  <img :src="getFullImageUrl(img_leafs)" alt="" />
-                </div>
-                <div class="especie__info">
-                  <h4 class="especie__titulo">Hojas</h4>
-                  <p class="especie__texto">{{ hojas }}</p>
-                </div>
-              </div>
-              <!-- flores -->
-              <div class="especie__contenido">
-                <div class="especie__imagen">
-                  <img :src="getFullImageUrl(img_flowers)" alt="" />
-                </div>
-                <div class="especie__info">
-                  <h4 class="especie__titulo">Flores</h4>
-                  <p class="especie__texto">{{ flor }}</p>
-                </div>
-              </div>
-              <!-- frutos -->
-              <div class="especie__contenido">
-                <div class="especie__imagen">
-                  <img
-                    :src="getFullImageUrl(img_fruits)"
-                    alt=""
-                  />
-                </div>
-                <div class="especie__info">
-                  <h4 class="especie__titulo">Frutos</h4>
-                  <p class="especie__texto">{{ frutos }}</p>
-                </div>
-              </div>
-            </div>
-            <!-- sinonimos -->
-            <div class="sinonimos">
-              <p class="contenido__titulo sinonimos__titulo">Sinónimos:</p>
-              <p class="contenido__texto sinonimos__texto">
-                {{ sinonimos }}
-              </p>
-            </div>
-          </div>
-          <div class="contenido__izquierda-abajo">
-            <!-- estadisticas -->
-            <div class="estadistica">
-              <div class="estadistica__contenido">
-                <span class="estadistica__titulo"
-                  >Altura total y comercial promedio de la especie</span
-                >
-                <div class="estadistica__grafico">
-                  <div
-                    class="grafico"
-                    v-if="
-                      !isNaN(Number(totalHeightSpecie)) ||
-                      !isNaN(Number(commercialHeightSpecie))
-                    "
-                    id="chart"
-                  ></div>
-                </div>
-                <div class="estadistica__contenido">
-                <span class="estadistica__titulo"
-                  >Altitud promedio de la especie: </span
-                ><span>{{ averageAltitude + "m" }}</span>
-                </div>
-              </div>
-            </div>
-            <!-- distribucion -->
-            <div class="contenido__seccion">
-              <h4 class="contenido__titulo">Distribución:</h4>
-              <p class="contenido__texto">{{ distribucion }}</p>
-            </div>
-            <!-- mapa -->
-            <div class="contenido__seccion">
-              <div class="mapa">
-                <p class="mapa__texto">Distribución región amazónica</p>
-                <template v-if="filteredData.length > 0">
-                  <RenderGeo :filteredData="filteredData" />
-                </template>
-              </div>
-            </div>
-            <!-- fin mapa -->
-            <!-- galeria -->
-            <section class="galeria">
-              <h2 class="galeria__titulo">Galeria de la especie</h2>
-              <div class="galeria__flex">
-                <div class="galeria__imagen">
-                  <img :src="getFullImageUrl(img_landscape_one)" alt="imagen galeria" />
-                </div>
-                <div class="galeria__imagen-flex">
-                  <img :src="getFullImageUrl(img_landscape_two)" alt="imagen galeria" />
-                  <img :src="getFullImageUrl(img_landscape_three)" alt="imagen galeria" />
-                </div>
-              </div>
-            </section>
-            <!-- fin garleria -->
+            <!-- fin header -->
           </div>
         </div>
-      </main>
-      <div class="descargas">
-        <div class="descargas__boton">
-          <a @click="downloadDataSpecie" download>
-            <font-awesome-icon :icon="['fas', 'file-pdf']" />
-            Exportar ficha técnica
-          </a>
+      </section>
+      <!-- FIN seccion 1 - informacion general -->
+
+      <!-- seccion 2 - tarjetas de componentes -->
+      <section class="general">
+        <div class="componentes">
+          <div class="cards">
+            <!-- grid-->
+            <!-- contenido imagen -->
+            <div
+              class="card"
+              :style="{
+                backgroundImage: 'url(' + getFullImageUrl(img_leafs) + ')',
+              }"
+            >
+              <!-- enlace animacion -->
+              <button
+                class="card__button animacion"
+                @click="
+                  modal.handleClickModalComponent([
+                    getFullImageUrl(img_leafs),
+                    'Hojas',
+                    hojas,
+                  ])
+                "
+              >
+                <span class="animacion__tex">Ver Hojas</span>
+              </button>
+            </div>
+            <!-- FIN contenido imagen -->
+            <!-- contenido imagen -->
+            <div
+              class="card"
+              :style="{
+                backgroundImage: 'url(' + getFullImageUrl(img_flowers) + ')',
+              }"
+            >
+              <!-- enlace animacion -->
+              <button
+                class="card__button animacion"
+                @click="
+                  modal.handleClickModalComponent([
+                    getFullImageUrl(img_flowers),
+                    'Flores',
+                    flor,
+                  ])
+                "
+              >
+                <span class="animacion__tex">Ver Flores</span>
+              </button>
+            </div>
+            <!-- FIN contenido imagen -->
+            <!-- contenido imagen -->
+            <div
+              class="card"
+              :style="{
+                backgroundImage: 'url(' + getFullImageUrl(img_fruits) + ')',
+              }"
+            >
+              <!-- enlace animacion -->
+              <button
+                class="card__button animacion"
+                @click="
+                  modal.handleClickModalComponent([
+                    getFullImageUrl(img_fruits),
+                    'Frutos',
+                    frutos,
+                  ])
+                "
+              >
+                <span class="animacion__tex">Ver Frutos</span>
+              </button>
+            </div>
+            <!-- FIN contenido imagen -->
+          </div>
         </div>
-      </div>
+      </section>
+      <!-- FIN seccion 2 - tarjetas de componentes -->
+      <!-- seccion 3- grafico -->
+      <section class="general" v-if="averageStore.valores.length > 0">
+        <div class="componentes">
+          <div class="grafico">
+            <div class="grafico__informacion">
+              <h4 class="grafico__titulo">
+                Promedios de Altura respecto a
+                <span>{{ averageStore.cantIndividuos }}</span> individuos
+                registrados
+              </h4>
+              <p class="grafico__subtitulo">
+                Total Promedio :
+                <span>{{ averageStore.valores[0] }} metros</span>
+              </p>
+              <p class="grafico__subtitulo">
+                Total Fuste (aporvechable para usos):
+                <span>{{ averageStore.valores[1] }} metros</span>
+              </p>
+            </div>
+
+            <ChartAverage class="grafico__componente" />
+          </div>
+        </div>
+      </section>
+      <!-- FIN seccion 3- grafico -->
+      <!-- seccion 4 - mapa -->
+      <section class="general">
+        <div class="componentes">
+          <div class="mapa">
+            <div class="mapa__informacion">
+              <h4 class="mapa__titulo">Distribución</h4>
+              <p class="mapa__descripcion">{{ distribucion }}</p>
+            </div>
+            <div class="jurisdiccion">
+              <h4 class="jurisdiccion__titulo">
+                Jurisdicción <span>Corpoamazonia</span>
+              </h4>
+              <RenderGeo
+                v-if="filteredData.length > 0"
+                :filteredData="filteredData"
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+      <!-- Fin seccion 4 - mapa -->
     </div>
+
+    <PagesQueries />
   </div>
-  <!-- no resultados -->
-  <div v-else class="noResultados">
-    <p class="noResultados__heading">No se encontraron resultados</p>
-    <button type="button" class="noResultados__boton" @click="router.push('/')">
-      Volver al inicio
-    </button>
-  </div>
-  <PagesQueries></PagesQueries>
+  <ModalSpecieComponent />
 </template>
 
 <style scoped>
 /* header */
-.header {
-  margin-top: 2rem;
+.main {
+  margin-top: 6rem;
 }
+/* Seccion 1- infrmacion general */
+.general {
+  width: 95%;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+}
+
 @media (min-width: 768px) {
-  .header {
-    margin-top: 5rem;
+  .main {
+    margin-top: 8rem;
   }
 }
+@media (min-width: 992px) {
+  .main {
+    margin-top: 10rem;
+  }
+  .general {
+    width: 80%;
+  }
+}
+
+.informacion {
+  padding: 0.5rem;
+  margin-top: 2rem;
+}
+
+@media (min-width: 992px) {
+  .slider {
+    width: 50%;
+    margin: 0 auto;
+  }
+
+  .general__informacion {
+    width: 50%;
+    margin: 0 auto;
+  }
+}
+
+/* header */
+
 .header__heading {
-  font-size: 1.3rem;
-  margin-bottom: 0;
-  line-height: 0.8;
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+  line-height: 0.9;
 }
 @media (min-width: 768px) {
   .header__heading {
@@ -421,274 +367,196 @@ scrollToTop();
   font-size: 1rem;
   text-align: center;
   color: var(--gris);
-  line-height: 1;
+  line-height: 1.2;
+  margin-bottom: 3rem;
 }
-@media (min-width: 768px) {
-  .header__heading--subtitulo {
-    font-size: 1.1rem;
-  }
-}
+
 .header__titulo {
   font-size: 0.9rem;
-  text-align: center;
+  text-align: justify;
   color: var(--gris);
+  margin-top: 1.5rem;
+}
+
+.header__texto {
+  font-size: 0.9rem;
+  text-align: justify;
+  margin-top: 1rem;
 }
 @media (min-width: 768px) {
   .header__titulo {
     font-size: 1rem;
-  }
-}
-/* grid-flex */
-
-.contenido__grid {
-  display: flex;
-  flex-direction: column;
-}
-@media (min-width: 800px) {
-  .contenido__grid {
-    display: grid;
-    grid-template-columns: 3fr 1fr;
-    gap: 2rem;
-    margin-top: 5rem;
-  }
-}
-/* secciones */
-.contenido__seccion {
-  padding: 0;
-  margin-bottom: 2rem;
-}
-
-.contenido__titulo {
-  text-align: center;
-  font-size: 1rem;
-  padding: 0;
-  margin: 0 0 0.5rem 0;
-}
-@media (min-width: 768px) {
-  .contenido__titulo {
-    margin: 0;
-    padding: 0;
-  }
-}
-.contenido__texto {
-  font-size: 0.8rem;
-  padding: 1rem;
-  color: var(--negro);
-}
-@media (min-width: 768px) {
-  .contenido__texto {
-    font-size: 0.9rem;
-  }
-}
-/* contenido especie (hojas, flores y frutos) */
-
-.especie__contenido {
-  background-color: var(--gris-claro);
-  margin: 1rem 0;
-  border-bottom-left-radius: 10px;
-  border-bottom-right-radius: 10px;
-}
-
-@media (min-width: 992px) {
-  .especie__contenido {
-    background-color: var(--blanco);
-    border: 1px solid var(--primary);
+    margin-top: 2rem;
   }
 }
 
-@media (min-width: 992px) {
-  .especie__contenido {
-    display: grid;
-    grid-template-columns: 1fr 2fr;
-    align-items: center;
-  }
-  .especie__imagen {
-    width: 20rem;
-  }
-  .especie__info {
-    display: flex;
-    flex-direction: column;
-  }
-}
-
-.especie__titulo {
-  text-align: center;
-  font-size: 1rem;
-  line-height: 0.5;
-}
-.especie__texto {
-  font-size: 0.8rem;
-  color: var(--negro);
-  font-weight: 500;
-  text-align: center;
-  padding: 0.5rem;
-  margin: 0 0 0.5rem 0;
-}
-/* sinonimos */
-.sinonimos {
-  background-color: var(--gris-claro);
-  padding: 1rem;
-  margin-bottom: 2rem;
-}
-.sinonimos__titulo {
-  padding: 0;
-  margin: 0 0 0.2rem 0;
-  font-weight: 700;
-}
-.sinonimos__texto {
-  padding: 0 1rem;
-  margin: 0;
-  text-align: center;
-  font-size: 0.9rem;
-}
-/* composicion especie */
-.composicion__general {
+/* seccion 2 - componentes */
+.componentes {
+  width: 95%;
+  margin: 0 auto;
   margin-top: 2rem;
 }
-.composicion__especie {
-  display: flex;
-  flex-direction: column;
-  padding: 1rem;
-  background-color: var(--gris-claro);
-  margin-bottom: 2rem;
-  border-bottom-left-radius: 10px;
-  border-bottom-right-radius: 10px;
-}
-.composicion__dato {
-  margin: 0;
-  padding: 1rem auto;
-  color: var(--negro);
-  font-size: 1rem;
-}
-.composicion__dato span {
-  font-weight: 700;
-  color: var(--gris);
-}
+
 @media (min-width: 992px) {
-  .composicion__general {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    justify-content: center;
-    align-items: center;
-    align-content: center;
-    text-align: center;
+  .componentes {
+    width: 50%;
+    margin-top: 3rem;
   }
 }
-/* estadistica */
-.estadistica {
-  margin-bottom: 2rem;
-}
-.estadistica__contenido {
-  margin: 0 auto;
-  text-align: center;
-}
-.estadistica__titulo {
-  font-size: 1rem;
-  font-weight: 700;
-}
-.estadistica__grafico {
-  margin: 0 auto;
+
+.cards {
+  display: grid;
+  gap: 1rem;
 }
 
-.grafico {
-  max-width: 95% !important;
-}
-/* galeria */
-.galeria {
-  border: 1px solid var(--primary);
-  background-color: var(--negro);
-}
-.galeria__flex {
+.card {
   display: flex;
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
   flex-direction: column;
-  gap: 1rem;
+  transition-property: scale(1);
+  transition-duration: 0.5s;
+  height: 13rem;
+  border-radius: .5rem;
 }
-.galeria__titulo {
-  font-size: 1rem;
-  text-align: center;
-  color: var(--blanco);
+
+@media (min-width: 768px) {
+  .card {
+    height: 16rem;
+  }
 }
-.galeria__imagen-flex {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
+@media (min-width: 1700px) {
+  .cards {
+    gap: 1rem;
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .card {
+    height: 18rem;
+  }
 }
-.mapa__texto {
-  text-align: center;
-  line-height: 1.5;
-  margin-bottom: 0.5rem;
+
+.card__button {
+  display: inline-flex;
+  width: 50%;
+  align-items: center;
+  height: 2.5rem;
+  padding: 0 0 0 0.5rem;
+  background-color: var(--blanco);
   color: var(--gris);
   font-weight: 700;
-}
-/* descargas */
-.descargas {
-  margin-top: 3rem;
-  width: 100%;
-}
-.descargas__boton {
-  width: 70%;
-  margin: 0 auto;
-  background-color: var(--primary);
-  font-weight: 700;
-  padding: 0.3rem;
   font-size: 1rem;
-  text-align: center;
-  border-radius: 5px;
-}
-.descargas__boton a {
-  color: var(--blanco);
-}
-.descargas__boton:hover {
-  background-color: var(--primary-hover);
-}
-/* no resultados */
-.noResultados {
-  background-color: var(--gris-claro);
-  width: 80%;
-  margin: 5rem auto;
-  border-bottom-left-radius: 10px;
-  border-bottom-right-radius: 10px;
-  display: flex;
-  gap: 1rem;
-  flex-direction: column;
-  justify-content: space-between;
-  box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.4);
+  border: none;
+  cursor: pointer;
+  transition: 0.3s ease all;
+  border-radius: 0 0.5rem 0.5rem 0;
+  position: relative;
+  overflow: hidden;
+  margin-top: 9rem;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
-@media (min-width: 992px) {
-  .noResultados {
+@media (min-width: 768px) {
+  .card__button {
+    margin-top: 12rem;
     width: 30%;
   }
 }
 
-.noResultados__heading {
-  font-size: 1rem;
-  margin: 2rem auto;
-  color: var(--gris);
-  padding: 0;
+@media (min-width: 1700px) {
+  .card__button {
+    margin-top: 15rem;
+    width: 40%;
+  }
 }
-
-.noResultados__boton {
-  background-color: var(--primary);
+.card__button:hover {
   color: var(--blanco);
-  font-weight: 700;
-  padding: .8rem;
-  font-size: 1rem;
-  border-bottom-left-radius: 10px;
-  border-bottom-right-radius: 10px;
-  transition: background-color 0.3s;
+}
+.animacion__text {
+  position: relative;
+  z-index: 2;
+}
+.card__button span {
+  text-align: left;
+  z-index: 2;
 }
 
-.noResultados__boton:hover {
-  background-color: var(--primary-hover);
+.animacion::after {
+  content: "";
+  width: 100%;
+  position: absolute;
+  z-index: 1;
+  transition: 0.3s ease-in-out all;
+  top: 0;
+  left: calc(-100% - 75px); /* calc elemnt widht with border-right */
+  border-right: 80px solid transparent;
+  border-bottom: 40px solid var(--primary);
+  transition: 0.3s ease-in-out all;
+}
+.animacion:hover::after {
+  left: 0;
 }
 
-.nombre__cientifico {
-    font-style: italic; /* Cursiva */
-    font-weight: bold; /* Negrita */
+/* grafico promedios */
+.grafico {
+  background-color: #fff; /* Color de fondo de la tarjeta */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra tenue */
+  padding: 20px;
+  border-radius: .5rem;
 }
 
-.nombre__autor {
-    font-weight: bold; /* Negrita */
+.grafico__titulo {
+  text-align: center;
+  font-size: 0.9rem;
 }
+.grafico__subtitulo {
+  font-size: 0.9rem;
+}
+.grafico__subtitulo span {
+  font-weight: 500;
+}
+@media (min-width: 768px) {
+  .grafico__titulo {
+    font-size: 1.05rem;
+  }
+}
+
+/* mapa */
+.mapa {
+  background-color: #fff; /* Color de fondo de la tarjeta */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra tenue */
+  padding: 20px;
+  border-radius: .5rem;
+}
+
+.mapa__titulo {
+  text-align: center;
+  font-size: 0.9rem;
+  margin: 0;
+}
+.mapa__descripcion {
+  font-size: 0.9rem;
+  text-align: justify;
+  padding: 0.5rem;
+  margin: 0;
+}
+
+.mapa__titulo {
+    font-size: 1.05rem;
+  }
+  .mapa__descripcion {
+    margin-top: 1rem;
+  }
+  .jurisdiccion {
+    margin-top: 1rem;
+  }
+  .jurisdiccion__titulo {
+    text-align: center;
+    font-size: 0.9rem;
+  }
+  .jurisdiccion__titulo span {
+    color: var(--primary);
+  }
+
 </style>

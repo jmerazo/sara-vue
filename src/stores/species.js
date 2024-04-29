@@ -71,7 +71,7 @@ export const useEspeciesStore = defineStore('especies', () => {
    
     function seleccionarEspecie(cod_especie) {
       especie.value = especiesOriginales.value.filter(especie => especie.cod_especie === cod_especie)
-      console.log(especie.value)
+      
       modal.handleClickModal();
     }
 

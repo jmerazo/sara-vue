@@ -154,7 +154,7 @@ window.addEventListener('scroll', function() {
 <style scoped>
 /* nav */
 .pagina__inicio {
-  color: var(--negro);
+  color: var(--blanco);
   /*color: var(--blanco);*/
 }
 
@@ -178,6 +178,7 @@ window.addEventListener('scroll', function() {
   position: fixed;
   padding: 0 0 1rem 0;
   transition: 0.6s ease-in-out all;
+  background: var(--navBar);
 }
 
 .navegacion__barra {

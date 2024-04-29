@@ -60,6 +60,7 @@ export const useAuthTokenStore = defineStore('authToken', () => {
 
   const login = async (credentials, authType) => {
     try {
+      console.log('credentials: ', credentials, ' type session: ', authType);
       const response = await APIService.getAuthToken(credentials, authType);
       if (response.status === 200) {
         accessToken.value = response.data.access;

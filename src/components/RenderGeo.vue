@@ -36,8 +36,8 @@ function drawMap(centerCoordinate) {
     ],
     view: new View({
       center: fromLonLat(centerCoordinate), // New York coordinates
-      zoom: 9,
-      minZoom: 9, // Establecer el zoom mínimo permitido
+      zoom: 5,
+      minZoom: 8, // Establecer el zoom mínimo permitido
       maxZoom: 9, // Establecer el zoom máximo permitido
     }),
   });

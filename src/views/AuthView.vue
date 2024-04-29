@@ -43,8 +43,8 @@ const showLoginError = (message) => {
 localStorage.removeItem("hasReloaded");
 
 const handleGoogleLogin = () => {
-  const client_id = '380670980217-3l26isub1k577ctqmqilu75lc9ea5em8.apps.googleusercontent.com';
-  const redirect_uri = 'https://sara.corpoamazonia.gov.co/auth/callback';
+  const client_id = '46583489341-6lugf7o37gcgqk9u7aj210e16pi79bhg.apps.googleusercontent.com';
+  const redirect_uri = 'http://localhost:5173/auth/callback';
   const scope = 'email profile openid';
   const response_type = 'code';
   const state = generateRandomString(); // Genera un string aleatorio seguro

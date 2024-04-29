@@ -26,9 +26,11 @@ const meses = ref([
   "Noviembre",
   "Diciembre",
 ]);
+
 const porcentaje = (cantidad, total) => {
   return Math.ceil((cantidad / total) * 100);
 };
+
 const mesActual = () => {
   const fecha = new Date(); // Obtener la fecha actual
   const mes = fecha.getMonth(); // Obtener el mes (0-11)

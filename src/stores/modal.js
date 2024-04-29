@@ -5,6 +5,9 @@ import {defineStore} from 'pinia'
 export const useModalStore = defineStore('modal',()=>{
   
     const modal = ref(false)
+    const modalComponent = ref(false)
+    const componentsTree = ref([])
+
     const modalFamily = ref(false)
     const modalUserUpdate = ref(false)
     const modalCandidates = ref(false)
@@ -22,6 +25,11 @@ export const useModalStore = defineStore('modal',()=>{
     //modal especie
     function handleClickModal(){
         modal.value = !modal.value
+    }
+    function handleClickModalComponent(array){
+        componentsTree.value = array
+        console.log(componentsTree.value);
+        modalComponent.value = !modalComponent.value
     }
 
     //modal Familia
@@ -114,6 +122,9 @@ export const useModalStore = defineStore('modal',()=>{
         handleClickModalFormMonitoring,
         modalFormMonitoring,
         handleClickModalSectionView,
-        modalSectionView
+        modalSectionView,
+        handleClickModalComponent,
+        modalComponent,
+        componentsTree
     }
 })
