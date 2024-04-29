@@ -96,7 +96,7 @@ const limpiarModal = () => {
             </p>
             <h3 class="modal__titulo">Otros nombres:</h3>
 
-            <p class="modal__texto">
+            <p class="modal__texto modal-texto--cortar">
               {{ especie.otros_nombres }}
             </p>
             <h3 class="modal__titulo">Sinónimos:</h3>
@@ -396,6 +396,13 @@ const limpiarModal = () => {
   overflow: hidden;
   display: -webkit-box;
   -webkit-line-clamp: 7; /* Número de líneas a mostrar */
+  -webkit-box-orient: vertical;
+  text-overflow: ellipsis; /* Agrega los puntos suspensivos */
+}
+.modal-texto--cortar {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 5; /* Número de líneas a mostrar */
   -webkit-box-orient: vertical;
   text-overflow: ellipsis; /* Agrega los puntos suspensivos */
 }
