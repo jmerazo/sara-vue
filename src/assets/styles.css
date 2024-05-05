@@ -8,6 +8,7 @@ font-family: 'Roboto', sans-serif;
 
 
 :root {
+  /* --primary: #214d40; */
   --primary: #10613e;
   --navBar: #5e6872;
   --primary-hover:#0c4029;
@@ -71,9 +72,9 @@ img {
 
 a{
   text-decoration: none;
-  background-color: var(--gris);
-  color: var(--gris);
+  background-color: none;
   cursor: pointer;
+  color: var(--gris);
 }
 
 button{
@@ -83,5 +84,3 @@ button{
 input{
   border: none;
 }
-
-

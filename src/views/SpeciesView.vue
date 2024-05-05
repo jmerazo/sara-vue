@@ -152,7 +152,7 @@ const displayedPageRange = computed(() => {
 
 .header__especies {
   background-image: url(https://images.pexels.com/photos/142497/pexels-photo-142497.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1);
-  height: 500px;
+  height: 40rem;
   background-size: cover;
   background-position: center bottom;
   background-repeat: no-repeat;
@@ -185,6 +185,7 @@ const displayedPageRange = computed(() => {
 @media (min-width: 768px) {
   .header_formulario {
     width: 80%;
+    margin-top: 11rem;
   }
 }
 

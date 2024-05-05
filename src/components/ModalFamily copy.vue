@@ -29,28 +29,39 @@ const irFamilias = () => {
       <h3 class="modal__heading">
         {{ consulta.strFamilia }}
       </h3>
-      <p class="modal__texto">Esta familia agrupa las siguientes especies:</p>
+      <p class="modal__texto">
+        Esta familia agrupa las siguientes especies:
+      </p>
       <hr />
       <!-- iterar las especies -->
-      <div class="listado__contenido">
-        <!-- especies -->
-        <div class="especies">
-          <div class="especie" v-for="especie in consulta.familia" :key="especie.familia">
-            <p class="especie__dato">
-              {{ especie.nom_comunes }} -
-              {{ especie.nombre_cientifico }}
-            </p>
-            <button
-              class="especie__boton animacion"
-              @click="
-                consultar(especie.cod_especie), modal.handleClickModalFamily()
-              "
-            >
-              <span>Ver especie</span>
-            </button>
-          </div>
-        </div>
-        <!-- fin de la especies -->
+      <div class="modal__tabla">
+        <!-- tabla -->
+        <table
+          class="tabla"
+          v-for="especie in consulta.familia"
+          :key="especie.familia"
+        >
+          <tr class="tabla__fila">
+            <td class="tabla__columna">
+              <p class="tabla__dato">
+                {{ especie.nom_comunes }} -
+                {{ especie.nombre_cientifico }}
+              </p>
+             
+            </td>
+            <td class="tabla__columna">
+              <button
+                class="tabla__boton"
+                @click="
+                  consultar(especie.cod_especie), modal.handleClickModalFamily()
+                "
+              >
+                Ver especie
+              </button>
+            </td>
+          </tr>
+        </table>
+        <!-- fin de la tabla -->
       </div>
       <div class="modal__botones">
         <button
@@ -73,44 +84,64 @@ const irFamilias = () => {
   </div>
 </template>
 <style scoped>
-.especies__fila {
+.tabla__fila {
   display: flex;
   flex-direction: column;
   background-color: var(--gris-claro);
   border-radius: 10px;
   margin-bottom: 1rem;
 }
-.especies {
-  width: 100%;
-}
+.tabla {
+    width: 100%;
+  }
 
 @media (min-width: 768px) {
-  .especies {
+
+  .tabla__fila {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
+    align-items: center;
+    gap: 1rem;
   }
 }
 
-.especie__dato {
+.tabla__dato {
   font-weight: 700;
-  font-size: 0.8rem;
+  font-size: .8rem;
   color: var(--gris);
   padding: 0 10px;
 }
-
-.especie__boton  {
+@media (min-width: 1820px){
+  .tabla__dato{
+    font-size: 1rem;
+  }
+}
+.tabla__boton {
   background-color: #066964;
   color: var(--blanco);
-  font-size: 0.8rem;
+  font-size: .8rem;
   font-weight: 700;
   border-radius: 5px;
   padding: 8px 40px;
   transition: background-color 0.3s;
 }
-.especie__boton :hover {
+.tabla__boton:hover {
   background-color: #033b37;
 }
 
+@media (min-width: 768px){
+  .tabla__boton{
+    background-color: var(--blanco);
+    color: var(--gris);
+    font-size: 1rem;
+    transition-property: background-color color;
+    transition-duration: .4s;
+  }
+  .tabla__boton:hover{
+    background-color:#066964;
+    color: var(--blanco);
+  }
+}
 .modal {
   position: fixed;
   top: 0;
@@ -150,7 +181,7 @@ const irFamilias = () => {
 
 .modal__texto {
   line-height: 1.5;
-  font-size: 0.8rem;
+  font-size: .8rem;
   text-align: center;
   font-weight: 700;
   color: var(--secondary);
@@ -162,11 +193,16 @@ const irFamilias = () => {
   flex-direction: column;
   gap: 1.3rem;
 }
-
+@media (min-width: 992px){
+  .modal__botones{
+    flex-direction: row;
+     gap: .6rem;
+  }
+}
 .modal__botonCerrar {
   background-color: var(--secondary);
   color: var(--blanco);
-  padding: 0.5rem;
+  padding: .5rem;
   font-weight: 700;
   font-size: 1rem;
   border-radius: 5px;
@@ -180,7 +216,7 @@ const irFamilias = () => {
 .modal__botonMas {
   background-color: var(--primary);
   color: var(--blanco);
-  padding: 0.5rem;
+  padding: .5rem;
   font-size: 1rem;
   width: 95%;
   margin: 0 auto;

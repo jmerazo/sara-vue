@@ -262,9 +262,9 @@ function changeBackgroundImage() {
   align-items: center;
   justify-content: center;
   height: 2rem;
-  background-color: var(--gris);
+  background-color: var(--blanco);
   border: none;
-  color: var(--blanco);
+  color: var(--gris);
   font-weight: 700;
   font-size: 1.2rem;
   cursor: pointer;
