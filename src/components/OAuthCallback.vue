@@ -2,6 +2,7 @@
 import { ref, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useAuthTokenStore } from '@/stores/auth.js'; // Asegúrate de que la ruta sea correcta
+import LoadingData from "@/components/LoadingData.vue";
 
 const store = useAuthTokenStore();
 const router = useRouter();
@@ -39,6 +40,7 @@ const sendCodeToAPI = async (code) => {
 <template>
   <div v-if="isVisible">
     <h1>Procesando respuesta de Google...</h1>
+    <LoadingData v-if="isVisible" />
   </div>
 </template>
 
