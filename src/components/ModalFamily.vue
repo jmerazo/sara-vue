@@ -41,7 +41,7 @@ const irFamilias = () => {
               {{ especie.nombre_cientifico }}
             </p>
             <button
-              class="especie__boton animacion"
+              class="card__boton animacion"
               @click="
                 consultar(especie.cod_especie), modal.handleClickModalFamily()
               "
@@ -191,5 +191,56 @@ const irFamilias = () => {
 
 .modal__botonMas:hover {
   background-color: var(--primary-hover);
+}
+
+/* boton ver especie */
+
+.card__boton {
+  display: inline-flex;
+  width: 80%;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+  height: 1.7rem;
+  background-color: var(--gris);
+  color: var(--blanco);
+  font-weight: 700;
+  font-size: 1.2rem;
+  border: none;
+  cursor: pointer;
+  transition: 0.3s ease all;
+  border-radius: 0.5rem;
+  position: relative;
+  overflow: hidden;
+  margin-top: 0rem;
+  margin-bottom: 2rem;
+}
+
+@media (min-width: 767px) {
+  .card__boton{
+    width: 50%;
+  }
+}
+
+.card__boton span {
+  position: relative;
+  z-index: 2;
+  transition: 0.3s ease all;
+}
+
+.animacion::after {
+  content: "";
+  width: 100%;
+  position: absolute;
+  z-index: 1;
+  transition: 0.3s ease-in-out all;
+  top: 0;
+  left: calc(-100% - 80px); /* calc elemnt widht with border-right */
+  border-right: 80px solid transparent;
+  border-bottom: 40px solid var(--primary);
+  transition: 0.4s ease-in-out all;
+}
+.animacion:hover::after {
+  left: 0;
 }
 </style>
