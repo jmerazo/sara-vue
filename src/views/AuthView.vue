@@ -64,10 +64,8 @@ function generateRandomString() {
 
 <template>
   <div class="contenedor">
-    <div class="login__header">
-      <h2 class="login__heading">Iniciar sesión</h2>
-    </div>
-    <hr />
+   
+    
     
       <div class="formulario__contenido">
         <div class="formulario">
@@ -170,13 +168,14 @@ function generateRandomString() {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin: 2rem auto;
+  margin:  6rem 0 3rem 0;
   text-align: center;
+ 
 }
 
 @media (min-width: 992px) {
   .formulario__contenido {
-    margin: 3rem auto;
+    margin: 9rem 0 3rem 0;
   }
 }
 

@@ -17,16 +17,14 @@ const formData = ref({
   profession: "",
   entity: "",
   reason: "",
-  password:"123456789",
+  password: "123456789",
   confirm_password: "123456789",
   department: "",
   city: "",
 });
 
-
-
 const error = ref("");
-const exito = ref(false)
+const exito = ref(false);
 
 const profesiones = [
   "Estudiante",
@@ -60,7 +58,7 @@ function validarCampos(obj) {
 // }
 
 function resetForm() {
-  Object.keys(formData.value).forEach(key => {
+  Object.keys(formData.value).forEach((key) => {
     formData.value[key] = "";
   });
 }
@@ -69,12 +67,10 @@ function validatePasswords() {
   return formData.value.password === formData.value.confirm_password;
 }
 
-
 // Función para enviar el formulario
 async function userCreate() {
-
   if (validarCampos(formData.value)) {
-    mostrarError("Llene todos los campos") ;
+    mostrarError("Llene todos los campos");
     return;
   }
 
@@ -83,11 +79,10 @@ async function userCreate() {
   //   return;
   // }
 
-
   try {
     await APIService.createUsers(formData.value);
     resetForm();
-    exito.value = true
+    exito.value = true;
   } catch (error) {
     if (error.response && error.response.data && error.response.data.error) {
       // Si hay un mensaje de error en la respuesta, lo puedes mostrar
@@ -98,8 +93,6 @@ async function userCreate() {
     }
   }
 }
-
-
 
 function convertToUppercase(event) {
   const inputElement = event.target;
@@ -112,7 +105,6 @@ const mostrarError = (message) => {
     error.value = null;
   }, 3000); // El mensaje de error desaparecerá después de 3 segundos
 };
-
 </script>
 
 <template>
@@ -152,8 +144,8 @@ const mostrarError = (message) => {
                 </option>
               </select>
               <label for="document_number" class="formulario__label"
-                >Número de documento </label
-              >
+                >Número de documento
+              </label>
               <input
                 v-model="formData.document_number"
                 type="number"
@@ -173,7 +165,9 @@ const mostrarError = (message) => {
                 @input="convertToUppercase"
               />
               <!-- Apellidos -->
-              <label for="last_name" class="formulario__label">Apellidos:</label>
+              <label for="last_name" class="formulario__label"
+                >Apellidos:</label
+              >
               <input
                 v-model="formData.last_name"
                 type="text"
@@ -283,12 +277,12 @@ const mostrarError = (message) => {
             </fieldset>
           </div>
           <div class="formulario__columna ocultar">
-            <fieldset
-              class="formulario__seccion"
-            >
+            <fieldset class="formulario__seccion">
               <legend>Definir seguridad</legend>
               <!-- contraseña -->
-              <label for="password" class="formulario__label">Crear Contraseña</label>
+              <label for="password" class="formulario__label"
+                >Crear Contraseña</label
+              >
               <input
                 type="password"
                 id="password"
@@ -322,46 +316,56 @@ const mostrarError = (message) => {
       </form>
     </main>
     <div class="respuesta" v-if="exito">
-      <p class="respuesta__icono"><font-awesome-icon :icon="['fas', 'clipboard-check']" /></p>
+      <p class="respuesta__icono">
+        <font-awesome-icon :icon="['fas', 'clipboard-check']" />
+      </p>
       <p class="respuesta__info">la solicitud ha sido enviada exitosamente</p>
-      <p class="respuesta__info">Espare en su <span>Email</span> una repuesta en los siguietnes días</p>
+      <p class="respuesta__info">
+        Espare en su <span>Email</span> una repuesta en los siguietnes días
+      </p>
     </div>
   </div>
 </template>
 
 <style scoped>
-.respuesta{
+.respuesta {
   background-color: var(--blanco);
-  padding: .5rem;
+  padding: 0.5rem;
   border-radius: 10px;
   margin-bottom: 2rem;
   box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
 }
-.respuesta__icono{
+.respuesta__icono {
   font-size: 2.8rem;
   padding: 0;
   margin: 0;
   text-align: center;
   color: var(--primary);
 }
-.respuesta__info{
+.respuesta__info {
   font-size: 1rem;
   font-weight: 700;
   text-align: center;
 }
-.respuesta__info span{
+.respuesta__info span {
   color: var(--primary);
   border-bottom: 1px solid var(--primary);
 }
-.ocultar{
+.ocultar {
   display: none;
 }
 .solicitud__header {
-  margin-top: 1rem;
+  margin: 6rem 0 3rem 0;
 }
+@media (min-width: 992px) {
+  .solicitud__header {
+    margin: 9rem 0 3rem 0;
+  }
+}
+
 .solicitud__heading {
   font-size: 1.1rem;
-  
+  margin-bottom: -2rem;
 }
 @media (min-width: 768px) {
   .solicitud__heading {
@@ -414,7 +418,7 @@ const mostrarError = (message) => {
 .formulario__seccion {
   margin: 0 1rem;
   border: 1px solid var(--gris);
-  margin-bottom:1rem;
+  margin-bottom: 1rem;
 }
 
 .formulario__seccion:last-of-type {
@@ -423,7 +427,7 @@ const mostrarError = (message) => {
 
 .formulario legend {
   background-color: var(--primary);
-  font-size: .8rem;
+  font-size: 0.8rem;
   width: 100%;
   text-align: center;
   color: var(--blanco);
@@ -445,7 +449,7 @@ const mostrarError = (message) => {
 .formulario__input {
   border: 1px solid var(--primary);
   font-size: 1rem;
-  padding: 0.4rem .5rem;
+  padding: 0.4rem 0.5rem;
   border-radius: 0.5rem;
   width: 92%;
   max-width: 95%;
@@ -461,7 +465,7 @@ const mostrarError = (message) => {
     width: 96%;
     max-width: 98%;
   }
-  .formulario__label{
+  .formulario__label {
     text-align: left;
   }
 }
@@ -471,12 +475,12 @@ const mostrarError = (message) => {
 
 .formulario__boton {
   font-size: 1rem;
-  background-color:var(--primary);
+  background-color: var(--primary);
   max-width: 100%;
   width: 100%;
   border-bottom-left-radius: 10px;
   border-bottom-right-radius: 10px;
-  padding: .7rem 0;
+  padding: 0.7rem 0;
   color: var(--blanco);
   font-weight: 700;
   transition: background-color 0.3s ease;
@@ -496,6 +500,4 @@ const mostrarError = (message) => {
 .formulario__input--area {
   height: 3rem;
 }
-
-
 </style>
