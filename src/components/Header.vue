@@ -62,7 +62,7 @@ function changeBackgroundImage() {
   transition: background-image 1.5s ease-out;
 }
 
-.header::before {
+/* .header::before {
   content: "";
   position: absolute;
   top: 0;
@@ -71,7 +71,7 @@ function changeBackgroundImage() {
   height: 100%;
   background-color: rgba(0, 0, 0, 0.5);
   z-index: 1;
-}
+} */
 
 @media (min-width: 1900px) {
   .header {
