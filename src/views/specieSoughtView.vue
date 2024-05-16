@@ -155,7 +155,7 @@ scrollToTop();
                 {{ nom_comunes }}
               </h1>
               <h1 class="header__heading header__heading--subtitulo">
-                <span class="nombre__cientifico">{{
+                <span class="nombre__cientifico" style="font-style: italic;">{{
                   nombre_cientifico_especie
                 }}</span>
                 <span class="nombre__autor">{{
@@ -268,7 +268,7 @@ scrollToTop();
                 <span>{{ averageStore.valores[0] }} metros</span>
               </p>
               <p class="grafico__subtitulo">
-                Total Fuste (aporvechable para usos):
+                Total Fuste (aprovechable para usos):
                 <span>{{ averageStore.valores[1] }} metros</span>
               </p>
             </div>
@@ -288,7 +288,7 @@ scrollToTop();
             </div>
             <div class="jurisdiccion">
               <h4 class="jurisdiccion__titulo">
-                Jurisdicción <span>Corpoamazonia</span>
+                Individuos en la Jurisdicción <span>Corpoamazonia</span>
               </h4>
               <RenderGeo
                 v-if="filteredData.length > 0"

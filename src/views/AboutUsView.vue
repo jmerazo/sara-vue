@@ -22,7 +22,7 @@ function contenidoCompleto(text) {
     <!-- banner acerca -->
     <section class="banner">
       <div class="banner__info">
-        <img class="banner__logo" src="../assets/sara.png" alt="logo" />
+        <!-- <img class="banner__logo" src="../assets/sara.png" alt="logo" /> -->
 
         <p class="banner__text">
           Sistema de información de Semillas y Árboles de la Región sur de la
