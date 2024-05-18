@@ -43,7 +43,7 @@ function changeBackgroundImage() {
     "
   >
     <div class="header__contenedor">
-      <FormHeader class="form"/>
+      <!-- <FormHeader class="form"/> -->
     </div>
   </header>
 </template>
@@ -62,16 +62,16 @@ function changeBackgroundImage() {
   transition: background-image 1.5s ease-out;
 }
 
-/* .header::before {
+.header::before {
   content: "";
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0.2);
   z-index: 1;
-} */
+}
 
 @media (min-width: 1900px) {
   .header {

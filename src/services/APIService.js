@@ -153,6 +153,11 @@ export default {
     lookMonitoringSpecie(cod_especie){
         return api.get(`/monitoring/specie/search/${cod_especie}`)
     },
+
+    //Retorna ocurrencias de flor y frutos de cada mes
+    getMonitoringCalendar(){
+        return api.get('/monitoring/report/dataFlowerAndFruit')
+    },
     /* ==================================================================================================================== */
     /* ==================================================================================================================== */
 

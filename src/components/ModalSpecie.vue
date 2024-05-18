@@ -4,17 +4,20 @@ import { ref } from "vue";
 import { useModalStore } from "@/stores/modal";
 import { useEspeciesStore } from "@/stores/species";
 import { useConsultaStore } from "@/stores/consulta";
+import {useCalendarStore} from '@/stores/calendarMonitoring'
 import { getFullImageUrl } from "@/helpers/";
 
 const modal = useModalStore();
 const especies = useEspeciesStore();
 const consulta = useConsultaStore();
+const calendar = useCalendarStore()
+
 const imagen = ref("");
 
 const verImg = (url) => {
   imagen.value = getFullImageUrl(url);
 };
-
+//calendar.calendarFlower()
 const consultar = (nombre_comun) => {
   consulta.consulta.categoria = "Nombre Común";
   consulta.consulta.vrBuscar = nombre_comun;
@@ -81,7 +84,7 @@ const limpiarModal = () => {
         <div class="contenido__izquierda">
           <div class="modal__info">
             <h3 @click="verImg(especie.img_general)" class="modal__heading">
-              {{ especie.nom_comunes }}
+              {{  especie.nom_comunes  }}
             </h3>
             <p class="modal__texto">
               <span class="nombre__cientifico">{{
@@ -109,7 +112,7 @@ const limpiarModal = () => {
               <button
                 type="button"
                 class="boton__mas animacion"
-                @click="consultar(especie.cod_especie), limpiarModal()"
+                @click="consultar(especie.cod_especie),calendar.getCalendarSpecie(especie.cod_especie), limpiarModal()"
               >
                 <span>Ver Descripción completa</span>
               </button>

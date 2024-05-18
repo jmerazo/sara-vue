@@ -54,7 +54,7 @@ export const useAuthTokenStore = defineStore('authToken', () => {
         logout();  // Si hay un error, asegúrate de limpiar el estado
       }
     } else {
-      console.log('No refresh token available');
+      return
     }
   };
 

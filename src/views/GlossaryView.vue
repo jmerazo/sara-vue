@@ -185,7 +185,8 @@ const displayedPageRange = computed(() => {
 
 @media (min-width: 768px) {
   .glosario__heading {
-    font-size: 1.3rem;
+    font-size: 2.7rem;
+    opacity: .85;
   }
 }
 .header__contenido {
