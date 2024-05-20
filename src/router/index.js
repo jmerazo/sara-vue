@@ -183,7 +183,16 @@ const router = createRouter({
         auth: true,
         roles: ['ADMINISTRADOR', 'is_superuser', 'is_staff']
       }
-    }     
+    },  
+    {
+      path:'/nurseries',
+      name:'nurseries',
+      component: () => import('../views/NurseriesView.vue'),
+      meta: {
+        auth: false,
+        roles: ['ADMINISTRADOR', 'is_superuser', 'is_staff']
+      }
+    }       
   ]
 })
 
