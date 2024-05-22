@@ -2,6 +2,8 @@
 import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { getFullImageUrl } from "@/helpers/";
+import { obtenerFecha } from "@/helpers";
+import { descargarPdfs } from "@/helpers/exportDataSheet";
 import APIService from "@/services/APIService";
 
 //store
@@ -327,6 +329,12 @@ scrollToTop();
     </div>
 
     <PagesQueries />
+    <div class="download__forestSpecies">
+      <span class="text__exportSF">Exportar listado especies forestales:</span>      
+      <a @click="descargarPdfs(especie.especie,`Ficha técnica - ${obtenerFecha()}`, 6, 0)" class="button" href="#">
+        <font-awesome-icon class="button__pdf" :icon="['fas', 'file-pdf']"/>
+      </a>
+    </div>
   </div>
   <ModalSpecieComponent />
 </template>
