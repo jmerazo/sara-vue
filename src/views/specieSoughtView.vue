@@ -11,7 +11,7 @@ import { useConsultaStore } from "@/stores/consulta";
 import { useGeoCandidateTrees } from "@/stores/candidate";
 import { useAverageSpecie } from "@/stores/average";
 import { useModalStore } from "@/stores/modal";
-import { useCalendarStore } from "@/stores/calendarMonitoring";
+
 
 //components
 import QuoteButton from "@/components/QuoteButton.vue";
@@ -20,7 +20,8 @@ import RenderGeo from "@/components/RenderGeo.vue";
 import ChartAverage from "@/components/ChartAverage.vue";
 import ImageSlider from "@/components/ImageSlider.vue";
 import ModalSpecieComponent from "@/components/ModalSpecieComponent.vue";
-import CalendarSpecie from "@/components/CalendarSpecie.vue";
+import FlowerCalendar from "../components/calendars/FlowerCalendar.vue";
+import FruitCalendar from "../components/calendars/FruitCalendar.vue";
 
 const router = useRouter();
 
@@ -28,7 +29,7 @@ const especie = useConsultaStore();
 const geoStore = useGeoCandidateTrees();
 const averageStore = useAverageSpecie();
 const modal = useModalStore();
-const calendar = useCalendarStore();
+
 
 const dateNow = new Date();
 const year = dateNow.getFullYear();
@@ -306,26 +307,11 @@ scrollToTop();
       <!-- Fin seccion 4 - mapa -->
 
       <!-- section calendar flower  -->
-      <h3 style="text-align: center; color: var(--gris); margin-top: 5rem">
-        Calendario Floral
-      </h3>
-      <CalendarSpecie
-        style="margin-bottom: 6rem"
-        :calendarData="calendar.dataFlower"
-      />
 
+      <FlowerCalendar/>
+      <FruitCalendar/>
       <!-- End section calendar flower  -->
 
-      <!-- section calendar fruit  -->
-      <h3 style="text-align: center; color: var(--gris); margin-top: 5rem">
-        Calendario Frutal
-      </h3>
-      <CalendarSpecie
-        style="margin-bottom: 6rem"
-        :calendarData="calendar.dataFruit"
-      />
-
-      <!-- End section calendar fruit  -->
     </div>
 
     <PagesQueries />
@@ -340,6 +326,7 @@ scrollToTop();
 </template>
 
 <style scoped>
+
 /* header */
 .main {
   margin-top: 6rem;
