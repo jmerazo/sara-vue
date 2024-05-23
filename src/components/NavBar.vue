@@ -281,10 +281,6 @@ window.addEventListener('scroll', function() {
   max-width: 3.5rem;
   padding: 0 3rem;
 }
-.navegacion__logo img {
-  box-shadow: 0 0 8px rgba(0, 0, 0, 0.5);
-  filter: blur(2px);
-}
 
 @media (min-width: 1820px) {
   .navegacion__link {
