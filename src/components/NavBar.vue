@@ -102,14 +102,14 @@ const nuevoEstilo = () => {
         >
           Glosario
         </RouterLink>
-        <a
-          href="http://viveros.corpoamazonia.gov.co/"
+        <RouterLink
+          :to="{ name: 'nurseries' }"
           class="navegacion__enlace"
-          target="_blank"
           :class="{ glosario: paginaNoImage }"
+          @click="mostrarNavMovil"
         >
           Viveros
-        </a>
+        </RouterLink>
         <RouterLink
           :to="{ name: 'aboutus' }"
           class="navegacion__enlace"

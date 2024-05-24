@@ -21,7 +21,7 @@ defineProps({
       class="front"
       :style="{
         backgroundImage:
-          'url(https://images.pexels.com/photos/127713/pexels-photo-127713.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1)',
+          'url(/img/background-family.jpeg)',
       }"
     >
       <div class="front__content">

@@ -158,7 +158,7 @@ const displayedPageRange = computed(() => {
 }
 
 .header__familias {
-  background-image: url(https://images.pexels.com/photos/401213/pexels-photo-401213.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1);
+  background-image: url('/img/banner-families.jpeg');
   height: 40rem;
   background-size: cover;
   background-position: center bottom;
