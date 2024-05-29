@@ -6,92 +6,109 @@ import api from "@/api/axios";
 
 //Import log
 import logSara from '@/assets/sara.png';
+import headSheet from '@/assets/prefabs/head_sheet.jpg';
 
 import jsPDF from 'jspdf';
 import 'jspdf-autotable'; // Importar autoTable plugin
 /*** funciones helpers ****/
 
-//funcion para obtener la ruta de una imagen formateada
+async function getBase64ImageFromUrl(imageUrl) {
+  const res = await fetch(imageUrl);
+  const blob = await res.blob();
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = error => reject(error);
+    reader.readAsDataURL(blob);
+  });
+}
+
+// Suponiendo que api.defaults.baseURL esté correctamente configurado
 export const getFullImageUrl = (relativePath) => {
   if (relativePath) {
     return `${api.defaults.baseURL}/${relativePath.replace(/\\/g, "/")}`;
-  } else {
-    return "/img/sin_img.png";
   }
+  return "/img/sin_img.png"; // Ruta de imagen de respaldo
 };
-export const descargarPdfs = (datos, tituloTabla) => {
-    console.log('datos: ', datos);
-  
-    const doc = new jsPDF({
-      orientation: 'portrait',
-      unit: 'px',
-      format: 'a4'
-    });
-  
-    // Añadir título y logo
-    doc.setFontSize(18);
-    doc.setFont('helvetica', 'bold');
-    doc.addImage(logSara, 'PNG', 27, 10, 40, 30);
-    doc.text(tituloTabla, doc.internal.pageSize.getWidth() / 2, 40, { align: 'center' });
-  
-    // Añadir una imagen
-    if (datos.img_general) {
-      const imgGeneral = getFullImageUrl(datos.img_general);
-      doc.addImage(imgGeneral, 'JPEG', 40, 70, 150, 100);
-    }
-  
-    // Añadir texto en secciones específicas
-    doc.setFontSize(12);
-    doc.setFont('helvetica', 'normal');
-    
-    const secciones = [
-      { titulo: "Nombre Común", contenido: datos.nom_comunes },
-      { titulo: "Nombre Científico", contenido: datos.nombre_cientifico },
-      { titulo: "Familia", contenido: datos.familia },
-      { titulo: "Distribución", contenido: datos.distribucion },
-      { titulo: "Flores", contenido: datos.flor },
-      { titulo: "Frutos", contenido: datos.frutos },
-      { titulo: "Hojas", contenido: datos.hojas },
-      { titulo: "Semillas", contenido: datos.semillas },
-      { titulo: "Tallo", contenido: datos.tallo },
-      { titulo: "Raíz", contenido: datos.raiz },
-      { titulo: "Otros Nombres", contenido: datos.otros_nombres },
-      { titulo: "Sinónimos", contenido: datos.sinonimos }
-    ];
-  
-    let y = 180; // Posición Y inicial para el texto
-  
-    secciones.forEach(seccion => {
-      if (y > doc.internal.pageSize.getHeight() - 50) { // Si se acerca al final de la página, añade una nueva página
-        doc.addPage();
-        y = 40; // Reiniciar la posición Y para la nueva página
-      }
-      doc.setFont('helvetica', 'bold');
-      doc.text(seccion.titulo, 40, y);
-      y += 20;
-      doc.setFont('helvetica', 'normal');
-      doc.text(seccion.contenido, 40, y, { maxWidth: doc.internal.pageSize.getWidth() - 80 });
-      y += 40; // Ajustar el espaciado entre secciones según sea necesario
-    });
-  
-    // Añadir imágenes adicionales
-    const imagenes = [
-      { path: datos.img_flowers, x: 40, y: y, width: 100, height: 100 },
-      { path: datos.img_fruits, x: 150, y: y, width: 100, height: 100 },
-      { path: datos.img_leafs, x: 260, y: y, width: 100, height: 100 }
-    ];
-  
-    imagenes.forEach(imagen => {
-      if (imagen.path) {
-        const imgPath = getFullImageUrl(imagen.path);
-        doc.addImage(imgPath, 'JPEG', imagen.x, imagen.y, imagen.width, imagen.height);
-        y += imagen.height + 20; // Ajustar la posición Y después de cada imagen
-      }
-    });
-  
-    // Guardar el PDF
-    doc.save(`${tituloTabla}.pdf`);
-  };
+
+export const descargarPdfs = async (datos, tituloTabla) => {
+  const doc = new jsPDF({
+    orientation: 'portrait',
+    unit: 'mm',
+    format: 'letter'
+  });
+
+  const headerImage = await getBase64ImageFromUrl(headSheet);
+  doc.addImage(headerImage, 'JPEG', 0, 0, doc.internal.pageSize.width, 30); // Ajusta el tamaño y posición según necesidad
+
+  let y = 32; // Inicia el contenido debajo del encabezado
+  const marginLeft = 10; // Margen izquierdo
+  const marginRight = 10; // Margen derecho
+
+  // TITLE DOCUMENT
+  const titulo = `${datos.nombre_cientifico_especie} ${datos.nombre_autor_especie}`;
+  // Establece la fuente para medir el ancho del texto
+  doc.setFont("helvetica", "bolditalic"); // Negrita cursiva para el nombre científico
+  const cientificoWidth = doc.getTextWidth(datos.nombre_cientifico_especie);
+  doc.setFont("helvetica", "bold"); // Negrita para el autor
+  const autorWidth = doc.getTextWidth(datos.nombre_autor_especie);
+
+  // Calcula la posición central para el conjunto
+  const pageWidth = doc.internal.pageSize.getWidth();
+  const pageHeight = doc.internal.pageSize.getHeight();
+  const totalWidth = cientificoWidth + autorWidth;
+  const startX = (pageWidth - totalWidth) / 2;
+  const midHeight = doc.internal.pageSize.getHeight() / 2;
+  const midWidth = doc.internal.pageSize.getWidth() / 2;
+
+  // Imprime primero el nombre científico
+  doc.setFont("helvetica", "bolditalic");
+  doc.text(datos.nombre_cientifico_especie, startX, 36);
+
+  // Después el nombre del autor
+  doc.setFont("helvetica", "bold");
+  doc.text(datos.nombre_autor_especie, startX + cientificoWidth + 2, 36);
+
+  // LINE MIDLE DOCUMENT 062A06
+  doc.setDrawColor(130, 148, 130); // Establece el color de la línea, negro por defecto
+  doc.setLineWidth(0.5); // Establece el grosor de la línea
+  doc.line(midWidth, 40, midWidth, pageHeight - 20);
+
+  // Imágenes adicionales si están disponibles
+  if (datos.img_general) {
+    const imgGeneral = await getBase64ImageFromUrl(getFullImageUrl(datos.img_general));
+    doc.addImage(imgGeneral, 'JPEG', 10, 100, 100, 75);
+  }
+
+  // START FOOTER
+  const textWidthFoot = pageWidth - 20; 
+  const data1 = "SEDE PRINCIPAL: Tel. +57 608-4201535-4296642, Carrera 17 No. 14-85 Mocoa, Putumayo.";
+  const contac1 = "CORREO: correspondencia@corpoamazonia.gov.co";
+  const data2 = "AMAZONAS: Carrera 11 No. 12-45 Leticia- Amazonas";
+  const contac2 = "CORREO: dta@corpoamazonia.gov.co";
+  const data3 = "Carrera 11 No. 5-67 Km 3 vía aeropuerto -Florencia, Caquetá.";
+  const contac3 = "CORREO: dtc@corpoamazonia.gov.co";
+  const data4 = "PUTUMAYO: Carrera 17 No. 14-85 Mocoa, Putumayo.";
+  const contac4 = "CORREO: dtp@corpoamazonia.gov.co";
+  const data5 = "PAG. Web: www.corpoamazonia.gov.co"
+
+  doc.setFontSize(8);
+  doc.setTextColor(70, 70, 70);
+  doc.setFont("helvetica", "normal");
+  doc.text(data1, marginLeft, pageHeight - 16);
+  doc.text(data2, marginLeft, pageHeight - 13);
+  doc.text(data3, marginLeft, pageHeight - 10);
+  doc.text(data4, marginLeft, pageHeight - 7);
+  doc.text(data5, marginLeft, pageHeight - 4);
+
+  doc.text(contac1, 140, pageHeight - 16);
+  doc.text(contac2, 140, pageHeight - 13);
+  doc.text(contac3, 140, pageHeight - 10);
+  doc.text(contac4, 140, pageHeight - 7);
+  // END FOOTER
+
+  doc.save(`${tituloTabla}.pdf`);
+};
 
 /* export const descargarPdfs = (datos, tituloTabla, columnas, inicio) => {
     console.log('datos: ', datos)
