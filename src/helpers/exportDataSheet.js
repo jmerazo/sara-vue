@@ -39,20 +39,36 @@ export const descargarPdfs = async (datos, tituloTabla) => {
     format: 'letter'
   });
 
-  const headerImage = await getBase64ImageFromUrl(headSheet);
-  doc.addImage(headerImage, 'JPEG', 0, 0, doc.internal.pageSize.width, 30); // Ajusta el tamaño y posición según necesidad
-
   const pageHeight = doc.internal.pageSize.getHeight();
   const pageWidth = doc.internal.pageSize.getWidth();
   let marginLeft1 = 10; // Margen izquierdo para la primera columna
-  let marginLeft2 = 120; // Margen izquierdo para la segunda columna
+  let marginLeft2 = 115; // Margen izquierdo para la segunda columna
   const columnWidth = 90;
   const marginTop = 40;
   const marginBottom = pageHeight - 20;
   const lineSpacing = 5; // Espacio entre líneas de texto
-  const startY = 42;
+  const startY = 43;
   let y = startY;
   let currentColumn = 1;
+
+  const addHeader = async () => {
+    const headerImage = await getBase64ImageFromUrl(headSheet);
+    doc.addImage(headerImage, 'JPEG', 0, 0, doc.internal.pageSize.width, 30); // Ajusta el tamaño y posición según necesidad
+  }
+
+  const addLine = async () => {
+    // Línea de separación central
+    doc.setDrawColor(130, 148, 130);
+    doc.setLineWidth(0.5);
+    doc.line(pageWidth / 2, marginTop, pageWidth / 2, marginBottom - 2);
+  }
+
+  const addLineH = async () => {
+    // Línea de separación central
+    doc.setDrawColor(70, 70, 70);
+    doc.setLineWidth(0.3);
+    doc.line(0, marginBottom, pageWidth, marginBottom);
+  }
 
   // Renderizar título
   const titulo = `${datos.nombre_cientifico_especie} ${datos.nombre_autor_especie}`;
@@ -69,10 +85,34 @@ export const descargarPdfs = async (datos, tituloTabla) => {
   doc.setFont("helvetica", "bold");
   doc.text(datos.nombre_autor_especie, startX + cientificoWidth + 2, 36);
 
-  // Línea de separación central
-  doc.setDrawColor(130, 148, 130);
-  doc.setLineWidth(0.5);
-  doc.line(pageWidth / 2, marginTop, pageWidth / 2, marginBottom);
+  // Función para añadir el pie de página
+  const addFooter = () => {
+    const footerY = pageHeight - 16;
+    const textWidthFoot = pageWidth - 20; 
+    const data1 = "SEDE PRINCIPAL: Tel. +57 608-4201535-4296642, Carrera 17 No. 14-85 Mocoa, Putumayo.";
+    const contac1 = "CORREO: correspondencia@corpoamazonia.gov.co";
+    const data2 = "AMAZONAS: Carrera 11 No. 12-45 Leticia- Amazonas";
+    const contac2 = "CORREO: dta@corpoamazonia.gov.co";
+    const data3 = "Carrera 11 No. 5-67 Km 3 vía aeropuerto -Florencia, Caquetá.";
+    const contac3 = "CORREO: dtc@corpoamazonia.gov.co";
+    const data4 = "PUTUMAYO: Carrera 17 No. 14-85 Mocoa, Putumayo.";
+    const contac4 = "CORREO: dtp@corpoamazonia.gov.co";
+    const data5 = "PAG. Web: www.corpoamazonia.gov.co"
+
+    doc.setFontSize(8);
+    doc.setTextColor(70, 70, 70);
+    doc.setFont("helvetica", "normal");
+    doc.text(data1, 10, pageHeight - 16);
+    doc.text(data2, 10, pageHeight - 13);
+    doc.text(data3, 10, pageHeight - 10);
+    doc.text(data4, 10, pageHeight - 7);
+    doc.text(data5, 10, pageHeight - 4);
+
+    doc.text(contac1, 140, pageHeight - 16);
+    doc.text(contac2, 140, pageHeight - 13);
+    doc.text(contac3, 140, pageHeight - 10);
+    doc.text(contac4, 140, pageHeight - 7);
+  };
 
    // Función para añadir título y texto justificado a la columna
   const addTitleAndText = (title, text, x, y) => {
@@ -85,17 +125,22 @@ export const descargarPdfs = async (datos, tituloTabla) => {
     if (title === 'SINONIMOS') {
       const bulletText = text.split(',').map(item => `• ${item.trim()}`);
       bulletText.forEach(line => {
-        if (y > marginBottom) {
-          y = switchColumnOrPage(x, y);
-        }
-        doc.text(line, x, y);
-        y += lineSpacing;
+        const splitBulletText = doc.splitTextToSize(line, columnWidth);
+        splitBulletText.forEach(subLine => {
+          if (y > marginBottom) {
+            y = switchColumnOrPage(x, y);
+            x = currentColumn === 1 ? marginLeft1 : marginLeft2; // Ajustar la columna
+          }
+          doc.text(subLine, x, y);
+          y += lineSpacing;
+        });
       });
     } else {
       const splitText = doc.splitTextToSize(text, columnWidth);
       splitText.forEach(line => {
         if (y > marginBottom) {
           y = switchColumnOrPage(x, y);
+          x = currentColumn === 1 ? marginLeft1 : marginLeft2; // Ajustar la columna
         }
         doc.text(line, x, y, { align: "justify" });
         y += lineSpacing;
@@ -113,8 +158,11 @@ export const descargarPdfs = async (datos, tituloTabla) => {
     } else {
       // Añadir una nueva página
       doc.addPage();
+      addHeader();
+      addLine();
+      addLineH();
+      addFooter(); // Añade el pie de página en cada nueva página
       currentColumn = 1;
-      /* addFooter(); // Añade el pie de página en cada nueva página */
       return marginTop;
     }
   };
@@ -126,6 +174,11 @@ export const descargarPdfs = async (datos, tituloTabla) => {
     y += 85; // Espacio adicional después de la imagen
     return y;
   };
+
+  await addHeader();
+  addLine();
+  addLineH();
+  addFooter();
 
   // Añadir datos a la columna actual
   const propertiesToRender = [
@@ -164,7 +217,15 @@ export const descargarPdfs = async (datos, tituloTabla) => {
 
     // Si se pasa del margen inferior, cambiar a la segunda columna o nueva página
     if (y > marginBottom) {
-      y = switchColumnOrPage(currentColumn === 1 ? marginLeft1 : marginLeft2, y);
+      if (currentColumn === 1) {
+        currentColumn = 2;
+        y = marginTop;
+      } else {
+        doc.addPage();
+        currentColumn = 1;
+        y = marginTop;
+        /* addFooter(); // Añade el pie de página en cada nueva página */
+      }
     }
   }
   // Imágenes adicionales si están disponibles
@@ -174,7 +235,7 @@ export const descargarPdfs = async (datos, tituloTabla) => {
   } */
 
 
-  // START FOOTER
+  /* // START FOOTER
   const textWidthFoot = pageWidth - 20; 
   const data1 = "SEDE PRINCIPAL: Tel. +57 608-4201535-4296642, Carrera 17 No. 14-85 Mocoa, Putumayo.";
   const contac1 = "CORREO: correspondencia@corpoamazonia.gov.co";
@@ -199,7 +260,7 @@ export const descargarPdfs = async (datos, tituloTabla) => {
   doc.text(contac2, 140, pageHeight - 13);
   doc.text(contac3, 140, pageHeight - 10);
   doc.text(contac4, 140, pageHeight - 7);
-  // END FOOTER
+  // END FOOTER */
 
   doc.save(`${datos.cod_especie}_${datos.nombre_cientifico}_${tituloTabla}.pdf`);
 };
