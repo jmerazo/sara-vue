@@ -106,6 +106,7 @@ onMounted(async () => {
 
   await geoStore.fetchData();
   filteredData.value = await filterGeo(codigo, geoStore.geoCandidateData); //coordenadas de los individuos de la especie consultada
+  console.log('datos para pasar al mapa',filteredData.value);
 });
 
 const {
