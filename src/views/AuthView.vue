@@ -33,6 +33,23 @@ const handleLogin = async () => {
   }
 };
 
+const handleLoginFirebase = async () => {
+  try {
+    const response = await store.loginFirebase(email.value, password.value)
+    console.log("response login: ", response.success)
+    if (response.success) {
+      router
+        .push({
+          name: "panel", // Nombre de la ruta de la vista del panel
+        })
+    } else {
+      showLoginError("Credenciales inválidas");
+    }
+  } catch (e) {
+    showLoginError(e.message);
+  }
+};
+
 const showLoginError = (message) => {
   error.value = message;
   setTimeout(() => {
@@ -45,6 +62,8 @@ localStorage.removeItem("hasReloaded");
 const handleGoogleLogin = () => {
   const client_id = '46583489341-6lugf7o37gcgqk9u7aj210e16pi79bhg.apps.googleusercontent.com';
   const redirect_uri = 'http://localhost:5173/auth/callback';
+  /* const client_id = '754512352002-5if5e9nmuaq5hb2of73e3trhepq2315r.apps.googleusercontent.com';
+  const redirect_uri = 'https://sara.corpoamazonia.gov.co/auth/callback'; */
   const scope = 'email profile openid';
   const response_type = 'code';
   const state = generateRandomString(); // Genera un string aleatorio seguro
@@ -64,12 +83,9 @@ function generateRandomString() {
 
 <template>
   <div class="contenedor">
-   
-    
-    
       <div class="formulario__contenido">
         <div class="formulario">
-          <form @submit.prevent="handleLogin" >
+          <form @submit.prevent="handleLoginFirebase" >
             <div class="formulario__encabezado">
               <div class="logo">
                 <img src="/icons/sara.png" alt="Logotipo" />

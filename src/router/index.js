@@ -185,6 +185,15 @@ const router = createRouter({
       }
     },
     {
+      path:'/property',
+      name:'property',
+      component: () => import('../views/dashboardviews/admin/PropertyView.vue'),
+      meta: {
+        auth: true,
+        roles: ['ADMINISTRADOR', 'is_superuser', 'is_staff']
+      }
+    },
+    {
       path:'/nurseries',
       name:'nurseries',
       component: ()=> import('../views/NurseriesView.vue'),

@@ -1,47 +1,28 @@
 <script setup>
-import { computed, watch } from "vue";
+import { computed, onMounted } from "vue";
 import { onBeforeRouteLeave } from "vue-router";
-import { useUsersStore } from "@/stores/users";
 import { propertyStore } from "@/stores/dashboard/property";
-import ModalUserUpdate from "@/components/dashboard/modals/ModalUserUpdate.vue";
 import ModalPropertyAdd from "@/components/dashboard/modals/ModalPropertyAdd.vue";
-import ModalAssignUserSpecies from "@/components/dashboard/modals/ModalAssignUserSpecies.vue";
-import ModalUserSpeciesList from "@/components/dashboard/modals/ModalUserSpeciesList.vue";
+import { useModalStore } from "@/stores/modal";
 
 import { descargarExcel, descargarPdf, obtenerFecha } from "@/helpers";
 
 //componentes
 import LoadingData from "@/components/LoadingData.vue";
 
-const usersStore = useUsersStore();
 const propertiesStore = propertyStore();
+const modal = useModalStore();
 
 //limpiar filtros antes de cambiar de vista
 onBeforeRouteLeave((to, from, next) => {
-  usersStore.quitarFiltroUsuario();
+  propertiesStore.removeFilterProperty();
   next();
 });
 
-function changeUserState(id, state) {
-  const confirmState = window.confirm(
-    `¿Estás seguro de que deseas ${
-      state === 0 ? "activar" : "desactivar"
-    } a este usuario?`
-  );
-  if (!confirmState) {
-    return;
-  }
-  if (state === 1) {
-    usersStore.changeStateUser(id, 0);
-  } else {
-    usersStore.changeStateUser(id, 1);
-  }
-}
-
 //botones paginador
 const displayedPageRange = computed(() => {
-  const currentPage = usersStore.currentPage;
-  const totalPages = usersStore.totalPages;
+  const currentPage = propertiesStore.currentPage;
+  const totalPages = propertiesStore.totalPages;
   const rangeStart = Math.max(1, currentPage - 1);
   const rangeEnd = Math.min(totalPages, rangeStart + 3);
 
@@ -50,13 +31,23 @@ const displayedPageRange = computed(() => {
     (_, index) => rangeStart + index
   );
 });
+
+function deleteProperty(id, nu) {
+  const confirmDelete = window.confirm(
+    `¿Estás seguro de que desea eliminar el predio ${nu}?`
+  );
+  if (!confirmDelete) {
+    return;
+  }
+  propertiesStore.deleteProperty(id);
+}
 </script>
 
 <template>
   <div class="contenedor">
     <!-- encabezado vista -->
     <h1 class="reporte__heading">
-      Listado de usuarios <span class="texto__sara">SARA</span>
+      Listado de predios <span class="texto__sara">SARA</span>
     </h1>
     <div class="contenido__header">
       <div class="buscador">
@@ -66,15 +57,15 @@ const displayedPageRange = computed(() => {
           class="buscador__input"
           type="text"
           placeholder="Escríbe un término de búsqueda"
-          @input="usersStore.buscarTermino($event.target.value)"
+          @input="propertiesStore.searchTerm($event.target.value)"
         />
       </div>
       <div class="botones__descarga">
         <a
           @click="
             descargarExcel(
-              usersStore.datosImport,
-              `Listado de usuarios SARA - ${obtenerFecha()}`
+              propertiesStore.datosImport,
+              `Listado de predios SARA - ${obtenerFecha()}`
             )
           "
           class="boton"
@@ -86,7 +77,7 @@ const displayedPageRange = computed(() => {
         <a
           @click="
             descargarPdf(
-              usersStore.datosImport,
+              propertiesStore.datosImport,
               `Listado de usuarios SARA - ${obtenerFecha()}`,
               8,
               1
@@ -100,94 +91,83 @@ const displayedPageRange = computed(() => {
     </div>
     <!-- fin encabezado vista -->
     <hr />
-    <LoadingData v-if="usersStore.cargando"/>
+    <LoadingData v-if="propertiesStore.cargando"/>
     <main v-else>
       <table class="tabla">
         <thead class="tabla__encabezado">
           <tr class="tabla__fila">
-            <th class="dato__encabezado">Nombres</th>
-            <th class="dato__encabezado">Email</th>
-            <th class="dato__encabezado">Rol</th>
-            <th class="dato__encabezado">Entidad</th>
-            <th class="dato__encabezado">Celular</th>
-            <th class="dato__encabezado">Departamento</th>
-
-            <th class="dato__encabezado">Acciones</th>
+            <th class="dato__encabezado">ID</th>
+            <th class="dato__encabezado">PREDIO</th>
+            <th class="dato__encabezado">NOMBRES</th>
+            <th class="dato__encabezado">DEPARTAMENTO</th>
+            <th class="dato__encabezado">CIUDAD</th>
+            <th class="dato__encabezado">ACCIONES</th>
           </tr>
         </thead>
         <tbody class="tabla__contenido">
           <tr
             class="tabla__fila"
-            v-for="user in usersStore.displayedUsers"
-            v-bind:key="user.id"
+            v-for="property in propertiesStore.displayedProperty"
+            v-bind:key="property.id"
           >
             <td class="tabla__dato nombre__persona">
-              {{ user.first_name + " " + user.last_name }}
+              {{ property.id }}
+            </td>
+            <td class="tabla__dato nombre__persona">
+              {{ property.nombre_predio }}
+            </td>
+            <td class="tabla__dato nombre__persona">
+              {{ property.first_name + " " + property.last_name }}
             </td>
             <td class="tabla__dato">
-              <span class="nombre__campo">Email:</span>{{ user.email }}
+              <span class="nombre__campo">Email:</span>{{ property.departamento_name }}
             </td>
             <td class="tabla__dato">
-              <span class="nombre__campo">Rol:</span>{{ user.rol }}
+              <span class="nombre__campo">Email:</span>{{ property.ciudad_name }}
+            </td>
+            <!-- <td class="tabla__dato">
+              <span class="nombre__campo">Rol:</span>{{ property.nom_comunes }} <br> <span>{{ property.nombre_cientifico_especie }}</span> <br> <span>{{ property.nombre_autor_especie }}</span>
             </td>
             <td class="tabla__dato">
-              <span class="nombre__campo">Entidad:</span>{{ user.entity }}
+              <span class="nombre__campo">Entidad:</span>{{ property.cantidad_individuos }}
             </td>
             <td class="tabla__dato">
-              <span class="nombre__campo">Celular:</span>{{ user.cellphone }}
+              <span class="nombre__campo">Celular:</span>{{ property.cant_productiva }}
             </td>
             <td class="tabla__dato">
-              <span class="nombre__campo">Departamento:</span>{{ user.name }}
+              <span class="nombre__campo">Departamento:</span>{{ property.cant_remanente }}
             </td>
+            <td class="tabla__dato">
+              <span class="nombre__campo">Departamento:</span>{{ property.expediente }}
+            </td> -->
             <td class="tabla__dato tabla__botones">
               <button
-                @click="usersStore.selectedUserUpdate(user.id)"
+                @click="propertiesStore.selectedPropertyUpdate(property.id)"
                 class="tabla__boton"
               >
-                <font-awesome-icon :icon="['fas', 'user-pen']" /> Editar
+                <font-awesome-icon :icon="['fas', 'pen-to-square']" />
               </button>
-
               <button
-                @click="propertiesStore.selectedUserCreateProperty(user.id)"
+                @click="deleteProperty(property.id, property.nombre_predio)"
                 class="tabla__boton"
               >
-                <font-awesome-icon :icon="['fas', 'file-circle-plus']" /> Predio
+                <font-awesome-icon :icon="['fas', 'trash']" />
               </button>
-
-              <button
-                @click="propertiesStore.selectedUserCreateUsersProperty(user.id)"
-                class="tabla__boton"
-              >
-                <font-awesome-icon :icon="['fab', 'pagelines']" /> Asignar
-              </button>
-
-              <button
-                @click="propertiesStore.listUserSpeciesIds(user.id)"
-                class="tabla__boton"
-              >
-                <font-awesome-icon :icon="['fab', 'pagelines']" /> Ver especies
-              </button>
-             
-              <label class="switch">
-                <input
-                  class="tabla__input"
-                  type="checkbox"
-                  :checked="user.is_active === 1"
-                  @change="changeUserState(user.id, user.is_active)"
-                />
-                <span class="tabla__boton-ckeck"></span>
-              </label>
             </td>
           </tr>
         </tbody>
       </table>
+      <div
+        @click="modal.handleClickModalPropertyAdd()"
+        class="agregar"
+      ></div>
       <!-- paginador -->
       <section class="paginador">
         <div class="paginador__botones">
           <button
             class="paginador__boton paginador__boton--anterior"
-            v-if="usersStore.currentPage > 1"
-            @click="usersStore.changePage(usersStore.currentPage - 1)"
+            v-if="propertiesStore.currentPage > 1"
+            @click="propertiesStore.changePage(propertiesStore.currentPage - 1)"
           >
             <font-awesome-icon :icon="['fas', 'angles-left']" />
           </button>
@@ -195,18 +175,18 @@ const displayedPageRange = computed(() => {
           <button
             v-for="page in displayedPageRange"
             :key="page"
-            @click="usersStore.changePage(page)"
+            @click="propertiesStore.changePage(page)"
             class="paginador__boton"
             :class="{
-              'paginador__boton-actual': page === usersStore.currentPage,
+              'paginador__boton-actual': page === propertiesStore.currentPage,
             }"
           >
             {{ page }}
           </button>
           <button
             class="paginador__boton paginador__boton--siguiente"
-            v-if="usersStore.currentPage < usersStore.totalPages"
-            @click="usersStore.changePage(usersStore.currentPage + 1)"
+            v-if="propertiesStore.currentPage < propertiesStore.totalPages"
+            @click="propertiesStore.changePage(propertiesStore.currentPage + 1)"
           >
             <font-awesome-icon :icon="['fas', 'angles-right']" />
           </button>
@@ -215,17 +195,14 @@ const displayedPageRange = computed(() => {
       <!--fin paginador -->
       <!-- texto validacion buscador -->
       <section class="validacion__contenido">
-        <h1 v-if="usersStore.noResultados && !usersStore.cargando" class="validacion__heading">
+        <h1 v-if="propertiesStore.noResultados && !propertiesStore.cargando" class="validacion__heading">
           No hay resultados de búsqueda
         </h1>
       </section>
       <!--fin texto validacion buscador -->
       
     </main>
-    <ModalUserUpdate/>
     <ModalPropertyAdd/>
-    <ModalAssignUserSpecies/>
-    <ModalUserSpeciesList/>
   </div>
 </template>
 

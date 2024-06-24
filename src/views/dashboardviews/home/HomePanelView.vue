@@ -48,7 +48,7 @@ onMounted(() => {
   const hasReloaded = localStorage.getItem("hasReloaded");
   if (!hasReloaded) {
     localStorage.setItem("hasReloaded", "true");
-    window.location.reload();
+    //window.location.reload();
   }
 });
 </script>

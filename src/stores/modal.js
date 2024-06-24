@@ -21,6 +21,10 @@ export const useModalStore = defineStore('modal',()=>{
     const modalSectionUpdate = ref(false)  
     const modalSectionView = ref(false) 
     const modalFormMonitoring = ref(false)  
+    const modalPropertyAdd = ref(false)
+    const modalPropertyUpdate = ref(false)
+    const modalAssignUserSpecies = ref(false)
+    const modalListUserSpecies = ref(false)
     
     //modal especie
     function handleClickModal(){
@@ -92,6 +96,22 @@ export const useModalStore = defineStore('modal',()=>{
         modalSectionView.value = !modalSectionView.value
     }
 
+    function handleClickModalPropertyAdd(){
+        modalPropertyAdd.value = !modalPropertyAdd.value
+    }
+
+    function handleClickModalPropertyUpdate(){
+        modalPropertyUpdate.value = !modalPropertyUpdate.value
+    }
+
+    function handleClickModalAssignUserSpecies(){
+        modalAssignUserSpecies.value = !modalAssignUserSpecies.value
+    }
+
+    function handleClickModalListUserSpecies(){
+        modalListUserSpecies.value = !modalListUserSpecies.value
+    }
+
     return {
         modal,
         modalFamily,
@@ -125,6 +145,14 @@ export const useModalStore = defineStore('modal',()=>{
         modalSectionView,
         handleClickModalComponent,
         modalComponent,
-        componentsTree
+        componentsTree,
+        handleClickModalPropertyAdd,
+        modalPropertyAdd,
+        handleClickModalPropertyUpdate,
+        modalPropertyUpdate,
+        handleClickModalAssignUserSpecies,
+        modalAssignUserSpecies,
+        handleClickModalListUserSpecies,
+        modalListUserSpecies,
     }
 })
