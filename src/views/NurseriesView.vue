@@ -1,7 +1,7 @@
 <script setup>
 import { computed, ref } from "vue";
 import { RouterLink } from "vue-router";
-import { useNurseriesStore } from "../stores/nurseries";
+import { useNurseriesStore } from "@/stores/nurseries";
 
 
 
@@ -117,7 +117,7 @@ const nurseries = useNurseriesStore();
 }
 
 .header {
-  background-image: url("/img/banner-nurseries.jpg");
+  background-image: url("/img/bannersViews/banner-nurseries.jpg");
   height: 40rem;
   background-size: cover;
   background-position: center top;

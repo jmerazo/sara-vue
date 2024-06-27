@@ -1,37 +1,21 @@
 <script setup>
 
 import { RouterView} from "vue-router";
-import { useAuthTokenStore } from '@/stores/auth'
-import Footer from "@/components/Footer.vue";
-import ModalSpecie from '@/components/ModalSpecie.vue';
-import ModalFamily from "@/components/ModalFamily.vue";
 
-import Dashboard from '@/views/dashboardviews/home/DashboardMainView.vue'
-import NavBar from "./components/NavBar.vue";
-import Header from '@/components/Header.vue';
-const store = useAuthTokenStore()
 </script>
 
 <template>
-  <NavBar v-if="!store.authActive"/>
-  <Header v-if="!store.authActive"/>
-  <Dashboard v-if="store.authActive"/>
   
-  
-  <main v-if="!store.authActive" >
-    <router-view v-if="!store.authActive" />
+  <main  >
+    <RouterView  />
   </main> 
-
-  <Footer/> 
-  <ModalSpecie/>
-  <ModalFamily/>
 
 </template>
 
 <style >
 /* boton agregar */
 .agregar {
-  background-image: url("/icons/icon-add.png");
+  background-image: url("/icons/icon-add.svg");
   padding: 0;
   margin: 0;
   height: 3rem;
@@ -41,7 +25,7 @@ const store = useAuthTokenStore()
   bottom: 10%;
   right: -1px;
   z-index: 2;
-  width: 4rem;
+  width: 3rem;
   transition: transform 0.3s ease-out, box-shadow 0.3s ease-out;
 }
 .agregar:hover {
@@ -51,7 +35,7 @@ const store = useAuthTokenStore()
 @media (min-width: 768px) {
   .agregar {
     right: 1%;
-    height: 4rem;
+    height: 3rem;
     overflow: hidden;
     border-radius: 50%;
   }
@@ -60,7 +44,6 @@ const store = useAuthTokenStore()
     display: block;
     width: 100%;
     height: 100%;
-    background-image: url("/icons/icon-add.png");
     background-position: center;
     background-size: cover;
     border-radius: 50%;

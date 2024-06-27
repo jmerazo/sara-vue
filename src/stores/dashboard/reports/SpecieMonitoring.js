@@ -4,7 +4,7 @@ import { useRouter } from "vue-router";
 import {ordenarPorFechas} from '@/helpers'
 import APIService from "@/services/APIService";
 
-export const useSpecieMonitoriong = defineStore("especieMonitoreo", () => {
+export const useSpecieMonitoring = defineStore("especieMonitoreo", () => {
 
   const cargando = ref(false);
   const router = useRouter();

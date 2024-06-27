@@ -1,11 +1,11 @@
 <script setup>
 import { ref,computed } from "vue";
 import Alerta from "@/components/dashboard/base/Alert.vue";
-import { useSpecieMonitoriong } from "@/stores/dashboard/reports/SpecieMonitoring";
+import { useSpecieMonitoring } from "@/stores/dashboard/reports/SpecieMonitoring";
 
 import { descargarExcel, descargarPdf, obtenerFecha } from "@/helpers";
 
-const consulta = useSpecieMonitoriong();
+const consulta = useSpecieMonitoring();
 
 const fechaInicial = ref("");
 const fechaFinal = ref("");

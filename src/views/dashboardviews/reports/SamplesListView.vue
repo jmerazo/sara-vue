@@ -5,7 +5,7 @@ import { useSamplesMade } from "@/stores/dashboard/reports/samplesMade";
 import { descargarExcel, descargarPdf, obtenerFecha } from "@/helpers";
 
 //componentes
-import LoadingData from "@/components/LoadingData.vue";
+import LoadingData from "@/components/shared/LoadingData.vue";
 import SamplesCard from "@/components/dashboard/cards/SamplesCard.vue";
 
 const samples = useSamplesMade();

@@ -14,14 +14,14 @@ import { useModalStore } from "@/stores/modal";
 
 
 //components
-import QuoteButton from "@/components/QuoteButton.vue";
-import PagesQueries from "@/components/PagesQueries.vue";
-import RenderGeo from "@/components/RenderGeo.vue";
-import ChartAverage from "@/components/ChartAverage.vue";
-import ImageSlider from "@/components/ImageSlider.vue";
-import ModalSpecieComponent from "@/components/ModalSpecieComponent.vue";
-import FlowerCalendar from "../components/calendars/FlowerCalendar.vue";
-import FruitCalendar from "../components/calendars/FruitCalendar.vue";
+import QuoteButton from "@/components/species/utils/QuoteButton.vue";
+import PagesQueries from "@/components/species/utils/PagesQueries.vue";
+import RenderGeo from "@/components/species/utils/RenderGeo.vue";
+import ChartAverage from "@/components/species/charts/ChartAverage.vue";
+import ImageSlider from "@/components/species/utils/ImageSlider.vue";
+import ModalSpecieComponent from "@/components/species/modals/ModalSpecieComponent.vue";
+import FlowerCalendar from "@/components/species/calendars/FlowerCalendar.vue";
+import FruitCalendar from "@/components/species/calendars/FruitCalendar.vue";
 
 const router = useRouter();
 
@@ -137,6 +137,7 @@ const {
   img_landscape_one,
   img_landscape_two,
   img_landscape_three,
+  
 } = especie.especie;
 
 const scrollToTop = () => {

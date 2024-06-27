@@ -5,7 +5,7 @@ import { descargarExcel, descargarPdf, obtenerFecha } from "@/helpers";
 import { usePageContent } from "../../stores/page";
 import { useModalStore } from "@/stores/modal";
 //componentes
-import LoadingData from "@/components/LoadingData.vue";
+import LoadingData from "@/components/shared/LoadingData.vue";
 import ModalSectionAdd from "@/components/dashboard/ModalSectionAdd.vue";
 import ModalSectionUpdate from "@/components/dashboard/ModalSectionUpdate.vue";
 import ModalSectionView from "@/components/dashboard/ModalSectionView.vue"

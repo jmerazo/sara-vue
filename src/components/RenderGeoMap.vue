@@ -78,7 +78,7 @@ import { fromLonLat } from "ol/proj";
 import Point from "ol/geom/Point";
 import Feature from "ol/Feature";
 import Polygon from "ol/geom/Polygon.js";
-import treeIconPath from "../assets/icons/icon_tree_cg.png";
+import treeIconPath from "/icons/icon_geo.png";
 import { useGeoCandidateTrees } from "../stores/candidate";
 
 const geoStore = useGeoCandidateTrees();

@@ -2,17 +2,17 @@
 import { computed } from "vue";
 import { onBeforeRouteLeave } from "vue-router";
 import { useEspeciesStore } from "@/stores/species";
-import { useCantidateStore } from "@/stores/dashboard/reports/SpecieCanditates";
-import { useSpecieMonitoriong } from "@/stores/dashboard/reports/SpecieMonitoring";
+import { useCandidateStore } from "@/stores/dashboard/reports/SpecieCandidates";
+import { useSpecieMonitoring } from "@/stores/dashboard/reports/SpecieMonitoring";
 import { getFullImageUrl } from "@/helpers";
 
 //componentes
-import LoadingData from "@/components/LoadingData.vue";
+import LoadingData from "@/components/shared/LoadingData.vue";
 
 const especies = useEspeciesStore();
 
-const candidatos = useCantidateStore();
-const especieMonitoreos = useSpecieMonitoriong();
+const candidatos = useCandidateStore();
+const especieMonitoreos = useSpecieMonitoring();
 //limpiar filtros antes de cambiar de vista
 onBeforeRouteLeave((to, from, next) => {
   especies.quitarFiltroEspecie();
@@ -42,7 +42,7 @@ const displayedPageRange = computed(() => {
         <input
           class="buscador__input"
           type="text"
-          placeholder="Escríbe un término de búsqueda"
+          placeholder="Escribe un término de búsqueda"
           @input="especies.buscarTermino($event.target.value)"
         />
       </div>

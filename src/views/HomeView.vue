@@ -1,31 +1,23 @@
 <script setup>
-import { onMounted, ref, computed } from "vue";
+import { onMounted, ref } from "vue";
+
 import { getFullImageUrl } from "@/helpers/";
-import { useGeoCandidateTrees } from "@/stores/candidate";
-import { useAverageSpecie } from "@/stores/average";
+
 import { useHomeStore } from "@/stores/home";
-import { usePageContent } from "../stores/page";
-import { useConsultaStore } from "../stores/consulta";
-import {useCalendarStore} from "../stores/calendarMonitoring"
+import { usePageContent } from "@/stores/page";
+import { useConsultaStore } from "@/stores/consulta";
+
+import Header from '@/components/home/Header.vue';
 
 const pageStore = usePageContent();
-const geoStore = useGeoCandidateTrees();
-const averageStore = useAverageSpecie();
 const homeStore = useHomeStore();
 const consulta = useConsultaStore();
-const calendarStore = useCalendarStore()
 
-const consultar = (nombre_comun) => {
-  consulta.consulta.categoria = "Nombre Común";
-  consulta.consulta.vrBuscar = nombre_comun;
-  consulta.mostrarConsulta();
-};
 
 const mostrarTodo = ref(false);
 
 onMounted(async () => {
   /*   await geoStore.fetchData(); */
-  await averageStore.fetchData();
   await pageStore.fetchData();
   await homeStore.fetchData();
 });
@@ -41,6 +33,8 @@ function contenidoResumido() {
 
 <template>
   <div>
+    <Header />
+    
     <section
       v-if="pageStore.contenidoNosotros.length > 0"
       class="contenedor proyecto"
@@ -74,7 +68,7 @@ function contenidoResumido() {
           >
             <a
               class="topEspeice__enlace animacion"
-              @click="consultar(specie.cod_especie)"
+              @click="consulta.consultSpecie(specie.cod_especie)"
               ><span class="animacion__text">{{ specie.nom_comunes.split(' ')[0] }}</span></a
             >
           </div>

@@ -1,6 +1,6 @@
 <script setup>
 import { onMounted, ref, computed } from "vue";
-import { usePageContent } from "../stores/page";
+import { usePageContent } from "@/stores/page";
 
 const pageStore = usePageContent();
 
@@ -44,7 +44,7 @@ function contenidoCompleto(text) {
               class="front"
               :style="{
                 backgroundImage:
-                  'url(https://images.pexels.com/photos/1230157/pexels-photo-1230157.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1)',
+                  'url(/img/backgroundCard/background-mision.jpeg)',
               }"
             >
               <div class="front__content">
@@ -63,7 +63,7 @@ function contenidoCompleto(text) {
               class="front"
               :style="{
                 backgroundImage:
-                  'url(https://images.pexels.com/photos/193036/pexels-photo-193036.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1)',
+                  'url(/img/backgroundCard/background-vision.webp)',
               }"
             >
               <div class="front__content">
@@ -81,7 +81,7 @@ function contenidoCompleto(text) {
               class="front"
               :style="{
                 backgroundImage:
-                  'url(https://images.pexels.com/photos/1108572/pexels-photo-1108572.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1)',
+                  'url(/img/backgroundCard/background-valores.jpeg)',
               }"
             >
               <div class="front__content">
@@ -107,7 +107,7 @@ function contenidoCompleto(text) {
       >
         <img
           class="proyecto__img"
-          src="https://www.pngall.com/wp-content/uploads/2/Green-Leaf-PNG-Photo.png"
+          src="/img/backgroundCard/about_project.png"
           alt="hojas"
         />
         <h1 class="proyecto__titulo">
@@ -148,7 +148,7 @@ function contenidoCompleto(text) {
   margin-top: 4rem;
   margin-bottom: 0rem;
   position: relative;
-  background-image: url(https://images.pexels.com/photos/2739664/pexels-photo-2739664.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1);
+  background-image: url('/img/bannersViews/banner-about.jpeg');
   height: 18rem;
   background-size: cover;
   background-repeat: no-repeat;
