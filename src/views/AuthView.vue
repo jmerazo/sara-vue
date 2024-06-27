@@ -2,7 +2,7 @@
 import { ref, onMounted } from "vue";
 import { useAuthTokenStore } from "../stores/auth";
 import { useRouter } from "vue-router";
-import Alerta from "@/components/Alerta.vue";
+import Alerta from "@/components/shared/Alerta.vue";
 
 const store = useAuthTokenStore();
 const router = useRouter();
@@ -22,7 +22,7 @@ const handleLogin = async () => {
     if (response.success) {
       router
         .push({
-          name: "panel", // Nombre de la ruta de la vista del panel
+          name: "home-panel", // Nombre de la ruta de la vista del panel
         })
         .catch((err) => {});
     } else {

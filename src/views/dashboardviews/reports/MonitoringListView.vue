@@ -7,7 +7,7 @@ import { useGeneralMonitoring } from "@/stores/dashboard/reports/generalMonitori
 import { descargarExcel, descargarPdf, obtenerFecha } from "@/helpers";
 
 //componentes
-import LoadingData from "@/components/LoadingData.vue";
+import LoadingData from "@/components/shared/LoadingData.vue";
 import ModalFormMonitoring from "@/components/dashboard/modalsForm/monitoring/ModalFormMonitoring.vue";
 import MonitoringCardVue from "@/components/dashboard/cards/MonitoringCard.vue";
 

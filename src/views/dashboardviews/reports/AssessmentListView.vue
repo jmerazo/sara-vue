@@ -5,7 +5,7 @@ import { useGeneralEvaluations } from "@/stores/dashboard/reports/generalEvaluat
 import { descargarExcel, descargarPdf, obtenerFecha } from "@/helpers";
 import { useModalStore } from "@/stores/modal";
 //componentes
-import LoadingData from "@/components/LoadingData.vue";
+import LoadingData from "@/components/shared/LoadingData.vue";
 import ModalCandidateAdd from "@/components/dashboard/modals/ModalCandidateAdd.vue";
 import AssessmentCard from "@/components/dashboard/cards/AssessmentCard.vue"
 

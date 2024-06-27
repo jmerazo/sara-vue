@@ -5,7 +5,7 @@ import { useEspeciesData } from "@/stores/dashboard/reports/speciesData";
 import { descargarExcel, descargarPdf, obtenerFecha } from "@/helpers";
 
 //componentes
-import LoadingData from "@/components/LoadingData.vue";
+import LoadingData from "@/components/shared/LoadingData.vue";
 
 const especies = useEspeciesData();
 

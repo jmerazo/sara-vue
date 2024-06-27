@@ -1,10 +1,10 @@
 <script setup>
 import { useModalStore } from "@/stores/modal";
 
-import { useCantidateStore } from "@/stores/dashboard/reports/SpecieCanditates";
+import { useCandidateStore } from "@/stores/dashboard/reports/SpecieCandidates";
 
 const modal = useModalStore();
-const consulta = useCantidateStore();
+const consulta = useCandidateStore();
 </script>
 
 <template>

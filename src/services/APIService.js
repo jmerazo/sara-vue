@@ -52,10 +52,7 @@ export default {
     getFamiliesData(){
         return api.get('/species/families')
     },
-    // # Busca una especie por su nombre científico -- http://localhost:8000/api/species/search/scientific_name/Bauhinia%20tarapotensis%20Benth.
-    lookScientificName(scientific_name){
-        return api.get(`/species/search/scientific_name/${scientific_name}`) 
-    },
+    
     // Retorna las especies buscadas por su nombre de familia -- http://localhost:8000/api/species/search/family/BIGNONIACEAE
     lookFamily(n_familia){
         return api.get(`/species/search/family/${n_familia}`)

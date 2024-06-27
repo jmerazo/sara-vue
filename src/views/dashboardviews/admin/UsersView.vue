@@ -7,7 +7,7 @@ import ModalUserUpdate from "@/components/dashboard/modals/ModalUserUpdate.vue";
 import { descargarExcel, descargarPdf, obtenerFecha } from "@/helpers";
 
 //componentes
-import LoadingData from "@/components/LoadingData.vue";
+import LoadingData from "@/components/shared/LoadingData.vue";
 
 const usersStore = useUsersStore();
 

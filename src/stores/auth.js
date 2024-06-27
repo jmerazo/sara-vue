@@ -71,6 +71,7 @@ export const useAuthTokenStore = defineStore('authToken', () => {
         localStorage.setItem('user_data', JSON.stringify(response.data.user_data));
         await loadUserPermissions(); 
         return { success: true };
+
       } else {
         errorAuth.value = 'Credenciales incorrectas';
         return { success: false };
