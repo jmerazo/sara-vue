@@ -1,5 +1,5 @@
 <script setup>
-import "@/adminlte/plugins/chart/Chart.min.js";
+
 import { onMounted } from "vue";
 import { useChartsStore } from "@/stores/dashboard/charts";
 import { useChartLocateStore } from "@/stores/dashboard/chartLocate";
@@ -9,7 +9,7 @@ import HomeCard from "@/components/dashboard/cards/HomeCard.vue";
 import PresenceMap from "@/components/dashboard/base/PresenceMap.vue";
 
 //Spinner
-import LoadingData from "@/components/LoadingData.vue";
+import LoadingData from "@/components/shared/LoadingData.vue";
 
 //monitoreos mensual
 import monthlyDepartmentMonitoring from "@/components/dashboard/charts/monthlyDepartmentMonitoring.vue";
@@ -23,7 +23,7 @@ import totalSamplesMunicipalities from "@/components/dashboard/charts/totalSampl
 import totalDepartmentMonitoring from "@/components/dashboard/charts/totalDepartmentMonitoring.vue";
 import totalMunicipalMonitoring from "@/components/dashboard/charts/totalMunicipalMonitoring.vue";
 
-import { useAuthTokenStore } from '../../../stores/auth';
+import { useAuthTokenStore } from '@/stores/auth';
 import { watch } from 'vue';
 
 const authStore = useAuthTokenStore();

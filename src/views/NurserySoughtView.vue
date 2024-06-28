@@ -1,9 +1,9 @@
 <script setup>
-import { useNurseriesStore } from "../stores/nurseries";
 import { ref } from "vue";
+import { useNurseriesStore } from "@/stores/nurseries";
+import { useConsultaStore } from '@/stores/consulta'
 
-import RenderGeo from "../components/RenderGeoNursery.vue";
-
+const consulta = useConsultaStore()
 const nurseries = useNurseriesStore();
 
 const email = ref("");
@@ -55,7 +55,7 @@ const handleSubmit = () => {
             <p class="species__sale-type">{{ specie.tipo_venta }}</p>
             <p class="species__unit">{{ specie.unidad_medida }}</p>
           </div>
-          <button class="species__button">Ver especie</button>
+          <button @click="consulta.consultSpecie(specie.especie_forestal_id)" class="species__button">Ver especie</button>
         </div>
       </div>
       <div class="contact">

@@ -1,4 +1,4 @@
-import { ref, onMounted } from "vue";
+import { ref } from "vue";
 import { defineStore } from "pinia";
 import APIService from "../services/APIService";
 
@@ -7,6 +7,7 @@ export const useAverageSpecie = defineStore("averageSpecie", () => {
   const etiquetas = ref([]);
   const valores = ref([]);
   const cantIndividuos = ref(0);
+  
   const fetchData = async () => {
     try {
       etiquetas.value = [];

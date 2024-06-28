@@ -8,6 +8,7 @@ export const useFamiliasStore = defineStore('familias',()=>{
     const familias = ref([])
     const familiasOriginal= ref([])
     const consulta = useConsultaStore()
+    
     // variables para paginación
     const currentPage = ref(1); // Página actual
     const itemsPerPage = ref(10); // Elementos por página

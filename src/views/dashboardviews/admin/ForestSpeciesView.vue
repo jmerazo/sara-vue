@@ -2,22 +2,24 @@
 import { computed } from "vue";
 import { onBeforeRouteLeave } from "vue-router";
 import { useEspeciesStore } from "@/stores/species";
+import { useModalStore } from "@/stores/modal";
 import {
   descargarExcel,
   descargarPdf,
   obtenerFecha,
   getFullImageUrl,
 } from "@/helpers";
-import { useModalStore } from "@/stores/modal";
+
+
 //componentes
-import LoadingData from "@/components/LoadingData.vue";
+import LoadingData from "@/components/shared/LoadingData.vue";
 import ModalForestSpecieUpdate from "@/components/dashboard/modals/ModalForestSpecieUpdate.vue";
 import ModalForestSpecieAdd from "@/components/dashboard/modals/ModalForestSpecieAdd.vue";
 
 const especies = useEspeciesStore();
 const modal = useModalStore();
 
-//prueba para proteccion de eliminacion de una especie
+//prueba para protección de eliminación de una especie
 const delSpecie = (id) => {
   const confirmed = window.confirm(
     "¿Estás seguro de que deseas eliminar este registro?"

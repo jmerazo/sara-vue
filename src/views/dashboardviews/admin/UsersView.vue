@@ -11,7 +11,7 @@ import ModalUserSpeciesList from "@/components/dashboard/modals/ModalUserSpecies
 import { descargarExcel, descargarPdf, obtenerFecha } from "@/helpers";
 
 //componentes
-import LoadingData from "@/components/LoadingData.vue";
+import LoadingData from "@/components/shared/LoadingData.vue";
 
 const usersStore = useUsersStore();
 const propertiesStore = propertyStore();

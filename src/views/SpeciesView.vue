@@ -1,16 +1,20 @@
 <script setup>
-import { onBeforeRouteLeave } from "vue-router";
-import { useEspeciesStore } from "../stores/species";
 import { computed, ref } from "vue";
-import { useEspeciesData } from "../stores/dashboard/reports/speciesData";
-import { descargarExcel, descargarPdf, obtenerFecha, descargarPdfs } from "@/helpers";
+import { onBeforeRouteLeave } from "vue-router";
 
-import Species from "@/components/Species.vue";
+import { useEspeciesStore } from "@/stores/species";
+import { useEspeciesData } from "@/stores/dashboard/reports/speciesData";
+
+import { obtenerFecha, descargarPdfs } from "@/helpers";
+
+import Species from "@/components/species/Species.vue";
+import ModalSpecie from '@/components/species/modals/ModalSpecie.vue';
 
 const especies = useEspeciesStore();
 const reportGeneral = useEspeciesData();
 const valueSearched = ref("");
 const isSearching = computed(() => valueSearched.value !== "");
+
 //limpiar filtros antes de cambiar de vista
 onBeforeRouteLeave((to, from, next) => {
   especies.quitarFiltroEspecie();
@@ -139,6 +143,7 @@ const displayedPageRange = computed(() => {
     </section>
     <!--fin texto validacion buscador -->
   </div>
+  <ModalSpecie/>
 </template>
 
 <style scoped>
@@ -151,7 +156,7 @@ const displayedPageRange = computed(() => {
 }
 
 .header__especies {
-  background-image: url('/img/banner-species.jpeg');
+  background-image: url('/img/bannersViews/banner-species.jpeg');
   height: 40rem;
   background-size: cover;
   background-position: center bottom;

@@ -1,13 +1,13 @@
 <script setup>
 import { computed } from "vue";
 import { descargarExcel, descargarPdf, obtenerFecha } from "@/helpers";
-import {useCantidateStore} from '@/stores/dashboard/reports/SpecieCanditates'
+import { useCandidateStore } from '@/stores/dashboard/reports/SpecieCandidates'
 import ModalInfoCandidate from '@/components/dashboard/modals/ModalInfoCandidate.vue';
 import ModalCandidates from '@/components/dashboard/modals/ModalCandidates.vue'
 
 
 
-const consulta = useCantidateStore();
+const consulta = useCandidateStore();
 
 //botones paginador
 const displayedPageRange = computed(() => {

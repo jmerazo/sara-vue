@@ -3,7 +3,8 @@ import { onBeforeRouteLeave } from "vue-router";
 import { useFamiliasStore } from "@/stores/families";
 import { ref, computed } from "vue";
 
-import Family from "@/components/Family.vue";
+import Family from "@/components/families/Family.vue";
+import ModalFamily from "@/components/families/ModalFamily.vue";
 
 const familias = useFamiliasStore();
 const valueSerached = ref("");
@@ -131,6 +132,8 @@ const displayedPageRange = computed(() => {
       </h1>
     </section>
     <!--fin texto validacion buscador -->
+
+    <ModalFamily/>
   </div>
 </template>
 
@@ -158,7 +161,7 @@ const displayedPageRange = computed(() => {
 }
 
 .header__familias {
-  background-image: url('/img/banner-families.jpeg');
+  background-image: url('/img/bannersViews/banner-families.jpeg');
   height: 40rem;
   background-size: cover;
   background-position: center bottom;
