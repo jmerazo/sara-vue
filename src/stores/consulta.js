@@ -26,12 +26,19 @@ export const useConsultaStore = defineStore("consulta", () => {
   }
 
   //consultar por nombre común
-  async function consultSpecie(cod_especie) {
+  async function consultSpecie(cod_especie,queryPage) {
     cargando.value = true;
     const { data } = await APIService.lookSpecie(cod_especie);
     especie.value = data;
     APIService.pageCountVisit(cod_especie);
-    router.push("/busqueda");
+    console.log('dato de queryPage =',queryPage);
+    if(queryPage === 'especies'){
+      router.push("/busqueda")
+    }else{
+      router.push("/panel/panel-busqueda")
+    }
+  
+    
     if (modal.modalSpecie) {
       modal.handleClickModalSpecie();
     }
