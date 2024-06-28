@@ -3,6 +3,7 @@ import { computed, onMounted } from "vue";
 import { onBeforeRouteLeave } from "vue-router";
 import { propertyStore } from "@/stores/dashboard/property";
 import ModalPropertyAdd from "@/components/dashboard/modals/ModalPropertyAdd.vue";
+import ModalPropertyUpdate from "@/components/dashboard/modals/ModalPropertyUpdate.vue";
 import { useModalStore } from "@/stores/modal";
 
 import { descargarExcel, descargarPdf, obtenerFecha } from "@/helpers";
@@ -203,6 +204,7 @@ function deleteProperty(id, nu) {
       
     </main>
     <ModalPropertyAdd/>
+    <ModalPropertyUpdate/>
   </div>
 </template>
 

@@ -9,17 +9,18 @@ const modal = useModalStore();
 export const propertyStore = defineStore('property',()=>{
   const property = ref([]);
   const propertyOriginal = ref([]);
-  const propertySelected = ref('');
+  const propertySelected = ref([]);
   const totalProperty = ref(0);
   const newState = ref();
   const datosImport = ref([]);
-  const cargando = ref(false)
+  const cargando = ref(false);
   const noResultados = computed(() => property.value.length === 0 );
   const userSelected = ref('');
-  const propertyUsers = ref([])
-  const userPropertySelected = ref('')
-  const propertyUser = ref([])
-  const userSpecies = ref([])
+  const propertyUsers = ref([]);
+  const userPropertySelected = ref('');
+  const propertyUser = ref([]);
+  const userSpecies = ref([]);
+  const propertySelectedUpdate = ref('');
 
   // variables para paginación
   const currentPage = ref(1); // Página actual
@@ -160,12 +161,6 @@ export const propertyStore = defineStore('property',()=>{
     });
   }
 
-  //seleccionar un usuario para mostrar en el modal
-  function selectedPropertyUpdate(id) {
-    propertySelected.value =  propertyOriginal.value.filter(property => property.id === id)
-    /* modal.handleClickModalUserUpdate(propertySelected.value);  */
-  }
-
   async function listUserSpeciesIds(id) {
     try {
       const response = await APIService.listUserSpeciesId(id)
@@ -180,6 +175,25 @@ export const propertyStore = defineStore('property',()=>{
       console.error("Error al comunicarse con el servidor: ", error);
     }    
   }
+
+  //seleccionar un usuario para mostrar en el modal
+  function selectedPropertyUpdate(id) {
+    propertySelectedUpdate.value = id;
+    propertySelected.value = propertyOriginal.value.filter(property => property.id === id)
+    console.log('property selected: ', propertySelected.value)
+    modal.handleClickModalPropertyUpdate();
+  }
+
+  const updateProperty = async (pid, data) => {
+    console.log('property id: ', pid)
+    const propertyIndex = property.value.findIndex((property) => property.id === pid);
+    if (propertyIndex !== -1) {
+        Object.assign(property.value[propertyIndex], data);
+        await APIService.updateProperty(pid, data)
+    } else {
+        console.error(`Predio con ID ${pid} no encontrado.`);
+    }
+  };
 
   async function deleteSpecieUser(pk) {
     const indexToDelete = property.value.findIndex(item => item.id === pk);
@@ -230,6 +244,10 @@ export const propertyStore = defineStore('property',()=>{
         propertyUser,
         listUserSpeciesIds,
         userSpecies,
-        deleteSpecieUser
+        deleteSpecieUser,
+        selectedPropertyUpdate,
+        updateProperty,
+        propertySelectedUpdate,
+        propertySelected
     }
 })
