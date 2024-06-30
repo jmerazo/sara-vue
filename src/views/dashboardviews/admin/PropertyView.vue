@@ -9,7 +9,7 @@ import { useModalStore } from "@/stores/modal";
 import { descargarExcel, descargarPdf, obtenerFecha } from "@/helpers";
 
 //componentes
-import LoadingData from "@/components/LoadingData.vue";
+import LoadingData from "@/components/shared/LoadingData.vue";
 
 const propertiesStore = propertyStore();
 const modal = useModalStore();

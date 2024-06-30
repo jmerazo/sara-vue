@@ -185,7 +185,11 @@ const router = createRouter({
           name: "sections",
           component: () => import("../views/dashboardviews/SectionsListView.vue"),
         },
-
+        {
+          path: "property",
+          name: "property",
+          component: () => import("../views/dashboardviews/admin/PropertyView.vue"),
+        },
       ]
     },
 
