@@ -75,10 +75,10 @@ const router = createRouter({
       path: "/panel",
       name: "panel",
       component: () => import("../views/layouts/PanelLayoutView.vue"),
-      meta: {
-        auth: true,
-        roles: ["ADMINISTRADOR", "is_superuser", "is_staff"],
-      },
+      // meta: {
+      //   auth: true,
+      //   roles: ["ADMINISTRADOR", "is_superuser", "is_staff"],
+      // },
       children: [
         {
           path: 'home-panel',

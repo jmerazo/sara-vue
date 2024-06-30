@@ -83,7 +83,7 @@ onMounted(() => {
               <LoadingData v-else />
           </div>
 
-          <div class="grafico">
+          <!-- <div class="grafico">
             <totalDepartmentSamples
               v-if="chartSamples.totalDepartamentos.length > 0"
             />
@@ -91,8 +91,8 @@ onMounted(() => {
               v-if="chartSamples.CantidadMunicipio.length > 0"
             />
             <LoadingData v-else />
-          </div>
-          <div class="grafico">
+          </div> -->
+          <!-- <div class="grafico">
             <monthlyDepartmentMonitoring
               v-if="chartLocateStore.departamentoTotal.length > 0"
             />
@@ -100,7 +100,7 @@ onMounted(() => {
               v-if="chartLocateStore.todosMunicipios.length > 0"
             />
             <LoadingData v-else />
-          </div>
+          </div> -->
         </div>
         <!-- fin graficos modificados -->
       </section>
@@ -124,6 +124,9 @@ onMounted(() => {
 <style scoped>
 .calendario{
   width: 100%	;
+}
+.contenedor{
+  padding: 0;
 }
 .encabezado {
   background-image: url("/img/home_sara.jpg");
@@ -168,6 +171,7 @@ onMounted(() => {
   flex-direction: column;
   gap: 5rem;
 }
+
 @media (min-width: 1200px) {
   .contenido__grid {
     display: grid;

@@ -1,6 +1,6 @@
 <script setup>
-import { ref } from "vue";
-
+import { computed, ref } from "vue";
+import {useRoute} from "vue-router"
 import { useModalStore } from "@/stores/modal";
 import { useEspeciesStore } from "@/stores/species";
 import { useConsultaStore } from "@/stores/consulta";
@@ -12,6 +12,10 @@ const especies = useEspeciesStore();
 const consulta = useConsultaStore();
 const calendar = useCalendarStore()
 
+const route = useRoute();
+const queryPage = computed(()=> route.name)
+
+console.log(route);
 const imagen = ref("");
 
 const verImg = (url) => {
@@ -108,7 +112,7 @@ const limpiarModal = () => {
               <button
                 type="button"
                 class="boton__mas animacion"
-                @click="consulta.consultSpecie(especie.cod_especie),calendar.getCalendarSpecie(especie.cod_especie), limpiarModal()"
+                @click="consulta.consultSpecie(especie.cod_especie,queryPage),calendar.getCalendarSpecie(especie.cod_especie), limpiarModal()"
               >
                 <span>Ver Descripción completa</span>
               </button>
