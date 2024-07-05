@@ -5,8 +5,7 @@ import { ref } from "vue";
 import api from "@/api/axios";
 
 //Import log
-import logSara from '@/assets/sara.png';
-import headSheet from '@/assets/prefabs/head_sheet.jpg';
+/* import headSheet from '@/assets/prefabs/head_sheet.jpg'; */
 
 import jsPDF from 'jspdf';
 import 'jspdf-autotable'; // Importar autoTable plugin
@@ -52,7 +51,7 @@ export const descargarPdfs = async (datos, tituloTabla) => {
   let currentColumn = 1;
 
   const addHeader = async () => {
-    const headerImage = await getBase64ImageFromUrl(headSheet);
+    /* const headerImage = await getBase64ImageFromUrl(headSheet); */
     doc.addImage(headerImage, 'JPEG', 0, 0, doc.internal.pageSize.width, 30); // Ajusta el tamaño y posición según necesidad
   }
 

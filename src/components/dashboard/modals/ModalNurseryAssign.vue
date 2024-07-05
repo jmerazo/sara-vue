@@ -1,30 +1,29 @@
 <script setup>
 import { ref, onMounted, computed, watch } from 'vue';
-import { propertyStore } from "../../../stores/dashboard/property";
+import { useNurseriesDashStore } from "@/stores/dashboard/nurseries";
 import { useModalStore } from "@/stores/modal";
 import { useUsersStore } from "@/stores/users";
 import { locatesColombia } from "@/stores/locates";
+import { useEspeciesStore } from "@/stores/species"
 
-const locates = locatesColombia();
-const property = propertyStore();
+const nurseriesStore = useNurseriesDashStore();
 const modal = useModalStore();
-const user = useUsersStore();
+const especies = useEspeciesStore();
 
 const formData = ref({
-    p_user: '',
-    nombre_predio: '',
-    p_departamento: '',
-    p_municipio: ''
+    vivero: '',
+    especie_forestal: '',
+    tipo_venta: '',
+    unidad_medida: '',
+    cantidad_stock: '',
+    ventas_realizadas: '',
+    observaciones: '',
+    activo: 1
 });
 
-watch(() => property.userSelected, (newValue) => {
-  formData.value.p_user = newValue;
+watch(() => nurseriesStore.selectedNurseryAssign, (newValue) => {
+  formData.value.vivero = newValue;
 });
-
-/* onMounted(() => {
-  const hoy = new Date();
-  formData.value.fecha_evaluacion = hoy.toISOString().split('T')[0];
-}); */
 
 function resetForm() {
   Object.keys(formData.value).forEach(key => {
@@ -34,9 +33,9 @@ function resetForm() {
 
 const handleSubmit = () => {  
   try {
-    property.createProperty(formData.value);
+    nurseriesStore.AssignSpecieNursery(formData.value);
     resetForm();
-    modal.handleClickModalPropertyAdd();
+    modal.handleClickModalNurseryAssignSpecie();
   } catch (error) {
     if (error.response && error.response.data && error.response.data.error) {
       // Si hay un mensaje de error en la respuesta, lo puedes mostrar
@@ -47,70 +46,64 @@ const handleSubmit = () => {
     }
   }
 };
-
-const filteredCities = computed(() => {
-  const { p_departamento } = formData.value;
-
-  if (p_departamento) {
-    const filtered = locates.cities.filter(
-      (city) => city.department_id === p_departamento
-    );
-    return filtered;
-  }
-  return [];
-});
-
-// Observa los cambios en la evaluación y actualiza formData.evaluacion
-/* watch(nombre_predio, (nuevoValor) => {
-    formData.value.nombre_predio = nuevoValor;
-}); */
 </script>
 
 <template>
-    <div class="modal" v-if="modal.modalPropertyAdd">
+    <div class="modal" v-if="modal.modalNurseryAssignSpecie">
         <div class="modal__contenido">
             <div class="form__addCandidate">
                 <div class="title__addCandidate">
-                    <span>Registrar nuevo predio</span>
+                    <span>Asignar especie a vivero</span>
                 </div>
                 <form @submit.prevent="handleSubmit">
                     <div class="form-section data__evaluation">
-                        <label class="formulario__label" for="usuario">Nombre de usuario: </label>
-                        <input type="text" v-model="formData.p_user" :placeholder="property.userSelected">
-                        <label>Nombre del predio: </label><input type="text" v-model="formData.nombre_predio">
-                        <label class="formulario__label" for="departamento">Departamento:</label>
+                        <label class="formulario__label text__noview" for="usuario">Vivero: </label>
+                        <input class="text__noview" type="text" v-model="formData.vivero" :placeholder="nurseriesStore.selectedNurseryAssign">
+                        <label class="formulario__label" for="usuario">Especie forestal: </label>
                         <select
-                            id="departamento"
+                            id="especie_forestal"
                             class="formulario__input formulario__input--selectc"
-                            v-model="formData.p_departamento"
+                            v-model="formData.especie_forestal"
                         >
                             <option value="">--Seleccione--</option>
                             <option
-                            v-for="loc in locates.departments"
-                            :key="loc.id"
-                            :value="loc.code"
+                            v-for="ef in especies.especies"
+                            :key="ef.ShortcutID"
+                            :value="ef.cod_especie"
                             >
-                            {{ loc.name }}
+                            {{ ef.cod_especie + " / " + ef.nom_comunes + " / " + ef.nombre_cientifico }}
                             </option>
                         </select>
-                        <!-- ciudad -->
-                        <label class="formulario__label" for="municipio" v-show="filteredCities.length">Ciudad:</label>
-                        <select id="municipio" class="formulario__input formulario__input--select" v-model="formData.p_municipio" v-show="filteredCities.length">
-                            <option value="">-- Seleccione--</option>
-                            <option
-                            v-for="city in filteredCities"
-                            :key="city.id"
-                            :value="city.id"
-                            >
-                            {{ city.name }}
-                            </option>
+                        <label class="formulario__label" for="usuario">Tipo de venta: </label>
+                        <select 
+                          id="especie_forestal" 
+                          class="formulario__input formulario__input--selectc" 
+                          v-model="formData.tipo_venta"
+                        >
+                          <option value="" disabled>--Seleccione--</option>
+                          <option value="Semillas">Semillas</option>
+                          <option value="Plantulas">Plantulas</option>
                         </select>
+                        <label class="formulario__label" for="usuario">Unidad de medida: </label>
+                        <select 
+                          id="especie_forestal" 
+                          class="formulario__input formulario__input--selectc" 
+                          v-model="formData.unidad_medida"
+                        >
+                          <option value="" disabled>--Seleccione--</option>
+                          <option value="Kilogramo">Kilogramo</option>
+                          <option value="Gramos">Gramos</option>
+                          <option value="Gramos">No aplica</option>
+                        </select>
+                        <label>Cantidad disponible: </label><input type="number" v-model="formData.cantidad_stock">
+                        <label>Ventas realizadas: </label><input type="text" v-model="formData.ventas_realizadas">
+                        <label>Observaciones: </label><input type="text" v-model="formData.observaciones">
                     </div>
                     
                     <div class="formulario__botones">
                         <button type="submit" class="formulario__boton">Guardar</button>
                         <button
-                            @click="modal.handleClickModalPropertyAdd()"
+                            @click="modal.handleClickModalNurseryAssignSpecie()"
                             type="button"
                             class="formulario__boton formulario__boton--cerrar"
                         >
@@ -149,6 +142,10 @@ const filteredCities = computed(() => {
   transform: translate(-50%, -50%);
   z-index: 1000;
   margin-top: 2rem;
+}
+
+.text__noview {
+  display: none;
 }
 
 @media (min-width: 768px) {

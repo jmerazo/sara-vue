@@ -5,11 +5,13 @@ import APIService from '../services/APIService'
 
 export const useNurseriesStore = defineStore('nurseries',()=>{
     const nurseriesData = ref([]);
+    const nurseriesOriginalData = ref([]);
     const nursery = ref([]);
 
     onMounted(async ()=>{
-        const { data } = await APIService.getNurseries()
-        nurseriesData.value = data
+        const { data } = await APIService.listNurseries();
+        nurseriesData.value = data;
+        nurseriesOriginalData.value = data;
         console.log(nurseriesData.value);
     })
 

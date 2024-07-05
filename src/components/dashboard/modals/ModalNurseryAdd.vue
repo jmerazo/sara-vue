@@ -1,24 +1,31 @@
 <script setup>
 import { ref, onMounted, computed, watch } from 'vue';
-import { propertyStore } from "../../../stores/dashboard/property";
+import { useNurseriesDashStore } from "@/stores/dashboard/nurseries";
 import { useModalStore } from "@/stores/modal";
 import { useUsersStore } from "@/stores/users";
 import { locatesColombia } from "@/stores/locates";
 
 const locates = locatesColombia();
-const property = propertyStore();
+const nurseriesStore = useNurseriesDashStore();
 const modal = useModalStore();
 const user = useUsersStore();
 
 const formData = ref({
-    p_user: '',
-    nombre_predio: '',
-    p_departamento: '',
-    p_municipio: ''
+    nombre_vivero: '',
+    nit: '',
+    representante_legal_id: '',
+    ubicacion: '',
+    email: '',
+    telefono: '',
+    department: '',
+    city: '',
+    direccion: '',
+    logo: '',
+    active: 1
 });
 
-watch(() => property.userSelected, (newValue) => {
-  formData.value.p_user = newValue;
+watch(() => nurseriesStore.userSelected, (newValue) => {
+  formData.value.representante_legal_id = newValue;
 });
 
 /* onMounted(() => {
@@ -34,9 +41,9 @@ function resetForm() {
 
 const handleSubmit = () => {  
   try {
-    property.createProperty(formData.value);
+    nurseriesStore.createNursery(formData.value);
     resetForm();
-    modal.handleClickModalPropertyAdd();
+    modal.handleClickModalNurseryAdd();
   } catch (error) {
     if (error.response && error.response.data && error.response.data.error) {
       // Si hay un mensaje de error en la respuesta, lo puedes mostrar
@@ -49,16 +56,29 @@ const handleSubmit = () => {
 };
 
 const filteredCities = computed(() => {
-  const { p_departamento } = formData.value;
+  const { department } = formData.value;
 
-  if (p_departamento) {
+  if (department) {
     const filtered = locates.cities.filter(
-      (city) => city.department_id === p_departamento
+      (city) => city.department_id === department
     );
     return filtered;
   }
   return [];
 });
+
+if ("geolocation" in navigator) {
+  navigator.geolocation.getCurrentPosition(function(position) {
+    const latitude = position.coords.latitude;
+    const longitude = position.coords.longitude;
+
+    formData.value.ubicacion = `${latitude}, ${longitude}`
+  }, function(error) {
+    console.error("Error obteniendo la ubicación: ", error);
+  });
+} else {
+  console.log("Geolocalización no está disponible en tu navegador");
+}
 
 // Observa los cambios en la evaluación y actualiza formData.evaluacion
 /* watch(nombre_predio, (nuevoValor) => {
@@ -67,22 +87,27 @@ const filteredCities = computed(() => {
 </script>
 
 <template>
-    <div class="modal" v-if="modal.modalPropertyAdd">
+    <div class="modal" v-if="modal.modalNurseryAdd">
         <div class="modal__contenido">
             <div class="form__addCandidate">
                 <div class="title__addCandidate">
-                    <span>Registrar nuevo predio</span>
+                    <span>Registrar nuevo vivero</span>
                 </div>
                 <form @submit.prevent="handleSubmit">
                     <div class="form-section data__evaluation">
-                        <label class="formulario__label" for="usuario">Nombre de usuario: </label>
-                        <input type="text" v-model="formData.p_user" :placeholder="property.userSelected">
-                        <label>Nombre del predio: </label><input type="text" v-model="formData.nombre_predio">
+                        <label class="formulario__label" for="usuario">Nombre de vivero: </label>
+                        <input type="text" v-model="formData.nombre_vivero">
+                        <label class="formulario__label text__noview" for="usuario">Representante legal: </label>
+                        <input class="text__noview" type="text" v-model="formData.representante_legal_id" :placeholder="nurseriesStore.userSelected">
+                        <label>Nit: </label><input type="text" v-model="formData.nit">
+                        <label>Ubicación: </label><input type="text" v-model="formData.ubicacion">
+                        <label>Email: </label><input type="text" v-model="formData.email">
+                        <label>Celular: </label><input type="text" v-model="formData.telefono">
                         <label class="formulario__label" for="departamento">Departamento:</label>
                         <select
                             id="departamento"
                             class="formulario__input formulario__input--selectc"
-                            v-model="formData.p_departamento"
+                            v-model="formData.department"
                         >
                             <option value="">--Seleccione--</option>
                             <option
@@ -95,7 +120,7 @@ const filteredCities = computed(() => {
                         </select>
                         <!-- ciudad -->
                         <label class="formulario__label" for="municipio" v-show="filteredCities.length">Ciudad:</label>
-                        <select id="municipio" class="formulario__input formulario__input--select" v-model="formData.p_municipio" v-show="filteredCities.length">
+                        <select id="municipio" class="formulario__input formulario__input--select" v-model="formData.city" v-show="filteredCities.length">
                             <option value="">-- Seleccione--</option>
                             <option
                             v-for="city in filteredCities"
@@ -105,12 +130,14 @@ const filteredCities = computed(() => {
                             {{ city.name }}
                             </option>
                         </select>
+                        <label>Dirección: </label><input type="text" v-model="formData.direccion">
+                        <label>Logo: </label><input type="text" v-model="formData.logo">
                     </div>
                     
                     <div class="formulario__botones">
                         <button type="submit" class="formulario__boton">Guardar</button>
                         <button
-                            @click="modal.handleClickModalPropertyAdd()"
+                            @click="modal.handleClickModalNurseryAdd()"
                             type="button"
                             class="formulario__boton formulario__boton--cerrar"
                         >
@@ -149,6 +176,10 @@ const filteredCities = computed(() => {
   transform: translate(-50%, -50%);
   z-index: 1000;
   margin-top: 2rem;
+}
+
+.text__noview {
+  display: none;
 }
 
 @media (min-width: 768px) {

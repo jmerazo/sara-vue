@@ -1,7 +1,7 @@
 <script setup>
 import { ref, onMounted, computed, watch } from 'vue';
 import { useAuthTokenStore } from "../../../stores/auth";
-import { propertyStore } from "../../../stores/dashboard/property";
+import { propertyStore } from "@/stores/dashboard/property";
 import { useModalStore } from "@/stores/modal";
 import { useUsersStore } from "@/stores/users"
 import { useEspeciesStore } from "@/stores/species"
@@ -89,7 +89,7 @@ const handlePropertyChange = async () => {
                             {{ ef.cod_especie + " / " + ef.nom_comunes + " / " + ef.nombre_cientifico }}
                             </option>
                         </select>
-                        <label class="formulario__label" for="usuario">Nombre de usuario: </label><input type="text" v-model="formData.ep_usuario" :placeholder="property.userPropertySelected">
+                        <label class="formulario__label form_none" for="usuario">Nombre de usuario: </label><input class="form_none" type="text" v-model="formData.ep_usuario" :placeholder="property.userPropertySelected">
                         <label class="formulario__label">Cantidad de individuos: </label><input type="number" v-model="formData.cantidad_individuos">
                         <label class="formulario__label">Cantidad productiva: </label><input type="number" v-model="formData.cant_productiva">
                         <label class="formulario__label">Cantidad remanente: </label><input type="number" v-model="formData.cant_remanente">
@@ -154,6 +154,10 @@ const handlePropertyChange = async () => {
   transform: translate(-50%, -50%);
   z-index: 1000;
   margin-top: 2rem;
+}
+
+.form_none {
+  display: none;
 }
 
 @media (min-width: 768px) {

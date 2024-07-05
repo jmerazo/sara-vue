@@ -25,6 +25,10 @@ export const useModalStore = defineStore('modal',()=>{
     const modalPropertyUpdate = ref(false)
     const modalAssignUserSpecies = ref(false)
     const modalListUserSpecies = ref(false)
+    const modalNurseryAdd = ref(false)
+    const modalNurseryUpdate = ref(false)
+    const modalNurseryAssignSpecie = ref(false)
+    const modalNurserySpecieList = ref(false)
     
     //modal especie
     function handleClickModalSpecie(){
@@ -112,6 +116,22 @@ export const useModalStore = defineStore('modal',()=>{
         modalListUserSpecies.value = !modalListUserSpecies.value
     }
 
+    function handleClickModalNurseryAdd(){
+        modalNurseryAdd.value = !modalNurseryAdd.value
+    }
+
+    function handleClickModalNurseryUpdate(){
+        modalNurseryUpdate.value = !modalNurseryUpdate.value
+    }
+
+    function handleClickModalNurseryAssignSpecie(){
+        modalNurseryAssignSpecie.value = !modalNurseryAssignSpecie.value
+    }
+
+    function handleClickModalNurserySpecieList(){
+        modalNurserySpecieList.value = !modalNurserySpecieList.value
+    }
+
     return {
         modalSpecie,
         modalFamily,
@@ -153,5 +173,13 @@ export const useModalStore = defineStore('modal',()=>{
         modalAssignUserSpecies,
         handleClickModalListUserSpecies,
         modalListUserSpecies,
+        handleClickModalNurseryAdd,
+        modalNurseryAdd,
+        handleClickModalNurseryUpdate,
+        modalNurseryUpdate,
+        handleClickModalNurseryAssignSpecie,
+        modalNurseryAssignSpecie,
+        handleClickModalNurserySpecieList,
+        modalNurserySpecieList
     }
 })

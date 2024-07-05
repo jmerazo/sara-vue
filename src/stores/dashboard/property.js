@@ -30,7 +30,6 @@ export const propertyStore = defineStore('property',()=>{
       cargando.value = true
       const { data } = await APIService.listProperty();
       property.value = data;
-      console.log('data property: ', property.value)
       propertyOriginal.value = data;
       totalProperty.value = propertyOriginal.value.length;
       cargando.value = false

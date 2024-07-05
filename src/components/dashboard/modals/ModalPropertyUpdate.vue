@@ -1,10 +1,10 @@
 <script setup>
 import { ref, onMounted, computed, watch } from 'vue';
-import { useAuthTokenStore } from "../../../stores/auth";
+import { locatesColombia } from "@/stores/locates";
 import { propertyStore } from "../../../stores/dashboard/property";
 import { useModalStore } from "@/stores/modal";
 
-const locates = useAuthTokenStore();
+const locates = locatesColombia();
 const property = propertyStore();
 const modal = useModalStore();
 
@@ -13,8 +13,6 @@ const formData = ref({
     p_departamento: '',
     p_municipio: ''
 });
-
-let pid = ref('');
 
 const initializeFormData = () => {
   const selectedProperty = property.propertySelected[0]; // Asegúrate de que propertySelected sea un objeto correcto

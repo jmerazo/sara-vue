@@ -282,8 +282,32 @@ export default {
     /* ==================================================================================================================== */
     /* ==================================================================================================================== */
     // ENDPOINT →→ NURSERIES
-    getNurseries(){
+    listNurseries(){
         return api.get('/nurseries')
+    },
+    listNurseriesId(id){
+        return api.get(`/nurseries/search/${id}`)
+    },
+    createNurseries(data){
+        return api.post('/nurseries/', data)
+    },
+    updateNurseries(id, data){
+        return api.put(`/nurseries/${id}`, data)
+    },
+    deleteNurseries(id){
+        return api.delete(`/nurseries/${id}`)
+    },
+    listNurseriesAdmin(){
+        return api.get('/nurseries/admin')
+    },
+    createNurseriesAssign(data){
+        return api.post(`/nurseries/admin`, data)
+    },
+    updateNurseriesAssign(id, data){
+        return api.put(`/nurseries/admin/${id}`, data)
+    },
+    deleteNurseriesAssign(id){
+        return api.delete(`/nurseries/admin/${id}`)
     },
     /* ==================================================================================================================== */
     /* ==================================================================================================================== */

@@ -75,10 +75,10 @@ const router = createRouter({
       path: "/panel",
       name: "panel",
       component: () => import("../views/layouts/PanelLayoutView.vue"),
-      // meta: {
-      //   auth: true,
-      //   roles: ["ADMINISTRADOR", "is_superuser", "is_staff"],
-      // },
+      meta: {
+        auth: true,
+        roles: ["ADMINISTRADOR", "is_superuser", "is_staff"],
+      },
       children: [
         {
           path: 'home-panel',
@@ -184,6 +184,11 @@ const router = createRouter({
           path: "sections",
           name: "sections",
           component: () => import("../views/dashboardviews/SectionsListView.vue"),
+        },
+        {
+          path: "nurseries",
+          name: "nurseries",
+          component: () => import("../views/dashboardviews/admin/NurseriesView.vue"),
         },
         {
           path: "property",
