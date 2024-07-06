@@ -30,7 +30,7 @@ export const useSpecieMonitoring = defineStore("especieMonitoreo", () => {
     monitoreosEspecieOriginal.value = data
     ordenarPorFechas(monitoreosEspecie.value,'fecha_monitoreo')
     ordenarPorFechas(monitoreosEspecieOriginal.value,'fecha_monitoreo')
-    router.push("/monitoring-species");
+    router.push("/panel/monitoring-species");
     cargando.value = false;
   }
 

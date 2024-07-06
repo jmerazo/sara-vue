@@ -43,7 +43,6 @@ function toggleHover() {
 main {
   position: relative;
   margin-top: 4rem;
-
   transition: all .3s ease-in-out;
 }
 
