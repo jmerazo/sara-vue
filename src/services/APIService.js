@@ -109,24 +109,16 @@ export default {
     /* ==================================================================================================================== */
     /* ==================================================================================================================== */
     // ENDPOINT →→ MONITORING
-    // (PROTECT) Retorna la cantidad mensual de monitoreos realizados, pendientes y total -- http://localhost:8000/api/monitoring/report/month
-    lookMonitoringMonth(){
+    // (PROTECT) Retorna la cantidad mensual de monitoreos realizados, pendientes y total por municipios -- http://localhost:8000/api/monitoring/data
+    getMonitoringData(){
         const store = useAuthTokenStore();
-        return api.get(`monitoring/report/month`, {
+        return api.get('/monitoring/report/data', {
             headers: {
                 Authorization: `Bearer ${store.accessToken}`
             }
         })
     },
-    // (PROTECT) Retorna la cantidad mensual de monitoreos realizados, pendientes y total por municipios -- http://localhost:8000/api/monitoring/report/month/locates
-    getValuesByDepartmentLocates(){
-        const store = useAuthTokenStore();
-        return api.get('/monitoring/report/month/locates', {
-            headers: {
-                Authorization: `Bearer ${store.accessToken}`
-            }
-        })
-    },
+    
     // (PROTECT) Retorna la cantidad mensual de monitoreos realizados, pendientes y total por municipios -- http://localhost:8000/api/monitoring/report/general/total
     getValuesByDepartment(){
         const store = useAuthTokenStore();
@@ -137,15 +129,7 @@ export default {
             }
         })
     },
-    // (PROTECT) Retorna la cantidad mensual de monitoreos realizados, pendientes y total por municipios -- http://localhost:8000/api/monitoring/data
-    getMonitoringData(){
-        const store = useAuthTokenStore();
-        return api.get('/monitoring/report/data', {
-            headers: {
-                Authorization: `Bearer ${store.accessToken}`
-            }
-        })
-    },
+    
     // Retorna el listado de monitoreos del individuo consultado -- http://localhost:8000/api/monitoring/search/code
     lookMonitoringCandidate(id){
         return api.get(`/monitoring/candidate/search/${id}`)
@@ -232,15 +216,7 @@ export default {
             }
         })
     },
-    // Retorna el total de muestras por municipio -- http://localhost:8000/api/samples/report/general
-    getSamplesReport(){
-        const store = useAuthTokenStore();
-        return api.get('/samples/report/general', {
-            headers: {
-                Authorization: `Bearer ${store.accessToken}`
-            }
-        })
-    },
+    
     /* ==================================================================================================================== */
     /* ==================================================================================================================== */
     // ENDPOINT →→ USERS

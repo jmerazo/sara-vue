@@ -38,7 +38,7 @@ function separarMiles(valor) {
 </template>
 <style scoped>
 .barra__porcentaje {
-  font-weight: 900;
+  font-weight: 600;
 }
 
 .barra__nombre {
@@ -48,7 +48,7 @@ function separarMiles(valor) {
   left: 50%;
   transform: translate(-50%, -50%);
   z-index: 2; /* Asegura que el span esté sobre la barra */
-  font-weight: 700;
+  font-weight: 600;
   width: 90%;
   color: var(--blanco);
   font-size: 0.8rem;
@@ -57,7 +57,7 @@ function separarMiles(valor) {
 @media (min-width: 800px) {
   .barra__nombre {
     top: 22%;
-    font-size: 1.1rem;
+    font-size: 1rem;
   }
 }
 

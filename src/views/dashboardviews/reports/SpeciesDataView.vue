@@ -247,19 +247,19 @@ const displayedPageRange = computed(() => {
 }
 
 .card__imagen {
-  width: 2.5rem;
+  width: 2rem;
   color: var(--primary);
   margin-bottom: 0.5rem;
 }
 
 @media (min-width: 992px) {
   .card__imagen {
-    width: 3rem;
+    width: 2.5rem;
   }
 }
 
 .card__nombre {
-  font-weight: 900;
+  font-weight: 600;
   margin: 0;
 }
 
@@ -279,7 +279,7 @@ const displayedPageRange = computed(() => {
 }
 
 .card__dato {
-  font-weight: 900;
+  font-weight: 600;
 }
 
 .card__dato,
