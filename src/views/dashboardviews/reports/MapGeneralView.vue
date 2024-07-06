@@ -178,7 +178,7 @@ function execDeleteParameter() {
 }
 @media (min-width: 768px) {
   .reporte__heading {
-    font-size: 1.5rem;
+    font-size: 1.3rem;
     margin: 3rem 0 2rem 0;
   }
 }

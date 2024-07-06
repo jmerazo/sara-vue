@@ -16,7 +16,7 @@ function toggleHover() {
 </script>
 
 <template>
-  <div>
+  <div class="layout__container">
     <Sidebar :sidebar="sidebar" :toggleSidebar="toggleSidebar" :toggleHover="toggleHover" />
 
     <section class="home__panel" :class="{ show: sidebar }">
@@ -81,6 +81,11 @@ function toggleHover() {
 </template>
 
 <style scoped>
+.layout__container {
+  display: flex;
+}
+
+
 .nav__link {
   display: flex;
   justify-content: center;
@@ -120,14 +125,29 @@ function toggleHover() {
 }
 
 main {
-  margin-left: 260px;
-  width: calc(100% - 260px);
+  position: relative;
+  margin-top: 4rem;
   transition: all .3s ease-in-out;
 }
 
+@media (min-width: 768px) {
+  main {
+    margin-left: 260px;
+    width: calc(100% - 260px);
+  }
+}
+
 main.show {
-  margin-left: 100px;
-  width: calc(100% - 100px);
+  width: 100%;
+  margin: 0 auto;
+  margin-top: 4rem;
+}
+
+@media (min-width: 768px) {
+  main.show {
+    margin-left: 100px;
+    width: calc(100% - 100px);
+  }
 }
 
 .menu__admin {

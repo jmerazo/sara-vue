@@ -35,7 +35,7 @@ export const useCandidateStore = defineStore("candidate", () => {
     candidatosEspecieOriginal.value = data;
     ordenarPorFechas(candidatosEspecie.value,'fecha_evaluacion')
     ordenarPorFechas(candidatosEspecieOriginal.value,'fecha_evaluacion')
-    router.push("/candidates-species");
+    router.push("/panel/candidates-species");
     cargando.value = false;
   }
 
