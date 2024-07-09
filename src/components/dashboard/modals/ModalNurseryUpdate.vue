@@ -1,30 +1,77 @@
 <script setup>
 import { ref, onMounted, computed, watch } from 'vue';
-import { propertyStore } from "../../../stores/dashboard/property";
+import { useNurseriesDashStore } from "@/stores/dashboard/nurseries";
 import { useModalStore } from "@/stores/modal";
 import { useUsersStore } from "@/stores/users";
 import { locatesColombia } from "@/stores/locates";
 
 const locates = locatesColombia();
-const property = propertyStore();
+const nurseriesStore = useNurseriesDashStore();
 const modal = useModalStore();
 const user = useUsersStore();
 
 const formData = ref({
-    p_user: '',
-    nombre_predio: '',
-    p_departamento: '',
-    p_municipio: ''
+    nombre_vivero: '',
+    nit: '',
+    representante_legal_id: '',
+    ubicacion: '',
+    email: '',
+    telefono: '',
+    department: '',
+    city: '',
+    direccion: '',
+    logo: '',
+    active: ''
 });
 
-watch(() => property.userSelected, (newValue) => {
-  formData.value.p_user = newValue;
-});
+const initializeFormData = () => {
+  const selectedNursery = nurseriesStore.nurserySelected[0]; // Asegúrate de que propertySelected sea un objeto correcto
+  if (selectedNursery) {
+    formData.value = {
+      nombre_vivero: selectedNursery.nombre_vivero || "",
+      representante_legal_id: selectedNursery.representante_legal_id || "",
+      nit: selectedNursery.nit || "",
+      ubicacion: selectedNursery.ubicacion || "",
+      email: selectedNursery.email || "",
+      telefono: selectedNursery.telefono || "",
+      department: "",
+      city: "",
+      direccion: selectedNursery.direccion || "",
+      logo: selectedNursery.logo || "",
+      active: selectedNursery.activo || "",
+    };
+  } else {
+    // Asegúrate de resetear el formData si no hay propiedad seleccionada
+    formData.value = {
+      nombre_vivero: '',
+      nit: '',
+      representante_legal_id: '',
+      ubicacion: '',
+      email: '',
+      telefono: '',
+      department: '',
+      city: '',
+      direccion: '',
+      logo: '',
+      active: ''
+    };
+  }
+};
 
-/* onMounted(() => {
-  const hoy = new Date();
-  formData.value.fecha_evaluacion = hoy.toISOString().split('T')[0];
-}); */
+async function nurseryUpdate() {
+    await nurseriesStore.updateNursery(nurseriesStore.nurseryUpdateSelected[0].id, formData.value);
+    modal.handleClickModalNurseryUpdate();
+}
+
+watch(
+  () => nurseriesStore.nurseryUpdateSelected,
+  (newValue, oldValue) => {
+    if (newValue !== oldValue) {
+      initializeFormData();
+    }
+  },
+  { immediate: true } // Esto asegura que initializeFormData se llame inmediatamente
+);
 
 function resetForm() {
   Object.keys(formData.value).forEach(key => {
@@ -32,56 +79,59 @@ function resetForm() {
   });
 }
 
-const handleSubmit = () => {  
-  try {
-    property.createProperty(formData.value);
-    resetForm();
-    modal.handleClickModalPropertyAdd();
-  } catch (error) {
-    if (error.response && error.response.data && error.response.data.error) {
-      // Si hay un mensaje de error en la respuesta, lo puedes mostrar
-      alert(error.response.data.error);
-    } else {
-      // En caso de un error inesperado
-      alert("Ocurrió un error al procesar la solicitud.");
-    }
-  }
-};
-
 const filteredCities = computed(() => {
-  const { p_departamento } = formData.value;
+  const { department } = formData.value;
 
-  if (p_departamento) {
+  if (department) {
     const filtered = locates.cities.filter(
-      (city) => city.department_id === p_departamento
+      (city) => city.department_id === department
     );
     return filtered;
   }
   return [];
 });
 
-// Observa los cambios en la evaluación y actualiza formData.evaluacion
-/* watch(nombre_predio, (nuevoValor) => {
-    formData.value.nombre_predio = nuevoValor;
-}); */
+// Si necesitas inicializar datos al montar el componente
+onMounted(() => {
+  initializeFormData();
+});
+
+if ("geolocation" in navigator) {
+  navigator.geolocation.getCurrentPosition(function(position) {
+    const latitude = position.coords.latitude;
+    const longitude = position.coords.longitude;
+
+    formData.value.ubicacion = `${latitude}, ${longitude}`
+  }, function(error) {
+    console.error("Error obteniendo la ubicación: ", error);
+  });
+} else {
+  console.log("Geolocalización no está disponible en tu navegador");
+}
 </script>
 
 <template>
-    <div class="modal" v-if="modal.modalPropertyAdd">
+    <div class="modal" v-if="modal.modalNurseryUpdate">
         <div class="modal__contenido">
             <div class="form__addCandidate">
                 <div class="title__addCandidate">
-                    <span>Registrar nuevo predio</span>
+                    <span>Actualizar datos vivero</span>
                 </div>
-                <form @submit.prevent="handleSubmit">
+                <form @submit.prevent="nurseryUpdate">
                     <div class="form-section data__evaluation">
-                        <input class="txt__none" type="text" v-model="formData.p_user" :placeholder="property.userSelected">
-                        <label>Nombre del predio: </label><input type="text" v-model="formData.nombre_predio">
+                        <label class="formulario__label" for="usuario">Nombre de vivero: </label>
+                        <input type="text" v-model="formData.nombre_vivero">
+                        <label class="formulario__label" for="usuario">Representante legal: </label>
+                        <input type="text" v-model="formData.representante_legal_id">
+                        <label>Nit: </label><input type="text" v-model="formData.nit">
+                        <label>Ubicación: </label><input type="text" v-model="formData.ubicacion">
+                        <label>Email: </label><input type="text" v-model="formData.email">
+                        <label>Celular: </label><input type="text" v-model="formData.telefono">
                         <label class="formulario__label" for="departamento">Departamento:</label>
                         <select
                             id="departamento"
                             class="formulario__input formulario__input--selectc"
-                            v-model="formData.p_departamento"
+                            v-model="formData.department"
                         >
                             <option value="">--Seleccione--</option>
                             <option
@@ -94,7 +144,7 @@ const filteredCities = computed(() => {
                         </select>
                         <!-- ciudad -->
                         <label class="formulario__label" for="municipio" v-show="filteredCities.length">Ciudad:</label>
-                        <select id="municipio" class="formulario__input formulario__input--select" v-model="formData.p_municipio" v-show="filteredCities.length">
+                        <select id="municipio" class="formulario__input formulario__input--select" v-model="formData.city" v-show="filteredCities.length">
                             <option value="">-- Seleccione--</option>
                             <option
                             v-for="city in filteredCities"
@@ -104,12 +154,14 @@ const filteredCities = computed(() => {
                             {{ city.name }}
                             </option>
                         </select>
+                        <label>Dirección: </label><input type="text" v-model="formData.direccion">
+                        <label>Logo: </label><input type="text" v-model="formData.logo">
                     </div>
                     
                     <div class="formulario__botones">
                         <button type="submit" class="formulario__boton">Guardar</button>
                         <button
-                            @click="modal.handleClickModalPropertyAdd()"
+                            @click="modal.handleClickModalNurseryUpdate()"
                             type="button"
                             class="formulario__boton formulario__boton--cerrar"
                         >
@@ -150,7 +202,7 @@ const filteredCities = computed(() => {
   margin-top: 2rem;
 }
 
-.txt__none{
+.text__noview {
   display: none;
 }
 

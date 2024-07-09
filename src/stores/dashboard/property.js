@@ -179,12 +179,10 @@ export const propertyStore = defineStore('property',()=>{
   function selectedPropertyUpdate(id) {
     propertySelectedUpdate.value = id;
     propertySelected.value = propertyOriginal.value.filter(property => property.id === id)
-    console.log('property selected: ', propertySelected.value)
     modal.handleClickModalPropertyUpdate();
   }
 
   const updateProperty = async (pid, data) => {
-    console.log('property id: ', pid)
     const propertyIndex = property.value.findIndex((property) => property.id === pid);
     if (propertyIndex !== -1) {
         Object.assign(property.value[propertyIndex], data);

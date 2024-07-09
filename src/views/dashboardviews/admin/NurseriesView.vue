@@ -3,8 +3,7 @@ import { computed, onMounted } from "vue";
 import { onBeforeRouteLeave } from "vue-router";
 import { useNurseriesDashStore } from "@/stores/dashboard/nurseries";
 import ModalNurseryAssign from "@/components/dashboard/modals/ModalNurseryAssign.vue";
-import ModalPropertyAdd from "@/components/dashboard/modals/ModalPropertyAdd.vue";
-import ModalPropertyUpdate from "@/components/dashboard/modals/ModalPropertyUpdate.vue";
+import ModalNurseryUpdate from "@/components/dashboard/modals/ModalNurseryUpdate.vue";
 import ModalNurserySpeciesList from "@/components/dashboard/modals/ModalNurserySpeciesList.vue";
 import { useModalStore } from "@/stores/modal";
 
@@ -145,12 +144,12 @@ function deleteNursery(id, nu) {
               {{ nursery.activo }}
             </td>
             <td class="tabla__dato tabla__botones">
-<!--               <button
-                @click="nurseriesStore.selectedPropertyUpdate(property.id)"
-                class="tabla__boton"
+              <button
+                @click="nurseriesStore.selectedUpdateNursery(nursery.id)"
+                class="tabla__boton" title="Editar vivero"
               >
                 <font-awesome-icon :icon="['fas', 'pen-to-square']" />
-              </button> -->
+              </button>
               <button
                 @click="nurseriesStore.selectedNurseryAssignSpecie(nursery.id)"
                 class="tabla__boton" title="Asignar especie"
@@ -220,9 +219,9 @@ function deleteNursery(id, nu) {
       <!--fin texto validacion buscador -->
       
     </main>
-    <ModalPropertyAdd/>
     <ModalNurseryAssign/>
     <ModalNurserySpeciesList/>
+    <ModalNurseryUpdate/>
   </div>
 </template>
 

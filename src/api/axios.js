@@ -3,8 +3,8 @@ import { auth } from '../firebase/firebase';
 //import { useAuthTokenStore } from "../stores/auth";
 
 const api = axios.create({
-    baseURL:'https://apisara.corpoamazonia.gov.co/api',
-    //baseURL:'http://127.0.0.1:8000/api',
+    //baseURL:'https://apisara.corpoamazonia.gov.co/api',
+    baseURL:'http://127.0.0.1:8000/api',
 })
 
 /* api.interceptors.request.use(async (config) => {

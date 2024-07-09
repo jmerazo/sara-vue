@@ -8,10 +8,12 @@ const modal = useModalStore();
 export const useNurseriesDashStore = defineStore('nurseriesDashboard',()=>{
     const nurseries = ref([]);
     const nurseriesOriginal = ref([]);
-    const nurseriesSpecies = ref([])
-    const nurseriesSpeciesOriginal = ref([])
-    const nurseriesSpeciesList = ref([])
+    const nurseriesSpecies = ref([]);
+    const nurseriesSpeciesOriginal = ref([]);
+    const nurseriesSpeciesList = ref([]);
     const nursery = ref([]);
+    const nurserySelected = ref([]);
+    const nurseryUpdateSelected = ref('');
     const nurseriesById = ref([]);
     const totalProperty = ref(0);
     const datosImport = ref([]);
@@ -19,6 +21,7 @@ export const useNurseriesDashStore = defineStore('nurseriesDashboard',()=>{
     const noResultados = computed(() => property.value.length === 0 );
     const userSelected = ref('');
     const selectedNurseryAssign = ref('');
+    const userUpdateSelected = ref('');
 
     // variables para paginación
     const currentPage = ref(1); // Página actual
@@ -75,6 +78,12 @@ export const useNurseriesDashStore = defineStore('nurseriesDashboard',()=>{
         modal.handleClickModalNurserySpecieList()
     }
 
+    const selectedUpdateNursery = (id) => {
+        nurseryUpdateSelected.value = id;
+        nurserySelected.value = nurseriesOriginal.value.filter(nurseries => nurseries.id === id)
+        modal.handleClickModalNurseryUpdate()
+    }
+
     const createNursery = async (data) => {
         try {
         const response = await APIService.createNurseries(data);
@@ -88,6 +97,16 @@ export const useNurseriesDashStore = defineStore('nurseriesDashboard',()=>{
         }
         } catch (error) {
         console.error("Error al comunicarse con el servidor: ", error);
+        }
+    };
+
+    const updateNursery = async (id, data) => {
+        const nurseriesIndex = nurseries.value.findIndex((nurseries) => nurseries.id === id);
+        if (nurseriesIndex !== -1) {
+            Object.assign(nurseries.value[nurseriesIndex], data);
+            await APIService.updateNurseries(id, data)
+        } else {
+            console.error(`Vivero con ID ${id} no encontrado.`);
         }
     };
 
@@ -194,6 +213,11 @@ export const useNurseriesDashStore = defineStore('nurseriesDashboard',()=>{
         AssignSpecieNursery,
         selectedNurserySpeciesList,
         nurseriesSpeciesList,
-        nurseriesSpecies
+        nurseriesSpecies,
+        selectedUpdateNursery,
+        userUpdateSelected,
+        updateNursery,
+        nurserySelected,
+        nurseryUpdateSelected
     }
 })
