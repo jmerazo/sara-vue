@@ -64,7 +64,6 @@ export const propertyStore = defineStore('property',()=>{
       if (response.status === 201) {
         // La respuesta del APIService fue satisfactoria
         property.value.push(response.data); // Agrega el nuevo objeto al array
-        console.log('property data: ', property.value)
       } else {
         console.error("Error al agregar el predio: ", response.statusText);
       }
@@ -81,11 +80,9 @@ export const propertyStore = defineStore('property',()=>{
   const createUsersProperty= async (data) => {
     try {
       const response = await APIService.createUsersProperty(data);
-      console.log('response: ', response);
 
       if (response.status === 201) {
         propertyUsers.value.push(response.data); // Agrega el nuevo objeto al array
-        console.log('prop:  ', propertyUsers.value)
       } else {
         console.error("Error al agregar el predio: ", response.statusText);
       }
@@ -95,11 +92,9 @@ export const propertyStore = defineStore('property',()=>{
   };
 
   const listPropertyId = async (id) => {
-    console.log('id property user: ', id)
     try {
       const response = await APIService.listPropertyId(id)
       propertyUser.value = response.data;
-      console.log('list property user: ', propertyUser.value)
     } catch (error) {
       console.error("Error al comunicarse con el servidor: ", error);
     }
@@ -245,6 +240,9 @@ export const propertyStore = defineStore('property',()=>{
         selectedPropertyUpdate,
         updateProperty,
         propertySelectedUpdate,
-        propertySelected
+        propertySelected,
+        currentPage,
+        itemsPerPage,
+        totalPages
     }
 })
