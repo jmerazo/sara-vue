@@ -13,6 +13,7 @@ const renderGeoMapRef = ref(null);
 const codeFind = ref("");
 const department = ref({ code: "", name: "" });
 const city = ref("");
+const source = ref("")
 
 onMounted(async () => {
   await geoStore.fetchData();
@@ -26,7 +27,7 @@ function callOnlyPerimeter() {
 
 const filterGeoData = () => {
   /*   console.log('department: ', department.value.name, " city: ", city.value) */
-  geoStore.filterGeo(department.value.name, city.value, codeFind.value);
+  geoStore.filterGeo(department.value.name, city.value, codeFind.value, source.value);
   geoStore.calculatePerimeterCoordinates(
     department.value.name,
     city.value,
@@ -66,6 +67,20 @@ function execDeleteParameter() {
       <div class="mapaOpciones">
         <fieldset class="menu">
           <legend class="menu__titulo">Filtrar</legend>
+          <!-- Data source -->
+          <select
+            class="filtro__select"
+            id="dataSource"
+            v-model="source"
+            @change="filterGeoData"
+          >
+            <option value="" disabled>
+              Seleccione una fuente de datos...
+            </option>
+            <option value="gbif">GBIF</option>
+            <option value="original">Proyecto Semillas</option>
+          </select>
+
           <!-- departamento -->
           <select
             class="filtro__select"

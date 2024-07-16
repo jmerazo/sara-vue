@@ -122,7 +122,6 @@ export default {
     // (PROTECT) Retorna la cantidad mensual de monitoreos realizados, pendientes y total por municipios -- http://localhost:8000/api/monitoring/report/general/total
     getValuesByDepartment(){
         const store = useAuthTokenStore();
-        console.log('bearer access: ', store.accessToken)
         return api.get('/monitoring/report/general/total', {
             headers: {
                 Authorization: `Bearer ${store.accessToken}`

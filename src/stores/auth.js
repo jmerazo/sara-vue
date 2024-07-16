@@ -31,7 +31,6 @@ export const useAuthTokenStore = defineStore('authToken', () => {
       const response = await APIService.modulesUser(email); // Asume que este método realiza la llamada API al endpoint
       if (response.status === 200) {
         userPermissions.value = response.data;
-        console.log('permissions user: ', userPermissions.value);
         localStorage.setItem('user_permissions', JSON.stringify(response.data));
       } else {
         console.error('Error al cargar los permisos del usuario:', response.statusText);
@@ -102,10 +101,8 @@ export const useAuthTokenStore = defineStore('authToken', () => {
   };
 
   const loginFirebase = async (email, password) => {
-    console.log('email: ', email, " password: ", password)
     try {
       const token = await signInAndGetToken(email, password); 
-      console.log('token: ', token)
       const response = await APIService.loginFirebase(token);
       if (response.status === 200) {
         accessToken.value = response.data.access;
