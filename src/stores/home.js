@@ -12,6 +12,7 @@ export const useHomeStore = defineStore('home',()=>{
         {enlace:'https://www.sgr.gov.co/',img:'/logos/sgr.png'},
         {enlace:'https://www.putumayo.gov.co/index.php/mi-departamento/presentacion',img:'/logos/gp.png'},
         {enlace:'https://itp.edu.co/ITP2022/',img:'/logos/itp.png'},
+        {enlace:'https://www.caqueta.gov.co/',img:'/logos/gob_caqueta.png'},
     ])
 
     const fetchData = async () => {

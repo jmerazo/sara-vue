@@ -14,7 +14,7 @@ export const useGeoCandidateTrees = defineStore("geoCandidateTrees", () => {
   const candidates = ref([]);
   const validImages = ref([]);
   const sourceData = ref('');
-  const geoCandidateGBIFData = ref([]);
+  const combinedGeoData = ref([]);
   const geoEnrichData = ref([]);
   const geoCandidateEnrichGBIFData = ref([]);
 
@@ -60,7 +60,8 @@ export const useGeoCandidateTrees = defineStore("geoCandidateTrees", () => {
       // Enriquecer los datos originales con las coordenadas obtenidas
       enrichOriginalData(data, gbifData);
       geoDataNew.value = geoEnrichData.value.concat(geoCandidateEnrichGBIFData.value);
-      console.log('data ini: ', geoDataNew.value)
+      combinedGeoData.value = geoDataNew.value;
+
         
       const defDep = [
         ...new Map(
@@ -137,46 +138,6 @@ export const useGeoCandidateTrees = defineStore("geoCandidateTrees", () => {
     });
   }
   
-  
-/* function enrichOriginalData(originalData, gbifData) {
-  return originalData
-    .map(item => {
-      const gbifCoordinates = gbifData.find(g => g.taxonKey === item.taxon_key);
-      if (gbifCoordinates) {
-        return {
-          codigo: item.codigo, // Mantener el código original
-          nombre_cientifico: gbifCoordinates.nombre_cientifico,
-          nombre_comun: gbifCoordinates.nombre_comun,
-          taxon_key: item.taxon_key,
-          lat: gbifCoordinates.lat,
-          lon: gbifCoordinates.lon,
-        };
-      }
-      return null;
-    })
-    .filter(item => item !== null); // Filtrar elementos nulos
-} */
-  /* async function fetchGBIFCoordinates(taxonKeys) {
-    const promises = taxonKeys.map(taxonKey =>
-      fetch(`https://api.gbif.org/v1/occurrence/search?taxonKey=${taxonKey}&limit=100`)
-        .then(response => response.json())
-        .then(data => data.results.map(result => ({
-          codigo: result.codigo,
-          nombre_cientifico: result.scientificName,
-          nombre_comun: result.vernacularName,
-          taxon_key: result.taxonKey,
-          lat: result.decimalLatitude,
-          lon: result.decimalLongitude,
-        })))
-    );
-  
-    const gbifData = await Promise.all(promises);
-    console.log('gbifData: ', gbifData);
-  
-    // Aplanar el array de arrays y retornar solo los campos necesarios
-    return gbifData.flat();
-  } */
-
   const addCandidate = async (data) => {
     try {
       const response = await APIService.addCandidate(data);
@@ -353,11 +314,12 @@ export const useGeoCandidateTrees = defineStore("geoCandidateTrees", () => {
       point.lon,
       point.lat,
     ]);
-    coordinatesPolygon.value = convexHullJarvisMarch(allCoordinates);
+    if(allCoordinates.length > 0){
+      coordinatesPolygon.value = convexHullJarvisMarch(allCoordinates);
+    }    
   };
   
   function filterGeo(departmentCode, city, codeFilter, source) {
-    console.log('filter geo: ', departmentCode, " ", city, " ", codeFilter, " ", source)
     /* let filteredData = geoCandidateData.value; */
     let filteredData = [];
 
@@ -371,7 +333,6 @@ export const useGeoCandidateTrees = defineStore("geoCandidateTrees", () => {
     } else if (source=== 'original') {
       // Filtrar datos originales
       filteredData = geoEnrichData.value;
-      console.log('estoy aqui: ', filteredData)
 
       if (codeFilter) {
         filteredData = filteredData.filter(item => item.codigo === codeFilter);
@@ -411,8 +372,6 @@ export const useGeoCandidateTrees = defineStore("geoCandidateTrees", () => {
       }
     }
 
-    console.log('filteredData -> ', filteredData)
-
     geoDataNew.value = filteredData.map(item => ({
       lon: item.lon,
       lat: item.lat,
@@ -431,7 +390,7 @@ export const useGeoCandidateTrees = defineStore("geoCandidateTrees", () => {
   }
 
   function deleteFilterGeo() {
-    geoDataNew.value = geoCandidateData.value.map((item) => ({
+    geoDataNew.value = combinedGeoData.value.map((item) => ({
       lon: item.lon,
       lat: item.lat,
       nombre_comun: item.nombre_comun,
@@ -444,6 +403,7 @@ export const useGeoCandidateTrees = defineStore("geoCandidateTrees", () => {
       coordenadas: item.coordenadas,
       nombre_del_predio: item.nombre_del_predio,
       resultado: item.resultado,
+      source: item.source
     }));
   }
 

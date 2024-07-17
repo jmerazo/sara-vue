@@ -2,7 +2,7 @@
   <div class="map-container" ref="mapContainer"></div>
   <div class="info__map" ref="infoContainer">
     <div v-if="selectedFeature" class="contenedor">
-      <p class="map__datos">
+      <p class="map__datos" v-if="selectedFeature.getProperties().source === 'original'">
         <font-awesome-icon :icon="['fas', 'fingerprint']" />
         Código especie:
         <span class="dato">{{ selectedFeature.getProperties().codigo }} </span>
@@ -19,7 +19,7 @@
           selectedFeature.getProperties().nombre_cientifico
         }}</span>
       </p>
-      <p class="map__datos">
+      <p class="map__datos" v-if="selectedFeature.getProperties().source === 'original'">
         <font-awesome-icon :icon="['fas', 'hashtag']" /> Número de placa:
         <span class="dato">{{
           selectedFeature.getProperties().numero_placa
@@ -32,29 +32,29 @@
           selectedFeature.getProperties().coordenadas
         }}</span>
       </p>
-      <p class="map__datos">
+      <p class="map__datos" v-if="selectedFeature.getProperties().source === 'original'">
         <font-awesome-icon :icon="['fab', 'squarespace']" /> Departamento:
         <span class="dato">{{
           selectedFeature.getProperties().departamento
         }}</span>
       </p>
-      <p class="map__datos">
+      <p class="map__datos" v-if="selectedFeature.getProperties().source === 'original'">
         <font-awesome-icon :icon="['fab', 'squarespace']" /> Municipio:
         <span class="dato">{{
           selectedFeature.getProperties().municipio
         }}</span>
       </p>
-      <p class="map__datos">
+      <p class="map__datos" v-if="selectedFeature.getProperties().source === 'original'">
         <font-awesome-icon :icon="['fab', 'squarespace']" /> Vereda:
         <span class="dato">{{ selectedFeature.getProperties().vereda }}</span>
       </p>
-      <p class="map__datos">
+      <p class="map__datos" v-if="selectedFeature.getProperties().source === 'original'">
         <font-awesome-icon :icon="['fas', 'location-dot']" /> Nombre del predio:
         <span class="dato">{{
           selectedFeature.getProperties().nombre_del_predio
         }}</span>
       </p>
-      <p class="map__datos">
+      <p class="map__datos" v-if="selectedFeature.getProperties().source === 'original'">
         <font-awesome-icon :icon="['fas', 'star']" /> Puntaje evaluación:
         <span class="dato">{{
           selectedFeature.getProperties().resultado

@@ -186,8 +186,8 @@ const router = createRouter({
           component: () => import("../views/dashboardviews/SectionsListView.vue"),
         },
         {
-          path: "nurseries",
-          name: "nurseries",
+          path: "nurseries_adm",
+          name: "nurseries_adm",
           component: () => import("../views/dashboardviews/admin/NurseriesView.vue"),
         },
         {

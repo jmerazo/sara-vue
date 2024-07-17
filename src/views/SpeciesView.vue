@@ -5,7 +5,7 @@ import { onBeforeRouteLeave } from "vue-router";
 import { useEspeciesStore } from "@/stores/species";
 import { useEspeciesData } from "@/stores/dashboard/reports/speciesData";
 
-import { obtenerFecha, descargarPdfs } from "@/helpers";
+import { obtenerFecha, descargarPdfs, descargarExcel } from "@/helpers";
 
 import Species from "@/components/species/Species.vue";
 import ModalSpecie from '@/components/species/modals/ModalSpecie.vue';

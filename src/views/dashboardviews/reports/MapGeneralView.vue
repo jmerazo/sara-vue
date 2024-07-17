@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, ref, computed } from "vue";
+import { onMounted, ref, computed, watch } from "vue";
 import RenderGeo from "@/components/RenderGeoMap.vue";
 import { useGeoCandidateTrees } from "@/stores/candidate";
 import { useEspeciesStore } from "@/stores/species";
@@ -19,6 +19,13 @@ onMounted(async () => {
   await geoStore.fetchData();
 });
 
+watch(source, (newSource) => {
+  if (newSource === 'gbif') {
+    department.value = { code: "", name: "" };
+    city.value = "";
+  }
+});
+
 function callOnlyPerimeter() {
   if (renderGeoMapRef.value && renderGeoMapRef.value.onlyPerimeter) {
     renderGeoMapRef.value.onlyPerimeter();
@@ -26,7 +33,6 @@ function callOnlyPerimeter() {
 }
 
 const filterGeoData = () => {
-  /*   console.log('department: ', department.value.name, " city: ", city.value) */
   geoStore.filterGeo(department.value.name, city.value, codeFind.value, source.value);
   geoStore.calculatePerimeterCoordinates(
     department.value.name,
@@ -52,6 +58,7 @@ function delParameters() {
 }
 
 function execDeleteParameter() {
+  source.value = "";
   delParameters();
   geoStore.deleteFilterGeo();
 }
@@ -83,6 +90,7 @@ function execDeleteParameter() {
 
           <!-- departamento -->
           <select
+            v-if="source !== 'gbif'"
             class="filtro__select"
             id="department"
             v-model="department"
@@ -101,7 +109,7 @@ function execDeleteParameter() {
           </select>
 
           <!-- ciudad -->
-          <div v-if="filteredCities.length > 0">
+          <div v-if="filteredCities.length > 0 && source !== 'gbif'">
             <select
               class="filtro__select"
               id="city"

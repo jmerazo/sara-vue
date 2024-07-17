@@ -45,25 +45,18 @@
             <!-- footer contacto -->
             <div class="footer__contacto">
               <h3 class="footer__heading">
-                <font-awesome-icon :icon="['fas', 'phone-volume']" /> Contacto
+                <font-awesome-icon :icon="['fas', 'phone-volume']" /> Contactos
               </h3>
               <p class="footer__texto">
-                Amazonas, Caquetá y Putumayo: 018000-930506
+                Línea directa nacional Amazonas, Caquetá y Putumayo: <br>018000-930506
               </p>
-              <p class="footer__texto">3152370176</p>
-              <p class="footer__texto footer__texto--titulo">
-                Horario de Atención:
-              </p>
-              <p class="footer__texto">
-                de Lunes a Viernes de 8:00 am a 12:00 m y de 2:00 a 6:00 pm
-              </p>
+              <p class="footer__texto">Celular: 3152370176</p>
               <p class="footer__texto">Teléfono: (123) 456-7890</p>
               <p class="footer__texto footer__texto--titulo">
                 Correo Electrónico:
               </p>
-
               <p class="footer__texto">
-                Email: correspondencia@corpoamazonia.gov.co
+                correspondencia@corpoamazonia.gov.co
               </p>
             </div>
             <!--fin footer contacto -->
@@ -72,11 +65,15 @@
             <div class="footer__ubicacion">
               <h3 class="footer__heading">
                 <font-awesome-icon
-                  :icon="['fas', 'map-location-dot']"
+                  :icon="['fas', 'clock']"
                   class="mr-2"
-                />Ubícanos
+                />Horario de atención
               </h3>
-              <p class="footer__texto">Cra. 17 #14 - 85, Mocoa, Putumayo</p>
+              <p class="footer__texto footer__texto--titulo">
+              </p>
+              <p class="footer__texto">
+                de Lunes a Viernes de 8:00 am a 12:00 m y de 2:00 a 6:00 pm
+              </p>
             </div>
             <!--fin footer ubicacion -->
           </div>
