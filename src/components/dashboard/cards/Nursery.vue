@@ -42,7 +42,7 @@ defineProps({
                     </svg>
                 </div>
                 <p >{{ nursery.first_name + " " + nursery.last_name }}</p>
-                <p>{{ nursery.email }}</p>
+                <p>{{ nursery.email ? nursery.email : "Sin email" }}</p>
                 <p>{{ nursery.telefono }}</p>
             </div>
         </div>
