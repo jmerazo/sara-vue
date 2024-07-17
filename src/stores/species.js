@@ -6,6 +6,7 @@ import APIService from '@/services/APIService'
 
 
 export const useEspeciesStore = defineStore('especies', () => {
+  
     const modal = useModalStore();
     const cargando = ref(false)
     const especies = ref([]);
@@ -71,8 +72,7 @@ export const useEspeciesStore = defineStore('especies', () => {
    
     function seleccionarEspecie(cod_especie) {
       especie.value = especiesOriginales.value.filter(especie => especie.cod_especie === cod_especie)
-      
-      modal.handleClickModal();
+      modal.handleClickModalSpecie();
     }
 
     //quitar los filtros del motor de busqueda

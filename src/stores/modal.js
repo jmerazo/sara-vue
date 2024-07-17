@@ -4,7 +4,7 @@ import {defineStore} from 'pinia'
 
 export const useModalStore = defineStore('modal',()=>{
   
-    const modal = ref(false)
+    const modalSpecie = ref(false)
     const modalComponent = ref(false)
     const componentsTree = ref([])
 
@@ -21,10 +21,18 @@ export const useModalStore = defineStore('modal',()=>{
     const modalSectionUpdate = ref(false)  
     const modalSectionView = ref(false) 
     const modalFormMonitoring = ref(false)  
+    const modalPropertyAdd = ref(false)
+    const modalPropertyUpdate = ref(false)
+    const modalAssignUserSpecies = ref(false)
+    const modalListUserSpecies = ref(false)
+    const modalNurseryAdd = ref(false)
+    const modalNurseryUpdate = ref(false)
+    const modalNurseryAssignSpecie = ref(false)
+    const modalNurserySpecieList = ref(false)
     
     //modal especie
-    function handleClickModal(){
-        modal.value = !modal.value
+    function handleClickModalSpecie(){
+        modalSpecie.value = !modalSpecie.value
     }
     function handleClickModalComponent(array){
         componentsTree.value = array
@@ -92,15 +100,46 @@ export const useModalStore = defineStore('modal',()=>{
         modalSectionView.value = !modalSectionView.value
     }
 
+    function handleClickModalPropertyAdd(){
+        modalPropertyAdd.value = !modalPropertyAdd.value
+    }
+
+    function handleClickModalPropertyUpdate(){
+        modalPropertyUpdate.value = !modalPropertyUpdate.value
+    }
+
+    function handleClickModalAssignUserSpecies(){
+        modalAssignUserSpecies.value = !modalAssignUserSpecies.value
+    }
+
+    function handleClickModalListUserSpecies(){
+        modalListUserSpecies.value = !modalListUserSpecies.value
+    }
+
+    function handleClickModalNurseryAdd(){
+        modalNurseryAdd.value = !modalNurseryAdd.value
+    }
+
+    function handleClickModalNurseryUpdate(){
+        modalNurseryUpdate.value = !modalNurseryUpdate.value
+    }
+
+    function handleClickModalNurseryAssignSpecie(){
+        modalNurseryAssignSpecie.value = !modalNurseryAssignSpecie.value
+    }
+
+    function handleClickModalNurserySpecieList(){
+        modalNurserySpecieList.value = !modalNurserySpecieList.value
+    }
+
     return {
-        modal,
+        modalSpecie,
         modalFamily,
         modalUserUpdate,
-        handleClickModal,
         handleClickModalFamily,
         handleClickModalUserUpdate,        
         modalCandidates,
-        handleClickModal,
+        handleClickModalSpecie,
         handleClickModalFamily,
         handleClickModalCandidate,
         handleClickModalInfoCandidate,
@@ -125,6 +164,22 @@ export const useModalStore = defineStore('modal',()=>{
         modalSectionView,
         handleClickModalComponent,
         modalComponent,
-        componentsTree
+        componentsTree,
+        handleClickModalPropertyAdd,
+        modalPropertyAdd,
+        handleClickModalPropertyUpdate,
+        modalPropertyUpdate,
+        handleClickModalAssignUserSpecies,
+        modalAssignUserSpecies,
+        handleClickModalListUserSpecies,
+        modalListUserSpecies,
+        handleClickModalNurseryAdd,
+        modalNurseryAdd,
+        handleClickModalNurseryUpdate,
+        modalNurseryUpdate,
+        handleClickModalNurseryAssignSpecie,
+        modalNurseryAssignSpecie,
+        handleClickModalNurserySpecieList,
+        modalNurserySpecieList
     }
 })

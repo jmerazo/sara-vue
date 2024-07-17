@@ -8,7 +8,7 @@ import api from "@/api/axios";
 import exportFromJSON from "export-from-json";
 
 //Import log
-import logSara from '@/assets/sara.png';
+/* import logSara from '/public/icons/sara.png'; */
 
 //para funcion descargarPDF
 import pdfMake from "pdfmake/build/pdfmake";
@@ -59,7 +59,7 @@ export const descargarPdfs = (datos, tituloTabla, columnas, inicio) => {
   // Añadir título
   doc.setFontSize(18);
   doc.setFont('helvetica', 'bold');
-  doc.addImage(logSara, 'PNG', 27, 10, 40, 30);
+  /* doc.addImage(logSara, 'PNG', 27, 10, 40, 30); */
   doc.text(tituloTabla, doc.internal.pageSize.getWidth() / 2, 40, { align: 'center' });
 
   // Añadir tabla

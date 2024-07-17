@@ -2,7 +2,7 @@
   <div class="map-container" ref="mapContainer"></div>
   <div class="info__map" ref="infoContainer">
     <div v-if="selectedFeature" class="contenedor">
-      <p class="map__datos">
+      <p class="map__datos" v-if="selectedFeature.getProperties().source === 'original'">
         <font-awesome-icon :icon="['fas', 'fingerprint']" />
         Código especie:
         <span class="dato">{{ selectedFeature.getProperties().codigo }} </span>
@@ -19,7 +19,7 @@
           selectedFeature.getProperties().nombre_cientifico
         }}</span>
       </p>
-      <p class="map__datos">
+      <p class="map__datos" v-if="selectedFeature.getProperties().source === 'original'">
         <font-awesome-icon :icon="['fas', 'hashtag']" /> Número de placa:
         <span class="dato">{{
           selectedFeature.getProperties().numero_placa
@@ -32,29 +32,29 @@
           selectedFeature.getProperties().coordenadas
         }}</span>
       </p>
-      <p class="map__datos">
+      <p class="map__datos" v-if="selectedFeature.getProperties().source === 'original'">
         <font-awesome-icon :icon="['fab', 'squarespace']" /> Departamento:
         <span class="dato">{{
           selectedFeature.getProperties().departamento
         }}</span>
       </p>
-      <p class="map__datos">
+      <p class="map__datos" v-if="selectedFeature.getProperties().source === 'original'">
         <font-awesome-icon :icon="['fab', 'squarespace']" /> Municipio:
         <span class="dato">{{
           selectedFeature.getProperties().municipio
         }}</span>
       </p>
-      <p class="map__datos">
+      <p class="map__datos" v-if="selectedFeature.getProperties().source === 'original'">
         <font-awesome-icon :icon="['fab', 'squarespace']" /> Vereda:
         <span class="dato">{{ selectedFeature.getProperties().vereda }}</span>
       </p>
-      <p class="map__datos">
+      <p class="map__datos" v-if="selectedFeature.getProperties().source === 'original'">
         <font-awesome-icon :icon="['fas', 'location-dot']" /> Nombre del predio:
         <span class="dato">{{
           selectedFeature.getProperties().nombre_del_predio
         }}</span>
       </p>
-      <p class="map__datos">
+      <p class="map__datos" v-if="selectedFeature.getProperties().source === 'original'">
         <font-awesome-icon :icon="['fas', 'star']" /> Puntaje evaluación:
         <span class="dato">{{
           selectedFeature.getProperties().resultado
@@ -73,12 +73,12 @@ import TileLayer from "ol/layer/Tile";
 import OSM from "ol/source/OSM";
 import VectorLayer from "ol/layer/Vector";
 import VectorSource from "ol/source/Vector";
-import { Style, Icon, Stroke, Fill } from "ol/style";
+import { Style, Icon, Stroke, Fill, Circle } from "ol/style";
 import { fromLonLat } from "ol/proj";
 import Point from "ol/geom/Point";
 import Feature from "ol/Feature";
 import Polygon from "ol/geom/Polygon.js";
-import treeIconPath from "../assets/icons/icon_tree_cg.png";
+import treeIconPath from "/icons/icon_geo.png";
 import { useGeoCandidateTrees } from "../stores/candidate";
 
 const geoStore = useGeoCandidateTrees();
@@ -160,6 +160,7 @@ function updateVectorSource() {
       vereda: point.vereda,
       nombre_del_predio: point.nombre_del_predio,
       resultado: point.resultado,
+      source: point.source
     });
     return feature;
   });
@@ -206,17 +207,51 @@ function drawMap(perimeterCoordinates, vectorSource) {
   //fin tamaños y coordenadas
   mapInstance.getViewport().style.cursor = "pointer";
 
-  const treeIcon = new Icon({
-    src: treeIconPath,
-    scale: 0.4,
-    anchor: [0.5, 1],
+  const treeIconStyle = new Style({
+    image: new Icon({
+      src: treeIconPath,
+      scale: 0.4,
+      anchor: [0.5, 1],
+    }),
   });
 
-  const vectorLayer = new VectorLayer({
+  const originalStyle = new Style({
+    image: new Circle({
+      radius: 7,
+      fill: new Fill({
+        color: 'blue',
+      }),
+      stroke: new Stroke({
+        color: 'white',
+        width: 2,
+      }),
+    }),
+  });
+
+  const gbifStyle = new Style({
+    image: new Circle({
+      radius: 7,
+      fill: new Fill({
+        color: 'red',
+      }),
+      stroke: new Stroke({
+        color: 'white',
+        width: 2,
+      }),
+    }),
+  });
+
+  /* const vectorLayer = new VectorLayer({
     source: vectorSource,
     style: new Style({
       image: treeIcon,
     }),
+  }); */
+  const vectorLayer = new VectorLayer({
+    source: vectorSource,
+    style: function (feature) {
+      return feature.get('source') === 'gbif' ? gbifStyle : treeIconStyle;
+    },
   });
 
   const lineCoords = perimeterCoordinates.map((coord) => fromLonLat(coord));
@@ -287,8 +322,6 @@ function drawMap(perimeterCoordinates, vectorSource) {
   // Ejecutar la función handleResize al inicio para establecer el zoom inicial
   handleResize();
 }
-
-
 </script>
 
 

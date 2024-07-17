@@ -1,6 +1,6 @@
 // stores/speciesStore.js
 import { defineStore } from "pinia";
-import { ref, onMounted, computed } from "vue";
+import { ref, onMounted } from "vue";
 import APIService from "../services/APIService";
 
 export const useCalendarStore = defineStore("species", () => {

@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, ref, computed } from "vue";
+import { onMounted, ref, computed, watch } from "vue";
 import RenderGeo from "@/components/RenderGeoMap.vue";
 import { useGeoCandidateTrees } from "@/stores/candidate";
 import { useEspeciesStore } from "@/stores/species";
@@ -13,9 +13,17 @@ const renderGeoMapRef = ref(null);
 const codeFind = ref("");
 const department = ref({ code: "", name: "" });
 const city = ref("");
+const source = ref("")
 
 onMounted(async () => {
   await geoStore.fetchData();
+});
+
+watch(source, (newSource) => {
+  if (newSource === 'gbif') {
+    department.value = { code: "", name: "" };
+    city.value = "";
+  }
 });
 
 function callOnlyPerimeter() {
@@ -25,8 +33,7 @@ function callOnlyPerimeter() {
 }
 
 const filterGeoData = () => {
-  /*   console.log('department: ', department.value.name, " city: ", city.value) */
-  geoStore.filterGeo(department.value.name, city.value, codeFind.value);
+  geoStore.filterGeo(department.value.name, city.value, codeFind.value, source.value);
   geoStore.calculatePerimeterCoordinates(
     department.value.name,
     city.value,
@@ -51,6 +58,7 @@ function delParameters() {
 }
 
 function execDeleteParameter() {
+  source.value = "";
   delParameters();
   geoStore.deleteFilterGeo();
 }
@@ -66,8 +74,23 @@ function execDeleteParameter() {
       <div class="mapaOpciones">
         <fieldset class="menu">
           <legend class="menu__titulo">Filtrar</legend>
+          <!-- Data source -->
+          <select
+            class="filtro__select"
+            id="dataSource"
+            v-model="source"
+            @change="filterGeoData"
+          >
+            <option value="" disabled>
+              Seleccione una fuente de datos...
+            </option>
+            <option value="gbif">GBIF</option>
+            <option value="original">Proyecto Semillas</option>
+          </select>
+
           <!-- departamento -->
           <select
+            v-if="source !== 'gbif'"
             class="filtro__select"
             id="department"
             v-model="department"
@@ -86,7 +109,7 @@ function execDeleteParameter() {
           </select>
 
           <!-- ciudad -->
-          <div v-if="filteredCities.length > 0">
+          <div v-if="filteredCities.length > 0 && source !== 'gbif'">
             <select
               class="filtro__select"
               id="city"
@@ -178,7 +201,7 @@ function execDeleteParameter() {
 }
 @media (min-width: 768px) {
   .reporte__heading {
-    font-size: 1.5rem;
+    font-size: 1.3rem;
     margin: 3rem 0 2rem 0;
   }
 }

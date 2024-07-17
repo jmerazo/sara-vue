@@ -1,16 +1,20 @@
 <script setup>
-import { onBeforeRouteLeave } from "vue-router";
-import { useEspeciesStore } from "../stores/species";
 import { computed, ref } from "vue";
-import { useEspeciesData } from "../stores/dashboard/reports/speciesData";
-import { descargarExcel, descargarPdf, obtenerFecha, descargarPdfs } from "@/helpers";
+import { onBeforeRouteLeave } from "vue-router";
 
-import Species from "@/components/Species.vue";
+import { useEspeciesStore } from "@/stores/species";
+import { useEspeciesData } from "@/stores/dashboard/reports/speciesData";
+
+import { obtenerFecha, descargarPdfs, descargarExcel } from "@/helpers";
+
+import Species from "@/components/species/Species.vue";
+import ModalSpecie from '@/components/species/modals/ModalSpecie.vue';
 
 const especies = useEspeciesStore();
 const reportGeneral = useEspeciesData();
-const valueSerached = ref("");
-const isSearching = computed(() => valueSerached.value !== "");
+const valueSearched = ref("");
+const isSearching = computed(() => valueSearched.value !== "");
+
 //limpiar filtros antes de cambiar de vista
 onBeforeRouteLeave((to, from, next) => {
   especies.quitarFiltroEspecie();
@@ -42,8 +46,8 @@ const displayedPageRange = computed(() => {
             <input
               class="formulario__input"
               type="text"
-              placeholder="Escríbe un término de búsqueda"
-              v-model="valueSerached"
+              placeholder="Escribe un término de búsqueda"
+              v-model="valueSearched"
               @input="especies.buscarTermino($event.target.value)"
             />
             <div class="formulario__icono">
@@ -70,7 +74,7 @@ const displayedPageRange = computed(() => {
                 ? "resultado encontrado"
                 : "resultados encontrados"
             }}
-            para {{ valueSerached }}
+            para {{ valueSearched }}
           </p>
           <p class="formulario__resultados" v-else> Buscar por nombre común, nombre científico o familia</p>
         </div>
@@ -139,6 +143,7 @@ const displayedPageRange = computed(() => {
     </section>
     <!--fin texto validacion buscador -->
   </div>
+  <ModalSpecie/>
 </template>
 
 <style scoped>
@@ -151,7 +156,7 @@ const displayedPageRange = computed(() => {
 }
 
 .header__especies {
-  background-image: url(https://images.pexels.com/photos/142497/pexels-photo-142497.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1);
+  background-image: url('/img/bannersViews/banner-species.jpeg');
   height: 40rem;
   background-size: cover;
   background-position: center bottom;
@@ -229,11 +234,6 @@ const displayedPageRange = computed(() => {
     width: 2rem;
     color: var(--gris);
     display: flex;
-  }
-  .formulario__resultados {
-    text-align: center;
-    max-width: 80%;
-    margin: 1rem auto;
   }
 }
 

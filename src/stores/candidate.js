@@ -13,6 +13,10 @@ export const useGeoCandidateTrees = defineStore("geoCandidateTrees", () => {
   const cities = ref([]);
   const candidates = ref([]);
   const validImages = ref([]);
+  const sourceData = ref('');
+  const combinedGeoData = ref([]);
+  const geoEnrichData = ref([]);
+  const geoCandidateEnrichGBIFData = ref([]);
 
   const validateUrl = async (array) => {
     const newValidImages = [];
@@ -29,14 +33,36 @@ export const useGeoCandidateTrees = defineStore("geoCandidateTrees", () => {
     validImages.value = newValidImages;
     
   };
+
   const fetchData = async () => {
     if (!isDataLoaded) {
       const { data } = await APIService.getGeoCandidateTrees();
       geoCandidateData.value = data;
-      /* console.log('geoStore: ', geoCandidateData.value) */
       geoDataNew.value = data;
       isDataLoaded = true;
 
+      // Filtrar datos únicos de taxon_key
+      const uniqueTaxonKeys = Array.from(
+        new Set(
+          geoCandidateData.value
+            .map(item => item.taxon_key) // Extraer taxon_key
+            .filter(taxonKey => taxonKey !== null && taxonKey !== undefined) // Filtrar valores no nulos y no indefinidos
+        )
+      );
+
+      // Verificar si hay taxonKeys únicos antes de llamar a fetchGBIFCoordinates
+      let gbifData = [];
+      if (uniqueTaxonKeys.length > 0) {
+        // Obtener datos de GBIF y conservar solo los campos necesarios
+        gbifData = await fetchGBIFCoordinates(uniqueTaxonKeys);
+      }
+
+      // Enriquecer los datos originales con las coordenadas obtenidas
+      enrichOriginalData(data, gbifData);
+      geoDataNew.value = geoEnrichData.value.concat(geoCandidateEnrichGBIFData.value);
+      combinedGeoData.value = geoDataNew.value;
+
+        
       const defDep = [
         ...new Map(
           geoCandidateData.value.map((dp) => [dp.departamento, dp])
@@ -59,6 +85,59 @@ export const useGeoCandidateTrees = defineStore("geoCandidateTrees", () => {
     }
   };
 
+  async function fetchGBIFCoordinates(taxonKeys) {
+    const promises = taxonKeys.map(taxonKey =>
+      fetch(`https://api.gbif.org/v1/occurrence/search?taxonKey=${taxonKey}&limit=100`)
+        .then(response => response.json())
+        .then(data => data.results.map(result => ({
+          taxonKey,
+          nombre_cientifico: result.scientificName,
+          nombre_comun: result.vernacularName,
+          lat: result.decimalLatitude,
+          lon: result.decimalLongitude,
+          source: 'gbif'
+        })))
+    );
+  
+    const gbifData = await Promise.all(promises);
+  
+    // Aplanar el array de arrays
+    return gbifData.flat();
+  }
+  
+  function enrichOriginalData(originalData, gbifData) {
+    geoEnrichData.value = originalData.map(item => ({
+      codigo: item.codigo,
+      coordenadas: item.coordenadas,
+      nombre_cientifico: item.nombre_cientifico,
+      nombre_comun: item.nombre_comun,
+      taxon_key: item.taxon_key,
+      lat: item.lat,
+      lon: item.lon,
+      departamento: item.departamento,
+      municipio: item.municipio,
+      resultado: item.resultado,
+      vereda: item.vereda,
+      numero_placa: item.numero_placa,
+      source: 'original',
+    }));
+  
+    // Enriquecer datos de GBIF y asegurar la copia de los atributos originales
+    geoCandidateEnrichGBIFData.value = gbifData.map(gbifItem => {
+      const originalItem = originalData.find(item => item.taxon_key === gbifItem.taxonKey);
+      return {
+          codigo: originalItem ? originalItem.codigo : gbifItem.taxonKey, // Usar el código original si existe, sino usar taxonKey
+          nombre_cientifico: gbifItem.nombre_cientifico,
+          nombre_comun: originalItem.nombre_comun,
+          coordenadas: gbifItem.lat + ", " + gbifItem.lon,
+          taxon_key: gbifItem.taxonKey,
+          lat: gbifItem.lat,
+          lon: gbifItem.lon,
+          source: 'gbif',
+      };
+    });
+  }
+  
   const addCandidate = async (data) => {
     try {
       const response = await APIService.addCandidate(data);
@@ -193,7 +272,8 @@ export const useGeoCandidateTrees = defineStore("geoCandidateTrees", () => {
   }
 
   const calculatePerimeterCoordinates = (departmentCode, city, codeFilter) => {
-    let filteredPoints = geoDataNew.value;
+    /* let filteredPoints = geoDataNew.value; */
+    let filteredPoints = geoDataNew.value.filter(point => point.source === 'original');
 
     if (departmentCode && city && codeFilter) {
       filteredPoints = filteredPoints.filter(
@@ -234,44 +314,65 @@ export const useGeoCandidateTrees = defineStore("geoCandidateTrees", () => {
       point.lon,
       point.lat,
     ]);
-    coordinatesPolygon.value = convexHullJarvisMarch(allCoordinates);
+    if(allCoordinates.length > 0){
+      coordinatesPolygon.value = convexHullJarvisMarch(allCoordinates);
+    }    
   };
+  
+  function filterGeo(departmentCode, city, codeFilter, source) {
+    /* let filteredData = geoCandidateData.value; */
+    let filteredData = [];
 
-  function filterGeo(departmentCode, city, codeFilter) {
-    let filteredData = geoCandidateData.value;
+    if (source === 'gbif') {
+      // Filtrar solo por codeFilter cuando el source es GBIF
+      if (codeFilter) {
+        filteredData = geoCandidateEnrichGBIFData.value.filter(item => item.codigo === codeFilter);
+      } else {
+        filteredData = geoCandidateEnrichGBIFData.value;
+      }
+    } else if (source=== 'original') {
+      // Filtrar datos originales
+      filteredData = geoEnrichData.value;
 
-    if (departmentCode && city && codeFilter) {
-      filteredData = filteredData.filter(
-        (item) =>
-          item.departamento === departmentCode &&
-          item.municipio === city &&
-          item.codigo === codeFilter
-      );
-    } else if (departmentCode && city) {
-      filteredData = filteredData.filter(
-        (item) =>
-          item.departamento === departmentCode && item.municipio === city
-      );
-    } else if (departmentCode && codeFilter) {
-      filteredData = filteredData.filter(
-        (item) =>
-          item.departamento === departmentCode && item.codigo === codeFilter
-      );
-    } else if (city && codeFilter) {
-      filteredData = filteredData.filter(
-        (item) => item.municipio === city && item.codigo === codeFilter
-      );
-    } else if (departmentCode) {
-      filteredData = filteredData.filter(
-        (item) => item.departamento === departmentCode
-      );
-    } else if (city) {
-      filteredData = filteredData.filter((item) => item.municipio === city);
-    } else if (codeFilter) {
-      filteredData = filteredData.filter((item) => item.codigo === codeFilter);
+      if (codeFilter) {
+        filteredData = filteredData.filter(item => item.codigo === codeFilter);
+      }
+      if (departmentCode && city) {
+        filteredData = filteredData.filter(
+          item => item.departamento === departmentCode && item.municipio === city
+        );
+      } else if (departmentCode) {
+        filteredData = filteredData.filter(item => item.departamento === departmentCode);
+      } else if (city) {
+        filteredData = filteredData.filter(item => item.municipio === city);
+      }
+    } else {
+      // Filtrar en ambos arrays cuando no hay source seleccionado
+      if (codeFilter) {
+        const originalFiltered = geoEnrichData.value.filter(item => item.codigo === codeFilter);
+        const gbifFiltered = geoCandidateEnrichGBIFData.value.filter(item => item.codigo === codeFilter);
+        filteredData = originalFiltered.concat(gbifFiltered);
+      } else {
+        filteredData = geoEnrichData.value.concat(geoCandidateEnrichGBIFData.value);
+      }
+
+      if (departmentCode || city) {
+        filteredData = filteredData.filter(item => {
+          if (item.source === 'original') {
+            if (departmentCode && city) {
+              return item.departamento === departmentCode && item.municipio === city;
+            } else if (departmentCode) {
+              return item.departamento === departmentCode;
+            } else if (city) {
+              return item.municipio === city;
+            }
+          }
+          return true;
+        });
+      }
     }
 
-    geoDataNew.value = filteredData.map((item) => ({
+    geoDataNew.value = filteredData.map(item => ({
       lon: item.lon,
       lat: item.lat,
       nombre_comun: item.nombre_comun,
@@ -284,11 +385,12 @@ export const useGeoCandidateTrees = defineStore("geoCandidateTrees", () => {
       coordenadas: item.coordenadas,
       nombre_del_predio: item.nombre_del_predio,
       resultado: item.resultado,
+      source: item.source
     }));
   }
 
   function deleteFilterGeo() {
-    geoDataNew.value = geoCandidateData.value.map((item) => ({
+    geoDataNew.value = combinedGeoData.value.map((item) => ({
       lon: item.lon,
       lat: item.lat,
       nombre_comun: item.nombre_comun,
@@ -301,6 +403,7 @@ export const useGeoCandidateTrees = defineStore("geoCandidateTrees", () => {
       coordenadas: item.coordenadas,
       nombre_del_predio: item.nombre_del_predio,
       resultado: item.resultado,
+      source: item.source
     }));
   }
 
@@ -319,6 +422,7 @@ export const useGeoCandidateTrees = defineStore("geoCandidateTrees", () => {
     calculatePerimeterCoordinates,
     convertToKML,
     exportToKML,
-    validateUrl
+    validateUrl,
+    sourceData
   };
 });

@@ -1,18 +1,38 @@
-import {ref, onMounted} from 'vue'
+import {ref, onMounted, computed} from 'vue'
 import {defineStore} from 'pinia'
 import APIService from '../services/APIService'
-import { useModalStore } from "@/stores/modal";
+
 
 export const useNurseriesStore = defineStore('nurseries',()=>{
     const nurseriesData = ref([]);
+    const nurseriesOriginalData = ref([]);
+    const nursery = ref([]);
 
-    const nurserieData = async () => {
-        const { data } = await APIService.getNurseries()
-        nurseriesData.value = data     
+    onMounted(async ()=>{
+        const { data } = await APIService.listNurseries();
+        nurseriesData.value = data;
+        nurseriesOriginalData.value = data;
+    })
+
+    const getNursery = async (data) => {
+        try {
+            nursery.value = data
+        } catch (error) {
+            console.log(error)
+        }
     }
 
-    return {
-        nurserieData,
-        nurseriesData
+    const filteredData = computed(() => {
+        const coords = nursery.value.ubicacion.split(',').map(coord => parseFloat(coord.trim()));
+      return [{ lon: coords[1], lat: coords[0] }];
+    })
+
+
+    return { 
+        getNursery,
+        nursery,
+        nurseriesData,
+        filteredData
+        
     }
 })

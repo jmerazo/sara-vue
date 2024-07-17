@@ -2,22 +2,24 @@
 import { computed } from "vue";
 import { onBeforeRouteLeave } from "vue-router";
 import { useEspeciesStore } from "@/stores/species";
-import { useCantidateStore } from "@/stores/dashboard/reports/SpecieCanditates";
-import { useSpecieMonitoriong } from "@/stores/dashboard/reports/SpecieMonitoring";
+import { useCandidateStore } from "@/stores/dashboard/reports/SpecieCandidates";
+import { useSpecieMonitoring } from "@/stores/dashboard/reports/SpecieMonitoring";
 import { getFullImageUrl } from "@/helpers";
 
 //componentes
-import LoadingData from "@/components/LoadingData.vue";
+import LoadingData from "@/components/shared/LoadingData.vue";
 
 const especies = useEspeciesStore();
 
-const candidatos = useCantidateStore();
-const especieMonitoreos = useSpecieMonitoriong();
+const candidatos = useCandidateStore();
+const especieMonitoreos = useSpecieMonitoring();
+
 //limpiar filtros antes de cambiar de vista
 onBeforeRouteLeave((to, from, next) => {
   especies.quitarFiltroEspecie();
   next();
 });
+
 //botones paginador
 const displayedPageRange = computed(() => {
   const currentPage = especies.currentPage;
@@ -42,7 +44,7 @@ const displayedPageRange = computed(() => {
         <input
           class="buscador__input"
           type="text"
-          placeholder="Escríbe un término de búsqueda"
+          placeholder="Escribe un término de búsqueda"
           @input="especies.buscarTermino($event.target.value)"
         />
       </div>
@@ -255,7 +257,7 @@ const displayedPageRange = computed(() => {
   background-repeat: no-repeat;
 }
 .card__titulo {
-  font-weight: 900;
+  font-weight: 700;
   margin: 0;
   padding: 0;
   text-align: center;
@@ -265,9 +267,10 @@ const displayedPageRange = computed(() => {
   margin: 0;
   padding: 0;
   text-align: center;
+  font-size: 1.05rem;
 }
 .card__dato {
-  font-weight: 900;
+  font-weight: 500;
 }
 .boton__primario {
   color: var(--blanco);

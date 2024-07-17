@@ -1,13 +1,13 @@
 <script setup>
 import { computed } from "vue";
 import { descargarExcel, descargarPdf, obtenerFecha } from "@/helpers";
-import {useCantidateStore} from '@/stores/dashboard/reports/SpecieCanditates'
+import { useCandidateStore } from '@/stores/dashboard/reports/SpecieCandidates'
 import ModalInfoCandidate from '@/components/dashboard/modals/ModalInfoCandidate.vue';
 import ModalCandidates from '@/components/dashboard/modals/ModalCandidates.vue'
 
 
 
-const consulta = useCantidateStore();
+const consulta = useCandidateStore();
 
 //botones paginador
 const displayedPageRange = computed(() => {
@@ -171,12 +171,12 @@ const displayedPageRange = computed(() => {
 <style scope>
 /* encabezado de la vista */
 .reporte__heading {
-  font-size: 1.3rem;
+  font-size: 1.1rem;
   margin: 2rem;
 }
 @media (min-width: 768px) {
   .reporte__heading {
-    font-size: 1.8rem;
+    font-size: 1.3rem;
     margin: 3rem;
   }
 }
@@ -227,6 +227,7 @@ const displayedPageRange = computed(() => {
   border-radius: 6px;
   border: 1px solid var(--primary);
   text-align: center;
+  font-size: 1rem;
 }
 @media (min-width: 768px) {
   .buscador__input {
@@ -238,9 +239,10 @@ const displayedPageRange = computed(() => {
 .botones__descarga {
   display: flex;
   gap: 1rem;
+  margin-bottom: 1rem;
 }
 .boton {
-  font-size: 1.5rem;
+  font-size: 2rem;
 }
 @media (min-width: 768px) {
   .boton {
@@ -275,7 +277,6 @@ const displayedPageRange = computed(() => {
 }
 
 .nombre__campo {
-  font-weight: 900;
   display: none;
 }
 
@@ -288,7 +289,10 @@ const displayedPageRange = computed(() => {
 }
 .tabla__botones {
   display: flex;
-  gap: 1rem;
+  flex-direction: column;
+  gap: .5rem;
+  margin: .5rem 0;
+  border: none;
 }
 .tabla__boton {
   background-color: var(--primary);
@@ -309,7 +313,7 @@ const displayedPageRange = computed(() => {
   background-color: var(--secondary-hover);
 }
 .dato__encabezado {
-  font-weight: 900;
+  font-weight: 500;
   border: 1px solid #ddd;
   padding: 5px;
   text-align: left;
@@ -328,7 +332,8 @@ const displayedPageRange = computed(() => {
   }
 
   .nombre__campo {
-    font-weight: 900;
+    font-weight: 600;
+    font-size: 1rem;
     display: inline;
   }
 
@@ -352,6 +357,7 @@ const displayedPageRange = computed(() => {
     border: none;
     padding: 5px;
     position: relative;
+    font-size: 1rem;
   }
   .tabla__botones {
     gap: 0.7rem;

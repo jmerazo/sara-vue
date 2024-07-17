@@ -20,6 +20,9 @@ export default {
     socialAuth(code){
         return api.post('/auth/callback', { code: code })
     },
+    loginFirebase(token){
+        return api.post('/auth/login',  { token })
+    },
     /* ==================================================================================================================== */
     /* ==================================================================================================================== */
     // ENDPOINT →→ CRUD FORREST SPECIES
@@ -52,10 +55,7 @@ export default {
     getFamiliesData(){
         return api.get('/species/families')
     },
-    // # Busca una especie por su nombre científico -- http://localhost:8000/api/species/search/scientific_name/Bauhinia%20tarapotensis%20Benth.
-    lookScientificName(scientific_name){
-        return api.get(`/species/search/scientific_name/${scientific_name}`) 
-    },
+    
     // Retorna las especies buscadas por su nombre de familia -- http://localhost:8000/api/species/search/family/BIGNONIACEAE
     lookFamily(n_familia){
         return api.get(`/species/search/family/${n_familia}`)
@@ -109,33 +109,6 @@ export default {
     /* ==================================================================================================================== */
     /* ==================================================================================================================== */
     // ENDPOINT →→ MONITORING
-    // (PROTECT) Retorna la cantidad mensual de monitoreos realizados, pendientes y total -- http://localhost:8000/api/monitoring/report/month
-    lookMonitoringMonth(){
-        const store = useAuthTokenStore();
-        return api.get(`monitoring/report/month`, {
-            headers: {
-                Authorization: `Bearer ${store.accessToken}`
-            }
-        })
-    },
-    // (PROTECT) Retorna la cantidad mensual de monitoreos realizados, pendientes y total por municipios -- http://localhost:8000/api/monitoring/report/month/locates
-    getValuesByDepartmentLocates(){
-        const store = useAuthTokenStore();
-        return api.get('/monitoring/report/month/locates', {
-            headers: {
-                Authorization: `Bearer ${store.accessToken}`
-            }
-        })
-    },
-    // (PROTECT) Retorna la cantidad mensual de monitoreos realizados, pendientes y total por municipios -- http://localhost:8000/api/monitoring/report/general/total
-    getValuesByDepartment(){
-        const store = useAuthTokenStore();
-        return api.get('/monitoring/report/general/total', {
-            headers: {
-                Authorization: `Bearer ${store.accessToken}`
-            }
-        })
-    },
     // (PROTECT) Retorna la cantidad mensual de monitoreos realizados, pendientes y total por municipios -- http://localhost:8000/api/monitoring/data
     getMonitoringData(){
         const store = useAuthTokenStore();
@@ -145,6 +118,17 @@ export default {
             }
         })
     },
+    
+    // (PROTECT) Retorna la cantidad mensual de monitoreos realizados, pendientes y total por municipios -- http://localhost:8000/api/monitoring/report/general/total
+    getValuesByDepartment(){
+        const store = useAuthTokenStore();
+        return api.get('/monitoring/report/general/total', {
+            headers: {
+                Authorization: `Bearer ${store.accessToken}`
+            }
+        })
+    },
+    
     // Retorna el listado de monitoreos del individuo consultado -- http://localhost:8000/api/monitoring/search/code
     lookMonitoringCandidate(id){
         return api.get(`/monitoring/candidate/search/${id}`)
@@ -224,16 +208,14 @@ export default {
     // (PROTECT) Exporta todas las muestras registradas -- http://localhost:8000/api/samples/report/data
     getSamplesData(){
         const store = useAuthTokenStore();
+        console.log('bearer report: ', store.accessToken)
         return api.get('/samples/report/data', {
             headers: {
                 Authorization: `Bearer ${store.accessToken}`
             }
         })
     },
-    // Retorna el total de muestras por municipio -- http://localhost:8000/api/samples/report/general
-    getSamplesReport(){
-        return api.get('/samples/report/general')
-    },
+    
     /* ==================================================================================================================== */
     /* ==================================================================================================================== */
     // ENDPOINT →→ USERS
@@ -250,13 +232,14 @@ export default {
         return api.delete(`/users/${uid}`)
     },
     // Retorna los permisos del usuario -- http://localhost:8000/api/users/modules
-    modulesUser(){ 
+    modulesUser(email) {
         const store = useAuthTokenStore();
-        return api.get(`/users/modules`, {
-            headers: {
-                Authorization: `Bearer ${store.accessToken}`
-            }
-    }) 
+        return api.get('/users/modules', {
+          params: { email },  // Correcta estructura para enviar parámetros de consulta
+          headers: {
+            Authorization: `Bearer ${store.accessToken}`
+          }
+        });
     },
     /* ==================================================================================================================== */
     /* ==================================================================================================================== */
@@ -274,13 +257,70 @@ export default {
     /* ==================================================================================================================== */
     /* ==================================================================================================================== */
     // ENDPOINT →→ NURSERIES
-    getNurseries(){
+    listNurseries(){
         return api.get('/nurseries')
+    },
+    listNurseriesId(id){
+        return api.get(`/nurseries/search/${id}`)
+    },
+    createNurseries(data){
+        return api.post('/nurseries/', data)
+    },
+    updateNurseries(id, data){
+        return api.put(`/nurseries/${id}`, data)
+    },
+    deleteNurseries(id){
+        return api.delete(`/nurseries/${id}`)
+    },
+    listNurseriesAdmin(){
+        return api.get('/nurseries/admin')
+    },
+    createNurseriesAssign(data){
+        return api.post(`/nurseries/admin`, data)
+    },
+    updateNurseriesAssign(id, data){
+        return api.put(`/nurseries/admin/${id}`, data)
+    },
+    deleteNurseriesAssign(id){
+        return api.delete(`/nurseries/admin/${id}`)
     },
     /* ==================================================================================================================== */
     /* ==================================================================================================================== */
     // ENDPOINT →→ EMPIRICAL KNOWLEDGE
     getEmpiricalKnowledge(){
         return api.get('/empiricalknowledge')
+    },
+    /* ==================================================================================================================== */
+    /* ==================================================================================================================== */
+    // ENDPOINT →→ PROPERTY
+    listProperty(){
+        return api.get('/property')
+    },
+    listPropertyId(id){
+        return api.get(`/property/search/${id}`)
+    },
+    createProperty(data){
+        return api.post('/property/', data)
+    },
+    updateProperty(id, data){
+        return api.put(`/property/${id}`, data)
+    },
+    deleteProperty(id){
+        return api.delete(`/property/${id}`)
+    },
+    listUsersProperty(){
+        return api.get('/property/users/')
+    },
+    listUserSpeciesId(id){
+        return api.get(`/property/users/${id}`)
+    },
+    createUsersProperty(data){
+        return api.post('/property/users', data)
+    },
+    updateUsersProperty(id, data){
+        return api.put(`/property/users/${id}`, data)
+    },
+    deleteUsersProperty(id){
+        return api.delete(`/property/users/${id}`)
     }
 }

@@ -3,6 +3,10 @@ import { defineStore } from 'pinia';
 import { useRouter } from 'vue-router';
 import APIService from '../services/APIService';
 
+// Auth firebase
+import { auth } from '../firebase/firebase';
+import { signInWithEmailAndPassword, signOut } from 'firebase/auth';
+
 export const useAuthTokenStore = defineStore('authToken', () => {
   const accessToken = ref(null);
   const refreshToken = ref(localStorage.getItem('refresh_token') || null);
@@ -20,10 +24,11 @@ export const useAuthTokenStore = defineStore('authToken', () => {
   const isRehydrated = ref(false);
 
   // Método para cargar los permisos del usuario
-  const loadUserPermissions = async () => {
+  const loadUserPermissions = async (email) => {
+    console.log('email ', email)
     isLoadingPermissions.value = true;  // Comienza la carga
     try {
-      const response = await APIService.modulesUser(); // Asume que este método realiza la llamada API al endpoint
+      const response = await APIService.modulesUser(email); // Asume que este método realiza la llamada API al endpoint
       if (response.status === 200) {
         userPermissions.value = response.data;
         localStorage.setItem('user_permissions', JSON.stringify(response.data));
@@ -71,6 +76,7 @@ export const useAuthTokenStore = defineStore('authToken', () => {
         localStorage.setItem('user_data', JSON.stringify(response.data.user_data));
         await loadUserPermissions(); 
         return { success: true };
+
       } else {
         errorAuth.value = 'Credenciales incorrectas';
         return { success: false };
@@ -82,16 +88,48 @@ export const useAuthTokenStore = defineStore('authToken', () => {
     }
   };
 
-  const loginSocial = async (code) => {
-    try{
-      const data = await APIService.socialAuth(code)
-      if(data.status === 200) {
-          socialData.value = data.data;
-          console.log('data: ', socialData.value)
-          await loadUserPermissions(); 
+  const signInAndGetToken = async (email, password) => {
+    try {
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+      const token = await user.getIdToken(); // Obtén el token de ID
+      return token;
+    } catch (error) {
+      console.error("Error during login:", error);
+      throw error;
+    }
+  };
+
+  const loginFirebase = async (email, password) => {
+    try {
+      const token = await signInAndGetToken(email, password); 
+      const response = await APIService.loginFirebase(token);
+      if (response.status === 200) {
+        accessToken.value = response.data.access;
+        refreshToken.value = response.data.refresh;
+        userData.value = response.data.user_data;
+        authActive.value = true;
+        errorAuth.value = null;
+        localStorage.setItem('refresh_token', response.data.refresh);
+        localStorage.setItem('user_data', JSON.stringify(response.data.user_data));
+        await loadUserPermissions(email); 
+        return { success: true };
+      } else {
+        errorAuth.value = 'Credenciales incorrectas';
+        return { success: false };
       }
-    }catch (error) {
-      return { success: false, error}
+    } catch (error) {
+      console.error("Error during backend login:", error);
+      return { success: false, error: error.message };
+    }
+  }
+
+  const logoutFirebase = async () => {
+    try {
+      await signOut(auth);
+      this.user = null;
+    } catch (error) {
+      console.error("Error during logout:", error);
     }
   }
 
@@ -144,6 +182,7 @@ export const useAuthTokenStore = defineStore('authToken', () => {
     userPermissions,
     isLoadingPermissions,
     loadUserPermissions,
-    loginSocial
+    loginFirebase,
+    logoutFirebase,
   };
 });

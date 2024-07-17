@@ -4,7 +4,7 @@ import { useRouter } from "vue-router";
 import {ordenarPorFechas} from '@/helpers'
 import APIService from "@/services/APIService";
 
-export const useSpecieMonitoriong = defineStore("especieMonitoreo", () => {
+export const useSpecieMonitoring = defineStore("especieMonitoreo", () => {
 
   const cargando = ref(false);
   const router = useRouter();
@@ -30,7 +30,7 @@ export const useSpecieMonitoriong = defineStore("especieMonitoreo", () => {
     monitoreosEspecieOriginal.value = data
     ordenarPorFechas(monitoreosEspecie.value,'fecha_monitoreo')
     ordenarPorFechas(monitoreosEspecieOriginal.value,'fecha_monitoreo')
-    router.push("/monitoring-species");
+    router.push("/panel/monitoring-species");
     cargando.value = false;
   }
 

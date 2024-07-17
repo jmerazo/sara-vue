@@ -5,7 +5,7 @@ import { descargarExcel, descargarPdf, obtenerFecha } from "@/helpers";
 import { usePageContent } from "../../stores/page";
 import { useModalStore } from "@/stores/modal";
 //componentes
-import LoadingData from "@/components/LoadingData.vue";
+import LoadingData from "@/components/shared/LoadingData.vue";
 import ModalPageAdd from "@/components/dashboard/ModalPageAdd.vue";
 
 const page = usePageContent();
@@ -193,7 +193,7 @@ onMounted(() => {
 
 /* boton agregar */
 .agregar {
-  background-image: url("/icons/icon-add.png");
+  background-image: url("/icons/icon-add.svg");
   padding: 0;
   margin: 0;
   height: 3rem;
@@ -203,7 +203,7 @@ onMounted(() => {
   bottom: 10%;
   right: -1px;
   z-index: 2;
-  width: 4rem;
+  width: 3rem;
   transition: transform 0.3s ease-out, box-shadow 0.3s ease-out;
 }
 .agregar:hover {
@@ -213,7 +213,7 @@ onMounted(() => {
 @media (min-width: 768px) {
   .agregar {
     right: 1%;
-    height: 4rem;
+    height: 3rem;
     overflow: hidden;
     border-radius: 50%;
   }
@@ -222,7 +222,7 @@ onMounted(() => {
     display: block;
     width: 100%;
     height: 100%;
-    background-image: url("/icons/icon-add.png");
+    background-image: url("/icons/icon-add.svg");
     background-position: center;
     background-size: cover;
     border-radius: 50%;

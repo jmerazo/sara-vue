@@ -1,7 +1,7 @@
 <script setup>
 import { ref, watch } from "vue";
 import { useGeneralMonitoring } from "@/stores/dashboard/reports/generalMonitoring";
-import AlertaVue from "../../../Alerta.vue";
+import AlertaVue from "../../../shared/Alerta.vue";
 const monitoring = useGeneralMonitoring();
 const MAXSECTIONS = 5;
 
