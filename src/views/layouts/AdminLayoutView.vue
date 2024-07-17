@@ -157,7 +157,7 @@ main.show {
 .menu__admin {
   width: 50%;
   margin: 0 auto;
-  margin-top: 5rem;
+  margin-top: 2rem;
   border-radius: 5px;
   padding: 1rem;
 }
@@ -175,7 +175,7 @@ main.show {
 
 .menu__admin--title {
   color: var(--primary);
-  font-weight: 700;
+  font-weight: 500;
   font-size: 2rem;
   text-align: center;
 }

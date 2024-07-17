@@ -275,25 +275,7 @@ const limpiarModal = () => {
     gap: 1rem;
   }
 }
-.boton__cerrar {
-  position: absolute;
-  top: 0.2%;
-  right: .2%;
-  font-size: 1rem;
-  color: var(--gris);
-  width: 40px;
-  padding: 0;
-  margin: 0;
-  background: none;
-}
-.boton__cerrar path {
-  transition: 0.4s ease all;
-}
-.boton__cerrar:hover svg {
-  background: var(--gris);
-  border-radius: 50%;
-  color: var(--blanco);
-}
+
 
 .boton__container {
   position: absolute;

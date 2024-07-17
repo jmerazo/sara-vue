@@ -13,6 +13,31 @@ import { RouterView} from "vue-router";
 </template>
 
 <style >
+
+/* boton cerrar modal */
+.boton__cerrar {
+  position: absolute;
+  top: 0.9%;
+  right: 1%;
+  font-size: 1rem;
+  color: var(--gris);
+  width: 40px;
+  padding: 0;
+  margin: 0;
+  background: none;
+}
+
+.boton__cerrar path {
+  transition: 0.4s ease all;
+}
+
+.boton__cerrar:hover svg {
+  background: var(--gris);
+  border-radius: 50%;
+  color: var(--blanco);
+}
+
+
 /* boton agregar */
 .agregar {
   background-image: url("/icons/icon-add.svg");

@@ -2,8 +2,7 @@
 import { computed, watch } from "vue";
 import { onBeforeRouteLeave } from "vue-router";
 import { useUsersStore } from "@/stores/users";
-import { propertyStore } from "@/stores/dashboard/property";
-import { useNurseriesDashStore } from "@/stores/dashboard/nurseries";
+
 import ModalUserUpdate from "@/components/dashboard/modals/ModalUserUpdate.vue";
 import ModalPropertyAdd from "@/components/dashboard/modals/ModalPropertyAdd.vue";
 import ModalNurseryAdd from "@/components/dashboard/modals/ModalNurseryAdd.vue";
@@ -16,8 +15,7 @@ import { descargarExcel, descargarPdf, obtenerFecha } from "@/helpers";
 import LoadingData from "@/components/shared/LoadingData.vue";
 
 const usersStore = useUsersStore();
-const propertiesStore = propertyStore();
-const nurseriesStore = useNurseriesDashStore();
+
 
 //limpiar filtros antes de cambiar de vista
 onBeforeRouteLeave((to, from, next) => {
@@ -58,7 +56,7 @@ const displayedPageRange = computed(() => {
   <div class="contenedor">
     <!-- encabezado vista -->
     <h1 class="reporte__heading">
-      Listado de usuarios <span class="texto__sara">SARA</span>
+      Listado de usuarios 
     </h1>
 
     <div class="contenido__header">
@@ -139,13 +137,13 @@ const displayedPageRange = computed(() => {
 /* encabezado de la vista */
 .reporte__heading {
   font-size: 1.1rem;
-  margin: 2rem;
+  margin: 2rem ;
 }
 
 @media (min-width: 768px) {
   .reporte__heading {
     font-size: 1.3rem;
-    margin: 3rem;
+    margin: 0 0 3rem 0;
   }
 }
 

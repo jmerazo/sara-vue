@@ -91,7 +91,7 @@ function deleteSpecieUser(id, nu) {
     </div>
 </template>
 
-<style>
+<style scoped>
 .modal {
   position: fixed;
   top: 0;

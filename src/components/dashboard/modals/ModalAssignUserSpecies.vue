@@ -1,35 +1,32 @@
 <script setup>
-import { ref, onMounted, computed, watch } from 'vue';
-import { useAuthTokenStore } from "../../../stores/auth";
+import { ref, watch } from 'vue';
+
 import { propertyStore } from "@/stores/dashboard/property";
 import { useModalStore } from "@/stores/modal";
-import { useUsersStore } from "@/stores/users"
 import { useEspeciesStore } from "@/stores/species"
 
-const locates = useAuthTokenStore();
+
 const property = propertyStore();
 const modal = useModalStore();
-const user = useUsersStore();
 const especies = useEspeciesStore();
 
+const error = ref("");
+
 const formData = ref({
-    ep_especie_cod: '',
-    ep_usuario: '',
-    cantidad_individuos: '',
-    cant_productiva: '',
-    cant_remanente: '',
-    ep_predio: '',
-    expediente: ''
+  ep_especie_cod: '',
+  ep_usuario: '',
+  cantidad_individuos: '',
+  cant_productiva: '',
+  cant_remanente: '',
+  ep_predio: '',
+  expediente: ''
 });
 
 watch(() => property.userPropertySelected, (newValue) => {
   formData.value.ep_usuario = newValue;
 });
 
-/* onMounted(() => {
-  const hoy = new Date();
-  formData.value.fecha_evaluacion = hoy.toISOString().split('T')[0];
-}); */
+
 
 function resetForm() {
   Object.keys(formData.value).forEach(key => {
@@ -37,7 +34,14 @@ function resetForm() {
   });
 }
 
-const handleSubmit = () => {  
+const handleSubmit = () => {
+  if(Object.values(formData.value).some(value => value ==='')){
+    error.value = 'Hay campos vacíos'
+    setTimeout(()=>{
+      error.value = ''
+    },3000)
+    return
+  }
   try {
     property.createUsersProperty(formData.value);
     resetForm();
@@ -59,76 +63,100 @@ const handlePropertyChange = async () => {
   }
 }
 
-// Observa los cambios en la evaluación y actualiza formData.evaluacion
-/* watch(nombre_predio, (nuevoValor) => {
-    formData.value.nombre_predio = nuevoValor;
-}); */
+
 </script>
 
 <template>
-    <div class="modal" v-if="modal.modalAssignUserSpecies">
-        <div class="modal__contenido">
-            <div class="form__addCandidate">
-                <div class="title__addCandidate">
-                    <span>Asignar especie</span>
-                </div>
-                <form @submit.prevent="handleSubmit">
-                    <div class="form-section data__evaluation">
-                        <label class="formulario__label" for="usuario">Especie forestal: </label>
-                        <select
-                            id="especie_forestal"
-                            class="formulario__input formulario__input--selectc"
-                            v-model="formData.ep_especie_cod"
-                        >
-                            <option value="">--Seleccione--</option>
-                            <option
-                            v-for="ef in especies.especies"
-                            :key="ef.ShortcutID"
-                            :value="ef.cod_especie"
-                            >
-                            {{ ef.cod_especie + " / " + ef.nom_comunes + " / " + ef.nombre_cientifico }}
-                            </option>
-                        </select>
-                        <label class="formulario__label form_none" for="usuario">Nombre de usuario: </label><input class="form_none" type="text" v-model="formData.ep_usuario" :placeholder="property.userPropertySelected">
-                        <label class="formulario__label">Cantidad de individuos: </label><input type="number" v-model="formData.cantidad_individuos">
-                        <label class="formulario__label">Cantidad productiva: </label><input type="number" v-model="formData.cant_productiva">
-                        <label class="formulario__label">Cantidad remanente: </label><input type="number" v-model="formData.cant_remanente">
-                        <label class="formulario__label" for="departamento">Predio:</label>
-                        <select
-                            id="departamento"
-                            class="formulario__input formulario__input--selectc"
-                            v-model="formData.ep_predio"
-                            @click="handlePropertyChange()"
-                        >
-                            <option value="">--Seleccione--</option>
-                            <option
-                            v-for="p in property.propertyUser"
-                            :key="p.id"
-                            :value="p.id"
-                            >
-                            {{ p.nombre_predio }}
-                            </option>
-                        </select>
-                        <label class="formulario__label">Expediente: </label><input type="text" v-model="formData.expediente">             
-                    </div>
-                    
-                    <div class="formulario__botones">
-                        <button type="submit" class="formulario__boton">Guardar</button>
-                        <button
-                            @click="() => { resetForm(); modal.handleClickModalAssignUserSpecies(); }"
-                            type="button"
-                            class="formulario__boton formulario__boton--cerrar"
-                        >
-                            Cerrar
-                        </button>
-                    </div>
-                </form>
+  <div class="modal" v-if="modal.modalAssignUserSpecies">
+    <div class="modal__contenido">
+      <div class="form__content">
+        <h3 class="title__addCandidate">
+          Asignar especie
+        </h3>
+        <hr>
+        <form class="form__addCandidate" @submit.prevent="handleSubmit">
+
+          <div class="form__field">
+            <label class="form__label" for="usuario">Especie forestal: </label>
+            <select id="especie_forestal" class="form__input" v-model="formData.ep_especie_cod">
+              <option value="">--Seleccione--</option>
+              <option v-for="ef in especies.especies" :key="ef.ShortcutID" :value="ef.cod_especie">
+                {{ ef.cod_especie + " / " + ef.nom_comunes + " / " + ef.nombre_cientifico }}
+              </option>
+            </select>
+          </div>
+
+          <div class="form__field" style="display: none;">
+            <label class="form__label form_none" for="usuario">Nombre de usuario: </label>
+            <input class="form__input" type="text" v-model="formData.ep_usuario"
+              :placeholder="property.userPropertySelected" />
+          </div>
+
+          <div class="form__field">
+            <label class="form__label">Cantidad de individuos: </label>
+            <input class="form__input" type="number" v-model="formData.cantidad_individuos" />
+          </div>
+
+          <div class="form__field">
+            <label class="form__label">Cantidad productiva: </label>
+            <input class="form__input" type="number" v-model="formData.cant_productiva" />
+          </div>
+
+          <div class="form__field">
+            <label class="form__label">Cantidad remanente: </label>
+            <input class="form__input" type="number" v-model="formData.cant_remanente" />
+          </div>
+
+          <div class="form__field">
+            <label class="form__label" for="departamento">Predio:</label>
+            <select id="departamento" class="form__input" v-model="formData.ep_predio" @click="handlePropertyChange()">
+              <option value="">--Seleccione--</option>
+              <option v-for="p in property.propertyUser" :key="p.id" :value="p.id">
+                {{ p.nombre_predio }}
+              </option>
+            </select>
+          </div>
+
+          <div class="form__field">
+            <label class="form__label">Expediente: </label>
+            <input class="form__input" type="text" v-model="formData.expediente" />
+          </div>
+          <p class="msg__error" v-if="error">
+            {{ error }}
+          </p>
+
+          <div class="formulario__botones" :style="error ? 'margin-top: 1rem' : ''">
+            <button type="submit" class="button__user-specie"><svg style="width: 2rem;"
+                xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                <path
+                  d="M7 19V13H17V19H19V7.82843L16.1716 5H5V19H7ZM4 3H17L21 7V20C21 20.5523 20.5523 21 20 21H4C3.44772 21 3 20.5523 3 20V4C3 3.44772 3.44772 3 4 3ZM9 15V19H15V15H9Z">
+                </path>
+              </svg></button>
+
+            <div class="boton__cerrar" @click="() => { resetForm(); modal.handleClickModalAssignUserSpecies(); }">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                stroke="currentColor" class="w-6 h-6">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                  d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+              </svg>
             </div>
-        </div>
+          </div>
+        </form>
+      </div>
     </div>
+  </div>
 </template>
 
-<style>
+<style scoped>
+.msg__error {
+  padding: 0;
+  margin: 0;
+  text-align: center;
+  border-left: 4px solid var(--rojo);
+  padding-left: 2rem;
+  color: var(--rojo);
+}
+/* content general */
 .modal {
   position: fixed;
   top: 0;
@@ -156,9 +184,7 @@ const handlePropertyChange = async () => {
   margin-top: 2rem;
 }
 
-.form_none {
-  display: none;
-}
+
 
 @media (min-width: 768px) {
   .modal__contenido {
@@ -172,91 +198,70 @@ const handlePropertyChange = async () => {
     margin-top: 1rem;
   }
 }
+
 @media (min-width: 1440px) {
   .modal__contenido {
     width: 40%;
   }
 }
+
 @media (min-width: 1820px) {
   .modal__contenido {
     width: 30%;
   }
 }
 
-.form__addCandidate {
-  max-width: 600px;
-  margin: 0 auto;
-  padding: 20px;
-}
 
-.title__addCandidate {
+.form__content .title__addCandidate {
   text-align: center;
   margin-bottom: 20px;
-  font-size: 24px;
+  font-size: 1.3rem;
+  font-weight: 500;
 }
 
-.data__evaluation, .data__ubication, .data__candidate, .data__items {
-  border: 1px solid #ccc;
-  padding: 10px;
-  margin-bottom: 20px;
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 10px;
-}
 
-label {
-  margin-bottom: 5px;
+
+.form__addCandidate .form__field {
+  margin: 1rem 0;
+}
+.form__field .form__label{
   display: block;
+  font-size: 1rem;
+  font-weight: 500;
+  margin-bottom: .5rem;
+  text-align: left;
 }
-
-input[type="text"], 
-input[type="number"], 
-input[type="email"], 
-input[type="tel"], 
-input[type="date"], 
-select, 
-textarea {
+.form__field .form__input{
   width: 100%;
-  padding: 8px;
-  margin-bottom: 10px;
+  padding: .2rem;
+  border: 1px solid var(--primary);
+  border-radius: 5px;
 }
 
-/* button {
-  width: 100%;
-  padding: 10px;
-  background-color: #4CAF50;
-  color: white;
-  border: none;
-  cursor: pointer;
-}
 
-button:hover {
-  background-color: #45a049;
-} */
+/* form buttons */
 
 .formulario__botones {
   display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  margin: 1.3rem 0 0 0;
+  justify-content: center;
+  align-items: center;
+  margin-top: 0rem;
+  transition: all .3s ease-in-out;
 }
 
-.formulario__boton {
-  border-radius: 5px;
-  font-weight: 700;
-  padding: 0.3rem;
-  font-size: 1rem;
+.button__user-specie {
+  background: none;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  justify-content: center;
+  border-radius: 50%;
+  padding: .5rem;
+  transition: all .3s ease-in-out;
+}
+
+.button__user-specie:hover {
+  background: var(--primary);
   color: var(--blanco);
-  background-color: var(--primary);
-}
-.formulario__boton--cerrar {
-  background-color: var(--secondary);
-}
-.formulario__boton:hover {
-  background-color: var(--primary-hover);
-}
-.formulario__boton--cerrar:hover {
-  background-color: var(--secondary-hover);
 }
 </style>
-  
