@@ -1,22 +1,27 @@
 <script setup>
-import { ref, onMounted, computed } from "vue";
+import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
+import { getFullImageUrl } from "@/helpers/";
+import { obtenerFecha } from "@/helpers";
+import { descargarPdfs } from "@/helpers/exportDataSheet";
+import APIService from "@/services/APIService";
 
+//store
 import { useConsultaStore } from "@/stores/consulta";
 import { useGeoCandidateTrees } from "@/stores/candidate";
 import { useAverageSpecie } from "@/stores/average";
 import { useModalStore } from "@/stores/modal";
 
-import APIService from "@/services/APIService";
 
-import { getFullImageUrl } from "@/helpers/";
-
+//components
 import QuoteButton from "@/components/QuoteButton.vue";
 import PagesQueries from "@/components/PagesQueries.vue";
 import RenderGeo from "@/components/RenderGeo.vue";
 import ChartAverage from "@/components/ChartAverage.vue";
 import ImageSlider from "@/components/ImageSlider.vue";
 import ModalSpecieComponent from "@/components/ModalSpecieComponent.vue";
+import FlowerCalendar from "../components/calendars/FlowerCalendar.vue";
+import FruitCalendar from "../components/calendars/FruitCalendar.vue";
 
 const router = useRouter();
 
@@ -24,6 +29,7 @@ const especie = useConsultaStore();
 const geoStore = useGeoCandidateTrees();
 const averageStore = useAverageSpecie();
 const modal = useModalStore();
+
 
 const dateNow = new Date();
 const year = dateNow.getFullYear();
@@ -155,7 +161,7 @@ scrollToTop();
                 {{ nom_comunes }}
               </h1>
               <h1 class="header__heading header__heading--subtitulo">
-                <span class="nombre__cientifico">{{
+                <span class="nombre__cientifico" style="font-style: italic">{{
                   nombre_cientifico_especie
                 }}</span>
                 <span class="nombre__autor">{{
@@ -268,7 +274,7 @@ scrollToTop();
                 <span>{{ averageStore.valores[0] }} metros</span>
               </p>
               <p class="grafico__subtitulo">
-                Total Fuste (aporvechable para usos):
+                Total Fuste (aprovechable para usos):
                 <span>{{ averageStore.valores[1] }} metros</span>
               </p>
             </div>
@@ -288,7 +294,7 @@ scrollToTop();
             </div>
             <div class="jurisdiccion">
               <h4 class="jurisdiccion__titulo">
-                Jurisdicción <span>Corpoamazonia</span>
+                Individuos en la Jurisdicción <span>Corpoamazonia</span>
               </h4>
               <RenderGeo
                 v-if="filteredData.length > 0"
@@ -299,19 +305,33 @@ scrollToTop();
         </div>
       </section>
       <!-- Fin seccion 4 - mapa -->
+
+      <!-- section calendar flower  -->
+
+      <FlowerCalendar/>
+      <FruitCalendar/>
+      <!-- End section calendar flower  -->
+
     </div>
 
     <PagesQueries />
+    <div class="download__forestSpecies">
+      <span class="text__exportSF">Exportar listado especies forestales:</span>      
+      <a @click="descargarPdfs(especie.especie,`Ficha técnica - ${obtenerFecha()}`, 6, 0)" class="button" href="#">
+        <font-awesome-icon class="button__pdf" :icon="['fas', 'file-pdf']"/>
+      </a>
+    </div>
   </div>
   <ModalSpecieComponent />
 </template>
 
 <style scoped>
+
 /* header */
 .main {
   margin-top: 6rem;
 }
-/* Seccion 1- infrmacion general */
+/* Seccion 1- informacion general */
 .general {
   width: 95%;
   margin: 0 auto;
@@ -418,7 +438,7 @@ scrollToTop();
   transition-property: scale(1);
   transition-duration: 0.5s;
   height: 13rem;
-  border-radius: .5rem;
+  border-radius: 0.5rem;
 }
 
 @media (min-width: 768px) {
@@ -503,7 +523,7 @@ scrollToTop();
   background-color: #fff; /* Color de fondo de la tarjeta */
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra tenue */
   padding: 20px;
-  border-radius: .5rem;
+  border-radius: 0.5rem;
 }
 
 .grafico__titulo {
@@ -527,7 +547,7 @@ scrollToTop();
   background-color: #fff; /* Color de fondo de la tarjeta */
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra tenue */
   padding: 20px;
-  border-radius: .5rem;
+  border-radius: 0.5rem;
 }
 
 .mapa__titulo {
@@ -543,20 +563,19 @@ scrollToTop();
 }
 
 .mapa__titulo {
-    font-size: 1.05rem;
-  }
-  .mapa__descripcion {
-    margin-top: 1rem;
-  }
-  .jurisdiccion {
-    margin-top: 1rem;
-  }
-  .jurisdiccion__titulo {
-    text-align: center;
-    font-size: 0.9rem;
-  }
-  .jurisdiccion__titulo span {
-    color: var(--primary);
-  }
-
+  font-size: 1.05rem;
+}
+.mapa__descripcion {
+  margin-top: 1rem;
+}
+.jurisdiccion {
+  margin-top: 1rem;
+}
+.jurisdiccion__titulo {
+  text-align: center;
+  font-size: 0.9rem;
+}
+.jurisdiccion__titulo span {
+  color: var(--primary);
+}
 </style>

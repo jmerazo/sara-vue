@@ -54,13 +54,12 @@ export const useAuthTokenStore = defineStore('authToken', () => {
         logout();  // Si hay un error, asegúrate de limpiar el estado
       }
     } else {
-      console.log('No refresh token available');
+      return
     }
   };
 
   const login = async (credentials, authType) => {
     try {
-      console.log('credentials: ', credentials, ' type session: ', authType);
       const response = await APIService.getAuthToken(credentials, authType);
       if (response.status === 200) {
         accessToken.value = response.data.access;
@@ -69,7 +68,6 @@ export const useAuthTokenStore = defineStore('authToken', () => {
         authActive.value = true;
         errorAuth.value = null;
         localStorage.setItem('refresh_token', response.data.refresh);
-        console.log(response.data.user_data)
         localStorage.setItem('user_data', JSON.stringify(response.data.user_data));
         await loadUserPermissions(); 
         return { success: true };

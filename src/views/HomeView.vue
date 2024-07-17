@@ -6,12 +6,14 @@ import { useAverageSpecie } from "@/stores/average";
 import { useHomeStore } from "@/stores/home";
 import { usePageContent } from "../stores/page";
 import { useConsultaStore } from "../stores/consulta";
+import {useCalendarStore} from "../stores/calendarMonitoring"
 
 const pageStore = usePageContent();
 const geoStore = useGeoCandidateTrees();
 const averageStore = useAverageSpecie();
 const homeStore = useHomeStore();
 const consulta = useConsultaStore();
+const calendarStore = useCalendarStore()
 
 const consultar = (nombre_comun) => {
   consulta.consulta.categoria = "Nombre Común";
