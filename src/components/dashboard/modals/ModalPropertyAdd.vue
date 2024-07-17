@@ -1,30 +1,26 @@
 <script setup>
-import { ref, onMounted, computed, watch } from 'vue';
-import { propertyStore } from "../../../stores/dashboard/property";
+import { ref, computed, watch } from 'vue';
+import { propertyStore } from "@/stores/dashboard/property";
 import { useModalStore } from "@/stores/modal";
-import { useUsersStore } from "@/stores/users";
 import { locatesColombia } from "@/stores/locates";
 
 const locates = locatesColombia();
 const property = propertyStore();
 const modal = useModalStore();
-const user = useUsersStore();
+
+const error = ref("");
 
 const formData = ref({
-    p_user: '',
-    nombre_predio: '',
-    p_departamento: '',
-    p_municipio: ''
+  p_user: '',
+  nombre_predio: '',
+  p_departamento: '',
+  p_municipio: ''
 });
 
 watch(() => property.userSelected, (newValue) => {
   formData.value.p_user = newValue;
 });
 
-/* onMounted(() => {
-  const hoy = new Date();
-  formData.value.fecha_evaluacion = hoy.toISOString().split('T')[0];
-}); */
 
 function resetForm() {
   Object.keys(formData.value).forEach(key => {
@@ -32,7 +28,14 @@ function resetForm() {
   });
 }
 
-const handleSubmit = () => {  
+const handleSubmit = () => {
+  if (Object.values(formData.value).some(value => value === "")) {
+    error.value = "Hay campos vacíos";
+    setTimeout(() => {
+      error.value = "";
+    }, 3000);
+    return;
+  }
   try {
     property.createProperty(formData.value);
     resetForm();
@@ -60,69 +63,89 @@ const filteredCities = computed(() => {
   return [];
 });
 
-// Observa los cambios en la evaluación y actualiza formData.evaluacion
-/* watch(nombre_predio, (nuevoValor) => {
-    formData.value.nombre_predio = nuevoValor;
-}); */
+
 </script>
 
 <template>
-    <div class="modal" v-if="modal.modalPropertyAdd">
-        <div class="modal__contenido">
-            <div class="form__addCandidate">
-                <div class="title__addCandidate">
-                    <span>Registrar nuevo predio</span>
-                </div>
-                <form @submit.prevent="handleSubmit">
-                    <div class="form-section data__evaluation">
-                        <input class="txt__none" type="text" v-model="formData.p_user" :placeholder="property.userSelected">
-                        <label>Nombre del predio: </label><input type="text" v-model="formData.nombre_predio">
-                        <label class="formulario__label" for="departamento">Departamento:</label>
-                        <select
-                            id="departamento"
-                            class="formulario__input formulario__input--selectc"
-                            v-model="formData.p_departamento"
-                        >
-                            <option value="">--Seleccione--</option>
-                            <option
-                            v-for="loc in locates.departments"
-                            :key="loc.id"
-                            :value="loc.code"
-                            >
-                            {{ loc.name }}
-                            </option>
-                        </select>
-                        <!-- ciudad -->
-                        <label class="formulario__label" for="municipio" v-show="filteredCities.length">Ciudad:</label>
-                        <select id="municipio" class="formulario__input formulario__input--select" v-model="formData.p_municipio" v-show="filteredCities.length">
-                            <option value="">-- Seleccione--</option>
-                            <option
-                            v-for="city in filteredCities"
-                            :key="city.id"
-                            :value="city.id"
-                            >
-                            {{ city.name }}
-                            </option>
-                        </select>
-                    </div>
-                    
-                    <div class="formulario__botones">
-                        <button type="submit" class="formulario__boton">Guardar</button>
-                        <button
-                            @click="modal.handleClickModalPropertyAdd()"
-                            type="button"
-                            class="formulario__boton formulario__boton--cerrar"
-                        >
-                            Cerrar
-                        </button>
-                    </div>
-                </form>
+  <div class="modal" v-if="modal.modalPropertyAdd">
+    <div class="modal__contenido">
+      <div class="form__content">
+
+        <h3 class="form__title">Registrar nuevo predio</h3>
+        <hr>
+        <form class="form__modal" @submit.prevent="handleSubmit">
+
+
+          <div style="display: none;" class="form__field">
+            <label>user</label>
+            <input class="form__input" type="text" v-model="formData.p_user" :placeholder="property.userSelected">
+          </div>
+
+          <div class="form__field">
+            <label class="form__label">Nombre del predio: </label>
+            <input class="form__input" type="text" v-model="formData.nombre_predio" />
+          </div>
+
+
+          <div class="form__field">
+            <label class="form__label" for="departamento">Departamento:</label>
+            <select id="departamento" class="form__input"
+              v-model="formData.p_departamento">
+              <option value="">--Seleccione--</option>
+              <option v-for="loc in locates.departments" :key="loc.id" :value="loc.code">
+                {{ loc.name }}
+              </option>
+            </select>
+          </div>
+
+          <!-- ciudad -->
+          <div class="form__field">
+            <label class="form__label" for="municipio" v-show="filteredCities.length">Ciudad:</label>
+            <select id="municipio" class="form__input" v-model="formData.p_municipio"
+              v-show="filteredCities.length">
+              <option value="">-- Seleccione--</option>
+              <option v-for="city in filteredCities" :key="city.id" :value="city.id">
+                {{ city.name }}
+              </option>
+            </select>
+
+          </div>
+          <p class="msg__error" v-if="error">
+            {{ error }}
+          </p>
+
+          <div class="formulario__botones">
+            <button type="submit" class="button__user-property"><svg style="width: 2rem;"
+                xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                <path
+                  d="M7 19V13H17V19H19V7.82843L16.1716 5H5V19H7ZM4 3H17L21 7V20C21 20.5523 20.5523 21 20 21H4C3.44772 21 3 20.5523 3 20V4C3 3.44772 3.44772 3 4 3ZM9 15V19H15V15H9Z">
+                </path>
+              </svg></button>
+
+            <div class="boton__cerrar" @click="modal.handleClickModalPropertyAdd()">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                stroke="currentColor" class="w-6 h-6">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                  d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+              </svg>
             </div>
-        </div>
+          </div>
+        </form>
+      </div>
     </div>
+  </div>
 </template>
 
-<style>
+<style scoped>
+.msg__error {
+  padding: 0;
+  margin: 0;
+  text-align: center;
+  border-left: 4px solid var(--rojo);
+  padding-left: 2rem;
+  color: var(--rojo);
+}
+/* content general */
 .modal {
   position: fixed;
   top: 0;
@@ -150,9 +173,7 @@ const filteredCities = computed(() => {
   margin-top: 2rem;
 }
 
-.txt__none{
-  display: none;
-}
+
 
 @media (min-width: 768px) {
   .modal__contenido {
@@ -166,91 +187,71 @@ const filteredCities = computed(() => {
     margin-top: 1rem;
   }
 }
+
 @media (min-width: 1440px) {
   .modal__contenido {
     width: 40%;
   }
 }
+
 @media (min-width: 1820px) {
   .modal__contenido {
     width: 30%;
   }
 }
 
-.form__addCandidate {
-  max-width: 600px;
-  margin: 0 auto;
-  padding: 20px;
+/* form content */
+.form__content{
+  padding: .6rem;
 }
 
-.title__addCandidate {
+.form__content .form__title{
   text-align: center;
   margin-bottom: 20px;
-  font-size: 24px;
+  font-size: 1.3rem;
+  font-weight: 500;
 }
 
-.data__evaluation, .data__ubication, .data__candidate, .data__items {
-  border: 1px solid #ccc;
-  padding: 10px;
-  margin-bottom: 20px;
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 10px;
+.form__modal .form__field {
+  margin: 1rem 0;
 }
 
-label {
-  margin-bottom: 5px;
+.form__field .form__label{
   display: block;
+  font-size: 1rem;
+  font-weight: 500;
+  margin-bottom: .5rem;
+  text-align: left;
 }
-
-input[type="text"], 
-input[type="number"], 
-input[type="email"], 
-input[type="tel"], 
-input[type="date"], 
-select, 
-textarea {
+.form__field .form__input{
   width: 100%;
-  padding: 8px;
-  margin-bottom: 10px;
+  padding: .2rem;
+  border: 1px solid var(--primary);
+  border-radius: 5px;
 }
 
-/* button {
-  width: 100%;
-  padding: 10px;
-  background-color: #4CAF50;
-  color: white;
-  border: none;
-  cursor: pointer;
-}
-
-button:hover {
-  background-color: #45a049;
-} */
-
+/* form buttons */
 .formulario__botones {
   display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  margin: 1.3rem 0 0 0;
+  justify-content: center;
+  align-items: center;
+  margin-top: 0rem;
+  transition: all .3s ease-in-out;
 }
 
-.formulario__boton {
-  border-radius: 5px;
-  font-weight: 700;
-  padding: 0.3rem;
-  font-size: 1rem;
+.button__user-property {
+  background: none;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  justify-content: center;
+  border-radius: 50%;
+  padding: .5rem;
+  transition: all .3s ease-in-out;
+}
+
+.button__user-property:hover {
+  background: var(--primary);
   color: var(--blanco);
-  background-color: var(--primary);
-}
-.formulario__boton--cerrar {
-  background-color: var(--secondary);
-}
-.formulario__boton:hover {
-  background-color: var(--primary-hover);
-}
-.formulario__boton--cerrar:hover {
-  background-color: var(--secondary-hover);
 }
 </style>
-  

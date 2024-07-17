@@ -84,13 +84,13 @@ onMounted(() => {
 <style scoped>
 /* encabezado de la vista */
 .reporte__heading {
-  font-size: 1.3rem;
+  font-size: 1.1rem;
   margin: 2rem;
 }
 @media (min-width: 768px) {
   .reporte__heading {
-    font-size: 1.8rem;
-    margin: 3rem;
+    font-size: 1.3rem;
+    margin:0 0 3rem 0;
   }
 }
 .contenido__header {

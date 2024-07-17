@@ -161,7 +161,7 @@ const router = createRouter({
       },
       children: [
         {
-          path: "",
+          path: "users",
           name: "users",
           component: () => import("../views/dashboardviews/admin/UsersView.vue"),
         },
