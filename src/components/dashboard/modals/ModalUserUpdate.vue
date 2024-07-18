@@ -139,12 +139,12 @@ function delUser(id, nu) {
 
           </div>
           <hr />
-          <form @submit.prevent="userUpdate" class="formulario">
-            <div class="fomulario__campo">
-              <label class="formulario__label" for="state">
+          <form @submit.prevent="userUpdate" class="form__modal">
+            <div class="form__modal--field">
+              <label class="form__modal--label" for="state">
                 Tipo de
                 documento :</label>
-              <select name="rol" id="state" class="formulario__select" v-model="formData.document_type">
+              <select name="rol" id="state" class="form__modal--input" v-model="formData.document_type">
                 <option value="null" selected disabled>
                   {{ usersStore.userSelected[0].document_type }}
                 </option>
@@ -159,41 +159,41 @@ function delUser(id, nu) {
                 </option>
               </select>
             </div>
-            <div class="fomulario__campo">
-              <label for="identificacion" class="formulario__label">Número de
+            <div class="form__modal--field">
+              <label for="identificacion" class="form__modal--label">Número de
                 documento :</label>
 
-              <input id="identificacion" type="number" class="formulario__input" v-model="formData.document_number" />
+              <input id="identificacion" type="number" class="form__modal--input" v-model="formData.document_number" />
               <!-- usersStore.userSelected[0].document_number -->
             </div>
-            <div class="fomulario__campo">
-              <label for="nombres" class="formulario__label">Nombres
+            <div class="form__modal--field">
+              <label for="nombres" class="form__modal--label">Nombres
                 :</label>
-              <input id="nombres" type="text" class="formulario__input" v-model="formData.first_name" />
+              <input id="nombres" type="text" class="form__modal--input" v-model="formData.first_name" />
             </div>
-            <div class="fomulario__campo">
-              <label for="apellidos" class="formulario__label">Apellidos
+            <div class="form__modal--field">
+              <label for="apellidos" class="form__modal--label">Apellidos
                 :</label>
-              <input id="apellidos" type="text" class="formulario__input" v-model="formData.last_name" />
+              <input id="apellidos" type="text" class="form__modal--input" v-model="formData.last_name" />
             </div>
-            <div class="fomulario__campo">
-              <label for="email" class="formulario__label">Correo
+            <div class="form__modal--field">
+              <label for="email" class="form__modal--label">Correo
                 :</label>
-              <input id="email" type="email" class="formulario__input" v-model="formData.email" />
+              <input id="email" type="email" class="form__modal--input" v-model="formData.email" />
             </div>
-            <div class="fomulario__campo">
-              <label for="contacto" class="formulario__label">Contacto
+            <div class="form__modal--field">
+              <label for="contacto" class="form__modal--label">Contacto
                 :</label>
-              <input id="contacto" type="number" class="formulario__input" v-model="formData.cellphone" />
+              <input id="contacto" type="number" class="form__modal--input" v-model="formData.cellphone" />
             </div>
-            <div class="fomulario__campo">
-              <label for="entidad" class="formulario__label">Entidad
+            <div class="form__modal--field">
+              <label for="entidad" class="form__modal--label">Entidad
                 :</label>
-              <input id="entidad" type="text" class="formulario__input" v-model="formData.entity" />
+              <input id="entidad" type="text" class="form__modal--input" v-model="formData.entity" />
             </div>
-            <div class="fomulario__campo">
-              <label for="rol" class="formulario__label">Rol :</label>
-              <select name="rol" id="rol" class="formulario__select" v-model="formData.rol">
+            <div class="form__modal--field">
+              <label for="rol" class="form__modal--label">Rol :</label>
+              <select name="rol" id="rol" class="form__modal--input" v-model="formData.rol">
                 <option value="null" selected>
                   {{ usersStore.userSelected[0].rol }}
                 </option>
@@ -203,10 +203,10 @@ function delUser(id, nu) {
                 </option>
               </select>
             </div>
-            <div class="fomulario__campo">
-              <label for="profesion" class="formulario__label">Profesión
+            <div class="form__modal--field">
+              <label for="profesion" class="form__modal--label">Profesión
                 :</label>
-              <select name="rol" id="profesion" class="formulario__select" v-model="formData.profession">
+              <select name="rol" id="profesion" class="form__modal--input" v-model="formData.profession">
                 <option value="null" selected>
                   {{ usersStore.userSelected[0].profession }}
                 </option>
@@ -216,10 +216,10 @@ function delUser(id, nu) {
                 <option value="ABOGADO" class="font-bold">ABOGADO</option>
               </select>
             </div>
-            <div class="fomulario__campo">
-              <label for="department" class="formulario__label">Departamento
+            <div class="form__modal--field">
+              <label for="department" class="form__modal--label">Departamento
                 :</label>
-              <select name="department" id="department" class="formulario__select" v-model="formData.department">
+              <select name="department" id="department" class="form__modal--input" v-model="formData.department">
                 <option value="null" selected disabled>
                   Seleccione un departamento...
                 </option>
@@ -228,10 +228,10 @@ function delUser(id, nu) {
                 </option>
               </select>
             </div>
-            <div class="fomulario__campo">
-              <label for="city" class="formulario__label">Ciudad
+            <div class="form__modal--field">
+              <label for="city" class="form__modal--label">Ciudad
                 :</label>
-              <select name="city" id="city" class="formulario__select" v-model="formData.city">
+              <select name="city" id="city" class="form__modal--input" v-model="formData.city">
                 <option value="null" selected disabled>
                   Seleccione un municipio...
                 </option>
@@ -241,10 +241,9 @@ function delUser(id, nu) {
               </select>
             </div>
             <p v-if="error" class="msg__error">{{ error }}</p>
-            <div class="formulario__botones--user" :style="error ? 'margin-top: 0rem;' : ''">
 
-
-              <button type="submit" class="button__user button__user-save">
+            <div class="form__modal--buttons" :style="error ? 'margin-top: 0rem;' : ''">
+              <button type="submit" class="form__modal--save">
                 <svg style="width: 2rem;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
                   <path
                     d="M7 19V13H17V19H19V7.82843L16.1716 5H5V19H7ZM4 3H17L21 7V20C21 20.5523 20.5523 21 20 21H4C3.44772 21 3 20.5523 3 20V4C3 3.44772 3.44772 3 4 3ZM9 15V19H15V15H9Z">
@@ -254,7 +253,7 @@ function delUser(id, nu) {
 
 
               <button @click="delUser(usersStore.userSelected[0].id, usersStore.userSelected[0].email)" type="submit"
-                class="button__user button__user-delete">
+                class="form__modal--save button__user-delete">
                 <svg style="width: 2rem;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
                   <path
                     d="M17 6H22V8H20V21C20 21.5523 19.5523 22 19 22H5C4.44772 22 4 21.5523 4 21V8H2V6H7V3C7 2.44772 7.44772 2 8 2H16C16.5523 2 17 2.44772 17 3V6ZM18 8H6V20H18V8ZM9 4V6H15V4H9Z">
@@ -263,11 +262,9 @@ function delUser(id, nu) {
               </button>
 
             </div>
-            <div @click="
-    modal.handleClickModalUserUpdate(),
-    verImg(especie.img_general),
-    limpiarModal()
-    " class="boton__cerrar">
+
+            <div @click="modal.handleClickModalUserUpdate(), verImg(especie.img_general), limpiarModal()"
+              class="button__modal--close">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                 stroke="currentColor" class="w-6 h-6">
                 <path stroke-linecap="round" stroke-linejoin="round"
@@ -349,60 +346,21 @@ function delUser(id, nu) {
 }
 
 
-/* formulario  */
-.fomulario__campo {
-  margin-bottom: .5rem;
-}
 
-.formulario__label {
-  display: block;
-  text-align: left;
-  font-weight: 700;
-  font-size: .8rem;
-
-}
-
-.formulario__select,
-.formulario__input {
-  border: 1px solid var(--primary);
-  border-radius: 5px;
-  width: 97%;
-  font-size: .9rem;
-  padding: .3rem;
-}
-
-.formulario__botones--user {
+.form__modal--buttons {
   display: flex;
   justify-content: space-between;
   gap: 1rem;
-  width: 50%;
+  width: 15%;
   margin: 0 auto;
   margin-top: 2.1rem;
 }
 
 @media (min-width: 768px) {
-  .formulario__botones--user {
-    width: 30%;
+  .form__modal .form__modal--buttons {
+    width: 10%;
   }
 }
-
-.button__user {
-  background: none;
-  width: 30px;
-  height: 30px;
-  display: flex;
-  justify-content: center;
-  border-radius: 50%;
-  padding: .5rem;
-  transition: all .3s ease-in-out;
-}
-
-.button__user-save:hover {
-  background: var(--primary);
-  color: var(--blanco);
-}
-
-
 
 .button__user-delete:hover {
   background: var(--rojo);

@@ -21,14 +21,15 @@ export const useModalStore = defineStore('modal',()=>{
     const modalSectionUpdate = ref(false)  
     const modalSectionView = ref(false) 
     const modalFormMonitoring = ref(false)  
-    const modalPropertyAdd = ref(false)
-    const modalPropertyUpdate = ref(false)
+    const modalProperty = ref(false)
     const modalAssignUserSpecies = ref(false)
     const modalListUserSpecies = ref(false)
     const modalNurseryAdd = ref(false)
     const modalNurseryUpdate = ref(false)
     const modalNurseryAssignSpecie = ref(false)
     const modalNurserySpecieList = ref(false)
+
+    const isEdit = ref(false)
     
     //modal especie
     function handleClickModalSpecie(){
@@ -100,13 +101,12 @@ export const useModalStore = defineStore('modal',()=>{
         modalSectionView.value = !modalSectionView.value
     }
 
-    function handleClickModalPropertyAdd(){
-        modalPropertyAdd.value = !modalPropertyAdd.value
+    function handleClickModalProperty(mode){
+        isEdit.value = mode
+        modalProperty.value = !modalProperty.value
     }
 
-    function handleClickModalPropertyUpdate(){
-        modalPropertyUpdate.value = !modalPropertyUpdate.value
-    }
+
 
     function handleClickModalAssignUserSpecies(){
         modalAssignUserSpecies.value = !modalAssignUserSpecies.value
@@ -165,10 +165,8 @@ export const useModalStore = defineStore('modal',()=>{
         handleClickModalComponent,
         modalComponent,
         componentsTree,
-        handleClickModalPropertyAdd,
-        modalPropertyAdd,
-        handleClickModalPropertyUpdate,
-        modalPropertyUpdate,
+        handleClickModalProperty,
+        modalProperty,
         handleClickModalAssignUserSpecies,
         modalAssignUserSpecies,
         handleClickModalListUserSpecies,
@@ -180,6 +178,7 @@ export const useModalStore = defineStore('modal',()=>{
         handleClickModalNurseryAssignSpecie,
         modalNurseryAssignSpecie,
         handleClickModalNurserySpecieList,
-        modalNurserySpecieList
+        modalNurserySpecieList,
+        isEdit,
     }
 })

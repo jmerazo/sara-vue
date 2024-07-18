@@ -4,7 +4,7 @@ import { onBeforeRouteLeave } from "vue-router";
 import { useUsersStore } from "@/stores/users";
 
 import ModalUserUpdate from "@/components/dashboard/modals/ModalUserUpdate.vue";
-import ModalPropertyAdd from "@/components/dashboard/modals/ModalPropertyAdd.vue";
+import ModalProperty from "@/components/dashboard/modals/ModalProperty.vue";
 import ModalNurseryAdd from "@/components/dashboard/modals/ModalNurseryAdd.vue";
 import ModalAssignUserSpecies from "@/components/dashboard/modals/ModalAssignUserSpecies.vue";
 import ModalUserSpeciesList from "@/components/dashboard/modals/ModalUserSpeciesList.vue";
@@ -99,7 +99,7 @@ const displayedPageRange = computed(() => {
         <div class="paginador__botones">
           <button class="paginador__boton paginador__boton--anterior" v-if="usersStore.currentPage > 1"
             @click="usersStore.changePage(usersStore.currentPage - 1)">
-            <font-awesome-icon :icon="['fas', 'angles-left']" />
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M4.83578 12L11.0429 18.2071L12.4571 16.7929L7.66421 12L12.4571 7.20712L11.0429 5.79291L4.83578 12ZM10.4857 12L16.6928 18.2071L18.107 16.7929L13.3141 12L18.107 7.20712L16.6928 5.79291L10.4857 12Z"></path></svg>
           </button>
 
           <button v-for="page in displayedPageRange" :key="page" @click="usersStore.changePage(page)"
@@ -111,9 +111,10 @@ const displayedPageRange = computed(() => {
           <button class="paginador__boton paginador__boton--siguiente"
             v-if="usersStore.currentPage < usersStore.totalPages"
             @click="usersStore.changePage(usersStore.currentPage + 1)">
-            <font-awesome-icon :icon="['fas', 'angles-right']" />
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M19.1642 12L12.9571 5.79291L11.5429 7.20712L16.3358 12L11.5429 16.7929L12.9571 18.2071L19.1642 12ZM13.5143 12L7.30722 5.79291L5.89301 7.20712L10.6859 12L5.89301 16.7929L7.30722 18.2071L13.5143 12Z"></path></svg>
           </button>
         </div>
+        
       </section>
       <!--fin paginador -->
       <!-- texto validacion buscador -->
@@ -126,7 +127,7 @@ const displayedPageRange = computed(() => {
 
     </main>
     <ModalUserUpdate/>
-    <ModalPropertyAdd/>
+    <ModalProperty/>
     <ModalAssignUserSpecies/>
     <ModalUserSpeciesList/>
     <ModalNurseryAdd/>

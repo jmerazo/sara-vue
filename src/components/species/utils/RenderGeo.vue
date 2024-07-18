@@ -77,7 +77,7 @@ function drawMap(centerCoordinate) {
 }
 </script>
 
-<style>
+<style scoped>
 .map-container {
   width: auto;
   height: 600px;

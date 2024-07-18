@@ -3,8 +3,7 @@ import { computed } from "vue";
 import { onBeforeRouteLeave } from "vue-router";
 
 //components
-import ModalPropertyAdd from "@/components/dashboard/modals/ModalPropertyAdd.vue";
-import ModalPropertyUpdate from "@/components/dashboard/modals/ModalPropertyUpdate.vue";
+import ModalProperty from "@/components/dashboard/modals/ModalProperty.vue";
 import Property from "@/components/dashboard/cards/property.vue";
 
 //stores
@@ -93,7 +92,7 @@ function deleteProperty(id, nu) {
         </div>
       </div>
       
-      <!-- <div @click="modal.handleClickModalPropertyAdd()" class="agregar"></div> -->
+      <div @click="modal.handleClickModalProperty(false)" class="agregar"></div>
       <!-- paginador -->
       <section class="paginador">
         <div class="paginador__botones">
@@ -125,8 +124,8 @@ function deleteProperty(id, nu) {
       <!--fin texto validacion buscador -->
 
     </main>
-    <ModalPropertyAdd />
-    <ModalPropertyUpdate />
+    <ModalProperty />
+    
   </div>
 </template>
 
