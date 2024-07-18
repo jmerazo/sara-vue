@@ -93,7 +93,7 @@ function deleteProperty(id, nu) {
         </div>
       </div>
       
-      <div @click="modal.handleClickModalPropertyAdd()" class="agregar"></div>
+      <!-- <div @click="modal.handleClickModalPropertyAdd()" class="agregar"></div> -->
       <!-- paginador -->
       <section class="paginador">
         <div class="paginador__botones">

@@ -48,12 +48,12 @@
         <font-awesome-icon :icon="['fab', 'squarespace']" /> Vereda:
         <span class="dato">{{ selectedFeature.getProperties().vereda }}</span>
       </p>
-      <p class="map__datos" v-if="selectedFeature.getProperties().source === 'original'">
+      <!-- <p class="map__datos" v-if="selectedFeature.getProperties().source === 'original'">
         <font-awesome-icon :icon="['fas', 'location-dot']" /> Nombre del predio:
         <span class="dato">{{
           selectedFeature.getProperties().nombre_del_predio
         }}</span>
-      </p>
+      </p> -->
       <p class="map__datos" v-if="selectedFeature.getProperties().source === 'original'">
         <font-awesome-icon :icon="['fas', 'star']" /> Puntaje evaluación:
         <span class="dato">{{
@@ -78,7 +78,10 @@ import { fromLonLat } from "ol/proj";
 import Point from "ol/geom/Point";
 import Feature from "ol/Feature";
 import Polygon from "ol/geom/Polygon.js";
-import treeIconPath from "/icons/icon_geo.png";
+import treeIconPath from "/icons/icon_tree_green.png";
+import treeIconGBIFPath from "/icons/icon_tree_pink.png";
+import treePalmIconGreenPath from "/icons/icon_tree_palm_green.png";
+import treePalmIconPinkPath from "/icons/icon_tree_palm_pink.png";
 import { useGeoCandidateTrees } from "../stores/candidate";
 
 const geoStore = useGeoCandidateTrees();
@@ -86,6 +89,7 @@ const geoStore = useGeoCandidateTrees();
 const mapContainer = ref(null);
 const infoContainer = ref(null);
 const selectedFeature = ref(null);
+const currentSource = ref('');
 let mapInstance = null;
 
 const vectorSource = new VectorSource({
@@ -144,6 +148,13 @@ watch(
   }
 );
 
+watch(
+  () => currentSource.value,
+  () => {
+    updateMap();
+  }
+);
+
 function updateVectorSource() {
   const newFeatures = geoStore.geoDataNew.map((point) => {
     const geometry = new Point(fromLonLat([point.lon, point.lat]));
@@ -160,6 +171,7 @@ function updateVectorSource() {
       vereda: point.vereda,
       nombre_del_predio: point.nombre_del_predio,
       resultado: point.resultado,
+      habito: point.habito,
       source: point.source
     });
     return feature;
@@ -176,9 +188,13 @@ function updateMap() {
       mapInstance = null;
     }
     updateVectorSource();
-    geoStore.calculatePerimeterCoordinates();
-    const perimeterCoordinates = geoStore.coordinatesPolygon;
-    drawMap(perimeterCoordinates, vectorSource);
+    if (currentSource.value === 'original') {
+      geoStore.calculatePerimeterCoordinates();
+      const perimeterCoordinates = geoStore.coordinatesPolygon;
+      drawMap(perimeterCoordinates, vectorSource);
+    } else {
+      drawMap([], vectorSource); // No dibujar el perímetro
+    }
   }
 }
 //tamaños y coordenadas del mapa 
@@ -210,49 +226,63 @@ function drawMap(perimeterCoordinates, vectorSource) {
   const treeIconStyle = new Style({
     image: new Icon({
       src: treeIconPath,
-      scale: 0.4,
+      scale: 0.06,
       anchor: [0.5, 1],
     }),
   });
 
-  const originalStyle = new Style({
-    image: new Circle({
-      radius: 7,
-      fill: new Fill({
-        color: 'blue',
-      }),
-      stroke: new Stroke({
-        color: 'white',
-        width: 2,
-      }),
+  const treePalmIconStyle = new Style({
+    image: new Icon({
+      src: treePalmIconGreenPath,
+      scale: 0.06,
+      anchor: [0.5, 1],
     }),
   });
 
-  const gbifStyle = new Style({
-    image: new Circle({
-      radius: 7,
-      fill: new Fill({
-        color: 'red',
-      }),
-      stroke: new Stroke({
-        color: 'white',
-        width: 2,
-      }),
+  const treeIconGBIFStyle = new Style({
+    image: new Icon({
+      src: treeIconGBIFPath,
+      scale: 0.06,
+      anchor: [0.5, 1],
     }),
+  });
+
+  const treePalmGBIFIconStyle = new Style({
+    image: new Icon({
+      src: treePalmIconPinkPath,
+      scale: 0.06,
+      anchor: [0.5, 1],
+    }),
+  });
+
+  const vectorLayer = new VectorLayer({
+    source: vectorSource,
+    style: function (feature) {
+      const source = feature.get('source');
+      const habito = feature.get('habito');
+      
+      if (source === 'original') {
+        if (habito === 'Árbol') {
+          return treeIconStyle;
+        } else if (habito === 'Palma') {
+          return treePalmIconStyle;
+        }
+      } else if (source === 'gbif') {
+        if (habito === 'Árbol') {
+          return treeIconGBIFStyle;
+        } else if (habito === 'Palma') {
+          return treePalmGBIFIconStyle;
+        }
+      }
+    },
   });
 
   /* const vectorLayer = new VectorLayer({
     source: vectorSource,
-    style: new Style({
-      image: treeIcon,
-    }),
-  }); */
-  const vectorLayer = new VectorLayer({
-    source: vectorSource,
     style: function (feature) {
-      return feature.get('source') === 'gbif' ? gbifStyle : treeIconStyle;
+      return feature.get('source') === 'gbif' ? treeIconGBIFStyle : treeIconStyle;
     },
-  });
+  }); */
 
   const lineCoords = perimeterCoordinates.map((coord) => fromLonLat(coord));
 
