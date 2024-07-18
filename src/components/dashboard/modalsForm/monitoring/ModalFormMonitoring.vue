@@ -106,7 +106,7 @@ const modal = useModalStore();
   </div>
 </template>
 
-<style >
+<style scoped>
 .modal {
   position: fixed;
   top: 0;

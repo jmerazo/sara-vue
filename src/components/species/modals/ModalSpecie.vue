@@ -123,7 +123,7 @@ const limpiarModal = () => {
                   verImg(especie.img_general),
                   limpiarModal()
               "
-              class="boton__cerrar"
+              class="button__modal--close"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"

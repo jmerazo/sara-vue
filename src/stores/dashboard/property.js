@@ -1,20 +1,18 @@
 import {ref, onMounted, computed, watch } from 'vue'
 import {defineStore} from 'pinia'
-import APIService from '../../services/APIService'
-import ModalPropertyAdd from "@/components/dashboard/modals/ModalPropertyAdd.vue";
+import APIService from '@/services/APIService'
 import { useModalStore } from "@/stores/modal";
 
 const modal = useModalStore();
 
 export const propertyStore = defineStore('property',()=>{
+
   const property = ref([]);
   const propertyOriginal = ref([]);
   const propertySelected = ref([]);
   const totalProperty = ref(0);
-  const newState = ref();
   const datosImport = ref([]);
   const cargando = ref(false);
-  const noResultados = computed(() => property.value.length === 0 );
   const userSelected = ref('');
   const propertyUsers = ref([]);
   const userPropertySelected = ref('');
@@ -53,14 +51,14 @@ export const propertyStore = defineStore('property',()=>{
 
   const selectedUserCreateProperty = (id) => {
     userSelected.value = id;
-    modal.handleClickModalPropertyAdd()
+    propertySelected.value = [];
+    modal.handleClickModalProperty(false)
   }
 
   const createProperty= async (data) => {
     try {
       const response = await APIService.createProperty(data);
-      console.log('response p: ', response)
-
+      
       if (response.status === 201) {
         // La respuesta del APIService fue satisfactoria
         property.value.push(response.data); // Agrega el nuevo objeto al array
@@ -174,7 +172,7 @@ export const propertyStore = defineStore('property',()=>{
   function selectedPropertyUpdate(id) {
     propertySelectedUpdate.value = id;
     propertySelected.value = propertyOriginal.value.filter(property => property.id === id)
-    modal.handleClickModalPropertyUpdate();
+    modal.handleClickModalProperty(true)
   }
 
   const updateProperty = async (pid, data) => {
@@ -239,7 +237,7 @@ export const propertyStore = defineStore('property',()=>{
         deleteSpecieUser,
         selectedPropertyUpdate,
         updateProperty,
-        propertySelectedUpdate,
+        
         propertySelected,
         currentPage,
         itemsPerPage,

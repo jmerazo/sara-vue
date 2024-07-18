@@ -139,5 +139,4 @@ const enviarDatos = (e) => {
 
 
 
-<style  scoped>
-</style>
+

@@ -13,7 +13,6 @@ export const useAuthTokenStore = defineStore('authToken', () => {
   const userData = ref(null);
   const errorAuth = ref(null);
   const authActive = ref(false);
-  const socialData = ref(false);
   const userPermissions = ref(null); 
   const isLoadingPermissions = ref(false);
 

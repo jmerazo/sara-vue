@@ -127,8 +127,10 @@ const displayedPageRange = computed(() => {
       </div>
 
       <div @click="modal.handleClickModalForestSpecieAdd()" class="agregar"></div>
-      <!-- paginador -->
-      <section class="paginador">
+  
+    </main>
+        <!-- paginador -->
+        <section class="paginador">
         <div class="paginador__botones">
           <button class="paginador__boton paginador__boton--anterior" v-if="especies.currentPage > 1"
             @click="especies.changePage(especies.currentPage - 1)">
@@ -155,8 +157,6 @@ const displayedPageRange = computed(() => {
         </h1>
       </section>
       <!--fin texto validacion buscador -->
-    </main>
-
     <ModalForestSpecieUpdate />
     <ModalForestSpecieAdd />
   </div>

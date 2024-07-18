@@ -418,7 +418,7 @@ watch(evaluacion, (nuevoValor) => {
     </div>
 </template>
 
-<style>
+<style scoped>
 .form__addCandidate {
   max-width: 600px;
   margin: 0 auto;

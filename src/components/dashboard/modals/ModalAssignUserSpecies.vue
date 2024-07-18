@@ -69,16 +69,16 @@ const handlePropertyChange = async () => {
 <template>
   <div class="modal" v-if="modal.modalAssignUserSpecies">
     <div class="modal__contenido">
-      <div class="form__content">
-        <h3 class="title__addCandidate">
+      <div class="form__modal--content">
+        <h3 class="form__modal--title">
           Asignar especie
         </h3>
         <hr>
-        <form class="form__addCandidate" @submit.prevent="handleSubmit">
+        <form class="form__modal" @submit.prevent="handleSubmit">
 
-          <div class="form__field">
-            <label class="form__label" for="usuario">Especie forestal: </label>
-            <select id="especie_forestal" class="form__input" v-model="formData.ep_especie_cod">
+          <div class="form__modal--field">
+            <label class="form__modal--label" for="usuario">Especie forestal: </label>
+            <select class="form__modal--input" id="especie_forestal"  v-model="formData.ep_especie_cod">
               <option value="">--Seleccione--</option>
               <option v-for="ef in especies.especies" :key="ef.ShortcutID" :value="ef.cod_especie">
                 {{ ef.cod_especie + " / " + ef.nom_comunes + " / " + ef.nombre_cientifico }}
@@ -86,30 +86,30 @@ const handlePropertyChange = async () => {
             </select>
           </div>
 
-          <div class="form__field" style="display: none;">
-            <label class="form__label form_none" for="usuario">Nombre de usuario: </label>
-            <input class="form__input" type="text" v-model="formData.ep_usuario"
+          <div class="form__modal--field" style="display: none;">
+            <label class="form__modal--label form_none" for="usuario">Nombre de usuario: </label>
+            <input class="form__modal--input" type="text" v-model="formData.ep_usuario"
               :placeholder="property.userPropertySelected" />
           </div>
 
-          <div class="form__field">
-            <label class="form__label">Cantidad de individuos: </label>
-            <input class="form__input" type="number" v-model="formData.cantidad_individuos" />
+          <div class="form__modal--field">
+            <label class="form__modal--label">Cantidad de individuos: </label>
+            <input class="form__modal--input" type="number" v-model="formData.cantidad_individuos" />
           </div>
 
-          <div class="form__field">
-            <label class="form__label">Cantidad productiva: </label>
-            <input class="form__input" type="number" v-model="formData.cant_productiva" />
+          <div class="form__modal--field">
+            <label class="form__modal--label">Cantidad productiva: </label>
+            <input class="form__modal--input" type="number" v-model="formData.cant_productiva" />
           </div>
 
-          <div class="form__field">
-            <label class="form__label">Cantidad remanente: </label>
-            <input class="form__input" type="number" v-model="formData.cant_remanente" />
+          <div class="form__modal--field">
+            <label class="form__modal--label">Cantidad remanente: </label>
+            <input class="form__modal--input" type="number" v-model="formData.cant_remanente" />
           </div>
 
-          <div class="form__field">
-            <label class="form__label" for="departamento">Predio:</label>
-            <select id="departamento" class="form__input" v-model="formData.ep_predio" @click="handlePropertyChange()">
+          <div class="form__modal--field">
+            <label class="form__modal--label" for="departamento">Predio:</label>
+            <select id="departamento" class="form__modal--input" v-model="formData.ep_predio" @click="handlePropertyChange()">
               <option value="">--Seleccione--</option>
               <option v-for="p in property.propertyUser" :key="p.id" :value="p.id">
                 {{ p.nombre_predio }}
@@ -117,23 +117,23 @@ const handlePropertyChange = async () => {
             </select>
           </div>
 
-          <div class="form__field">
-            <label class="form__label">Expediente: </label>
-            <input class="form__input" type="text" v-model="formData.expediente" />
+          <div class="form__modal--field">
+            <label class="form__modal--label">Expediente: </label>
+            <input class="form__modal--input" type="text" v-model="formData.expediente" />
           </div>
           <p class="msg__error" v-if="error">
             {{ error }}
           </p>
 
-          <div class="formulario__botones" :style="error ? 'margin-top: 1rem' : ''">
-            <button type="submit" class="button__user-specie"><svg style="width: 2rem;"
+          <div class="form__modal--buttons" :style="error ? 'margin-top: 1rem' : ''">
+            <button class="form__modal--save" type="submit" ><svg style="width: 2rem;"
                 xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
                 <path
                   d="M7 19V13H17V19H19V7.82843L16.1716 5H5V19H7ZM4 3H17L21 7V20C21 20.5523 20.5523 21 20 21H4C3.44772 21 3 20.5523 3 20V4C3 3.44772 3.44772 3 4 3ZM9 15V19H15V15H9Z">
                 </path>
               </svg></button>
 
-            <div class="boton__cerrar" @click="() => { resetForm(); modal.handleClickModalAssignUserSpecies(); }">
+            <div class="button__modal--close" @click="() => { resetForm(); modal.handleClickModalAssignUserSpecies(); }">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                 stroke="currentColor" class="w-6 h-6">
                 <path stroke-linecap="round" stroke-linejoin="round"
@@ -212,56 +212,5 @@ const handlePropertyChange = async () => {
 }
 
 
-.form__content .title__addCandidate {
-  text-align: center;
-  margin-bottom: 20px;
-  font-size: 1.3rem;
-  font-weight: 500;
-}
 
-
-
-.form__addCandidate .form__field {
-  margin: 1rem 0;
-}
-.form__field .form__label{
-  display: block;
-  font-size: 1rem;
-  font-weight: 500;
-  margin-bottom: .5rem;
-  text-align: left;
-}
-.form__field .form__input{
-  width: 100%;
-  padding: .2rem;
-  border: 1px solid var(--primary);
-  border-radius: 5px;
-}
-
-
-/* form buttons */
-
-.formulario__botones {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-top: 0rem;
-  transition: all .3s ease-in-out;
-}
-
-.button__user-specie {
-  background: none;
-  width: 30px;
-  height: 30px;
-  display: flex;
-  justify-content: center;
-  border-radius: 50%;
-  padding: .5rem;
-  transition: all .3s ease-in-out;
-}
-
-.button__user-specie:hover {
-  background: var(--primary);
-  color: var(--blanco);
-}
 </style>

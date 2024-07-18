@@ -325,7 +325,7 @@ function drawMap(perimeterCoordinates, vectorSource) {
 </script>
 
 
-<style>
+<style scoped>
 .map-container {
   position: relative;
   width: auto;
