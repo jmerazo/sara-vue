@@ -119,6 +119,7 @@ export const useGeoCandidateTrees = defineStore("geoCandidateTrees", () => {
       resultado: item.resultado,
       vereda: item.vereda,
       numero_placa: item.numero_placa,
+      habito: item.habito,
       source: 'original',
     }));
   
@@ -133,6 +134,7 @@ export const useGeoCandidateTrees = defineStore("geoCandidateTrees", () => {
           taxon_key: gbifItem.taxonKey,
           lat: gbifItem.lat,
           lon: gbifItem.lon,
+          habito: originalItem.habito,
           source: 'gbif',
       };
     });
@@ -320,7 +322,6 @@ export const useGeoCandidateTrees = defineStore("geoCandidateTrees", () => {
   };
   
   function filterGeo(departmentCode, city, codeFilter, source) {
-    /* let filteredData = geoCandidateData.value; */
     let filteredData = [];
 
     if (source === 'gbif') {
@@ -385,6 +386,7 @@ export const useGeoCandidateTrees = defineStore("geoCandidateTrees", () => {
       coordenadas: item.coordenadas,
       nombre_del_predio: item.nombre_del_predio,
       resultado: item.resultado,
+      habito: item.habito,
       source: item.source
     }));
   }
@@ -403,6 +405,7 @@ export const useGeoCandidateTrees = defineStore("geoCandidateTrees", () => {
       coordenadas: item.coordenadas,
       nombre_del_predio: item.nombre_del_predio,
       resultado: item.resultado,
+      habito: item.habito,
       source: item.source
     }));
   }

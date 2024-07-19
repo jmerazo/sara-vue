@@ -14,10 +14,19 @@ const codeFind = ref("");
 const department = ref({ code: "", name: "" });
 const city = ref("");
 const source = ref("")
+const currentSource = ref("");
 
 onMounted(async () => {
   await geoStore.fetchData();
 });
+
+watch(
+  () => source.value,
+  (newValue) => {
+    currentSource.value = newValue; // Actualiza currentSource cuando source cambie
+    filterGeoData();
+  }
+);
 
 watch(source, (newSource) => {
   if (newSource === 'gbif') {

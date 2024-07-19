@@ -38,9 +38,13 @@ function toggleDetalles(contenedor) {
       <!-- datos de la especie -->
       <div class="especie">
         <div class="especie__imagen">
-          <img src="/icons/icon-arbol-lupa.png" alt="icon monitoreo" />
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+            <path
+              d="M7 3V1H9V3H15V1H17V3H21C21.5523 3 22 3.44772 22 4V9H20V5H17V7H15V5H9V7H7V5H4V19H10V21H3C2.44772 21 2 20.5523 2 20V4C2 3.44772 2.44772 3 3 3H7ZM17 12C14.7909 12 13 13.7909 13 16C13 18.2091 14.7909 20 17 20C19.2091 20 21 18.2091 21 16C21 13.7909 19.2091 12 17 12ZM11 16C11 12.6863 13.6863 10 17 10C20.3137 10 23 12.6863 23 16C23 19.3137 20.3137 22 17 22C13.6863 22 11 19.3137 11 16ZM16 13V16.4142L18.2929 18.7071L19.7071 17.2929L18 15.5858V13H16Z">
+            </path>
+          </svg>
         </div>
-        <p class="especie__info nombre__comun">
+        <p class="especie__info">
           <span class="dato" :class="{ sinInfo: !monitoreo.nom_comunes }">{{
             monitoreo.nom_comunes
           }}</span>
@@ -307,31 +311,15 @@ function toggleDetalles(contenedor) {
         @click="monitoring.selectMonitoring(monitoreo,true)"
         type="button"
         class="boton__add"
-      ></div>
+        
+      ><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M15.7279 9.57627L14.3137 8.16206L5 17.4758V18.89H6.41421L15.7279 9.57627ZM17.1421 8.16206L18.5563 6.74785L17.1421 5.33363L15.7279 6.74785L17.1421 8.16206ZM7.24264 20.89H3V16.6473L16.435 3.21231C16.8256 2.82179 17.4587 2.82179 17.8492 3.21231L20.6777 6.04074C21.0682 6.43126 21.0682 7.06443 20.6777 7.45495L7.24264 20.89Z"></path></svg></div>
     </div>
   </div>
 </template>
 
 <style scoped>
 /* boton nuevo monitoreo */
-.boton__add {
-  background-image: url("/icons/pencil.png");
-  background-position: center;
-  background-size: cover;
-  padding: 0;
-  margin: 0;
-  height: 3rem;
-  width: 3rem;
-  bottom: 10%;
-  cursor: pointer;
-  position: absolute;
-  top: 6px;
-  right: 5px;
-  transition: transform 0.1s ease-out;
-}
-.boton__add:hover {
-  transform: scale(1.08);
-}
+
 @media (min-width: 992px) {
   .boton__add {
     top: 25px;
@@ -343,7 +331,24 @@ function toggleDetalles(contenedor) {
   }
 }
 
-
+.boton__add {
+ 
+  background-position: center;
+  background-size: cover;
+  padding: 0;
+  margin: 0;
+  height: 2rem;
+  width: 2rem;
+  bottom: 10%;
+  cursor: pointer;
+  position: absolute;
+  top: 6px;
+  right: 5px;
+  transition: transform 0.1s ease-out;
+}
+.boton__add:hover {
+  transform: scale(1.08);
+}
 
 /* card */
 .card {
@@ -355,7 +360,8 @@ function toggleDetalles(contenedor) {
 }
 .card__boton {
   text-align: center;
-  font-size: 1rem;
+  font-size: .9rem;
+  background: none;
   border: 1px solid var(--primary);
   padding: 0.2rem;
   font-weight: 700;
@@ -379,7 +385,7 @@ function toggleDetalles(contenedor) {
 }
 .datos__titulo {
   text-align: center;
-  font-weight: 700;
+  font-weight: 500;
   padding: 0;
   margin: 0;
   color: var(--primary);
@@ -412,9 +418,9 @@ function toggleDetalles(contenedor) {
 
 /* generales */
 .dato {
-  font-weight: 900;
+  font-weight: 600;
   color: var(--gris);
-  opacity: 0.9;
+  font-size: 1rem;
 }
 .sinInfo {
   color: rgb(240, 176, 176);
@@ -431,6 +437,8 @@ function toggleDetalles(contenedor) {
 .fecha__monitoreo {
   text-align: center;
   margin: 0.5rem;
+  font-size: 1rem;
+  margin-top: 1rem;
 }
 
 /* seccion especie */
@@ -445,15 +453,16 @@ function toggleDetalles(contenedor) {
   padding: 0 0.5rem;
   margin-bottom: 0rem;
 }
-.especie__imagen {
-  width: 4.5rem;
+.especie__imagen svg {
+  width: 3rem;
+  color : var(--primary);
+  margin-bottom: .5rem;
+  margin-top: 1rem;
 }
 .especie__info {
   padding: 0;
   margin: 0.1rem 0;
-  font-size: 0.89rem;
-}
-.nombre__comun {
   font-size: 1rem;
 }
+
 </style>

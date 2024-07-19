@@ -426,7 +426,7 @@ watch(evaluacion, (nuevoValor) => {
     </div>
 </template>
 
-<style>
+<style scoped>
 .modal {
   position: fixed;
   top: 0;
@@ -515,18 +515,6 @@ textarea {
   margin-bottom: 10px;
 }
 
-/* button {
-  width: 100%;
-  padding: 10px;
-  background-color: #4CAF50;
-  color: white;
-  border: none;
-  cursor: pointer;
-}
-
-button:hover {
-  background-color: #45a049;
-} */
 
 .formulario__botones {
   display: flex;

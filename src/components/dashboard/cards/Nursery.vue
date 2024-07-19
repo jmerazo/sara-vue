@@ -1,56 +1,49 @@
 <script setup>
 
-import { useUsersStore } from "@/stores/users";
-import { propertyStore } from "@/stores/dashboard/property";
 import { useNurseriesDashStore } from "@/stores/dashboard/nurseries";
 
-const usersStore = useUsersStore();
-const propertiesStore = propertyStore();
 const nurseriesStore = useNurseriesDashStore();
 
 defineProps({
-    user: {
+    nursery: {
         type: Object,
         required: true
     },
-    changeUserState: {
+    deleteNursery: {
         type: Function,
         required: true
     }
-
 })
 </script>
 
 <template>
-    <div class="card__user">
+    <div class="card__nursery">
         <div class="card__heading">
-            <div class="card__options">
-                <div class="card__check">
-                    <label class="switch">
-                        <input @change="changeUserState(user.id, user.is_active)" :checked="user.is_active === 1"
-                            class="card__input" type="checkbox" />
 
-                        <span class="card__check--button"></span>
-                    </label>
-                </div>
-                <p class="rol">{{ user.rol }}</p>
-            </div>
             <div class="card__image">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
                     <path
-                        d="M4 22C4 17.5817 7.58172 14 12 14C16.4183 14 20 17.5817 20 22H18C18 18.6863 15.3137 16 12 16C8.68629 16 6 18.6863 6 22H4ZM12 13C8.685 13 6 10.315 6 7C6 3.685 8.685 1 12 1C15.315 1 18 3.685 18 7C18 10.315 15.315 13 12 13ZM12 11C14.21 11 16 9.21 16 7C16 4.79 14.21 3 12 3C9.79 3 8 4.79 8 7C8 9.21 9.79 11 12 11Z">
+                        d="M3 19V5.70046C3 5.27995 3.26307 4.90437 3.65826 4.76067L13.3291 1.24398C13.5886 1.14961 13.8755 1.28349 13.9699 1.54301C13.9898 1.59778 14 1.65561 14 1.71388V6.6667L20.3162 8.77211C20.7246 8.90822 21 9.29036 21 9.72079V19H23V21H1V19H3ZM5 19H12V3.85543L5 6.40089V19ZM19 19V10.4416L14 8.77488V19H19Z">
                     </path>
                 </svg>
             </div>
         </div>
         <div class="card__body">
             <div class="card__content">
-                <p style="font-weight: 700;">{{ user.first_name + " " + user.last_name }}</p>
-                <p>{{ user.email }}</p>
-                <p>{{ user.cellphone }}</p>
-                <p>{{ user.name }}</p>
-                <p class="dato">{{ user.entity }}</p>
-
+                <p class="dato">{{nursery.nombre_vivero}}</p>
+                <p>{{ nursery.direccion }}</p>
+            </div>
+            <div class="card__content">
+                <div class="card__image card__image--secondary">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                        <path
+                            d="M12 14V16C8.68629 16 6 18.6863 6 22H4C4 17.5817 7.58172 14 12 14ZM12 13C8.685 13 6 10.315 6 7C6 3.685 8.685 1 12 1C15.315 1 18 3.685 18 7C18 10.315 15.315 13 12 13ZM12 11C14.21 11 16 9.21 16 7C16 4.79 14.21 3 12 3C9.79 3 8 4.79 8 7C8 9.21 9.79 11 12 11ZM18 21.5L15.0611 23.0451L15.6224 19.7725L13.2447 17.4549L16.5305 16.9775L18 14L19.4695 16.9775L22.7553 17.4549L20.3776 19.7725L20.9389 23.0451L18 21.5Z">
+                        </path>
+                    </svg>
+                </div>
+                <p >{{ nursery.first_name + " " + nursery.last_name }}</p>
+                <p>{{ nursery.email ? nursery.email : "Sin email" }}</p>
+                <p>{{ nursery.telefono }}</p>
             </div>
         </div>
         <div class="card__footer">
@@ -62,15 +55,15 @@ defineProps({
                 </svg>
             </div>
             <div class="buttons">
-                <button @click="usersStore.selectedUserUpdate(user.id)" class="nav__element animation"><span class="nav__text">Editar Usuario</span></button>
-                <button @click="propertiesStore.selectedUserCreateUsersProperty(user.id)" class="nav__element animation"><span class="nav__text">Asignar Especie</span></button>
-                <button @click="propertiesStore.selectedUserCreateProperty(user.id)" class="nav__element animation"><span class="nav__text">Registrar Predio</span></button>
-                <button @click="propertiesStore.listUserSpeciesIds(user.id)" class="nav__element animation"><span class="nav__text">Ver especies</span></button>
-                <button @click="nurseriesStore.selectedUserCreateNursery(user.id)" class="nav__element animation"><span class="nav__text">Vivero</span></button>
+                <button @click="nurseriesStore.selectedUpdateNursery(nursery.id)" class="nav__element animation"><span class="nav__text">Editar Vivero</span></button>
+                <button @click="nurseriesStore.selectedNurseryAssignSpecie(nursery.id)" class="nav__element animation"><span class="nav__text">Asignar Especie</span></button>
+                <button @click="nurseriesStore.selectedNurserySpeciesList(nursery.id)" class="nav__element animation"><span class="nav__text">Listar Especies</span></button>
+                <button @click="deleteNursery(nursery.id, nursery.nombre_vivero)" class="nav__element animation" style="color: rgb(200, 73, 12);"><span class="nav__text">Eliminar Vivero</span></button>
+               
             </div>
         </div>
     </div>
-   
+
 </template>
 
 <style scoped>
@@ -83,6 +76,7 @@ defineProps({
     transition: 0.3s ease all;
     position: relative;
     overflow: hidden;
+    
 }
 
 .nav__text {
@@ -116,8 +110,13 @@ defineProps({
 /* opciones */
 .buttons {
     padding: .5rem;
+    width: 310px;
 }
-
+@media (min-width: 768px) {
+    .buttons{
+        width: 350px;
+    }
+}
 .buttons button {
     width: 95%;
     border-radius: .3rem;
@@ -148,7 +147,7 @@ defineProps({
     background: var(--blanco);
     bottom: 0;
     transition: all .3s ease-in-out;
-    transform: translateY(85%);
+    transform: translateY(82%);
 }
 
 .card__footer:hover {
@@ -190,14 +189,14 @@ defineProps({
     margin-top: .8rem;
 }
 
-.card__options {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: .5rem 1rem
+.card__image--secondary svg {
+    width: 3rem;
+    margin-bottom: 0rem;
 }
 
-.card__user {
+
+
+.card__nursery {
     position: relative;
     width: 310px;
     background-color: var(--blanco);
@@ -208,63 +207,8 @@ defineProps({
 }
 
 @media (min-width: 768px) {
-    .card__user {  
-        width: 350px;
+    .card__nursery {
+        width: 360px;
     }
-}
-
-/* switch */
-.switch {
-    position: relative;
-    display: inline-block;
-    width: 40px;
-    height: 24px;
-    margin-left: 4px;
-}
-
-.switch .tabla__input {
-    opacity: 0;
-    width: 0;
-    height: 0;
-}
-
-.card__check--button {
-    position: absolute;
-    cursor: pointer;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: var(--secondary);
-    -webkit-transition: 0.4s;
-    transition: 0.4s;
-    border-radius: 34px;
-}
-
-.card__check--button:before {
-    position: absolute;
-    content: "";
-    height: 18px;
-    width: 18px;
-    left: 4px;
-    bottom: 4px;
-    background-color: white;
-    -webkit-transition: 0.4s;
-    transition: 0.4s;
-    border-radius: 50%;
-}
-
-.card__input:checked+.card__check--button {
-    background-color: var(--primary);
-}
-
-.card__input:focus+.card__check--button {
-    box-shadow: 0 0 1px var(--primary);
-}
-
-.card__input:checked+.card__check--button:before {
-    -webkit-transform: translateX(16px);
-    -ms-transform: translateX(16px);
-    transform: translateX(16px);
 }
 </style>

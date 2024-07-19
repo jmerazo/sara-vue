@@ -2,26 +2,24 @@
 import { ref, onMounted, computed, watch } from 'vue';
 import { useNurseriesDashStore } from "@/stores/dashboard/nurseries";
 import { useModalStore } from "@/stores/modal";
-import { useUsersStore } from "@/stores/users";
 import { locatesColombia } from "@/stores/locates";
 
 const locates = locatesColombia();
 const nurseriesStore = useNurseriesDashStore();
 const modal = useModalStore();
-const user = useUsersStore();
 
 const formData = ref({
-    nombre_vivero: '',
-    nit: '',
-    representante_legal_id: '',
-    ubicacion: '',
-    email: '',
-    telefono: '',
-    department: '',
-    city: '',
-    direccion: '',
-    logo: '',
-    active: ''
+  nombre_vivero: '',
+  nit: '',
+  representante_legal_id: '',
+  ubicacion: '',
+  email: '',
+  telefono: '',
+  department: '',
+  city: '',
+  direccion: '',
+  logo: '',
+  active: ''
 });
 
 const initializeFormData = () => {
@@ -59,8 +57,8 @@ const initializeFormData = () => {
 };
 
 async function nurseryUpdate() {
-    await nurseriesStore.updateNursery(nurseriesStore.nurseryUpdateSelected[0].id, formData.value);
-    modal.handleClickModalNurseryUpdate();
+  await nurseriesStore.updateNursery(nurseriesStore.nurseryUpdateSelected[0].id, formData.value);
+  modal.handleClickModalNurseryUpdate();
 }
 
 watch(
@@ -97,12 +95,12 @@ onMounted(() => {
 });
 
 if ("geolocation" in navigator) {
-  navigator.geolocation.getCurrentPosition(function(position) {
+  navigator.geolocation.getCurrentPosition(function (position) {
     const latitude = position.coords.latitude;
     const longitude = position.coords.longitude;
 
     formData.value.ubicacion = `${latitude}, ${longitude}`
-  }, function(error) {
+  }, function (error) {
     console.error("Error obteniendo la ubicación: ", error);
   });
 } else {
@@ -111,70 +109,109 @@ if ("geolocation" in navigator) {
 </script>
 
 <template>
-    <div class="modal" v-if="modal.modalNurseryUpdate">
-        <div class="modal__contenido">
-            <div class="form__addCandidate">
-                <div class="title__addCandidate">
-                    <span>Actualizar datos vivero</span>
-                </div>
-                <form @submit.prevent="nurseryUpdate">
-                    <div class="form-section data__evaluation">
-                        <label class="formulario__label" for="usuario">Nombre de vivero: </label>
-                        <input type="text" v-model="formData.nombre_vivero">
-                        <label class="formulario__label" for="usuario">Representante legal: </label>
-                        <input type="text" v-model="formData.representante_legal_id">
-                        <label>Nit: </label><input type="text" v-model="formData.nit">
-                        <label>Ubicación: </label><input type="text" v-model="formData.ubicacion">
-                        <label>Email: </label><input type="text" v-model="formData.email">
-                        <label>Celular: </label><input type="text" v-model="formData.telefono">
-                        <label class="formulario__label" for="departamento">Departamento:</label>
-                        <select
-                            id="departamento"
-                            class="formulario__input formulario__input--selectc"
-                            v-model="formData.department"
-                        >
-                            <option value="">--Seleccione--</option>
-                            <option
-                            v-for="loc in locates.departments"
-                            :key="loc.id"
-                            :value="loc.code"
-                            >
-                            {{ loc.name }}
-                            </option>
-                        </select>
-                        <!-- ciudad -->
-                        <label class="formulario__label" for="municipio" v-show="filteredCities.length">Ciudad:</label>
-                        <select id="municipio" class="formulario__input formulario__input--select" v-model="formData.city" v-show="filteredCities.length">
-                            <option value="">-- Seleccione--</option>
-                            <option
-                            v-for="city in filteredCities"
-                            :key="city.id"
-                            :value="city.id"
-                            >
-                            {{ city.name }}
-                            </option>
-                        </select>
-                        <label>Dirección: </label><input type="text" v-model="formData.direccion">
-                        <label>Logo: </label><input type="text" v-model="formData.logo">
-                    </div>
-                    
-                    <div class="formulario__botones">
-                        <button type="submit" class="formulario__boton">Guardar</button>
-                        <button
-                            @click="modal.handleClickModalNurseryUpdate()"
-                            type="button"
-                            class="formulario__boton formulario__boton--cerrar"
-                        >
-                            Cerrar
-                        </button>
-                    </div>
-                </form>
+  <div class="modal" v-if="modal.modalNurseryUpdate">
+    <div class="modal__contenido">
+      <div class="form__modal--content">
+
+        <h3 class="form__modal--title">Actualizar datos vivero</h3>
+        <hr>
+        <form class="form__modal" @submit.prevent="nurseryUpdate">
+
+          <div class="form__modal--field">
+            <label class="form__modal--label" for="usuario">Nombre de vivero: </label>
+            <input class="form__modal--input" type="text" v-model="formData.nombre_vivero">
+          </div>
+
+
+          <div class="form__modal--field">
+            <label class="form__modal--label" for="usuario">Representante legal: </label>
+            <input class="form__modal--input" type="text" v-model="formData.representante_legal_id">
+          </div>
+
+
+          <div class="form__modal--field">
+            <label class="form__modal--label" for="nit">Nit: </label>
+            <input class="form__modal--input" type="text" v-model="formData.nit">
+          </div>
+
+
+          <div class="form__modal--field">
+            <label class="form__modal--label">Ubicación: </label>
+            <input class="form__modal--input" type="text" v-model="formData.ubicacion">
+          </div>
+
+          <div class="form__modal--field">
+            <label class="form__modal--label">Email: </label>
+            <input class="form__modal--input" type="text" v-model="formData.email">
+          </div>
+
+
+          <div class="form__modal--field">
+            <label class="form__modal--label">Celular: </label>
+            <input class="form__modal--input" type="text" v-model="formData.telefono">
+          </div>
+
+
+          <div class="form__modal--field">
+            <label class="form__modal--label" for="departamento">Departamento:</label>
+            <select class="form__modal--input" id="departamento" v-model="formData.department">
+              <option value="">--Seleccione--</option>
+              <option v-for="loc in locates.departments" :key="loc.id" :value="loc.code">
+                {{ loc.name }}
+              </option>
+            </select>
+          </div>
+
+
+          <div class="form__modal--field">
+            <!-- ciudad -->
+            <label class="formulario__label" for="municipio" v-show="filteredCities.length">Ciudad:</label>
+            <select class="form__modal--input"  id="municipio" v-model="formData.city"
+              v-show="filteredCities.length">
+              <option value="">-- Seleccione--</option>
+              <option v-for="city in filteredCities" :key="city.id" :value="city.id">
+                {{ city.name }}
+              </option>
+            </select>
+          </div>
+
+
+          <div class="form__modal--field">
+            <label class="form__modal--label">Dirección: </label>
+            <input class="form__modal--input" type="text" v-model="formData.direccion">
+          </div>
+
+
+          <div style="display: none;" class="form__modal--field">
+            <label  class="form__modal--label">Logo: </label>
+            <input class="form__modal--input" type="text" v-model="formData.logo">
+          </div>
+
+          <div class="form__modal--buttons">
+            <button type="submit" class="form__modal--save"><svg style="width: 2rem;"
+                xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                <path
+                  d="M7 19V13H17V19H19V7.82843L16.1716 5H5V19H7ZM4 3H17L21 7V20C21 20.5523 20.5523 21 20 21H4C3.44772 21 3 20.5523 3 20V4C3 3.44772 3.44772 3 4 3ZM9 15V19H15V15H9Z">
+                </path>
+              </svg></button>
+
+
+            
+            <div class="button__modal--close" @click="modal.handleClickModalNurseryUpdate()">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                stroke="currentColor" class="w-6 h-6">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                  d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+              </svg>
             </div>
-        </div>
+          </div>
+        </form>
+      </div>
     </div>
+  </div>
 </template>
 
-<style>
+<style scoped>
 .modal {
   position: fixed;
   top: 0;
@@ -218,91 +255,17 @@ if ("geolocation" in navigator) {
     margin-top: 1rem;
   }
 }
+
 @media (min-width: 1440px) {
   .modal__contenido {
     width: 40%;
   }
 }
+
 @media (min-width: 1820px) {
   .modal__contenido {
     width: 30%;
   }
 }
 
-.form__addCandidate {
-  max-width: 600px;
-  margin: 0 auto;
-  padding: 20px;
-}
-
-.title__addCandidate {
-  text-align: center;
-  margin-bottom: 20px;
-  font-size: 24px;
-}
-
-.data__evaluation, .data__ubication, .data__candidate, .data__items {
-  border: 1px solid #ccc;
-  padding: 10px;
-  margin-bottom: 20px;
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 10px;
-}
-
-label {
-  margin-bottom: 5px;
-  display: block;
-}
-
-input[type="text"], 
-input[type="number"], 
-input[type="email"], 
-input[type="tel"], 
-input[type="date"], 
-select, 
-textarea {
-  width: 100%;
-  padding: 8px;
-  margin-bottom: 10px;
-}
-
-/* button {
-  width: 100%;
-  padding: 10px;
-  background-color: #4CAF50;
-  color: white;
-  border: none;
-  cursor: pointer;
-}
-
-button:hover {
-  background-color: #45a049;
-} */
-
-.formulario__botones {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  margin: 1.3rem 0 0 0;
-}
-
-.formulario__boton {
-  border-radius: 5px;
-  font-weight: 700;
-  padding: 0.3rem;
-  font-size: 1rem;
-  color: var(--blanco);
-  background-color: var(--primary);
-}
-.formulario__boton--cerrar {
-  background-color: var(--secondary);
-}
-.formulario__boton:hover {
-  background-color: var(--primary-hover);
-}
-.formulario__boton--cerrar:hover {
-  background-color: var(--secondary-hover);
-}
 </style>
-  

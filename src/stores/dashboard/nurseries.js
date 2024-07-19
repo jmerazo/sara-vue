@@ -18,7 +18,6 @@ export const useNurseriesDashStore = defineStore('nurseriesDashboard',()=>{
     const totalProperty = ref(0);
     const datosImport = ref([]);
     const cargando = ref(false);
-    const noResultados = computed(() => property.value.length === 0 );
     const userSelected = ref('');
     const selectedNurseryAssign = ref('');
     const userUpdateSelected = ref('');
@@ -32,12 +31,18 @@ export const useNurseriesDashStore = defineStore('nurseriesDashboard',()=>{
         const { data } = await APIService.listNurseriesAdmin();
         nurseries.value = data;
         nurseriesOriginal.value = data;
-        const dataNurseriesSpecies = await APIService.listNurseries();
-        nurseriesSpecies.value = dataNurseriesSpecies.data;
-        nurseriesSpeciesOriginal.value = dataNurseriesSpecies.data;
         totalProperty.value = nurseriesOriginal.value.length;
+        
+        getNurserySpecies()
+                
         cargando.value = false
     })
+
+    const getNurserySpecies = async()=>{
+        const {data} = await APIService.listNurseries();
+        nurseriesSpecies.value = data;
+        nurseriesSpeciesOriginal.value = data;
+    }
 
     const getNursery = async (data) => {
         try {
@@ -74,7 +79,8 @@ export const useNurseriesDashStore = defineStore('nurseriesDashboard',()=>{
     }
 
     const selectedNurserySpeciesList = (id) => {
-        nurseriesSpeciesList.value = nurseriesSpeciesOriginal.value.filter(nurseriesSpecies => nurseriesSpecies.vivero_id === id)
+        const dataFiltered = nurseriesSpeciesOriginal.value.filter(nurseriesSpecies => nurseriesSpecies.vivero_id === id)
+        nurseriesSpeciesList.value = dataFiltered[0] || [];
         modal.handleClickModalNurserySpecieList()
     }
 
