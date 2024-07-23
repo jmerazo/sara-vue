@@ -9,6 +9,7 @@ export const useModalStore = defineStore('modal',()=>{
     const componentsTree = ref([])
 
     const modalFamily = ref(false)
+    const modalUserAdd = ref(false)
     const modalUserUpdate = ref(false)
     const modalCandidates = ref(false)
     const modalCandidatesAdd = ref(false)
@@ -44,7 +45,12 @@ export const useModalStore = defineStore('modal',()=>{
     //modal Familia
     function handleClickModalFamily(){
         modalFamily.value = !modalFamily.value
-    } 
+    }
+    
+    //modal user dashboard
+    function handleClickModalUserAdd(){
+        modalUserAdd.value = !modalUserAdd.value
+    }
 
     //modal user dashboard
     function handleClickModalUserUpdate(){
@@ -134,10 +140,12 @@ export const useModalStore = defineStore('modal',()=>{
 
     return {
         modalSpecie,
-        modalFamily,
+        modalUserAdd,
+        handleClickModalUserAdd,
         modalUserUpdate,
-        handleClickModalFamily,
-        handleClickModalUserUpdate,        
+        handleClickModalUserUpdate,  
+        modalFamily,
+        handleClickModalFamily,      
         modalCandidates,
         handleClickModalSpecie,
         handleClickModalFamily,
