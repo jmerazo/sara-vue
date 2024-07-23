@@ -1,5 +1,5 @@
 <script setup>
-import { ref, watch } from 'vue';
+import { ref, watch, computed } from 'vue';
 
 import { propertyStore } from "@/stores/dashboard/property";
 import { useModalStore } from "@/stores/modal";
@@ -18,15 +18,28 @@ const formData = ref({
   cantidad_individuos: '',
   cant_productiva: '',
   cant_remanente: '',
+  cant_cosechable: '',
+  cant_no_cosechable: '',
+  cant_monitoreos: '',
   ep_predio: '',
   expediente: ''
 });
 
-watch(() => property.userPropertySelected, (newValue) => {
-  formData.value.ep_usuario = newValue;
+const searchQuery = ref('');
+
+const filteredEspecies = computed(() => {
+  const searchLower = searchQuery.value.toLowerCase();
+  return especies.especies.filter(ef => {
+    return (ef.cod_especie?.toString().toLowerCase().includes(searchLower) ||
+            ef.nom_comunes?.toLowerCase().includes(searchLower) ||
+            ef.nombre_cientifico?.toLowerCase().includes(searchLower));
+  });
 });
 
 
+watch(() => property.userPropertySelected, (newValue) => {
+  formData.value.ep_usuario = newValue;
+});
 
 function resetForm() {
   Object.keys(formData.value).forEach(key => {
@@ -63,7 +76,23 @@ const handlePropertyChange = async () => {
   }
 }
 
+const selectedEspecie = computed(() => {
+  return especies.especies.find(e => e.cod_especie === formData.value.ep_especie_cod);
+});
 
+const isPalma = computed(() => {
+  return selectedEspecie.value && selectedEspecie.value.habitos === 'Palma';
+});
+
+// Actualiza el código de la especie seleccionada al escribir en el input
+function updateSelectedEspecie(event) {
+  const selectedOption = filteredEspecies.value.find(ef => 
+    `${ef.cod_especie} / ${ef.nom_comunes} / ${ef.nombre_cientifico}` === event.target.value
+  );
+  if (selectedOption) {
+    formData.value.ep_especie_cod = selectedOption.cod_especie;
+  }
+}
 </script>
 
 <template>
@@ -77,13 +106,24 @@ const handlePropertyChange = async () => {
         <form class="form__modal" @submit.prevent="handleSubmit">
 
           <div class="form__modal--field">
-            <label class="form__modal--label" for="usuario">Especie forestal: </label>
-            <select class="form__modal--input" id="especie_forestal"  v-model="formData.ep_especie_cod">
-              <option value="">--Seleccione--</option>
-              <option v-for="ef in especies.especies" :key="ef.ShortcutID" :value="ef.cod_especie">
-                {{ ef.cod_especie + " / " + ef.nom_comunes + " / " + ef.nombre_cientifico }}
+            <label class="form__modal--label" for="especie_busqueda">Buscar especie:</label>
+            <input
+              type="text"
+              class="form__modal--input"
+              id="especie_busqueda"
+              v-model="searchQuery"
+              list="especieOptions"
+              placeholder="Buscar..."
+              @input="updateSelectedEspecie"
+            />
+            <datalist id="especieOptions">
+              <option
+                v-for="ef in filteredEspecies"
+                :key="ef.cod_especie"
+                :value="ef.cod_especie + ' / ' + ef.nom_comunes + ' / ' + ef.nombre_cientifico"
+              >
               </option>
-            </select>
+            </datalist>
           </div>
 
           <div class="form__modal--field" style="display: none;">
@@ -97,14 +137,29 @@ const handlePropertyChange = async () => {
             <input class="form__modal--input" type="number" v-model="formData.cantidad_individuos" />
           </div>
 
-          <div class="form__modal--field">
+          <div v-if="isPalma" class="form__modal--field">
             <label class="form__modal--label">Cantidad productiva: </label>
             <input class="form__modal--input" type="number" v-model="formData.cant_productiva" />
           </div>
 
-          <div class="form__modal--field">
+          <div v-if="isPalma" class="form__modal--field">
             <label class="form__modal--label">Cantidad remanente: </label>
             <input class="form__modal--input" type="number" v-model="formData.cant_remanente" />
+          </div>
+
+          <div v-if="isPalma" class="form__modal--field">
+            <label class="form__modal--label">Cantidad cosechable: </label>
+            <input class="form__modal--input" type="number" v-model="formData.cant_cosechable" />
+          </div>
+
+          <div v-if="isPalma" class="form__modal--field">
+            <label class="form__modal--label">Cantidad no cosechable: </label>
+            <input class="form__modal--input" type="number" v-model="formData.cant_no_cosechable" />
+          </div>
+
+          <div class="form__modal--field">
+            <label class="form__modal--label">Cantidad monitoreos: </label>
+            <input class="form__modal--input" type="number" v-model="formData.cant_monitoreos" />
           </div>
 
           <div class="form__modal--field">

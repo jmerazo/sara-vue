@@ -14,6 +14,7 @@ export const useUsersStore = defineStore("useUsersStore", () => {
   const datosImport = ref([]);
   const cargando = ref(false)
   const noResultados = computed(() => users.value.length === 0 );
+  const roles = ref([])
 
   // variables para paginación
   const currentPage = ref(1); // Página actual
@@ -25,6 +26,8 @@ export const useUsersStore = defineStore("useUsersStore", () => {
     users.value = data;
     usersOriginal.value = data;
     totalUsers.value = usersOriginal.value.length;
+    const response = await APIService.getRoles();
+    roles.value = response.data;
     cargando.value = false
   });
 
@@ -44,7 +47,20 @@ export const useUsersStore = defineStore("useUsersStore", () => {
     { deep: true }
   );
 
-  
+  async function createUser (data) {
+    try{
+      const response = await APIService.createUsers(data)
+      
+      if (response.status === 201) {
+        users.value.push(response.data); // Agrega el nuevo objeto al array
+        usersOriginal.value.push(response.data); 
+      } else {
+        console.error("Error al agregar el usuario: ", response.statusText);
+      }
+    } catch (error) {
+      console.error("Error al comunicarse con el servidor: ", error);
+    }
+  }  
 
   //seleccionar un usuario para mostrar en el modal
   function selectedUserUpdate(id) {
@@ -144,6 +160,8 @@ export const useUsersStore = defineStore("useUsersStore", () => {
     changePage,
     selectedUserUpdate,
     changeStateUser,
-    deleteUser
+    deleteUser,
+    roles,
+    createUser
   };
 });

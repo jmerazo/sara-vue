@@ -2,7 +2,9 @@
 import { computed, watch } from "vue";
 import { onBeforeRouteLeave } from "vue-router";
 import { useUsersStore } from "@/stores/users";
+import { useModalStore } from "@/stores/modal";
 
+import ModalUserAdd from "@/components/dashboard/modals/ModalUserAdd.vue";
 import ModalUserUpdate from "@/components/dashboard/modals/ModalUserUpdate.vue";
 import ModalProperty from "@/components/dashboard/modals/ModalProperty.vue";
 import ModalNurseryAdd from "@/components/dashboard/modals/ModalNurseryAdd.vue";
@@ -15,7 +17,7 @@ import { descargarExcel, descargarPdf, obtenerFecha } from "@/helpers";
 import LoadingData from "@/components/shared/LoadingData.vue";
 
 const usersStore = useUsersStore();
-
+const modal = useModalStore();
 
 //limpiar filtros antes de cambiar de vista
 onBeforeRouteLeave((to, from, next) => {
@@ -113,9 +115,11 @@ const displayedPageRange = computed(() => {
             @click="usersStore.changePage(usersStore.currentPage + 1)">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M19.1642 12L12.9571 5.79291L11.5429 7.20712L16.3358 12L11.5429 16.7929L12.9571 18.2071L19.1642 12ZM13.5143 12L7.30722 5.79291L5.89301 7.20712L10.6859 12L5.89301 16.7929L7.30722 18.2071L13.5143 12Z"></path></svg>
           </button>
-        </div>
-        
+        </div>        
       </section>
+
+      <div @click="modal.handleClickModalUserAdd(false)" class="agregar"></div>
+
       <!--fin paginador -->
       <!-- texto validacion buscador -->
       <section class="validacion__contenido">
@@ -131,6 +135,7 @@ const displayedPageRange = computed(() => {
     <ModalAssignUserSpecies/>
     <ModalUserSpeciesList/>
     <ModalNurseryAdd/>
+    <ModalUserAdd/>
   </div>
 </template>
 

@@ -33,7 +33,7 @@ defineProps({
                         <span class="card__check--button"></span>
                     </label>
                 </div>
-                <p class="rol">{{ user.rol }}</p>
+                <p class="role">{{ user.role }}</p>
             </div>
             <div class="card__image">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
