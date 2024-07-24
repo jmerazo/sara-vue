@@ -1,10 +1,8 @@
 <script setup>
-import { ref, watch, computed } from 'vue';
-
+import { ref, watch, computed, onMounted } from 'vue';
 import { propertyStore } from "@/stores/dashboard/property";
 import { useModalStore } from "@/stores/modal";
-import { useEspeciesStore } from "@/stores/species"
-
+import { useEspeciesStore } from "@/stores/species";
 
 const property = propertyStore();
 const modal = useModalStore();
@@ -13,29 +11,36 @@ const especies = useEspeciesStore();
 const error = ref("");
 
 const formData = ref({
-  ep_especie_cod: '',
+  expediente: '',
+  resolucion: '',
   ep_usuario: '',
-  cantidad_individuos: '',
-  cant_productiva: '',
-  cant_remanente: '',
-  cant_cosechable: '',
-  cant_no_cosechable: '',
-  cant_monitoreos: '',
   ep_predio: '',
-  expediente: ''
+  ep_especie_cod: '',  
+  tamano_UMF: '',
+  cantidad_solicitada: '',
+  cantidad_remanentes: '',
+  cantidad_aprovechable: '',
+  cant_monitoreos: '',
+  PCM: '',
+  PRM: '',
+  PRN: '',  
 });
 
+const requiredFields = ['expediente', 'resolucion', 'ep_usuario', 'ep_predio', 'ep_especie_cod'];
+
 const searchQuery = ref('');
+const selectedEspecieOption = ref('');
 
 const filteredEspecies = computed(() => {
   const searchLower = searchQuery.value.toLowerCase();
   return especies.especies.filter(ef => {
-    return (ef.cod_especie?.toString().toLowerCase().includes(searchLower) ||
-            ef.nom_comunes?.toLowerCase().includes(searchLower) ||
-            ef.nombre_cientifico?.toLowerCase().includes(searchLower));
+    return (
+      ef.cod_especie?.toString().toLowerCase().includes(searchLower) ||
+      ef.nom_comunes?.toLowerCase().includes(searchLower) ||
+      ef.nombre_cientifico?.toLowerCase().includes(searchLower)
+    );
   });
 });
-
 
 watch(() => property.userPropertySelected, (newValue) => {
   formData.value.ep_usuario = newValue;
@@ -48,23 +53,24 @@ function resetForm() {
 }
 
 const handleSubmit = () => {
-  if(Object.values(formData.value).some(value => value ==='')){
-    error.value = 'Hay campos vacíos'
-    setTimeout(()=>{
-      error.value = ''
-    },3000)
-    return
+  const areRequiredFieldsEmpty = requiredFields.some(field => formData.value[field] === '');
+  
+  if (areRequiredFieldsEmpty) {
+    error.value = 'Hay campos vacíos';
+    setTimeout(() => {
+      error.value = '';
+    }, 3000);
+    return;
   }
+
   try {
     property.createUsersProperty(formData.value);
     resetForm();
     modal.handleClickModalAssignUserSpecies();
   } catch (error) {
     if (error.response && error.response.data && error.response.data.error) {
-      // Si hay un mensaje de error en la respuesta, lo puedes mostrar
       alert(error.response.data.error);
     } else {
-      // En caso de un error inesperado
       alert("Ocurrió un error al procesar la solicitud.");
     }
   }
@@ -84,14 +90,22 @@ const isPalma = computed(() => {
   return selectedEspecie.value && selectedEspecie.value.habitos === 'Palma';
 });
 
-// Actualiza el código de la especie seleccionada al escribir en el input
-function updateSelectedEspecie(event) {
-  const selectedOption = filteredEspecies.value.find(ef => 
-    `${ef.cod_especie} / ${ef.nom_comunes} / ${ef.nombre_cientifico}` === event.target.value
+function handleSelect(event) {
+  selectedEspecieOption.value = event.target.value;
+
+  const selectedOption = especies.especies.find(ef =>
+    `${ef.cod_especie} / ${ef.nom_comunes} / ${ef.nombre_cientifico}` === selectedEspecieOption.value
   );
+
   if (selectedOption) {
     formData.value.ep_especie_cod = selectedOption.cod_especie;
+  } else {
+    formData.value.ep_especie_cod = ''; // Reset if no match
   }
+}
+
+function updateSearchQuery(event) {
+  searchQuery.value = event.target.value;
 }
 </script>
 
@@ -106,60 +120,19 @@ function updateSelectedEspecie(event) {
         <form class="form__modal" @submit.prevent="handleSubmit">
 
           <div class="form__modal--field">
-            <label class="form__modal--label" for="especie_busqueda">Buscar especie:</label>
-            <input
-              type="text"
-              class="form__modal--input"
-              id="especie_busqueda"
-              v-model="searchQuery"
-              list="especieOptions"
-              placeholder="Buscar..."
-              @input="updateSelectedEspecie"
-            />
-            <datalist id="especieOptions">
-              <option
-                v-for="ef in filteredEspecies"
-                :key="ef.cod_especie"
-                :value="ef.cod_especie + ' / ' + ef.nom_comunes + ' / ' + ef.nombre_cientifico"
-              >
-              </option>
-            </datalist>
+            <label class="form__modal--label">Expediente: </label>
+            <input class="form__modal--input" type="text" v-model="formData.expediente" />
+          </div>
+
+          <div class="form__modal--field">
+            <label class="form__modal--label">Resolución: </label>
+            <input class="form__modal--input" type="text" v-model="formData.resolucion" />
           </div>
 
           <div class="form__modal--field" style="display: none;">
             <label class="form__modal--label form_none" for="usuario">Nombre de usuario: </label>
             <input class="form__modal--input" type="text" v-model="formData.ep_usuario"
               :placeholder="property.userPropertySelected" />
-          </div>
-
-          <div class="form__modal--field">
-            <label class="form__modal--label">Cantidad de individuos: </label>
-            <input class="form__modal--input" type="number" v-model="formData.cantidad_individuos" />
-          </div>
-
-          <div v-if="isPalma" class="form__modal--field">
-            <label class="form__modal--label">Cantidad productiva: </label>
-            <input class="form__modal--input" type="number" v-model="formData.cant_productiva" />
-          </div>
-
-          <div v-if="isPalma" class="form__modal--field">
-            <label class="form__modal--label">Cantidad remanente: </label>
-            <input class="form__modal--input" type="number" v-model="formData.cant_remanente" />
-          </div>
-
-          <div v-if="isPalma" class="form__modal--field">
-            <label class="form__modal--label">Cantidad cosechable: </label>
-            <input class="form__modal--input" type="number" v-model="formData.cant_cosechable" />
-          </div>
-
-          <div v-if="isPalma" class="form__modal--field">
-            <label class="form__modal--label">Cantidad no cosechable: </label>
-            <input class="form__modal--input" type="number" v-model="formData.cant_no_cosechable" />
-          </div>
-
-          <div class="form__modal--field">
-            <label class="form__modal--label">Cantidad monitoreos: </label>
-            <input class="form__modal--input" type="number" v-model="formData.cant_monitoreos" />
           </div>
 
           <div class="form__modal--field">
@@ -173,9 +146,66 @@ function updateSelectedEspecie(event) {
           </div>
 
           <div class="form__modal--field">
-            <label class="form__modal--label">Expediente: </label>
-            <input class="form__modal--input" type="text" v-model="formData.expediente" />
+            <label class="form__modal--label" for="especie_busqueda">Buscar especie:</label>
+            <input
+              type="text"
+              class="form__modal--input"
+              id="especie_busqueda"
+              list="especieOptions"
+              placeholder="Buscar..."
+              @input="updateSearchQuery"
+              @change="handleSelect"
+            />
+            <datalist id="especieOptions">
+              <option
+                v-for="ef in filteredEspecies"
+                :key="ef.cod_especie"
+                :value="ef.cod_especie + ' / ' + ef.nom_comunes + ' / ' + ef.nombre_cientifico"
+              >
+              </option>
+            </datalist>
           </div>
+
+          <div class="form__modal--field">
+            <label class="form__modal--label">Tamaño unidad de manejo forestal (Hectáreas): </label>
+            <input class="form__modal--input" type="number" v-model="formData.tamano_UMF" />
+          </div>
+
+          <div class="form__modal--field">
+            <label class="form__modal--label">Cantidad solicitada: </label>
+            <input class="form__modal--input" type="number" v-model="formData.cantidad_solicitada" />
+          </div>
+
+          <div v-if="isPalma" class="form__modal--field">
+            <label class="form__modal--label">Cantidad de remanentes: </label>
+            <input class="form__modal--input" type="number" v-model="formData.cantidad_remanentes" />
+          </div>
+
+          <div v-if="isPalma" class="form__modal--field">
+            <label class="form__modal--label">Cantidad de individuos aprovechables: </label>
+            <input class="form__modal--input" type="number" v-model="formData.cantidad_aprovechable" />
+          </div>
+
+          <div class="form__modal--field">
+            <label class="form__modal--label">Cantidad de monitoreos: </label>
+            <input class="form__modal--input" type="number" v-model="formData.cant_monitoreos" />
+          </div>
+
+          <div v-if="isPalma" class="form__modal--field">
+            <label class="form__modal--label">Palmas cosechables para monitoreo: </label>
+            <input class="form__modal--input" type="number" v-model="formData.PCM" />
+          </div>
+
+          <div v-if="isPalma" class="form__modal--field">
+            <label class="form__modal--label">Palmas remanentes para monitoreo: </label>
+            <input class="form__modal--input" type="number" v-model="formData.PRM" />
+          </div>
+
+          <div v-if="isPalma" class="form__modal--field">
+            <label class="form__modal--label">Palmas remanentes que no requieren monitoreo: </label>
+            <input class="form__modal--input" type="number" v-model="formData.PRN" />
+          </div>
+
           <p class="msg__error" v-if="error">
             {{ error }}
           </p>
