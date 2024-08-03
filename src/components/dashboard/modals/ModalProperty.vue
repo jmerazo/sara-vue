@@ -23,9 +23,9 @@ const initializeFormData = () => {
       p_departamento: selectedProperty.p_departamento || "",
       p_municipio: selectedProperty.p_municipio || "",
     };
-  } else {
-    // Asegúrate de resetear el formData si no hay propiedad seleccionada
-    resetForm()
+   
+  } else{
+    resetForm();
   }
 };
 
@@ -44,9 +44,9 @@ watch(() => property.userSelected, (newValue) => {
 
 
 function resetForm() {
-  Object.keys(formData.value).forEach(key => {
-    formData.value[key] = "";
-  });
+  formData.value.nombre_predio = '';
+  formData.value.p_departamento = '';
+  formData.value.p_municipio = '';
 }
 
 const newProperty = () => {
@@ -100,7 +100,6 @@ const handleSubmit = () => {
   }else{
     newProperty();
   }
-  
 };
 
 const filteredCities = computed(() => {
