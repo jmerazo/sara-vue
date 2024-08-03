@@ -23,14 +23,8 @@ const initializeFormData = () => {
       p_departamento: selectedProperty.p_departamento || "",
       p_municipio: selectedProperty.p_municipio || "",
     };
-<<<<<<< HEAD
   } else {
     resetForm()
-=======
-   
-  } else{
-    resetForm();
->>>>>>> cfa03f3ff3c32e594bf1324f0eb76aa7947a4503
   }
 };
 

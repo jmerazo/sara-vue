@@ -19,6 +19,7 @@ export const locatesColombia = defineStore("locatesColombia", () => {
 
       const citiesResponse = await APIService.getCities();
       cities.value = citiesResponse.data;
+      console.log('cities: ', cities.value)
     } catch (error) {
       console.error("Error al obtener datos: ", error);
     }
