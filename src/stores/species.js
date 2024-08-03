@@ -9,12 +9,12 @@ export const useEspeciesStore = defineStore('especies', () => {
   
     const modal = useModalStore();
     const cargando = ref(false)
-    const especies = ref([]);
-    const especie = ref([]);
+    const species = ref([]);
+    const specie = ref([]);
     const specieSelected = ref([])
     const datosImport = ref([]);
-    const noResultados = computed(() => especies.value.length === 0 );
-    const especiesOriginales = ref([]);
+    const noResultados = computed(() => species.value.length === 0 );
+    const speciesOriginals = ref([]);
     const uniqueNomComunes = ref([]);
 
     // variables para paginación
@@ -25,26 +25,27 @@ export const useEspeciesStore = defineStore('especies', () => {
     onMounted(async () => {
       cargando.value = true
       const { data } = await APIService.getSpecies();
-      especies.value = data;
-      especiesOriginales.value = data;
-      const uniqueSpecies = [...new Map(data.map(especie => [especie.nom_comunes, especie])).values()];
+      species.value = data;
+      speciesOriginals.value = data;
+      console.log('species: ', species.value)
+      const uniqueSpecies = [...new Map(data.map(specie => [specie.vernacularName, specie])).values()];
       uniqueNomComunes.value = uniqueSpecies.map(especie => ({
-        nom_comunes: especie.nom_comunes,
-        nombre_cientifico: especie.nombre_cientifico,
-        cod_especie: especie.cod_especie,
+        vernacularName: especie.vernacularName,
+        nombre_cientifico: specie.nombre_cientifico,
+        code_specie: specie.code_specie,
       }));
       cargando.value = false
     });
 
     function cargarData() {
-      especies.value.forEach((dato) => {
+      species.value.forEach((dato) => {
         datosImport.value.push(dato);
       });
     }
   
     //cargar datos de importacion
     watch(
-      () => especies.value,
+      () => species.value,
       () => {
         datosImport.value = [];
         cargarData();
@@ -53,13 +54,13 @@ export const useEspeciesStore = defineStore('especies', () => {
     );
    
     // Calcula el número total de páginas en función de los datos
-    const totalPages = computed(() => Math.ceil(especies.value.length / itemsPerPage.value));
+    const totalPages = computed(() => Math.ceil(species.value.length / itemsPerPage.value));
 
     // Calcula las especies a mostrar en la página actual
     const displayedEspecies = computed(() => {
       const start = (currentPage.value - 1) * itemsPerPage.value;
       const end = start + itemsPerPage.value;
-      return especies.value.slice(start, end);
+      return species.value.slice(start, end);
     });
 
     //función para cambiar de página
@@ -68,59 +69,58 @@ export const useEspeciesStore = defineStore('especies', () => {
         currentPage.value = page;
       }
     }
-
-   
-    function seleccionarEspecie(cod_especie) {
-      especie.value = especiesOriginales.value.filter(especie => especie.cod_especie === cod_especie)
+  
+    function selectSpecie(code_specie) {
+      specie.value = speciesOriginals.value.filter(specie => specie.code_specie === code_specie)
       modal.handleClickModalSpecie();
     }
 
     //quitar los filtros del motor de busqueda
     function quitarFiltroEspecie(){
-      if(especiesOriginales.value){
-        especies.value = especiesOriginales.value
+      if(speciesOriginals.value){
+        species.value = speciesOriginals.value
       }
     }
     
     //busqueda por teremino
     function buscarTermino(termino) {
       changePage(1)
-      especies.value = especiesOriginales.value.filter(term => {
+      species.value = speciesOriginals.value.filter(term => {
         const lowerTermino = termino.toLowerCase();
-        const lowerNomComunes = term.nom_comunes ? term.nom_comunes.toLowerCase() : '';
-        const lowerCientifico = term.nombre_cientifico ? term.nombre_cientifico.toLowerCase(): '';
-        const lowerFamilia = term.familia ? term.familia.toLowerCase(): '';
+        const lowervernacularName = term.vernacularName ? term.vernacularName.toLowerCase() : '';
+        const lowerScientific = term.nombre_cientifico ? term.nombre_cientifico.toLowerCase(): '';
+        const lowerFamily = term.family ? term.family.toLowerCase(): '';
   
         return (
-          lowerNomComunes.includes(lowerTermino) ||
-          lowerFamilia.includes(lowerTermino) ||
-          lowerCientifico.includes(lowerTermino)
+          lowervernacularName.includes(lowerTermino) ||
+          lowerFamily.includes(lowerTermino) ||
+          lowerScientific.includes(lowerTermino)
         );
       });
     }
 
     async function deleteForestSpecie(pk) {
-      const indexToDelete = especies.value.findIndex(item => item.ShortcutID === pk);
+      const indexToDelete = species.value.findIndex(item => item.ShortcutID === pk);
     
       if (indexToDelete === -1) {
         return { message: "Especie no encontrada" };
       }
     
-      especies.value.splice(indexToDelete, 1);
+      species.value.splice(indexToDelete, 1);
       await APIService.deleteSpecies(pk);
     
       return { message: "Especie eliminada con éxito" };
     }
 
     function selectedForestSpecieUpdate(id) {
-      specieSelected.value =  especies.value.filter(especie => especie.ShortcutID === id)
+      specieSelected.value =  species.value.filter(especie => especie.ShortcutID === id)
       modal.handleClickModalForestSpecieUpdate(specieSelected.value); 
     }
 
     const updateForestSpecie = async (sid, data) => {
-      const specieIndex = especies.value.findIndex((specie) => specie.ShortcutID === sid);
+      const specieIndex = species.value.findIndex((specie) => specie.ShortcutID === sid);
       if (specieIndex !== -1) {
-          Object.assign(especies.value[specieIndex], data);
+          Object.assign(species.value[specieIndex], data);
           await APIService.updateForestSpecies(sid, data)
       } else {
           console.error(`Especie con ID ${sid} no encontrada.`);
@@ -133,7 +133,7 @@ export const useEspeciesStore = defineStore('especies', () => {
     
         if (response.status === 200) {
           // La respuesta del APIService fue satisfactoria
-          especies.value.push(data); // Agrega el nuevo objeto al array
+          species.value.push(data); // Agrega el nuevo objeto al array
         } else {
           console.error('Error al agregar la especie: ', response.statusText);
         }
@@ -148,14 +148,14 @@ export const useEspeciesStore = defineStore('especies', () => {
       itemsPerPage,
       totalPages,
       displayedEspecies,
-      especies,
-      especie,
+      species,
+      specie,
       noResultados,
-      especiesOriginales,
+      speciesOriginals,
       uniqueNomComunes,
       specieSelected,
       datosImport,
-      seleccionarEspecie,
+      selectSpecie,
       buscarTermino,
       quitarFiltroEspecie,
       changePage,

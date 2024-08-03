@@ -14,11 +14,8 @@ const formData = ref({
   last_name: "",
   email: "",
   cellphone: "",
-  profession: "",
-  entity: "",
-  reason: "",
-  password: "123456789",
-  confirm_password: "123456789",
+  password: "",
+  confirm_password: "",
   department: "",
   city: "",
 });

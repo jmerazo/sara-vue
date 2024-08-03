@@ -99,10 +99,9 @@ const displayedPageRange = computed(() => {
       <div class="especies__grid">
         <Species
           v-for="especie in especies.displayedEspecies"
-          :key="especie.ShortcutID"
-          :especie="especie"
-        >
-        </Species>
+          :key="especie.id"
+          :specie="especie"
+        />
       </div>
     </main>
     <!-- fin listado especies -->

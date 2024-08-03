@@ -68,8 +68,8 @@ function contenidoResumido() {
           >
             <a
               class="topEspeice__enlace animacion"
-              @click="consulta.consultSpecie(specie.cod_especie)"
-              ><span class="animacion__text">{{ specie.nom_comunes.split(' ')[0] }}</span></a
+              @click="consulta.consultSpecie(specie.code_specie)"
+              ><span class="animacion__text">{{ specie.vernacularName.split(' ')[0] }}</span></a
             >
           </div>
         </div>
