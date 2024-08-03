@@ -79,7 +79,7 @@ async function sendData(e) {
 
       return
     }
-    if (formData.password !== formData.value.confirm_password) {
+    if (formData.value.password !== formData.value.confirm_password) {
       showLoginError('Las contraseñas no coinciden')
       setTimeout(() => {
         error.value = null
@@ -89,7 +89,7 @@ async function sendData(e) {
     }
     //function to validate and create new user
     try {
-      // await APIService.createUsers(formData);
+      await APIService.createUsers(formData.value);
       alert('listo el pollo')
       resetForm()
     } catch (error) {
@@ -172,7 +172,7 @@ function showLoginError(message) {
               </svg>
             </div>
 
-            <input type="text" v-model="formData.name" placeholder="No. Identificación">
+            <input type="text" v-model="formData.document_number" placeholder="No. Identificación">
           </div>
           <div class="form__field">
             <div class="icon">
@@ -183,7 +183,7 @@ function showLoginError(message) {
               </svg>
             </div>
 
-            <input type="text" v-model="formData.name" placeholder="Nombres">
+            <input type="text" v-model="formData.first_name" placeholder="Nombres">
           </div>
           <div class="form__field">
             <div class="icon">
@@ -194,7 +194,7 @@ function showLoginError(message) {
               </svg>
             </div>
 
-            <input type="text" v-model="formData.name" placeholder="Apellidos">
+            <input type="text" v-model="formData.last_name" placeholder="Apellidos">
           </div>
           <div class="form__field">
             <div class="icon">
@@ -205,7 +205,7 @@ function showLoginError(message) {
               </svg>
             </div>
 
-            <input type="text" v-model="formData.name" placeholder="Celular">
+            <input type="text" v-model="formData.cellphone" placeholder="Celular">
           </div>
           <div class="form__field">
             <div class="icon">
