@@ -1,8 +1,12 @@
 <script setup>
 import { ref, computed } from "vue";
-import { useAuthTokenStore } from "../stores/auth";
+import APIService from "@/services/APIService";
+import { useAuthTokenStore } from "@/stores/auth";
+import {locatesColombia} from "@/stores/locates"
 import { useRouter } from "vue-router";
 
+
+const locates = locatesColombia();
 const store = useAuthTokenStore();
 const router = useRouter();
 
@@ -32,12 +36,16 @@ const handleLoginFirebase = async () => {
 
 
 const formData = {
-  name: '',
-  email: '',
-  occupation: '',
-  entity: '',
-  password: '',
-  confirmPassword: ''
+  document_type: "Cédula de ciudadanía",
+  document_number: "",
+  first_name: "",
+  last_name: "",
+  email: "",
+  cellphone: "",
+  password: "",
+  confirm_password: "",
+  department: "",
+  city: "",
 }
 
 function changeForm() {
@@ -45,20 +53,33 @@ function changeForm() {
   return isRequest.value
 }
 
-function sendData(e) {
+const filteredCities = computed(() => {
+  const { department } = formData;
+
+  if (department) {
+    const filtered = locates.cities.filter(
+      (city) => city.department_id === department
+    );
+    return filtered;
+  }
+  return [];
+});
+
+
+async function sendData(e) {
   e.preventDefault();
 
   if (isRequest.value) {
 
     if (Object.values(formData).includes('')) {
-      error.value = 'Todos los campos son obligatorios'
+      showLoginError('Todos los campos son obligatorios')
       setTimeout(() => {
         error.value = null
       }, 3000)
 
       return
     }
-    if(formData.password !== formData.confirmPassword){
+    if (formData.password !== formData.confirm_password) {
       showLoginError('Las contraseñas no coinciden')
       setTimeout(() => {
         error.value = null
@@ -66,7 +87,14 @@ function sendData(e) {
 
       return
     }
-    //connect to the api to validate 
+    //function to validate and create new user
+    try {
+      // await APIService.createUsers(formData);
+      alert('listo el pollo')
+      resetForm()
+    } catch (error) {
+      console.log(error);
+    }
     console.log(formData);
 
   } else {
@@ -78,15 +106,20 @@ function sendData(e) {
 
       return
     }
-    //connect to the api to sign in
-    handleLoginFirebase() 
-    console.log({ email: email.value, password: password.value });
+    //function to sign in
+    handleLoginFirebase()
   }
 
 }
 
+function resetForm() {
+  Object.keys(formData).forEach((key) => {
+    formData.key = "";
+  });
+}
 
-function showLoginError(message){
+
+function showLoginError(message) {
   error.value = message;
   setTimeout(() => {
     error.value = null;
@@ -129,16 +162,50 @@ function showLoginError(message){
         <!-- form to sign out -->
         <form class="form__sign-up">
           <h2 class="title">Solicitar ingreso</h2>
+
           <div class="form__field">
             <div class="icon">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
                 <path
-                  d="M4 22C4 17.5817 7.58172 14 12 14C16.4183 14 20 17.5817 20 22H18C18 18.6863 15.3137 16 12 16C8.68629 16 6 18.6863 6 22H4ZM12 13C8.685 13 6 10.315 6 7C6 3.685 8.685 1 12 1C15.315 1 18 3.685 18 7C18 10.315 15.315 13 12 13ZM12 11C14.21 11 16 9.21 16 7C16 4.79 14.21 3 12 3C9.79 3 8 4.79 8 7C8 9.21 9.79 11 12 11Z">
+                  d="M7.78428 14L8.2047 10H4V8H8.41491L8.94043 3H10.9514L10.4259 8H14.4149L14.9404 3H16.9514L16.4259 8H20V10H16.2157L15.7953 14H20V16H15.5851L15.0596 21H13.0486L13.5741 16H9.58509L9.05957 21H7.04855L7.57407 16H4V14H7.78428ZM9.7953 14H13.7843L14.2047 10H10.2157L9.7953 14Z">
                 </path>
               </svg>
             </div>
 
-            <input type="text" v-model="formData.name" placeholder="Nombre completo">
+            <input type="text" v-model="formData.name" placeholder="No. Identificación">
+          </div>
+          <div class="form__field">
+            <div class="icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                <path
+                  d="M14 14.252V16.3414C13.3744 16.1203 12.7013 16 12 16C8.68629 16 6 18.6863 6 22H4C4 17.5817 7.58172 14 12 14C12.6906 14 13.3608 14.0875 14 14.252ZM12 13C8.685 13 6 10.315 6 7C6 3.685 8.685 1 12 1C15.315 1 18 3.685 18 7C18 10.315 15.315 13 12 13ZM12 11C14.21 11 16 9.21 16 7C16 4.79 14.21 3 12 3C9.79 3 8 4.79 8 7C8 9.21 9.79 11 12 11ZM18 17V14H20V17H23V19H20V22H18V19H15V17H18Z">
+                </path>
+              </svg>
+            </div>
+
+            <input type="text" v-model="formData.name" placeholder="Nombres">
+          </div>
+          <div class="form__field">
+            <div class="icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                <path
+                  d="M14 14.252V16.3414C13.3744 16.1203 12.7013 16 12 16C8.68629 16 6 18.6863 6 22H4C4 17.5817 7.58172 14 12 14C12.6906 14 13.3608 14.0875 14 14.252ZM12 13C8.685 13 6 10.315 6 7C6 3.685 8.685 1 12 1C15.315 1 18 3.685 18 7C18 10.315 15.315 13 12 13ZM12 11C14.21 11 16 9.21 16 7C16 4.79 14.21 3 12 3C9.79 3 8 4.79 8 7C8 9.21 9.79 11 12 11ZM18 17V14H20V17H23V19H20V22H18V19H15V17H18Z">
+                </path>
+              </svg>
+            </div>
+
+            <input type="text" v-model="formData.name" placeholder="Apellidos">
+          </div>
+          <div class="form__field">
+            <div class="icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                <path
+                  d="M9.36556 10.6821C10.302 12.3288 11.6712 13.698 13.3179 14.6344L14.2024 13.3961C14.4965 12.9845 15.0516 12.8573 15.4956 13.0998C16.9024 13.8683 18.4571 14.3353 20.0789 14.4637C20.599 14.5049 21 14.9389 21 15.4606V19.9234C21 20.4361 20.6122 20.8657 20.1022 20.9181C19.5723 20.9726 19.0377 21 18.5 21C9.93959 21 3 14.0604 3 5.5C3 4.96227 3.02742 4.42771 3.08189 3.89776C3.1343 3.38775 3.56394 3 4.07665 3H8.53942C9.0611 3 9.49513 3.40104 9.5363 3.92109C9.66467 5.54288 10.1317 7.09764 10.9002 8.50444C11.1427 8.9484 11.0155 9.50354 10.6039 9.79757L9.36556 10.6821ZM6.84425 10.0252L8.7442 8.66809C8.20547 7.50514 7.83628 6.27183 7.64727 5H5.00907C5.00303 5.16632 5 5.333 5 5.5C5 12.9558 11.0442 19 18.5 19C18.667 19 18.8337 18.997 19 18.9909V16.3527C17.7282 16.1637 16.4949 15.7945 15.3319 15.2558L13.9748 17.1558C13.4258 16.9425 12.8956 16.6915 12.3874 16.4061L12.3293 16.373C10.3697 15.2587 8.74134 13.6303 7.627 11.6707L7.59394 11.6126C7.30849 11.1044 7.05754 10.5742 6.84425 10.0252Z">
+                </path>
+              </svg>
+            </div>
+
+            <input type="text" v-model="formData.name" placeholder="Celular">
           </div>
           <div class="form__field">
             <div class="icon">
@@ -156,11 +223,18 @@ function showLoginError(message){
             <div class="icon">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
                 <path
-                  d="M12 14V16C8.68629 16 6 18.6863 6 22H4C4 17.5817 7.58172 14 12 14ZM12 13C8.685 13 6 10.315 6 7C6 3.685 8.685 1 12 1C15.315 1 18 3.685 18 7C18 10.315 15.315 13 12 13ZM12 11C14.21 11 16 9.21 16 7C16 4.79 14.21 3 12 3C9.79 3 8 4.79 8 7C8 9.21 9.79 11 12 11ZM18 21.5L15.0611 23.0451L15.6224 19.7725L13.2447 17.4549L16.5305 16.9775L18 14L19.4695 16.9775L22.7553 17.4549L20.3776 19.7725L20.9389 23.0451L18 21.5Z">
+                  d="M4 6.14286V18.9669L9.06476 16.7963L15.0648 19.7963L20 17.6812V4.85714L21.303 4.2987C21.5569 4.18992 21.8508 4.30749 21.9596 4.56131C21.9862 4.62355 22 4.69056 22 4.75827V19L15 22L9 19L2.69696 21.7013C2.44314 21.8101 2.14921 21.6925 2.04043 21.4387C2.01375 21.3765 2 21.3094 2 21.2417V7L4 6.14286ZM16.2426 11.2426L12 15.4853L7.75736 11.2426C5.41421 8.89949 5.41421 5.10051 7.75736 2.75736C10.1005 0.414214 13.8995 0.414214 16.2426 2.75736C18.5858 5.10051 18.5858 8.89949 16.2426 11.2426ZM12 12.6569L14.8284 9.82843C16.3905 8.26633 16.3905 5.73367 14.8284 4.17157C13.2663 2.60948 10.7337 2.60948 9.17157 4.17157C7.60948 5.73367 7.60948 8.26633 9.17157 9.82843L12 12.6569Z">
                 </path>
               </svg>
             </div>
-            <input type="text" v-model="formData.occupation" placeholder="Profesión">
+            <select v-model="formData.department" style="color: gray;" name="department"
+              id="department">
+              <option value="">--Departamento--</option>
+              <option v-for="loc in locates.departments" :key="loc.id" :value="loc.code">
+                {{ loc.name }}
+              </option>
+            </select>
+            <!-- <input type="text" v-model="formData.department" placeholder="Departamento"> -->
           </div>
           <div class="form__field">
             <div class="icon">
@@ -170,7 +244,14 @@ function showLoginError(message){
                 </path>
               </svg>
             </div>
-            <input type="text" v-model="formData.entity" placeholder="Entidad">
+            <select :disabled="filteredCities.length === 0" v-model="formData.department"
+              style="color: gray;" name="department" id="department">
+              <option value="">--Ciudad--</option>
+              <option v-for="city in filteredCities" :key="city.id" :value="city.id">
+                {{ city.name }}
+              </option>
+            </select>
+            <!-- <input type="text" v-model="formData.city" placeholder="Ciudad"> -->
           </div>
 
           <div class="form__field">
@@ -191,7 +272,7 @@ function showLoginError(message){
                 </path>
               </svg>
             </div>
-            <input type="password" v-model="formData.confirmPassword" placeholder="Confirmar Contraseña">
+            <input type="password" v-model="formData.confirm_password" placeholder="Confirmar Contraseña">
           </div>
           <p v-if="error" class="error">{{ error }}</p>
           <input @click="sendData" type="submit" value="Enviar" class="login__button solid">
@@ -341,7 +422,8 @@ form.form__sign-up {
   background-color: var(--primary-hover);
 }
 
-.form__field input {
+.form__field input,
+.form__field select {
   background: none;
   outline: none;
   border: none;
