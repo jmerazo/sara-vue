@@ -5,6 +5,7 @@ import { useModalStore } from "../../modal";
 
 import APIService from "@/services/APIService";
 
+
 export const useGeneralMonitoring = defineStore("generalMonitoring", () => {
   const modal = useModalStore();
 
@@ -31,7 +32,7 @@ export const useGeneralMonitoring = defineStore("generalMonitoring", () => {
     cargando.value = true;
     const { data } = await APIService.getMonitoringData();
     monitoringData.value = data;
-    console.log(monitoringData.value)
+    console.log('Monitorings: ', monitoringData.value)
     monitoringDataOriginal.value = data;
     ordenarPorFechas(monitoringData.value, "fecha_monitoreo");
     ordenarPorFechas(monitoringDataOriginal.value, "fecha_monitoreo");

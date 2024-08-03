@@ -34,7 +34,7 @@ const filteredCities = computed(() => {
   const selectedDepartament = formData.value.department;
   if (selectedDepartament) {
     const filtered = locates.cities.filter(
-      (city) => city.department_id === selectedDepartament
+      (city) => city.department === selectedDepartament
     );
     return filtered;
   }
@@ -221,7 +221,7 @@ watch([() => formData.value.password, () => formData.value.confirm_password], ()
                 </option>
               </select>
             </div>
-            <div class="form__modal--field">
+            <div class="form__modal--field" v-show="filteredCities.length">
               <label for="city" class="form__modal--label">Ciudad
                 :</label>
               <select name="city" id="city" class="form__modal--input" v-model="formData.city">

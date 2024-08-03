@@ -13,17 +13,18 @@ const error = ref("");
 const formData = ref({
   expediente: '',
   resolucion: '',
+  fecha_exp: '',
   ep_usuario: '',
   ep_predio: '',
   ep_especie_cod: '',  
   tamano_UMF: '',
-  cantidad_solicitada: '',
+  cantidad_autorizada: '',
   cantidad_remanentes: '',
   cantidad_aprovechable: '',
   cant_monitoreos: '',
   PCM: '',
   PRM: '',
-  PRN: '',  
+  cantidad_placas: '',  
 });
 
 const requiredFields = ['expediente', 'resolucion', 'ep_usuario', 'ep_predio', 'ep_especie_cod'];
@@ -129,6 +130,11 @@ function updateSearchQuery(event) {
             <input class="form__modal--input" type="text" v-model="formData.resolucion" />
           </div>
 
+          <div class="form__modal--field">
+            <label class="form__modal--label">Fecha: </label>
+            <input class="form__modal--input" type="date" v-model="formData.fecha_exp" />
+          </div>
+
           <div class="form__modal--field" style="display: none;">
             <label class="form__modal--label form_none" for="usuario">Nombre de usuario: </label>
             <input class="form__modal--input" type="text" v-model="formData.ep_usuario"
@@ -172,8 +178,8 @@ function updateSearchQuery(event) {
           </div>
 
           <div class="form__modal--field">
-            <label class="form__modal--label">Cantidad solicitada: </label>
-            <input class="form__modal--input" type="number" v-model="formData.cantidad_solicitada" />
+            <label class="form__modal--label">Cantidad autorizada: </label>
+            <input class="form__modal--input" type="number" v-model="formData.cantidad_autorizada" />
           </div>
 
           <div v-if="isPalma" class="form__modal--field">
@@ -187,23 +193,23 @@ function updateSearchQuery(event) {
           </div>
 
           <div class="form__modal--field">
-            <label class="form__modal--label">Cantidad de monitoreos: </label>
+            <label class="form__modal--label">Cantidad de individuos a monitorear: </label>
             <input class="form__modal--input" type="number" v-model="formData.cant_monitoreos" />
           </div>
 
           <div v-if="isPalma" class="form__modal--field">
-            <label class="form__modal--label">Palmas cosechables para monitoreo: </label>
+            <label class="form__modal--label">Individuos cosechables para monitoreo: </label>
             <input class="form__modal--input" type="number" v-model="formData.PCM" />
           </div>
 
           <div v-if="isPalma" class="form__modal--field">
-            <label class="form__modal--label">Palmas remanentes para monitoreo: </label>
+            <label class="form__modal--label">Individuos remanentes para monitoreo: </label>
             <input class="form__modal--input" type="number" v-model="formData.PRM" />
           </div>
 
-          <div v-if="isPalma" class="form__modal--field">
-            <label class="form__modal--label">Palmas remanentes que no requieren monitoreo: </label>
-            <input class="form__modal--input" type="number" v-model="formData.PRN" />
+          <div class="form__modal--field">
+            <label class="form__modal--label">Cantidad de placas: </label>
+            <input class="form__modal--input" type="number" v-model="formData.cantidad_placas" />
           </div>
 
           <p class="msg__error" v-if="error">

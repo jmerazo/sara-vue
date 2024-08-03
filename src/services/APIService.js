@@ -211,7 +211,6 @@ export default {
     // (PROTECT) Exporta todas las muestras registradas -- http://localhost:8000/api/samples/report/data
     getSamplesData(){
         const store = useAuthTokenStore();
-        console.log('bearer report: ', store.accessToken)
         return api.get('/samples/report/data', {
             headers: {
                 Authorization: `Bearer ${store.accessToken}`
@@ -223,7 +222,12 @@ export default {
     /* ==================================================================================================================== */
     // ENDPOINT →→ USERS
     getUsers(){
-        return api.get('/users/')
+        const store = useAuthTokenStore();
+        return api.get('/users/', {
+            headers: {
+                Authorization: `Bearer ${store.accessToken}`
+            }
+        })
     },
     createUsers(data){
         return api.post('/users/', data)

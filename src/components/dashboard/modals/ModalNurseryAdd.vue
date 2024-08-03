@@ -65,7 +65,7 @@ const filteredCities = computed(() => {
 
   if (department) {
     const filtered = locates.cities.filter(
-      (city) => city.department_id === department
+      (city) => city.department === department
     );
     return filtered;
   }

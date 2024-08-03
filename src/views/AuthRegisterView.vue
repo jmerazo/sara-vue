@@ -2,9 +2,9 @@
 import { registerables } from "chart.js";
 import { ref, computed } from "vue";
 import APIService from "../services/APIService";
-import { useAuthTokenStore } from "../stores/auth";
+import { locatesColombia } from "../stores/locates";
 
-const locates = useAuthTokenStore();
+const locates = locatesColombia();
 
 // Datos del formulario
 const formData = ref({
@@ -41,7 +41,7 @@ const filteredCities = computed(() => {
 
   if (department) {
     const filtered = locates.cities.filter(
-      (city) => city.department_id === department
+      (city) => city.department === department
     );
     return filtered;
   }

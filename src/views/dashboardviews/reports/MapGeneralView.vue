@@ -53,7 +53,7 @@ const filterGeoData = () => {
 const filteredCities = computed(() => {
   if (department.value.code) {
     const filtered = locates.cities.filter(
-      (city) => city.department_id === department.value.code
+      (city) => city.department === department.value.code
     );
     return filtered;
   }

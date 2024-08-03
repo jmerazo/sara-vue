@@ -63,7 +63,7 @@ function contenidoResumido() {
             class="topEspecie__contenido-imagen"
             :style="{
               backgroundImage:
-                'url(' + getFullImageUrl(specie.img_general) + ')',
+                'url(' + getFullImageUrl(specie.images[0].img_general) + ')',
             }"
           >
             <a

@@ -24,11 +24,9 @@ const initializeFormData = () => {
       p_municipio: selectedProperty.p_municipio || "",
     };
   } else {
-    // Asegúrate de resetear el formData si no hay propiedad seleccionada
     resetForm()
   }
 };
-
 
 //logic to create a new property
 const formData = ref({
@@ -44,9 +42,9 @@ watch(() => property.userSelected, (newValue) => {
 
 
 function resetForm() {
-  Object.keys(formData.value).forEach(key => {
-    formData.value[key] = "";
-  });
+  formData.value.nombre_predio = '';
+  formData.value.p_departamento = '';
+  formData.value.p_municipio = '';
 }
 
 const newProperty = () => {
@@ -83,9 +81,8 @@ watch(
   { immediate: true } // Esto asegura que initializeFormData se llame inmediatamente
 );
 
-
-
 const handleSubmit = () => {
+  console.log('datos user: ', formData.value)
   if (Object.values(formData.value).some(value => value === "")) {
     error.value = "Hay campos vacíos";
     setTimeout(() => {
@@ -105,10 +102,10 @@ const handleSubmit = () => {
 
 const filteredCities = computed(() => {
   const { p_departamento } = formData.value;
-
+  
   if (p_departamento) {
     const filtered = locates.cities.filter(
-      (city) => city.department_id === p_departamento
+      (city) => city.department === p_departamento
     );
     return filtered;
   }
@@ -128,12 +125,6 @@ onMounted(() => {
         <h3 class="form__modal--title">{{ isEdit ? 'Actualizar predio' : 'Registrar nuevo predio' }}</h3>
         <hr>
         <form class="form__modal" @submit.prevent="handleSubmit">
-
-          
-          <div style="display: none;" class="form__modal--field">
-            <label class="form__modal--label">user</label>
-            <input class="form__modal--input" type="text" v-model="formData.p_user" :placeholder="property.userSelected">
-          </div>
 
           <div class="form__modal--field">
             <label class="form__modal--label">Nombre del predio: </label>
@@ -174,7 +165,7 @@ onMounted(() => {
                 </path>
               </svg></button>
 
-            <div class="button__modal--close" @click="modal.handleClickModalProperty(false),resetForm()">
+            <div class="button__modal--close" @click="modal.handleClickModalProperty(false), resetForm()">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                 stroke="currentColor" class="w-6 h-6">
                 <path stroke-linecap="round" stroke-linejoin="round"

@@ -18,6 +18,7 @@ export const useHomeStore = defineStore('home',()=>{
     const fetchData = async () => {
         const { data } = await APIService.pageTopSpecies()
         topSpecies.value = data  
+        console.log('top especies: ', topSpecies.value)
     }
 
     return{
