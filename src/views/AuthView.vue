@@ -1,12 +1,35 @@
 <script setup>
-import { ref, onMounted, computed } from "vue";
+import { ref, computed } from "vue";
+import { useAuthTokenStore } from "../stores/auth";
+import { useRouter } from "vue-router";
+
+const store = useAuthTokenStore();
+const router = useRouter();
 
 const email = ref("");
 const password = ref("");
 
-
-const error = ref('');
+const error = ref(null);
 const isRequest = ref(false)
+
+const handleLoginFirebase = async () => {
+  try {
+    const response = await store.loginFirebase(email.value, password.value)
+    console.log("response login: ", response.success)
+    if (response.success) {
+      router
+        .push({
+          name: "home-panel", // Nombre de la ruta de la vista del panel
+        })
+    } else {
+      showLoginError("Credenciales inválidas");
+    }
+  } catch (e) {
+    showLoginError(e.message);
+  }
+};
+
+
 
 const formData = {
   name: '',
@@ -30,15 +53,15 @@ function sendData(e) {
     if (Object.values(formData).includes('')) {
       error.value = 'Todos los campos son obligatorios'
       setTimeout(() => {
-        error.value = ''
+        error.value = null
       }, 3000)
 
       return
     }
     if(formData.password !== formData.confirmPassword){
-      error.value = 'Las contraseñas no coinciden'
+      showLoginError('Las contraseñas no coinciden')
       setTimeout(() => {
-        error.value = ''
+        error.value = null
       }, 3000)
 
       return
@@ -48,19 +71,27 @@ function sendData(e) {
 
   } else {
     if (email.value === '' || password.value === '') {
-      error.value = 'Todos los campos son obligatorios'
+      showLoginError('Todos los campos son obligatorios')
       setTimeout(() => {
-        error.value = ''
+        error.value = null
       }, 3000)
 
       return
     }
-    //connect to the api to sign in 
+    //connect to the api to sign in
+    handleLoginFirebase() 
     console.log({ email: email.value, password: password.value });
   }
 
 }
 
+
+function showLoginError(message){
+  error.value = message;
+  setTimeout(() => {
+    error.value = null;
+  }, 3000); // El mensaje de error desaparecerá después de 3 segundos
+};
 </script>
 
 <template>
