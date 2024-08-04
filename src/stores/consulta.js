@@ -46,7 +46,6 @@ export const useConsultaStore = defineStore("consulta", () => {
   }
 
   return {
-    especie,
     familia,
     strFamilia,
     cargando,
