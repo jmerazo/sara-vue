@@ -53,7 +53,6 @@ function changeForm() {
 
 const filteredCities = computed(() => {
   const { department } = formData.value;
-  console.log('department: ', department)
 
   if (department) {
     const filtered = locates.cities.filter(
@@ -90,13 +89,11 @@ async function sendData(e) {
     //function to validate and create new user
     try {
       await APIService.createUsers(formData.value);
-      alert('listo el pollo')
       resetForm()
+      window.location.reload();
     } catch (error) {
       console.log(error);
     }
-    console.log(formData.value);
-
   } else {
     if (email.value === '' || password.value === '') {
       showLoginError('Todos los campos son obligatorios')
@@ -245,7 +242,7 @@ function showLoginError(message) {
               </svg>
             </div>
             <select :disabled="filteredCities.length === 0" v-model="formData.city"
-              style="color: gray;" name="department" id="department">
+              style="color: gray;" name="city" id="city">
               <option value="">--Ciudad--</option>
               <option v-for="city in filteredCities" :key="city.id" :value="city.id">
                 {{ city.name }}
