@@ -33,6 +33,9 @@ const handleLoginFirebase = async () => {
   }
 };
 
+
+
+
 const formData = ref({
   document_type: "Cédula de ciudadanía",
   document_number: "",
