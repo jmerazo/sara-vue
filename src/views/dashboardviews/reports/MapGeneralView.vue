@@ -17,6 +17,9 @@ const source = ref("")
 const currentSource = ref("");
 
 onMounted(async () => {
+  geoStore.getUniqueTaxonKeys();
+  geoStore.getGBIFData();
+  geoStore.enrichDataWithCoordinates();
   await geoStore.fetchData();
 });
 

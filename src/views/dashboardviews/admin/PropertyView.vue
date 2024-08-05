@@ -4,7 +4,7 @@ import { onBeforeRouteLeave } from "vue-router";
 
 //components
 import ModalProperty from "@/components/dashboard/modals/ModalProperty.vue";
-import Property from "@/components/dashboard/cards/property.vue";
+import Property from "@/components/dashboard/cards/Property.vue";
 
 //stores
 import { propertyStore } from "@/stores/dashboard/property";
