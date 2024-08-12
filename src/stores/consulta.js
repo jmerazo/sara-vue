@@ -9,7 +9,7 @@ export const useConsultaStore = defineStore("consulta", () => {
 
   const modal = useModalStore();
   const router = useRouter();
-  const especie = ref({});
+  const specie = ref({});
   const familia = ref({});
   const strFamilia = ref("");
 
@@ -26,11 +26,11 @@ export const useConsultaStore = defineStore("consulta", () => {
   }
 
   //consultar por nombre común
-  async function consultSpecie(cod_especie,queryPage) {
+  async function consultSpecie(code_specie,queryPage) {
     cargando.value = true;
-    const { data } = await APIService.lookSpecie(cod_especie);
-    especie.value = data;
-    APIService.pageCountVisit(cod_especie);
+    const { data } = await APIService.lookSpecie(code_specie);
+    specie.value = data;
+    APIService.pageCountVisit(code_specie);
     console.log('dato de queryPage =',queryPage);
     if(queryPage === 'especies'){
       router.push("/busqueda")
@@ -46,7 +46,7 @@ export const useConsultaStore = defineStore("consulta", () => {
   }
 
   return {
-    especie,
+    specie,
     familia,
     strFamilia,
     cargando,

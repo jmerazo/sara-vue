@@ -17,8 +17,12 @@ const source = ref("")
 const currentSource = ref("");
 
 onMounted(async () => {
-  await geoStore.fetchData();
+  await geoStore.fetchData(); // Asegúrate de que los datos estén cargados primero
+  const uniqueTaxonKeys = geoStore.getUniqueTaxonKeys(geoStore.geoCandidateData);
+  const gbifData = await geoStore.getGBIFData(uniqueTaxonKeys);
+  geoStore.enrichDataWithCoordinates(geoStore.geoCandidateData, gbifData);
 });
+
 
 watch(
   () => source.value,
@@ -53,7 +57,7 @@ const filterGeoData = () => {
 const filteredCities = computed(() => {
   if (department.value.code) {
     const filtered = locates.cities.filter(
-      (city) => city.department_id === department.value.code
+      (city) => city.department === department.value.code
     );
     return filtered;
   }

@@ -25,7 +25,7 @@ import FruitCalendar from "@/components/species/calendars/FruitCalendar.vue";
 
 const router = useRouter();
 
-const especie = useConsultaStore();
+const specie = useConsultaStore();
 const geoStore = useGeoCandidateTrees();
 const averageStore = useAverageSpecie();
 const modal = useModalStore();
@@ -37,15 +37,15 @@ const month = dateNow.getMonth() + 1; // Los meses comienzan desde 0, por lo que
 const day = dateNow.getDate();
 const formatDate = `${day}-${month}-${year}`;
 
-const codigo = especie.especie.cod_especie;
-const name_specie = especie.especie.nom_comunes;
+const code = specie.specie.code_specie;
+const name_specie = specie.specie.vernacularName;
 const filteredData = ref([]);
 
 const averageAltitude = ref(0);
 
 async function downloadDataSpecie() {
   try {
-    const response = await APIService.getDownloadDataSpecie(codigo);
+    const response = await APIService.getDownloadDataSpecie(code);
     console.log("url data", response.headers);
 
     if (response.headers["content-type"] === "application/pdf") {
@@ -89,56 +89,55 @@ async function filterGeo(codigo, data) {
 }
 
 onMounted(async () => {
-  if (!especie.especie.cod_especie) {
+  if (!specie.specie.code_specie) {
     router.push({ name: "especies" });
     return;
   }
 
-  averageStore.cod_especie = especie.especie.cod_especie;
+  /* averageStore.code_specie = specie.specie.code_specie;
   await averageStore.fetchData(); //store graficar
-
+ */
   geoStore.validateUrl([
-    getFullImageUrl(especie.especie.img_general),
-    getFullImageUrl(especie.especie.img_landscape_one),
-    getFullImageUrl(especie.especie.img_landscape_two),
-    getFullImageUrl(especie.especie.img_landscape_three),
+    getFullImageUrl(specie.specie.images[0].img_general),
+    getFullImageUrl(specie.specie.images[0].img_landscape_one),
+    getFullImageUrl(specie.specie.images[0].img_landscape_two),
+    getFullImageUrl(specie.specie.images[0].img_landscape_three),
   ]);
 
   await geoStore.fetchData();
-  filteredData.value = await filterGeo(codigo, geoStore.geoCandidateData); //coordenadas de los individuos de la especie consultada
+  filteredData.value = await filterGeo(code, geoStore.geoCandidateData); //coordenadas de los individuos de la especie consultada
   console.log('datos para pasar al mapa',filteredData.value);
 });
 
 const {
-  nom_comunes,
+  vernacularName,
   nombre_cientifico,
-  nombre_cientifico_especie,
-  nombre_autor_especie,
-  otros_nombres,
-  familia,
-  hojas,
+  scientificName,
+  scientificNameAuthorship,
+  otherNames,
+  family,
+  leaves,
   tipo_hoja,
-  flor,
-  frutos,
+  flowers,
+  fruits,
   semillas,
   tallo,
   follaje,
   forma_copa,
   disposicion_hojas,
-  distribucion,
+  distribution,
   habito,
-  sinonimos,
+  synonyms,
   img_general,
-  img_leafs,
-  img_flowers,
-  img_fruits,
   img_seeds,
   img_stem,
   img_landscape_one,
   img_landscape_two,
   img_landscape_three,
   
-} = especie.especie;
+} = specie.specie;
+
+console.log('species: ', specie.specie)
 
 const scrollToTop = () => {
   // para cuando se consulta desde la vista Especies
@@ -160,24 +159,24 @@ scrollToTop();
             <!-- contenido header -->
             <div class="header">
               <h1 class="header__heading">
-                {{ nom_comunes }}
+                {{ vernacularName }}
               </h1>
               <h1 class="header__heading header__heading--subtitulo">
                 <span class="nombre__cientifico" style="font-style: italic">{{
-                  nombre_cientifico_especie
+                  scientificName
                 }}</span>
                 <span class="nombre__autor">{{
-                  " " + nombre_autor_especie
+                  " " + scientificNameAuthorship
                 }}</span>
               </h1>
               <h3 class="header__titulo">Otros Nombres:</h3>
               <p class="header__texto">
-                {{ otros_nombres }}
+                {{ otherNames }}
               </p>
               <h3 class="header__titulo">Sinónimos:</h3>
-              <p class="header__texto">{{ sinonimos }}</p>
+              <p class="header__texto">{{ synonyms }}</p>
               <h3 class="header__titulo">
-                <span>Familia:</span> {{ familia }}
+                <span>Familia:</span> {{ family }}
               </h3>
             </div>
             <!-- fin header -->
@@ -195,7 +194,7 @@ scrollToTop();
             <div
               class="card"
               :style="{
-                backgroundImage: 'url(' + getFullImageUrl(img_leafs) + ')',
+                backgroundImage: 'url(' + getFullImageUrl(specie.specie.images[0].img_leafs) + ')',
               }"
             >
               <!-- enlace animacion -->
@@ -203,9 +202,9 @@ scrollToTop();
                 class="card__button animacion"
                 @click="
                   modal.handleClickModalComponent([
-                    getFullImageUrl(img_leafs),
+                    getFullImageUrl(specie.specie.images[0].img_leafs),
                     'Hojas',
-                    hojas,
+                    leaves,
                   ])
                 "
               >
@@ -217,7 +216,7 @@ scrollToTop();
             <div
               class="card"
               :style="{
-                backgroundImage: 'url(' + getFullImageUrl(img_flowers) + ')',
+                backgroundImage: 'url(' + getFullImageUrl(specie.specie.images[0].img_flowers) + ')',
               }"
             >
               <!-- enlace animacion -->
@@ -225,9 +224,9 @@ scrollToTop();
                 class="card__button animacion"
                 @click="
                   modal.handleClickModalComponent([
-                    getFullImageUrl(img_flowers),
+                    getFullImageUrl(specie.specie.images[0].img_flowers),
                     'Flores',
-                    flor,
+                    flowers,
                   ])
                 "
               >
@@ -239,7 +238,7 @@ scrollToTop();
             <div
               class="card"
               :style="{
-                backgroundImage: 'url(' + getFullImageUrl(img_fruits) + ')',
+                backgroundImage: 'url(' + getFullImageUrl(specie.specie.images[0].img_fruits) + ')',
               }"
             >
               <!-- enlace animacion -->
@@ -247,9 +246,9 @@ scrollToTop();
                 class="card__button animacion"
                 @click="
                   modal.handleClickModalComponent([
-                    getFullImageUrl(img_fruits),
+                    getFullImageUrl(specie.specie.images[0].img_fruits),
                     'Frutos',
-                    frutos,
+                    fruits,
                   ])
                 "
               >
@@ -262,7 +261,7 @@ scrollToTop();
       </section>
       <!-- FIN seccion 2 - tarjetas de componentes -->
       <!-- seccion 3- grafico -->
-      <section class="general" v-if="averageStore.valores.length > 0">
+      <!-- <section class="general" v-if="averageStore.valores.length > 0">
         <div class="componentes">
           <div class="grafico">
             <div class="grafico__informacion">
@@ -284,7 +283,7 @@ scrollToTop();
             <ChartAverage class="grafico__componente" />
           </div>
         </div>
-      </section>
+      </section> -->
       <!-- FIN seccion 3- grafico -->
       <!-- seccion 4 - mapa -->
       <section class="general">
@@ -292,7 +291,7 @@ scrollToTop();
           <div class="mapa">
             <div class="mapa__informacion">
               <h4 class="mapa__titulo">Distribución</h4>
-              <p class="mapa__descripcion">{{ distribucion }}</p>
+              <p class="mapa__descripcion">{{ distribution }}</p>
             </div>
             <div class="jurisdiccion">
               <h4 class="jurisdiccion__titulo">

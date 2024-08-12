@@ -50,6 +50,7 @@ export const propertyStore = defineStore('property',()=>{
   );
 
   const selectedUserCreateProperty = (id) => {
+    console.log('id ', id)
     userSelected.value = id;
     propertySelected.value = [];
     modal.handleClickModalProperty(false)
@@ -71,6 +72,7 @@ export const propertyStore = defineStore('property',()=>{
   };
 
   const selectedUserCreateUsersProperty = (id) => {
+    console.log('id', id)
     userPropertySelected.value = id;
     modal.handleClickModalAssignUserSpecies()
   }

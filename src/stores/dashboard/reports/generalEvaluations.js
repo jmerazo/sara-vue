@@ -17,10 +17,10 @@ export const useGeneralEvaluations = defineStore("generalEvaluations", () => {
   onMounted(async () => {
     cargando.value = true;
     const { data } = await APIService.getAssessmentData();
-    evaluacionData.value = data;
+    evaluacionData.value = data;    
     evaluacionDataOriginal.value = data;
-    ordenarPorFechas(evaluacionData.value, "fecha_evaluacion");
-    ordenarPorFechas(evaluacionDataOriginal.value, "fecha_evaluacion");
+    ordenarPorFechas(evaluacionData.value, "eventDate");
+    ordenarPorFechas(evaluacionDataOriginal.value, "eventDate");
     cargando.value = false;
   });
 
@@ -51,7 +51,7 @@ export const useGeneralEvaluations = defineStore("generalEvaluations", () => {
 
       // Verifica si la placa es igual al término (ya sea número o cadena)
       const termCdoEspecie =
-        term.cod_especie != null ? term.cod_especie.toString() : ""; // Convierte el número a cadena
+        term.code_specie != null ? term.cod_especie.toString() : ""; // Convierte el número a cadena
       const termPlaca =
         term.numero_placa != null ? term.numero_placa.toString() : ""; // Convierte el número a cadena
 

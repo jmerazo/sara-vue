@@ -24,7 +24,8 @@ export const useCalendarStore = defineStore("species", () => {
       const mes = new Date(item.fecha_monitoreo).getMonth() + 1; // Obtener el mes (0-11)
       const categoria = item.flor_abierta;
 
-      if (item.cod_especie === cod_especie) {
+      if (item.cod_especie_id === cod_especie) {
+        console.log('i am here', item.especie_cod_especie, " = ", cod_especie)
         if (!resultado[mes]) {
           resultado[mes] = {};
         }
@@ -37,7 +38,6 @@ export const useCalendarStore = defineStore("species", () => {
       }
     });
     dataFlower.value = resultado;
-    console.log(dataFlower.value);
    
     return resultado;
   };
@@ -49,7 +49,7 @@ export const useCalendarStore = defineStore("species", () => {
       const mes = new Date(item.fecha_monitoreo).getMonth() + 1; // Obtener el mes (0-11)
       const categoria = item.frutos_verdes;
 
-      if (item.cod_especie === cod_especie) {
+      if (item.cod_especie_id === cod_especie) {
         if (!resultado[mes]) {
           resultado[mes] = {};
         }
@@ -62,7 +62,6 @@ export const useCalendarStore = defineStore("species", () => {
       }
     });
     dataFruit.value = resultado;
-    console.log(dataFruit.value);
     return resultado;
   };
 

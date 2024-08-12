@@ -40,28 +40,6 @@ export const useGeoCandidateTrees = defineStore("geoCandidateTrees", () => {
       geoCandidateData.value = data;
       geoDataNew.value = data;
       isDataLoaded = true;
-
-      // Filtrar datos únicos de taxon_key
-      const uniqueTaxonKeys = Array.from(
-        new Set(
-          geoCandidateData.value
-            .map(item => item.taxon_key) // Extraer taxon_key
-            .filter(taxonKey => taxonKey !== null && taxonKey !== undefined) // Filtrar valores no nulos y no indefinidos
-        )
-      );
-
-      // Verificar si hay taxonKeys únicos antes de llamar a fetchGBIFCoordinates
-      let gbifData = [];
-      if (uniqueTaxonKeys.length > 0) {
-        // Obtener datos de GBIF y conservar solo los campos necesarios
-        gbifData = await fetchGBIFCoordinates(uniqueTaxonKeys);
-      }
-
-      // Enriquecer los datos originales con las coordenadas obtenidas
-      enrichOriginalData(data, gbifData);
-      geoDataNew.value = geoEnrichData.value.concat(geoCandidateEnrichGBIFData.value);
-      combinedGeoData.value = geoDataNew.value;
-
         
       const defDep = [
         ...new Map(
@@ -83,6 +61,34 @@ export const useGeoCandidateTrees = defineStore("geoCandidateTrees", () => {
         departamento: ct.departamento,
       }));
     }
+  };
+
+  // Filtrar datos únicos de taxon_key
+  const getUniqueTaxonKeys = (data) => {
+    const geoTaxonKeys = Array.from(
+      new Set(
+        data
+          .map(item => item.taxon_key) // Extraer taxon_key
+          .filter(taxonKey => taxonKey !== null && taxonKey !== undefined) // Filtrar valores no nulos y no indefinidos
+      )
+    );
+    return geoTaxonKeys;
+  };
+
+  // Obtener datos de GBIF y conservar solo los campos necesarios
+  const getGBIFData = async (uniqueTaxonKeys) => {
+    let gbifData = [];
+    if (uniqueTaxonKeys.length > 0) {
+      gbifData = await fetchGBIFCoordinates(uniqueTaxonKeys);
+    }
+    return gbifData;
+  };
+
+  // Enriquecer los datos originales con las coordenadas obtenidas
+  const enrichDataWithCoordinates = (originalData, gbifData) => {
+    enrichOriginalData(originalData, gbifData);
+    const geoEnrichDataCoor = geoEnrichData.value.concat(geoCandidateEnrichGBIFData.value);
+    return geoEnrichDataCoor;
   };
 
   async function fetchGBIFCoordinates(taxonKeys) {
@@ -426,6 +432,9 @@ export const useGeoCandidateTrees = defineStore("geoCandidateTrees", () => {
     convertToKML,
     exportToKML,
     validateUrl,
-    sourceData
+    sourceData,
+    getUniqueTaxonKeys,
+    getGBIFData,
+    enrichDataWithCoordinates
   };
 });

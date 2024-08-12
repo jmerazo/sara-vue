@@ -8,7 +8,7 @@ import {useCalendarStore} from '@/stores/calendarMonitoring'
 import { getFullImageUrl } from "@/helpers/";
 
 const modal = useModalStore();
-const especies = useEspeciesStore();
+const species = useEspeciesStore();
 const consulta = useConsultaStore();
 const calendar = useCalendarStore()
 
@@ -34,46 +34,46 @@ const limpiarModal = () => {
     <div
       class="modal__contenido"
       :class="{ showModal: modal.modalSpecie }"
-      v-for="especie in especies.especie"
-      :key="especie.cod_especie"
+      v-for="specie in species.specie"
+      :key="specie.code_specie"
     >
       <div class="contenido">
         <div class="contenido__derecha">
           <div class="modal__flex">
             <div class="modal__imagen">
               <img
-                :src="imagen ? imagen : getFullImageUrl(especie.img_general)"
-                :alt="'imagen de ' + especie.nom_comunes"
-                @click="verImg(especie.img_general)"
+                :src="imagen ? imagen : getFullImageUrl(specie.images[0].img_general)"
+                :alt="'imagen de ' + specie.vernacularName"
+                @click="verImg(especie.images[0].img_general)"
               />
             </div>
             <div class="modal__iconos">
               <img
-                @click="verImg(especie.img_leafs)"
+                @click="verImg(specie.images[0].img_leafs)"
                 class="modal__icono"
                 src="/icons/hojas.png"
                 alt="external-leaves-plants-flaticons-lineal-color-flat-icons-2"
               />
               <img
-                @click="verImg(especie.img_flowers)"
+                @click="verImg(specie.images[0].img_flowers)"
                 class="modal__icono"
                 src="/icons/flores.png"
                 alt="external-flowers-valentines-day-flatart-icons-lineal-color-flatarticons"
               />
               <img
-                @click="verImg(especie.img_fruits)"
+                @click="verImg(specie.images[0].img_fruits)"
                 class="modal__icono"
                 src="/icons/frutos.png"
                 alt="external-fruits-farm-flaticons-lineal-color-flat-icons-2"
               />
               <img
-                @click="verImg(especie.img_seeds)"
+                @click="verImg(specie.images[0].img_seeds)"
                 class="modal__icono"
                 src="/icons/semillas.png"
                 alt="external-fruits-farm-flaticons-lineal-color-flat-icons-2"
               />
               <img
-                @click="verImg(especie.img_stem)"
+                @click="verImg(specie.images[0].img_stem)"
                 class="modal__icono"
                 src="/icons/tallo.png"
                 alt="external-stem-plants-flaticons-lineal-color-flat-icons-2"
@@ -83,28 +83,28 @@ const limpiarModal = () => {
         </div>
         <div class="contenido__izquierda">
           <div class="modal__info">
-            <h3 @click="verImg(especie.img_general)" class="modal__heading">
-              {{  especie.nom_comunes  }}
+            <h3 @click="verImg(specie.images[0].img_general)" class="modal__heading">
+              {{  specie.vernacularName  }}
             </h3>
             <p class="modal__texto">
               <span class="nombre__cientifico">{{
-                especie.nombre_cientifico_especie
+                specie.scientificName
               }}</span>
               <span class="nombre__autor">{{
-                " " + especie.nombre_autor_especie
+                " " + specie.scientificNameAuthorship
               }}</span>
             </p>
             <p class="modal__texto">
-              {{ especie.familia }}
+              {{ specie.family }}
             </p>
             <h3 class="modal__titulo">Otros nombres:</h3>
 
             <p class="modal__texto modal-texto--cortar">
-              {{ especie.otros_nombres }}
+              {{ specie.otherNames }}
             </p>
             <h3 class="modal__titulo">Sinónimos:</h3>
             <p class="modal__texto modal-texto--container">
-              {{ especie.sinonimos }}
+              {{ specie.synonyms }}
             </p>
           </div>
           <div class="modal__botones">
@@ -112,7 +112,7 @@ const limpiarModal = () => {
               <button
                 type="button"
                 class="boton__mas animacion"
-                @click="consulta.consultSpecie(especie.cod_especie,queryPage),calendar.getCalendarSpecie(especie.cod_especie), limpiarModal()"
+                @click="consulta.consultSpecie(specie.code_specie,queryPage),calendar.getCalendarSpecie(specie.code_specie), limpiarModal()"
               >
                 <span>Ver Descripción completa</span>
               </button>
@@ -120,7 +120,7 @@ const limpiarModal = () => {
             <div
               @click="
                 modal.handleClickModalSpecie(),
-                  verImg(especie.img_general),
+                  verImg(specie.images[0].img_general),
                   limpiarModal()
               "
               class="button__modal--close"

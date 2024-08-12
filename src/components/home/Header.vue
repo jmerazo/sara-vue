@@ -8,7 +8,19 @@ const paginaInicio = computed(() => route.name === "home");
 
 
 //carrusel de imagenes header
-const images = ["/img/homeCarousel/slider_1.jpg", "/img/homeCarousel/slider_2.jpg", "/img/homeCarousel/slider_3.jpg", "/img/homeCarousel/slider_4.jpg"];
+const images = [
+  "/img/homeCarousel/slider_1.jpg", 
+  "/img/homeCarousel/slider_2.jpg", 
+  "/img/homeCarousel/slider_3.jpg", 
+  "/img/homeCarousel/slider_4.jpg", 
+  "/img/homeCarousel/slider_5.jpg", 
+  "/img/homeCarousel/slider_6.jpg",
+  "/img/homeCarousel/slider_7.jpg",
+  "/img/homeCarousel/slider_8.jpg",
+  "/img/homeCarousel/slider_9.jpg",
+  "/img/homeCarousel/slider_10.jpg",
+  "/img/homeCarousel/slider_11.jpg"
+];
 
 //carusel de imagenes header
 const currentImage = ref(images[0]);
@@ -50,7 +62,7 @@ function changeBackgroundImage() {
 
 .header {
   position: relative;
-  height: 600px;
+  height: 900px;
   background-size: cover;
   background-position: center bottom;
   background-repeat: no-repeat;

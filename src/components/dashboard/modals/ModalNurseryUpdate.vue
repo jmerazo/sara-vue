@@ -82,7 +82,7 @@ const filteredCities = computed(() => {
 
   if (department) {
     const filtered = locates.cities.filter(
-      (city) => city.department_id === department
+      (city) => city.department === department
     );
     return filtered;
   }
@@ -163,11 +163,10 @@ if ("geolocation" in navigator) {
           </div>
 
 
-          <div class="form__modal--field">
+          <div class="form__modal--field" v-show="filteredCities.length">
             <!-- ciudad -->
-            <label class="formulario__label" for="municipio" v-show="filteredCities.length">Ciudad:</label>
-            <select class="form__modal--input"  id="municipio" v-model="formData.city"
-              v-show="filteredCities.length">
+            <label class="formulario__label" for="municipio">Ciudad:</label>
+            <select class="form__modal--input"  id="municipio" v-model="formData.city">
               <option value="">-- Seleccione--</option>
               <option v-for="city in filteredCities" :key="city.id" :value="city.id">
                 {{ city.name }}

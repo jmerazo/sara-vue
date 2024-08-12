@@ -1,38 +1,47 @@
 <script setup>
+import { defineProps, computed } from 'vue';
 import { useEspeciesStore } from "@/stores/species";
 import { getFullImageUrl } from "@/helpers/";
 
-const especies = useEspeciesStore();
+const speciesStore = useEspeciesStore();
+const defaultImageUrl = '/img/sin_img.png';
 
-defineProps({
-  especie: {
+const props = defineProps({
+  specie: {
     type: Object,
-  },
+    required: true
+  }
 });
+
+const getBackgroundImageStyle = (images) => {
+  if (images && images.length > 0 && images[0].img_general) {
+    return {
+      backgroundImage: `url(${getFullImageUrl(images[0].img_general)})`
+    };
+  }
+  return {
+    backgroundImage: `url(${defaultImageUrl})`
+  };
+};
 </script>
+
 <template>
   <div class="especie">
     <div class="card">
       <article
         class="card__contenido"
-        :style="
-          
-            { backgroundImage: 'url(' + getFullImageUrl(especie.img_general) + ')' }
-        "
+        :style="getBackgroundImageStyle(specie.images)"
       >
         <div class="card__data">
-          <h2 class="card__titulo">{{ especie.nom_comunes }}</h2>
-          <span class="card__descripcion"
-            >{{ especie.nombre_cientifico_especie }}
-            {{ especie.nombre_autor_especie }}</span
-          >
-          <span class="card__descripcion">familia: {{ especie.familia }}</span>
+          <h2 class="card__titulo">{{ specie.vernacularName }}</h2>
+          <span class="card__descripcion">{{ specie.scientificName }} {{ specie.scientificNameAuthorship }}</span>
+          <span class="card__descripcion">familia: {{ specie.family }}</span>
           <button
             class="card__boton animacion"
             type="button"
-            @click="especies.seleccionarEspecie(especie.cod_especie)"
+            @click="speciesStore.selectSpecie(specie.code_specie)"
           >
-           <span> Ver Especie</span>
+            <span> Ver Especie</span>
           </button>
         </div>
       </article>

@@ -1,22 +1,38 @@
+
 import { createRouter, createWebHistory } from "vue-router";
-import HomeView from "@/views/HomeView.vue";
+
+import MaintenanceView from "../views/MaintenanceView.vue";
 import GuestLayoutView from "@/views/layouts/GuestLayoutView.vue";
 
+
 import { useAuthTokenStore } from "@/stores/auth";
+import {useHomeStore} from '../stores/home'
+
+
+
 
 const router = createRouter({
+  
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
+    {
+      path: '/maintenance',
+      name: 'maintenance',
+      component: () => import('../views/MaintenanceView.vue'),
+    },
 
     {
       path: "/",
       name: "guest",
       component: GuestLayoutView,
+      meta:{
+        isMaintenance: true
+      },
       children: [
         {
           path: '',
-          name: "home",
-          component: () => import('../views/HomeView.vue')
+          name: 'home',
+          component: () => import('../views/HomeView.vue'),
         },
         {
           path: "especies",
@@ -61,11 +77,7 @@ const router = createRouter({
           name: "auth",
           component: () => import("../views/AuthView.vue"),
         },
-        {
-          path: "register",
-          name: "register",
-          component: () => import("../views/AuthRegisterView.vue"),
-        },
+        
 
       ]
     },
@@ -203,6 +215,15 @@ const router = createRouter({
 
 router.beforeEach(async (to, from, next) => {
   const store = useAuthTokenStore();
+  const homeStore = useHomeStore();
+  
+  if(to.matched.some((record) => record.meta.isMaintenance)){
+    if(homeStore.maintenance){
+      next("/maintenance")
+    }else{
+      next()
+    }
+  }
 
   if (to.matched.some((record) => record.meta.auth)) {
     if (!store.refreshToken) {
