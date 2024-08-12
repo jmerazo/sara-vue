@@ -30,8 +30,6 @@ const displayedPageRange = computed(() => {
     (_, index) => rangeStart + index
   );
 });
-
-
 </script>
 
 <template>

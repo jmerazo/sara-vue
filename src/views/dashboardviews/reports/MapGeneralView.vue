@@ -17,11 +17,12 @@ const source = ref("")
 const currentSource = ref("");
 
 onMounted(async () => {
-  geoStore.getUniqueTaxonKeys();
-  geoStore.getGBIFData();
-  geoStore.enrichDataWithCoordinates();
-  await geoStore.fetchData();
+  await geoStore.fetchData(); // Asegúrate de que los datos estén cargados primero
+  const uniqueTaxonKeys = geoStore.getUniqueTaxonKeys(geoStore.geoCandidateData);
+  const gbifData = await geoStore.getGBIFData(uniqueTaxonKeys);
+  geoStore.enrichDataWithCoordinates(geoStore.geoCandidateData, gbifData);
 });
+
 
 watch(
   () => source.value,

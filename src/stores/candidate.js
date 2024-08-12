@@ -65,13 +65,14 @@ export const useGeoCandidateTrees = defineStore("geoCandidateTrees", () => {
 
   // Filtrar datos únicos de taxon_key
   const getUniqueTaxonKeys = (data) => {
-    return Array.from(
+    const geoTaxonKeys = Array.from(
       new Set(
         data
           .map(item => item.taxon_key) // Extraer taxon_key
           .filter(taxonKey => taxonKey !== null && taxonKey !== undefined) // Filtrar valores no nulos y no indefinidos
       )
     );
+    return geoTaxonKeys;
   };
 
   // Obtener datos de GBIF y conservar solo los campos necesarios
@@ -86,7 +87,8 @@ export const useGeoCandidateTrees = defineStore("geoCandidateTrees", () => {
   // Enriquecer los datos originales con las coordenadas obtenidas
   const enrichDataWithCoordinates = (originalData, gbifData) => {
     enrichOriginalData(originalData, gbifData);
-    return geoEnrichData.value.concat(geoCandidateEnrichGBIFData.value);
+    const geoEnrichDataCoor = geoEnrichData.value.concat(geoCandidateEnrichGBIFData.value);
+    return geoEnrichDataCoor;
   };
 
   async function fetchGBIFCoordinates(taxonKeys) {

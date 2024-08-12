@@ -91,6 +91,7 @@ const infoContainer = ref(null);
 const selectedFeature = ref(null);
 const currentSource = ref('');
 let mapInstance = null;
+let initialZoom = 8.4;
 
 const vectorSource = new VectorSource({
   features: [],
@@ -154,9 +155,27 @@ watch(
     updateMap();
   }
 );
+function updateMap() {
+  if (geoStore.geoDataNew.length > 0) {
+    console.log('i am here updateMap')
+    if (mapInstance) {
+      mapInstance.setTarget(null);
+      mapInstance = null;
+    }
+    updateVectorSource();
+    if (currentSource.value === 'original') {
+      geoStore.calculatePerimeterCoordinates();
+      const perimeterCoordinates = geoStore.coordinatesPolygon;
+      drawMap(perimeterCoordinates, vectorSource);
+    } else {
+      drawMap([], vectorSource); // No dibujar el perímetro
+    }
+  }
+}
 
 function updateVectorSource() {
   const newFeatures = geoStore.geoDataNew.map((point) => {
+    console.log('geoStore.geoDataNew: ')
     const geometry = new Point(fromLonLat([point.lon, point.lat]));
     const feature = new Feature(geometry);
     feature.setProperties({
@@ -181,24 +200,7 @@ function updateVectorSource() {
   vectorSource.addFeatures(newFeatures);
 }
 
-function updateMap() {
-  if (geoStore.geoDataNew.length > 0) {
-    if (mapInstance) {
-      mapInstance.setTarget(null);
-      mapInstance = null;
-    }
-    updateVectorSource();
-    if (currentSource.value === 'original') {
-      geoStore.calculatePerimeterCoordinates();
-      const perimeterCoordinates = geoStore.coordinatesPolygon;
-      drawMap(perimeterCoordinates, vectorSource);
-    } else {
-      drawMap([], vectorSource); // No dibujar el perímetro
-    }
-  }
-}
 //tamaños y coordenadas del mapa 
-let initialZoom = 8.4;
 function drawMap(perimeterCoordinates, vectorSource) {
   const center = [-75.5277, 1.1961];
   const newCenter = [center[0] - .3, center[1]]; // se crea esta variación para realizar el responsive
@@ -219,6 +221,7 @@ function drawMap(perimeterCoordinates, vectorSource) {
     }),
   });
 
+  console.log('i am here')
   
   //fin tamaños y coordenadas
   mapInstance.getViewport().style.cursor = "pointer";
