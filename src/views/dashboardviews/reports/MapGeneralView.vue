@@ -7,7 +7,8 @@ import { locatesColombia } from "@/stores/locates";
 
 const locates = locatesColombia();
 const geoStore = useGeoCandidateTrees();
-const especies = useEspeciesStore();
+const species = useEspeciesStore();
+console.log('species map: ', species)
 
 const renderGeoMapRef = ref(null);
 const codeFind = ref("");
@@ -17,10 +18,7 @@ const source = ref("")
 const currentSource = ref("");
 
 onMounted(async () => {
-  await geoStore.fetchData(); // Asegúrate de que los datos estén cargados primero
-  const uniqueTaxonKeys = geoStore.getUniqueTaxonKeys(geoStore.geoCandidateData);
-  const gbifData = await geoStore.getGBIFData(uniqueTaxonKeys);
-  geoStore.enrichDataWithCoordinates(geoStore.geoCandidateData, gbifData);
+  await geoStore.fetchData(); // Cargar y enriquecer los datos
 });
 
 
@@ -152,11 +150,11 @@ function execDeleteParameter() {
               Seleccione una especie...
             </option>
             <option
-              v-for="especie in especies.uniqueNomComunes"
+              v-for="especie in species.uniqueNomComunes"
               :key="especie.cod_especie"
               :value="especie.cod_especie"
             >
-              {{ especie.nom_comunes + " | " + especie.nombre_cientifico }}
+              {{ especie.vernacularName + " | " + especie.nombre_cientifico }}
             </option>
           </select>
           <div class="menu__botones">

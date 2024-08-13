@@ -73,6 +73,7 @@ import TileLayer from "ol/layer/Tile";
 import OSM from "ol/source/OSM";
 import VectorLayer from "ol/layer/Vector";
 import VectorSource from "ol/source/Vector";
+import GeoJSON from "ol/format/GeoJSON";
 import { Style, Icon, Stroke, Fill, Circle } from "ol/style";
 import { fromLonLat } from "ol/proj";
 import Point from "ol/geom/Point";
@@ -93,9 +94,29 @@ const currentSource = ref('');
 let mapInstance = null;
 let initialZoom = 8.4;
 
+// Cargar el archivo GeoJSON desde la carpeta `public`
+const geojsonSource = new VectorSource({
+  url: '/geojson/export.geojson', // Ruta relativa al archivo en la carpeta `public`
+  format: new GeoJSON(),
+});
+
+const geojsonLayer = new VectorLayer({
+  source: geojsonSource,
+  style: new Style({
+    stroke: new Stroke({
+      color: 'green', // Color del borde del departamento
+      width: 2,
+    }),
+    fill: new Fill({
+      color: 'rgba(0, 0, 255, 0.1)', // Color de relleno del departamento
+    }),
+  }),
+});
+
 const vectorSource = new VectorSource({
   features: [],
 });
+
 
 function onlyPerimeter() {
   vectorSource.clear(); // Limpiar todas las características
@@ -112,15 +133,12 @@ function drawPerimeter(perimeterCoords) {
   if (perimeterCoords && perimeterCoords.length > 0) {
     const lineCoords = perimeterCoords.map((coord) => fromLonLat(coord));
 
-    // Crear una Polygon a partir de las coordenadas
     const polygon = new Polygon([lineCoords]);
 
-    // Crear una característica de OpenLayers con el Polygon
     const polygonFeature = new Feature({
       geometry: polygon,
     });
 
-    // Definir estilo para el perímetro (línea) y relleno
     polygonFeature.setStyle(
       new Style({
         stroke: new Stroke({
@@ -155,9 +173,9 @@ watch(
     updateMap();
   }
 );
+
 function updateMap() {
   if (geoStore.geoDataNew.length > 0) {
-    console.log('i am here updateMap')
     if (mapInstance) {
       mapInstance.setTarget(null);
       mapInstance = null;
@@ -175,7 +193,6 @@ function updateMap() {
 
 function updateVectorSource() {
   const newFeatures = geoStore.geoDataNew.map((point) => {
-    console.log('geoStore.geoDataNew: ')
     const geometry = new Point(fromLonLat([point.lon, point.lat]));
     const feature = new Feature(geometry);
     feature.setProperties({
@@ -212,6 +229,10 @@ function drawMap(perimeterCoordinates, vectorSource) {
           opacity: 0.8,
         }),
       }),
+      geojsonLayer, // Añadir la capa GeoJSON aquí
+      new VectorLayer({
+        source: vectorSource,
+      }),
     ],
     view: new View({
       center: fromLonLat(newCenter),
@@ -220,8 +241,6 @@ function drawMap(perimeterCoordinates, vectorSource) {
       maxZoom: 30,
     }),
   });
-
-  console.log('i am here')
   
   //fin tamaños y coordenadas
   mapInstance.getViewport().style.cursor = "pointer";
@@ -280,24 +299,14 @@ function drawMap(perimeterCoordinates, vectorSource) {
     },
   });
 
-  /* const vectorLayer = new VectorLayer({
-    source: vectorSource,
-    style: function (feature) {
-      return feature.get('source') === 'gbif' ? treeIconGBIFStyle : treeIconStyle;
-    },
-  }); */
-
   const lineCoords = perimeterCoordinates.map((coord) => fromLonLat(coord));
 
-  // Crear una Polygon a partir de las coordenadas
   const polygon = new Polygon([lineCoords]);
 
-  // Crear una característica de OpenLayers con el Polygon
   const polygonFeature = new Feature({
     geometry: polygon,
   });
 
-  // Definir estilo para el perímetro (línea) y relleno
   polygonFeature.setStyle(
     new Style({
       stroke: new Stroke({
@@ -310,7 +319,6 @@ function drawMap(perimeterCoordinates, vectorSource) {
     })
   );
 
-  // Agregar la característica del polígono al origen del vector
   vectorSource.addFeature(polygonFeature);
 
   mapInstance.addLayer(vectorLayer);
@@ -335,15 +343,10 @@ function drawMap(perimeterCoordinates, vectorSource) {
     }
   });
 
-
-  // lógica mara el manejar el tamaño del mapa según la pantalla del dispositivo
   window.addEventListener("resize", handleResize);
 
-  // Manejar el evento resize
   function handleResize() {
-    // Verificar si mapInstance es null o undefined antes de acceder a getView()
     if (mapInstance && mapInstance.getView()) {
-      // Modificar el zoom según el ancho de la pantalla
       if (window.innerWidth < 768) {
         mapInstance.getView().setZoom(5.5);
       } else {
@@ -352,11 +355,9 @@ function drawMap(perimeterCoordinates, vectorSource) {
     }
   }
 
-  // Ejecutar la función handleResize al inicio para establecer el zoom inicial
   handleResize();
 }
 </script>
-
 
 <style scoped>
 .map-container {
