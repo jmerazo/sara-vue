@@ -2,7 +2,7 @@
 import { ref, computed } from "vue";
 import APIService from "@/services/APIService";
 import { useAuthTokenStore } from "@/stores/auth";
-import {locatesColombia} from "@/stores/locates"
+import { locatesColombia } from "@/stores/locates"
 import { useRouter } from "vue-router";
 
 
@@ -230,8 +230,7 @@ function showLoginError(message) {
                 </path>
               </svg>
             </div>
-            <select v-model="formData.department" style="color: gray;" name="department"
-              id="department">
+            <select v-model="formData.department" style="color: gray;" name="department" id="department">
               <option value="">--Departamento--</option>
               <option v-for="loc in locates.departments" :key="loc.id" :value="loc.code">
                 {{ loc.name }}
@@ -247,8 +246,8 @@ function showLoginError(message) {
                 </path>
               </svg>
             </div>
-            <select :disabled="filteredCities.length === 0" v-model="formData.city"
-              style="color: gray;" name="department" id="department">
+            <select :disabled="filteredCities.length === 0" v-model="formData.city" style="color: gray;"
+              name="department" id="department">
               <option value="">--Ciudad--</option>
               <option v-for="city in filteredCities" :key="city.id" :value="city.id">
                 {{ city.name }}
@@ -653,11 +652,14 @@ form.form__sign-up {
 @media (max-width: 570px) {
   .forms form {
     padding: 0 1.5rem;
-    justify-content: flex-start;
   }
 
   .image {
     display: none;
+  }
+
+  .container__login.mode__signin .walls__container {
+    margin-top: 2.7rem;
   }
 
   .wall .wall__content {
@@ -674,7 +676,7 @@ form.form__sign-up {
   }
 
   .container__login.mode__signin::before {
-    bottom: 35%;
+    bottom: 25%;
     left: 50%;
   }
 
