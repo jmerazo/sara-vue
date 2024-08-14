@@ -15,7 +15,7 @@ const charts = useChartsStore()
 
         <div class="card__box">
           <div>
-            <h3 class="card__cant">{{ species.especiesOriginales.length }}</h3>
+            <h3 class="card__cant">{{ species.speciesOriginals.length }}</h3>
 
             <p class="card__text">Total de Especies forestales</p>
           </div>

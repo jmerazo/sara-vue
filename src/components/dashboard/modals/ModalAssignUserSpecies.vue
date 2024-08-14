@@ -6,7 +6,7 @@ import { useEspeciesStore } from "@/stores/species";
 
 const property = propertyStore();
 const modal = useModalStore();
-const especies = useEspeciesStore();
+const species = useEspeciesStore();
 
 const error = ref("");
 
@@ -34,10 +34,10 @@ const selectedEspecieOption = ref('');
 
 const filteredEspecies = computed(() => {
   const searchLower = searchQuery.value.toLowerCase();
-  return especies.especies.filter(ef => {
+  return species.species.filter(ef => {
     return (
-      ef.cod_especie?.toString().toLowerCase().includes(searchLower) ||
-      ef.nom_comunes?.toLowerCase().includes(searchLower) ||
+      ef.code_specie?.toString().toLowerCase().includes(searchLower) ||
+      ef.vernacularName?.toLowerCase().includes(searchLower) ||
       ef.nombre_cientifico?.toLowerCase().includes(searchLower)
     );
   });
@@ -84,7 +84,7 @@ const handlePropertyChange = async () => {
 }
 
 const selectedEspecie = computed(() => {
-  return especies.especies.find(e => e.cod_especie === formData.value.ep_especie_cod);
+  return species.species.find(e => e.code_specie === formData.value.ep_especie_cod);
 });
 
 const isPalma = computed(() => {
@@ -94,12 +94,12 @@ const isPalma = computed(() => {
 function handleSelect(event) {
   selectedEspecieOption.value = event.target.value;
 
-  const selectedOption = especies.especies.find(ef =>
-    `${ef.cod_especie} / ${ef.nom_comunes} / ${ef.nombre_cientifico}` === selectedEspecieOption.value
+  const selectedOption = species.sspecies.find(ef =>
+    `${ef.code_specie} / ${ef.vernacularName} / ${ef.nombre_cientifico}` === selectedEspecieOption.value
   );
 
   if (selectedOption) {
-    formData.value.ep_especie_cod = selectedOption.cod_especie;
+    formData.value.ep_especie_cod = selectedOption.code_specie;
   } else {
     formData.value.ep_especie_cod = ''; // Reset if no match
   }
@@ -165,8 +165,8 @@ function updateSearchQuery(event) {
             <datalist id="especieOptions">
               <option
                 v-for="ef in filteredEspecies"
-                :key="ef.cod_especie"
-                :value="ef.cod_especie + ' / ' + ef.nom_comunes + ' / ' + ef.nombre_cientifico"
+                :key="ef.code_specie"
+                :value="ef.code_specie + ' / ' + ef.vernacularName + ' / ' + ef.nombre_cientifico"
               >
               </option>
             </datalist>

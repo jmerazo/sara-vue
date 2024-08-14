@@ -85,25 +85,63 @@ export const useGeoCandidateTrees = defineStore("geoCandidateTrees", () => {
     }
   };
 
+  /* // Filtrar datos únicos de taxon_key
+  const getUniqueTaxonKeys = (data) => {
+    const geoTaxonKeys = Array.from(
+      new Set(
+        data
+          .map(item => item.taxon_key) // Extraer taxon_key
+          .filter(taxonKey => taxonKey !== null && taxonKey !== undefined) // Filtrar valores no nulos y no indefinidos
+      )
+    );
+    return geoTaxonKeys;
+  };
+
+  // Obtener datos de GBIF y conservar solo los campos necesarios
+  const getGBIFData = async (uniqueTaxonKeys) => {
+    let gbifData = [];
+    if (uniqueTaxonKeys.length > 0) {
+      gbifData = await fetchGBIFCoordinates(uniqueTaxonKeys);
+    }
+    return gbifData;
+  }; */
+
+  // Enriquecer los datos originales con las coordenadas obtenidas
+  const enrichDataWithCoordinates = (originalData, gbifData) => {
+    enrichOriginalData(originalData, gbifData);
+    const geoEnrichDataCoor = geoEnrichData.value.concat(geoCandidateEnrichGBIFData.value);
+    return geoEnrichDataCoor;
+  };
+
   async function fetchGBIFCoordinates(taxonKeys) {
-    const promises = taxonKeys.map(taxonKey =>
-      fetch(`https://api.gbif.org/v1/occurrence/search?taxonKey=${taxonKey}&limit=100`)
-        .then(response => response.json())
-        .then(data => data.results.map(result => ({
+    const promises = taxonKeys.map(async (taxonKey) => {
+      try {
+        const response = await fetch(`https://api.gbif.org/v1/occurrence/search?taxonKey=${taxonKey}&limit=100`);
+  
+        // Verificar si la respuesta es válida antes de intentar convertirla en JSON
+        if (!response.ok) {
+          throw new Error(`Error en la solicitud: ${response.status} ${response.statusText}`);
+        }
+  
+        const data = await response.json();
+        return data.results.map(result => ({
           taxonKey,
           nombre_cientifico: result.scientificName,
           nombre_comun: result.vernacularName,
           lat: result.decimalLatitude,
           lon: result.decimalLongitude,
           source: 'gbif'
-        })))
-    );
+        }));
+      } catch (error) {
+        console.error(`Error al obtener los datos de GBIF para taxonKey ${taxonKey}:`, error);
+        return [];  // Retornar un array vacío en caso de error para evitar que toda la cadena falle
+      }
+    });
   
     const gbifData = await Promise.all(promises);
   
-    // Aplanar el array de arrays
     return gbifData.flat();
-  }
+  }  
   
   function enrichOriginalData(originalData, gbifData) {
     geoEnrichData.value = originalData.map(item => ({
@@ -426,6 +464,7 @@ export const useGeoCandidateTrees = defineStore("geoCandidateTrees", () => {
     convertToKML,
     exportToKML,
     validateUrl,
-    sourceData
+    sourceData,
+    enrichDataWithCoordinates
   };
 });
