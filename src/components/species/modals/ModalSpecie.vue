@@ -15,7 +15,7 @@ const calendar = useCalendarStore()
 const route = useRoute();
 const queryPage = computed(()=> route.name)
 
-console.log(route);
+
 const imagen = ref("");
 
 const verImg = (url) => {

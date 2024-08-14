@@ -21,11 +21,14 @@ import 'jspdf-autotable'; // Importar autoTable plugin
 
 //funcion para obtener la ruta de una imagen formateada
 export const getFullImageUrl = (relativePath) => {
+
   if (relativePath) {
     return `${api.defaults.baseURL}/${relativePath.replace(/\\/g, "/")}`;
   } else {
     return "/img/sin_img.png";
   }
+
+  
 };
 
 //descargar reportes en excel
@@ -165,7 +168,7 @@ export const obtenerFecha = () => {
 
 //ordena arrays por fecha mas reciente
 export const ordenarPorFechas = (dataArray, campoFecha) => {
-  
+
   try {
     return dataArray.sort((a, b) => {
       const fechaA = new Date(a[campoFecha]);
@@ -175,4 +178,30 @@ export const ordenarPorFechas = (dataArray, campoFecha) => {
   } catch {
     console.log("los parametros recibidos no son válidos");
   }
+}
+
+
+//create styles to text
+export function formatSubtitle(text) {
+  try {
+    return text.replace(/<([^>]+)>/g, (match, p1) => {
+      return `<br><br><strong class="subtitle" >${p1}:</strong><br>`;
+    });
+  } catch (error) {
+    return text
+  }
+}
+
+export function formatList(text) {
+  try {
+    text = text.replace(/([^,]+),?/g, (match, p1) => {
+      return `▫️ ${p1.trim()}\n<br>`;
+    });
+
+    return text;
+  } catch (error) {
+    return text;
+  }
+
+  
 }

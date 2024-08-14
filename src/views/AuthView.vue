@@ -243,8 +243,8 @@ function showLoginError(message) {
                 </path>
               </svg>
             </div>
-            <select :disabled="filteredCities.length === 0" v-model="formData.city" style="color: gray;"
-              name="city" id="city">
+            <select :disabled="filteredCities.length === 0" v-model="formData.city"
+              style="color: gray;" name="city" id="city">
               <option value="">--Ciudad--</option>
               <option v-for="city in filteredCities" :key="city.id" :value="city.id">
                 {{ city.name }}
