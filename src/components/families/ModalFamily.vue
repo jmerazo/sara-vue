@@ -33,13 +33,13 @@ const irFamilias = () => {
         <div class="especies">
           <div class="especie" v-for="especie in consulta.familia" :key="especie.familia">
             <p class="especie__dato">
-              {{ especie.nom_comunes }} -
+              {{ especie.vernacularName }} -
               {{ especie.nombre_cientifico }}
             </p>
             <button
               class="card__boton animacion"
               @click="
-                consulta.consultSpecie(especie.cod_especie), modal.handleClickModalFamily()
+                consulta.consultSpecie(especie.code_specie), modal.handleClickModalFamily()
               "
             >
               <span>Ver especie</span>
