@@ -216,27 +216,27 @@ const router = createRouter({
 router.beforeEach(async (to, from, next) => {
   const store = useAuthTokenStore();
   const homeStore = useHomeStore();
-  
-  if(to.matched.some((record) => record.meta.isMaintenance)){
-    if(homeStore.maintenance){
-      next("/maintenance")
-    }else{
-      next()
+
+  // Verificación de mantenimiento
+  if (to.matched.some((record) => record.meta.isMaintenance)) {
+    if (homeStore.maintenance) {
+      return next("/maintenance");
     }
   }
 
+  // Verificación de autenticación
   if (to.matched.some((record) => record.meta.auth)) {
     if (!store.refreshToken) {
-      next("/auth"); // Redirige si no hay refreshToken
+      return next("/auth"); // Redirige si no hay refreshToken
     } else {
       if (!store.accessToken) {
         await store.rehydrateAuth(); // Intenta obtener un nuevo accessToken
       }
-      next(); // Continúa si el refreshToken está presente (y ahora también el accessToken)
     }
-  } else {
-    next(); // Rutas que no requieren autenticación
   }
+
+  // Si no se cumplen ninguna de las condiciones anteriores, continúa
+  next();
 });
 
 export default router;

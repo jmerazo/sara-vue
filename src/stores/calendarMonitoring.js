@@ -25,7 +25,6 @@ export const useCalendarStore = defineStore("species", () => {
       const categoria = item.flor_abierta;
 
       if (item.cod_especie_id === cod_especie) {
-        console.log('i am here', item.especie_cod_especie, " = ", cod_especie)
         if (!resultado[mes]) {
           resultado[mes] = {};
         }

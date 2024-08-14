@@ -2,7 +2,7 @@
 import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { getFullImageUrl } from "@/helpers/";
-import { obtenerFecha } from "@/helpers";
+import { obtenerFecha, formatSubtitle, formatList } from "@/helpers";
 import { descargarPdfs } from "@/helpers/exportDataSheet";
 import APIService from "@/services/APIService";
 
@@ -22,6 +22,7 @@ import ImageSlider from "@/components/species/utils/ImageSlider.vue";
 import ModalSpecieComponent from "@/components/species/modals/ModalSpecieComponent.vue";
 import FlowerCalendar from "@/components/species/calendars/FlowerCalendar.vue";
 import FruitCalendar from "@/components/species/calendars/FruitCalendar.vue";
+
 
 const router = useRouter();
 
@@ -89,6 +90,7 @@ async function filterGeo(codigo, data) {
 }
 
 onMounted(async () => {
+    
   if (!specie.specie.code_specie) {
     router.push({ name: "especies" });
     return;
@@ -106,8 +108,9 @@ onMounted(async () => {
 
   await geoStore.fetchData();
   filteredData.value = await filterGeo(code, geoStore.geoCandidateData); //coordenadas de los individuos de la especie consultada
-  console.log('datos para pasar al mapa',filteredData.value);
 });
+
+
 
 const {
   vernacularName,
@@ -137,7 +140,8 @@ const {
   
 } = specie.specie;
 
-console.log('species: ', specie.specie)
+const distributionFormat = ref(formatSubtitle(distribution));
+const listFormat = ref(formatList(otherNames));
 
 const scrollToTop = () => {
   // para cuando se consulta desde la vista Especies
@@ -170,9 +174,8 @@ scrollToTop();
                 }}</span>
               </h1>
               <h3 class="header__titulo">Otros Nombres:</h3>
-              <p class="header__texto">
-                {{ otherNames }}
-              </p>
+              <div v-html="listFormat"></div>
+              
               <h3 class="header__titulo">Sinónimos:</h3>
               <p class="header__texto">{{ synonyms }}</p>
               <h3 class="header__titulo">
@@ -192,6 +195,7 @@ scrollToTop();
             <!-- grid-->
             <!-- contenido imagen -->
             <div
+              v-if="specie.specie.code_specie"
               class="card"
               :style="{
                 backgroundImage: 'url(' + getFullImageUrl(specie.specie.images[0].img_leafs) + ')',
@@ -214,6 +218,7 @@ scrollToTop();
             <!-- FIN contenido imagen -->
             <!-- contenido imagen -->
             <div
+              v-if="specie.specie.code_specie"
               class="card"
               :style="{
                 backgroundImage: 'url(' + getFullImageUrl(specie.specie.images[0].img_flowers) + ')',
@@ -237,6 +242,7 @@ scrollToTop();
             <!-- contenido imagen -->
             <div
               class="card"
+              v-if="specie.specie.code_specie"
               :style="{
                 backgroundImage: 'url(' + getFullImageUrl(specie.specie.images[0].img_fruits) + ')',
               }"
@@ -291,7 +297,7 @@ scrollToTop();
           <div class="mapa">
             <div class="mapa__informacion">
               <h4 class="mapa__titulo">Distribución</h4>
-              <p class="mapa__descripcion">{{ distribution }}</p>
+              <div class="subtitle__format" v-html="distributionFormat"></div>
             </div>
             <div class="jurisdiccion">
               <h4 class="jurisdiccion__titulo">
@@ -327,7 +333,12 @@ scrollToTop();
 </template>
 
 <style scoped>
-
+.subtitle__format{
+    font-size: 1rem;
+    line-height: 2;
+    margin-bottom: 3rem;
+    margin-top: 1rem;
+}
 /* header */
 .main {
   margin-top: 6rem;
