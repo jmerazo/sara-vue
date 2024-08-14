@@ -31,6 +31,7 @@ const geoStore = useGeoCandidateTrees();
 const averageStore = useAverageSpecie();
 const modal = useModalStore();
 
+console.log('data sought: ', specie.specie)
 
 const dateNow = new Date();
 const year = dateNow.getFullYear();
@@ -119,17 +120,17 @@ const {
   scientificNameAuthorship,
   otherNames,
   family,
+  kingdom,
+  phylum,
+  clas,
+  order,
+  genus,
+  descriptionGeneral,
   leaves,
-  tipo_hoja,
   flowers,
   fruits,
-  semillas,
-  tallo,
-  follaje,
-  forma_copa,
-  disposicion_hojas,
+  seeds,
   distribution,
-  habito,
   synonyms,
   img_general,
   img_seeds,
@@ -137,11 +138,24 @@ const {
   img_landscape_one,
   img_landscape_two,
   img_landscape_three,
-  
+  woodUses,
+  nonTimberUsers,
+  bloom,
+  fructification,
+  ecology,
+  specificEpithet,
+  infraspecificEpithet,
+  taxonRank
 } = specie.specie;
 
 const distributionFormat = ref(formatSubtitle(distribution));
 const listFormat = ref(formatList(otherNames));
+
+const woodUsesFormat = ref(formatSubtitle(woodUses));
+const nonTimberUsersFormat = ref(formatSubtitle(nonTimberUsers));
+const bloomFormat = ref(formatSubtitle(bloom));
+const fructificationFormat = ref(formatSubtitle(fructification));
+const ecologyFormat = ref(formatSubtitle(ecology));
 
 const scrollToTop = () => {
   // para cuando se consulta desde la vista Especies
@@ -173,14 +187,36 @@ scrollToTop();
                   " " + scientificNameAuthorship
                 }}</span>
               </h1>
+
+              <p class="header__texto">{{ descriptionGeneral }}</p>
+
+              <h3 class="header__titulo">Reino:</h3>
+              <p class="header__texto">{{ kingdom }}</p>
+
+              <h3 class="header__titulo">Filo:</h3>
+              <p class="header__texto">{{ phylum }}</p>
+
+              <h3 class="header__titulo">Clase:</h3>
+              <p class="header__texto">{{ clas }}</p>
+
+              <h3 class="header__titulo">Orden:</h3>
+              <p class="header__texto">{{ order }}</p>
+
+              <h3 class="header__titulo">Orden:</h3>
+              <p class="header__texto">{{ order }}</p>
+
+              <h3 class="header__titulo">
+                <span>Familia:</span> {{ family }}
+              </h3>
+
+              <h3 class="header__titulo">Genero:</h3>
+              <p class="header__texto">{{ genus }}</p>
+
               <h3 class="header__titulo">Otros Nombres:</h3>
               <div v-html="listFormat"></div>
               
               <h3 class="header__titulo">Sinónimos:</h3>
               <p class="header__texto">{{ synonyms }}</p>
-              <h3 class="header__titulo">
-                <span>Familia:</span> {{ family }}
-              </h3>
             </div>
             <!-- fin header -->
           </div>
@@ -292,6 +328,27 @@ scrollToTop();
       </section> -->
       <!-- FIN seccion 3- grafico -->
       <!-- seccion 4 - mapa -->
+
+      <section class="general">
+        <div class="general__informacion">
+          <h3 class="header__titulo">Usos maderables:</h3>
+          <div v-html="woodUsesFormat"></div>
+
+          <h3 class="header__titulo">Usos no maderables:</h3>
+          <div v-html="nonTimberUsersFormat"></div>
+
+          <h3 class="header__titulo">Floración:</h3>
+          <div v-html="bloomFormat"></div>
+
+          <h3 class="header__titulo">Fructificación:</h3>
+          <div v-html="fructificationFormat"></div>
+
+          <h3 class="header__titulo">Ecología:</h3>
+          <div v-html="ecologyFormat"></div>
+        </div>
+      </section>
+      
+
       <section class="general">
         <div class="componentes">
           <div class="mapa">
@@ -322,12 +379,12 @@ scrollToTop();
     </div>
 
     <PagesQueries />
-    <div class="download__forestSpecies">
+   <!--  <div class="download__forestSpecies">
       <span class="text__exportSF">Exportar listado especies forestales:</span>      
       <a @click="descargarPdfs(especie.especie,`Ficha técnica - ${obtenerFecha()}`, 6, 0)" class="button" href="#">
         <font-awesome-icon class="button__pdf" :icon="['fas', 'file-pdf']"/>
       </a>
-    </div>
+    </div> -->
   </div>
   <ModalSpecieComponent />
 </template>
