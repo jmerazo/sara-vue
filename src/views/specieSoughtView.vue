@@ -378,7 +378,7 @@ scrollToTop();
 
     </div>
 
-    <PagesQueries />
+    <PagesQueries :scientificName="scientificName" :vernacularName="vernacularName"/>
    <!--  <div class="download__forestSpecies">
       <span class="text__exportSF">Exportar listado especies forestales:</span>      
       <a @click="descargarPdfs(especie.especie,`Ficha técnica - ${obtenerFecha()}`, 6, 0)" class="button" href="#">
