@@ -38,7 +38,7 @@ const props = defineProps({
     required: true,
   },
   index: {
-    type: Number,
+    type: String,
     required: true,
   },
   name: {
@@ -49,9 +49,9 @@ const props = defineProps({
 
 
 onMounted(async () => {
-  if (props.index) {
+  if (Number(props.index)) {
     const calendarItem = new Chart(
-      document.getElementById(`calendarItem${props.index + props.name}`),
+      document.getElementById(`calendarItem${Number(props.index) + props.name}`),
       config
     );
   }
@@ -61,9 +61,9 @@ const data = {
   labels: ["0%", "1 - 25%", "26 - 50%", "51 - 75%", "76 - 100%"],
   datasets: [
     {
-      label: `Floración en ${month[props.index-1]}`,
-      backgroundColor: colors[props.index-1],
-      borderColor: colors[props.index-1],
+      label: `Floración en ${month[Number(Number(props.index))-1]}`,
+      backgroundColor: colors[Number(props.index)-1],
+      borderColor: colors[Number(props.index)-1],
       data:[props.item["0%"] || 0 ,props.item["1 - 25%"] || 0,props.item["26 - 50%"] || 0,props.item["51 - 75%"] || 0,props.item["76 - 100%"] || 0],
     },
   ],
@@ -78,7 +78,7 @@ const config = {
 
 <template>
   <div>
-    <canvas :id="`calendarItem${props.index + props.name}`"></canvas>
+    <canvas :id="`calendarItem${Number(props.index) + props.name}`"></canvas>
     
   </div>
 

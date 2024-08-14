@@ -13,7 +13,7 @@ export const useAuthTokenStore = defineStore('authToken', () => {
   const userData = ref(null);
   const errorAuth = ref(null);
   const authActive = ref(false);
-  const userPermissions = ref(null); 
+  const userPermissions = ref(null);
   const isLoadingPermissions = ref(false);
 
   const departments = ref({});
@@ -21,7 +21,20 @@ export const useAuthTokenStore = defineStore('authToken', () => {
 
   const router = useRouter();
   const isRehydrated = ref(false);
+  
+  onMounted(async () => {
+    isAuth();
+    await rehydrateAuth();
+    try {
+      const departmentsResponse = await APIService.getDepartments();
+      departments.value = departmentsResponse.data;
 
+      const citiesResponse = await APIService.getCities();
+      cities.value = citiesResponse.data;
+    } catch (error) {
+      console.error('Error al obtener datos:', error);
+    }
+  });
   // Método para cargar los permisos del usuario
   const loadUserPermissions = async (email) => {
     console.log('email ', email)
@@ -62,6 +75,7 @@ export const useAuthTokenStore = defineStore('authToken', () => {
     }
   };
 
+
   const login = async (credentials, authType) => {
     try {
       const response = await APIService.getAuthToken(credentials, authType);
@@ -73,7 +87,7 @@ export const useAuthTokenStore = defineStore('authToken', () => {
         errorAuth.value = null;
         localStorage.setItem('refresh_token', response.data.refresh);
         localStorage.setItem('user_data', JSON.stringify(response.data.user_data));
-        await loadUserPermissions(); 
+        await loadUserPermissions();
         return { success: true };
 
       } else {
@@ -101,7 +115,7 @@ export const useAuthTokenStore = defineStore('authToken', () => {
 
   const loginFirebase = async (email, password) => {
     try {
-      const token = await signInAndGetToken(email, password); 
+      const token = await signInAndGetToken(email, password);
       const response = await APIService.loginFirebase(token);
       if (response.status === 200) {
         accessToken.value = response.data.access;
@@ -111,7 +125,7 @@ export const useAuthTokenStore = defineStore('authToken', () => {
         errorAuth.value = null;
         localStorage.setItem('refresh_token', response.data.refresh);
         localStorage.setItem('user_data', JSON.stringify(response.data.user_data));
-        await loadUserPermissions(email); 
+        await loadUserPermissions(email);
         return { success: true };
       } else {
         errorAuth.value = 'Credenciales incorrectas';
@@ -150,19 +164,7 @@ export const useAuthTokenStore = defineStore('authToken', () => {
     }
   }
 
-  onMounted(async () => {
-    isAuth();
-    await rehydrateAuth();
-    try {
-      const departmentsResponse = await APIService.getDepartments();
-      departments.value = departmentsResponse.data;
 
-      const citiesResponse = await APIService.getCities();
-      cities.value = citiesResponse.data;
-    } catch (error) {
-      console.error('Error al obtener datos:', error);
-    }
-  });
 
   return {
     accessToken,

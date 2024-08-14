@@ -30,13 +30,14 @@ export const useConsultaStore = defineStore("consulta", () => {
     cargando.value = true;
     const { data } = await APIService.lookSpecie(code_specie);
     specie.value = data;
-    APIService.pageCountVisit(code_specie);
-    console.log('dato de queryPage =',queryPage);
-    if(queryPage === 'especies'){
-      router.push("/busqueda")
-    }else{
-      router.push("/panel/panel-busqueda")
-    }
+    router.push("/busqueda")
+    // APIService.pageCountVisit(code_specie);
+    // console.log('dato de queryPage =',queryPage);
+    // if(queryPage === 'especies'){
+    //   router.push("/busqueda")
+    // }else{
+    //   router.push("/panel/panel-busqueda")
+    // }
   
     
     if (modal.modalSpecie) {
@@ -46,6 +47,7 @@ export const useConsultaStore = defineStore("consulta", () => {
   }
 
   return {
+    specie,
     familia,
     strFamilia,
     cargando,
