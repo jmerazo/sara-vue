@@ -1,7 +1,4 @@
 <script setup>
-
-
-
 defineProps({
   muestra: {
     type: Object,
@@ -72,7 +69,7 @@ function toggleDetalles(contenedor) {
       <p class="especie__info">
         # placa:
         <span class="dato" :class="{ sinInfo: !muestra.numero_placa }">{{
-          muestra.numero_placa ? muestra.numero_placa : "Sin placa"
+          muestra.evaluacion.numero_placa ? muestra.evaluacion.numero_placa : "Sin placa"
         }}</span>
       </p>
     </div>

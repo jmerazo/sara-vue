@@ -5,6 +5,7 @@ import { useConsultaStore } from '@/stores/consulta'
 
 const consulta = useConsultaStore()
 const nurseries = useNurseriesStore();
+console.log('nurseries: ', nurseries)
 
 const email = ref("");
 const message = ref("");

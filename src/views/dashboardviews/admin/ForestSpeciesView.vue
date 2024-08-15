@@ -19,6 +19,8 @@ import ModalForestSpecieAdd from "@/components/dashboard/modals/ModalForestSpeci
 const especies = useEspeciesStore();
 const modal = useModalStore();
 
+console.log('especies: ', especies)
+
 //prueba para protección de eliminación de una especie
 const delSpecie = (id) => {
   const confirmed = window.confirm(
@@ -97,29 +99,35 @@ const displayedPageRange = computed(() => {
     <!-- listado de cards -->
     <main class="reporte__grid" v-else>
       <div class="card" v-for="especie in especies.displayedEspecies" v-bind:key="especie.cod_especie">
-        <div class="card__grid" v-if="especie.cod_especie">
-          <div class="card__imagen" style="height: 250px;" :style="{
-            backgroundImage: `url(${getFullImageUrl(especie.img_general)})`,
-          }"></div>
+        <div class="card__grid" v-if="especie.code_specie">
+          <div 
+            class="card__imagen" 
+            style="height: 250px;" 
+            :style="{
+              backgroundImage: especie.images && especie.images.length > 0 
+                ? `url(${getFullImageUrl(especie.images[0].img_general)})` 
+                : `url(${getFullImageUrl(undefined)})`
+            }">
+          </div>
           <div class="card__contenido">
 
             <div class="card__edit">
               <div class="card__edit--button">
-                <svg @click="especies.selectedForestSpecieUpdate(especie.ShortcutID)" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                <svg @click="especies.selectedForestSpecieUpdate(especie.id)" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
                   <path
                     d="M15.7279 9.57627L14.3137 8.16206L5 17.4758V18.89H6.41421L15.7279 9.57627ZM17.1421 8.16206L18.5563 6.74785L17.1421 5.33363L15.7279 6.74785L17.1421 8.16206ZM7.24264 20.89H3V16.6473L16.435 3.21231C16.8256 2.82179 17.4587 2.82179 17.8492 3.21231L20.6777 6.04074C21.0682 6.43126 21.0682 7.06443 20.6777 7.45495L7.24264 20.89Z">
                   </path>
                 </svg>
               </div>
             </div>
-            <p class="card__titulo">{{ especie.nom_comunes }}</p>
+            <p class="card__titulo">{{ especie.vernacularName }}</p>
             <p class="card__subtitulo">{{ especie.nombre_cientifico }}</p>
             <p class="card__subtitulo">
-              Familia: <span class="card__dato">{{ especie.familia }}</span>
+              Familia: <span class="card__dato">{{ especie.family }}</span>
             </p>
             <p class="card__subtitulo">
               Código de especie:
-              <span class="card__dato">{{ especie.cod_especie }}</span>
+              <span class="card__dato">{{ especie.code_specie }}</span>
             </p>
             
           </div>

@@ -32,9 +32,9 @@ defineProps({
         <div class="card__body">
             <div class="card__content">
                 <p class="dato">{{ property.nombre_predio }}</p>
-                <p>Propietario: <span style="font-weight: 500;">{{ property.first_name + " " + property.last_name
+                <p>Propietario: <span style="font-weight: 500;">{{ property.p_user.first_name + " " + property.p_user.last_name
                         }}</span></p>
-                <p>{{ property.ciudad_name }}, {{ property.departamento_name }}</p>
+                <p>{{ property.p_municipio.name }}, {{ property.p_departamento.name }}</p>
             </div>
         </div>
         <div class="card__buttons">
