@@ -315,23 +315,23 @@ scrollToTop();
             <div class="section__information-text" v-html="woodUsesFormat"></div>
           </article>
 
-          <article class="section__information">
+          <article v-if="nonTimberUsers" class="section__information">
             <h3 class="section__information-title"><span>Usos No maderables</span></h3>
             <div class="section__information-text" v-html="nonTimberUsersFormat"></div>
           </article>
 
 
-          <article class="section__information">
+          <article v-if="bloom" class="section__information">
             <h3 class="section__information-title"><span>Floración</span></h3>
             <div class="section__information-text" v-html="bloomFormat"></div>
           </article>
 
-          <article class="section__information">
+          <article v-if="fructification" class="section__information">
             <h3 class="section__information-title"><span>Fructificación</span></h3>
             <div class="section__information-text" v-html="fructificationFormat"></div>
           </article>
 
-          <article class="section__information">
+          <article v-if="ecology" class="section__information">
             <h3 class="section__information-title"
               style="text-align: center; margin-top: 5rem; margin-bottom: 1rem; font-size: 2rem;"><span
                 style="border-bottom: 2px solid var(--primary);">Ecología</span></h3>
