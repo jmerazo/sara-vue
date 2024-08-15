@@ -2,7 +2,7 @@
 import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { getFullImageUrl } from "@/helpers/";
-import { obtenerFecha, formatSubtitle, formatList } from "@/helpers";
+import { obtenerFecha, formatSubtitle, formatList, formatListB } from "@/helpers";
 import { descargarPdfs } from "@/helpers/exportDataSheet";
 import APIService from "@/services/APIService";
 
@@ -91,7 +91,7 @@ async function filterGeo(codigo, data) {
 }
 
 onMounted(async () => {
-    
+
   if (!specie.specie.code_specie) {
     router.push({ name: "especies" });
     return;
@@ -150,6 +150,7 @@ const {
 
 const distributionFormat = ref(formatSubtitle(distribution));
 const listFormat = ref(formatList(otherNames));
+const listFormatB = ref(formatListB(synonyms))
 
 const woodUsesFormat = ref(formatSubtitle(woodUses));
 const nonTimberUsersFormat = ref(formatSubtitle(nonTimberUsers));
@@ -167,14 +168,14 @@ scrollToTop();
 <template>
   <div class="main">
     <QuoteButton></QuoteButton>
-    <div class="contenido">
-      <!-- seccion 1 - informacion general -->
+    <div class="content">
+      <!-- section 1 - information general -->
       <section class="general">
         <ImageSlider class="slider" v-if="geoStore.validImages.length > 0" />
 
-        <div class="general__informacion">
-          <div class="informacion">
-            <!-- contenido header -->
+        <div class="general__information">
+          <div class="information">
+            <!-- content header -->
             <div class="header">
               <h1 class="header__heading">
                 {{ vernacularName }}
@@ -188,198 +189,193 @@ scrollToTop();
                 }}</span>
               </h1>
 
-              <p class="header__texto">{{ descriptionGeneral }}</p>
+              <p class="general__text">{{ descriptionGeneral }}</p>
 
-              <h3 class="header__titulo">Reino:</h3>
-              <p class="header__texto">{{ kingdom }}</p>
+              <div class="components__description">
 
-              <h3 class="header__titulo">Filo:</h3>
-              <p class="header__texto">{{ phylum }}</p>
+                <h3 class="description__title"><span>Reino: </span>{{ kingdom }}</h3>
+                <h3 class="description__title"><span>Filo: </span> {{ phylum }}</h3>
+                <h3 class="description__title"><span>Clase: </span>{{ clas }}</h3>
+                <h3 class="description__title"><span>Orden: </span> {{ order }}</h3>
+                <h3 class="description__title"><span>Orden: </span> {{ order }}</h3>
+                <h3 class="description__title"><span>Familia: </span> {{ family }}</h3>
+                <h3 class="description__title"><span>Genero:</span> {{ genus }}</h3>
 
-              <h3 class="header__titulo">Clase:</h3>
-              <p class="header__texto">{{ clas }}</p>
+              </div>
 
-              <h3 class="header__titulo">Orden:</h3>
-              <p class="header__texto">{{ order }}</p>
+              <div class="list__component">
+                <h3 class="list__title"><span>Otros Nombres:</span></h3>
+                <div class="list__item" v-html="listFormat"></div>
+              </div>
 
-              <h3 class="header__titulo">Orden:</h3>
-              <p class="header__texto">{{ order }}</p>
 
-              <h3 class="header__titulo">
-                <span>Familia:</span> {{ family }}
-              </h3>
+              <div class="list__component">
+                <h3 class="list__title">Sinónimos:</h3>
+                <div class="list__item" v-html="listFormatB"></div>
+              </div>
 
-              <h3 class="header__titulo">Genero:</h3>
-              <p class="header__texto">{{ genus }}</p>
 
-              <h3 class="header__titulo">Otros Nombres:</h3>
-              <div v-html="listFormat"></div>
-              
-              <h3 class="header__titulo">Sinónimos:</h3>
-              <p class="header__texto">{{ synonyms }}</p>
+
             </div>
             <!-- fin header -->
           </div>
         </div>
       </section>
-      <!-- FIN seccion 1 - informacion general -->
+      <!-- FIN section 1 - information general -->
 
-      <!-- seccion 2 - tarjetas de componentes -->
+      <!-- section 2 - tarjetas de componentes -->
       <section class="general">
         <div class="componentes">
           <div class="cards">
             <!-- grid-->
-            <!-- contenido imagen -->
-            <div
-              v-if="specie.specie.code_specie"
-              class="card"
-              :style="{
-                backgroundImage: 'url(' + getFullImageUrl(specie.specie.images[0].img_leafs) + ')',
-              }"
-            >
+            <!-- content imagen -->
+            <div v-if="specie.specie.code_specie" class="card" :style="{
+              backgroundImage: 'url(' + getFullImageUrl(specie.specie.images[0].img_leafs) + ')',
+            }">
               <!-- enlace animacion -->
-              <button
-                class="card__button animacion"
-                @click="
-                  modal.handleClickModalComponent([
-                    getFullImageUrl(specie.specie.images[0].img_leafs),
-                    'Hojas',
-                    leaves,
-                  ])
-                "
-              >
+              <button class="card__button animacion" @click="
+                modal.handleClickModalComponent([
+                  getFullImageUrl(specie.specie.images[0].img_leafs),
+                  'Hojas',
+                  leaves,
+                ])
+                ">
                 <span class="animacion__tex">Ver Hojas</span>
               </button>
             </div>
-            <!-- FIN contenido imagen -->
-            <!-- contenido imagen -->
-            <div
-              v-if="specie.specie.code_specie"
-              class="card"
-              :style="{
-                backgroundImage: 'url(' + getFullImageUrl(specie.specie.images[0].img_flowers) + ')',
-              }"
-            >
+            <!-- FIN content imagen -->
+            <!-- content imagen -->
+            <div v-if="specie.specie.code_specie" class="card" :style="{
+              backgroundImage: 'url(' + getFullImageUrl(specie.specie.images[0].img_flowers) + ')',
+            }">
               <!-- enlace animacion -->
-              <button
-                class="card__button animacion"
-                @click="
-                  modal.handleClickModalComponent([
-                    getFullImageUrl(specie.specie.images[0].img_flowers),
-                    'Flores',
-                    flowers,
-                  ])
-                "
-              >
+              <button class="card__button animacion" @click="
+                modal.handleClickModalComponent([
+                  getFullImageUrl(specie.specie.images[0].img_flowers),
+                  'Flores',
+                  flowers,
+                ])
+                ">
                 <span class="animacion__tex">Ver Flores</span>
               </button>
             </div>
-            <!-- FIN contenido imagen -->
-            <!-- contenido imagen -->
-            <div
-              class="card"
-              v-if="specie.specie.code_specie"
-              :style="{
-                backgroundImage: 'url(' + getFullImageUrl(specie.specie.images[0].img_fruits) + ')',
-              }"
-            >
+            <!-- FIN content imagen -->
+            <!-- content imagen -->
+            <div class="card" v-if="specie.specie.code_specie" :style="{
+              backgroundImage: 'url(' + getFullImageUrl(specie.specie.images[0].img_fruits) + ')',
+            }">
               <!-- enlace animacion -->
-              <button
-                class="card__button animacion"
-                @click="
-                  modal.handleClickModalComponent([
-                    getFullImageUrl(specie.specie.images[0].img_fruits),
-                    'Frutos',
-                    fruits,
-                  ])
-                "
-              >
+              <button class="card__button animacion" @click="
+                modal.handleClickModalComponent([
+                  getFullImageUrl(specie.specie.images[0].img_fruits),
+                  'Frutos',
+                  fruits,
+                ])
+                ">
                 <span class="animacion__tex">Ver Frutos</span>
               </button>
             </div>
-            <!-- FIN contenido imagen -->
+            <!-- FIN content imagen -->
           </div>
         </div>
       </section>
-      <!-- FIN seccion 2 - tarjetas de componentes -->
-      <!-- seccion 3- grafico -->
+      <!-- FIN section 2 - tarjetas de componentes -->
+      <!-- section 3- chart -->
       <!-- <section class="general" v-if="averageStore.valores.length > 0">
         <div class="componentes">
-          <div class="grafico">
-            <div class="grafico__informacion">
-              <h4 class="grafico__titulo">
+          <div class="chart">
+            <div class="chart__information">
+              <h4 class="chart__titulo">
                 Promedios de Altura respecto a
                 <span>{{ averageStore.cantIndividuos }}</span> individuos
                 registrados
               </h4>
-              <p class="grafico__subtitulo">
+              <p class="chart__subtitulo">
                 Total Promedio :
                 <span>{{ averageStore.valores[0] }} metros</span>
               </p>
-              <p class="grafico__subtitulo">
+              <p class="chart__subtitulo">
                 Total Fuste (aprovechable para usos):
                 <span>{{ averageStore.valores[1] }} metros</span>
               </p>
             </div>
 
-            <ChartAverage class="grafico__componente" />
+            <ChartAverage class="chart__componente" />
           </div>
         </div>
       </section> -->
-      <!-- FIN seccion 3- grafico -->
-      <!-- seccion 4 - mapa -->
+      <!-- FIN section 3- chart -->
+      <!-- section 4 - mapa -->
 
       <section class="general">
-        <div class="general__informacion">
-          <h3 class="header__titulo">Usos maderables:</h3>
-          <div v-html="woodUsesFormat"></div>
+        <div class="general__information">
 
-          <h3 class="header__titulo">Usos no maderables:</h3>
-          <div v-html="nonTimberUsersFormat"></div>
+          <article v-if="woodUses" class="section__information">
+            <h3 class="section__information-title"><span>Usos maderables</span></h3>
+            <div class="section__information-text" v-html="woodUsesFormat"></div>
+          </article>
 
-          <h3 class="header__titulo">Floración:</h3>
-          <div v-html="bloomFormat"></div>
+          <article class="section__information">
+            <h3 class="section__information-title"><span>Usos No maderables</span></h3>
+            <div class="section__information-text" v-html="nonTimberUsersFormat"></div>
+          </article>
 
-          <h3 class="header__titulo">Fructificación:</h3>
-          <div v-html="fructificationFormat"></div>
 
-          <h3 class="header__titulo">Ecología:</h3>
-          <div v-html="ecologyFormat"></div>
+          <article class="section__information">
+            <h3 class="section__information-title"><span>Floración</span></h3>
+            <div class="section__information-text" v-html="bloomFormat"></div>
+          </article>
+
+          <article class="section__information">
+            <h3 class="section__information-title"><span>Fructificación</span></h3>
+            <div class="section__information-text" v-html="fructificationFormat"></div>
+          </article>
+
+          <article class="section__information">
+            <h3 class="section__information-title"
+              style="text-align: center; margin-top: 5rem; margin-bottom: 1rem; font-size: 2rem;"><span
+                style="border-bottom: 2px solid var(--primary);">Ecología</span></h3>
+            <div class="section__information-text" v-html="ecologyFormat"></div>
+          </article>
+
         </div>
       </section>
-      
+
 
       <section class="general">
         <div class="componentes">
+
+
+          <article class="section__information section__information-distribution">
+            <h3 class="section__information-title"
+              style="text-align: center; margin-top: 5rem; margin-bottom: 1rem; font-size: 2rem;"><span
+                style="border-bottom: 2px solid var(--primary);">Distribución</span></h3>
+            <div class="section__information-text" v-html="distributionFormat"></div>
+          </article>
+
+
           <div class="mapa">
-            <div class="mapa__informacion">
-              <h4 class="mapa__titulo">Distribución</h4>
-              <div class="subtitle__format" v-html="distributionFormat"></div>
-            </div>
             <div class="jurisdiccion">
               <h4 class="jurisdiccion__titulo">
                 Individuos en la Jurisdicción <span>Corpoamazonia</span>
               </h4>
-              <RenderGeo
-                v-if="filteredData.length > 0"
-                :filteredData="filteredData"
-              />
+              <RenderGeo v-if="filteredData.length > 0" :filteredData="filteredData" />
             </div>
           </div>
         </div>
       </section>
-      <!-- Fin seccion 4 - mapa -->
+      <!-- Fin section 4 - mapa -->
 
       <!-- section calendar flower  -->
 
-      <FlowerCalendar/>
-      <FruitCalendar/>
+      <FlowerCalendar />
+      <FruitCalendar />
       <!-- End section calendar flower  -->
 
     </div>
 
-    <PagesQueries :scientificName="scientificName" :vernacularName="vernacularName"/>
-   <!--  <div class="download__forestSpecies">
+    <PagesQueries :scientificName="scientificName" :vernacularName="vernacularName" />
+    <!--  <div class="download__forestSpecies">
       <span class="text__exportSF">Exportar listado especies forestales:</span>      
       <a @click="descargarPdfs(especie.especie,`Ficha técnica - ${obtenerFecha()}`, 6, 0)" class="button" href="#">
         <font-awesome-icon class="button__pdf" :icon="['fas', 'file-pdf']"/>
@@ -390,17 +386,19 @@ scrollToTop();
 </template>
 
 <style scoped>
-.subtitle__format{
-    font-size: 1rem;
-    line-height: 2;
-    margin-bottom: 3rem;
-    margin-top: 1rem;
+.subtitle__format {
+  font-size: 1rem;
+  line-height: 2;
+  margin-bottom: 3rem;
+  margin-top: 1rem;
 }
+
 /* header */
 .main {
   margin-top: 6rem;
 }
-/* Seccion 1- informacion general */
+
+/* section 1- information general */
 .general {
   width: 95%;
   margin: 0 auto;
@@ -413,16 +411,18 @@ scrollToTop();
     margin-top: 8rem;
   }
 }
+
 @media (min-width: 992px) {
   .main {
-    margin-top: 10rem;
+    margin-top: 12rem;
   }
+
   .general {
     width: 80%;
   }
 }
 
-.informacion {
+.information {
   padding: 0.5rem;
   margin-top: 2rem;
 }
@@ -433,7 +433,7 @@ scrollToTop();
     margin: 0 auto;
   }
 
-  .general__informacion {
+  .general__information {
     width: 50%;
     margin: 0 auto;
   }
@@ -442,18 +442,19 @@ scrollToTop();
 /* header */
 
 .header__heading {
-  font-size: 1rem;
+  font-size: 1.5rem;
   margin-bottom: 0.5rem;
   line-height: 0.9;
 }
+
 @media (min-width: 768px) {
   .header__heading {
-    font-size: 1.5rem;
+    font-size: 2.5rem;
   }
 }
 
 .header__heading--subtitulo {
-  font-size: 1rem;
+  font-size: 1.2rem;
   text-align: center;
   color: var(--gris);
   line-height: 1.2;
@@ -461,25 +462,129 @@ scrollToTop();
 }
 
 .header__titulo {
-  font-size: 0.9rem;
+  font-size: 1.2rem;
   text-align: justify;
   color: var(--gris);
-  margin-top: 1.5rem;
+  font-weight: 400;
 }
 
-.header__texto {
-  font-size: 0.9rem;
-  text-align: justify;
-  margin-top: 1rem;
+.header__titulo span {
+  font-weight: 600;
 }
+
+.general__text {
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
 @media (min-width: 768px) {
-  .header__titulo {
-    font-size: 1rem;
-    margin-top: 2rem;
+  .general__text {
+    font-size: 1.2rem;
+    line-height: 1.6;
   }
 }
 
-/* seccion 2 - componentes */
+.components__description {
+  margin-top: 3rem;
+  display: flex;
+  flex-direction: column;
+  gap: .5rem;
+}
+
+
+
+.components__description .description__title {
+  font-weight: 400;
+  font-size: 1rem;
+  margin: 0;
+}
+
+.components__description .description__title span {
+  font-weight: 600;
+}
+
+@media (min-width: 768px) {
+  .components__description {
+    margin-top: 4rem;
+  }
+
+  .components__description .description__title {
+    font-size: 1.2rem;
+  }
+}
+
+
+
+.list__component {
+  margin-top: 3rem;
+}
+
+.list__component .list__title {
+  margin: 0;
+  font-size: 1.1rem;
+  margin-bottom: .2rem;
+}
+
+.list__component .list__item {
+  font-size: 1.05rem;
+  line-height: 1.6;
+}
+
+@media (min-width: 768px) {
+  .list__component {
+    margin-top: 4rem;
+    margin-bottom: 5rem;
+  }
+
+  .list__component .list__title {
+    font-size: 1.2em;
+    margin-bottom: .2rem;
+  }
+
+  .list__component .list__item {
+    font-size: 1.2rem;
+    line-height: 1.6;
+  }
+}
+
+
+
+.section__information {
+  margin-top: 8rem;
+}
+
+.section__information .section__information-title {
+  margin: 0;
+  text-align: center;
+  font-size: 2rem;
+}
+
+.section__information .section__information-title span {
+  border-bottom: 3px solid var(--primary);
+}
+
+.section__information .section__information-text {
+  margin: 0;
+  line-height: 1.6;
+  font-size: 1.1rem;
+}
+
+.section__information.section__information-distribution {
+  margin-top: 0;
+}
+
+@media (min-width: 768px) {
+
+  .header__titulo {
+    margin-top: 1.5rem;
+  }
+
+  .general__text {
+    line-height: 2;
+  }
+}
+
+/* section 2 - components */
 .componentes {
   width: 95%;
   margin: 0 auto;
@@ -515,11 +620,13 @@ scrollToTop();
     height: 16rem;
   }
 }
+
 @media (min-width: 1700px) {
   .cards {
     gap: 1rem;
     grid-template-columns: repeat(3, 1fr);
   }
+
   .card {
     height: 18rem;
   }
@@ -559,13 +666,16 @@ scrollToTop();
     width: 40%;
   }
 }
+
 .card__button:hover {
   color: var(--blanco);
 }
+
 .animacion__text {
   position: relative;
   z-index: 2;
 }
+
 .card__button span {
   text-align: left;
   z-index: 2;
@@ -578,73 +688,71 @@ scrollToTop();
   z-index: 1;
   transition: 0.3s ease-in-out all;
   top: 0;
-  left: calc(-100% - 75px); /* calc elemnt widht with border-right */
+  left: calc(-100% - 75px);
+  /* calc elemnt widht with border-right */
   border-right: 80px solid transparent;
   border-bottom: 40px solid var(--primary);
   transition: 0.3s ease-in-out all;
 }
+
 .animacion:hover::after {
   left: 0;
 }
 
-/* grafico promedios */
-.grafico {
-  background-color: #fff; /* Color de fondo de la tarjeta */
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra tenue */
+/* chart promedios */
+.chart {
+  background-color: #fff;
+  /* Color de fondo de la tarjeta */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  /* Sombra tenue */
   padding: 20px;
   border-radius: 0.5rem;
 }
 
-.grafico__titulo {
+.chart__titulo {
   text-align: center;
   font-size: 0.9rem;
 }
-.grafico__subtitulo {
+
+.chart__subtitulo {
   font-size: 0.9rem;
 }
-.grafico__subtitulo span {
+
+.chart__subtitulo span {
   font-weight: 500;
 }
+
 @media (min-width: 768px) {
-  .grafico__titulo {
-    font-size: 1.05rem;
+  .chart__titulo {
+    font-size: 1.8rem;
   }
 }
 
 /* mapa */
 .mapa {
-  background-color: #fff; /* Color de fondo de la tarjeta */
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra tenue */
+  background-color: #fff;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   padding: 20px;
   border-radius: 0.5rem;
 }
 
-.mapa__titulo {
-  text-align: center;
-  font-size: 0.9rem;
-  margin: 0;
-}
-.mapa__descripcion {
-  font-size: 0.9rem;
-  text-align: justify;
-  padding: 0.5rem;
-  margin: 0;
+
+.jurisdiccion {
+  margin-top: 5rem;
 }
 
-.mapa__titulo {
-  font-size: 1.05rem;
-}
-.mapa__descripcion {
-  margin-top: 1rem;
-}
-.jurisdiccion {
-  margin-top: 1rem;
-}
 .jurisdiccion__titulo {
   text-align: center;
-  font-size: 0.9rem;
+  font-size: 1.2rem;
 }
+
 .jurisdiccion__titulo span {
   color: var(--primary);
+}
+
+@media (min-width: 768px) {
+  .jurisdiccion__titulo {
+    font-size: 1.8rem;
+  }
 }
 </style>
