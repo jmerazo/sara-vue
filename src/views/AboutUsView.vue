@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, ref, computed } from "vue";
+import { onMounted } from "vue";
 import { usePageContent } from "@/stores/page";
 
 const pageStore = usePageContent();
@@ -8,6 +8,7 @@ onMounted(async () => {
   await pageStore.fetchData();
 });
 
+
 function contenidoCompleto(text) {
   // Reemplaza los saltos de línea con etiquetas <br>
   var fixedText = "";
@@ -15,10 +16,25 @@ function contenidoCompleto(text) {
   /* pageStore.contenidoNosotros[0].content.replace(/\n/g, '<br>'); */
   return fixedText;
 }
+
+
+function parseData(text) {
+  const textFormatted = text.split(';')
+  const ArrayFinanciers = []
+  textFormatted.forEach(item => {
+    const newArray = item.split(':');
+    ArrayFinanciers.push(newArray);
+  });
+
+  return ArrayFinanciers;
+  ;
+}
+
+
 </script>
 
 <template>
-  <div >
+  <div>
     <!-- banner acerca -->
     <section class="banner">
       <div class="banner__info">
@@ -35,18 +51,12 @@ function contenidoCompleto(text) {
     <!-- mision vision y valores -->
     <main class="planificacion">
       <div class="planificacion__grid">
-        <div
-          v-for="seccion in pageStore.informacionUsuario"
-          :key="seccion.title"
-        >
+        <div v-for="seccion in pageStore.informacionUsuario" :key="seccion.title">
           <div class="card" v-if="seccion.titulo === 'Misión'">
-            <div
-              class="front"
-              :style="{
-                backgroundImage:
-                  'url(/img/backgroundCard/background-mision.jpeg)',
-              }"
-            >
+            <div class="front" :style="{
+              backgroundImage:
+                'url(/img/backgroundCard/background-mision.jpeg)',
+            }">
               <div class="front__content">
                 <p class="card__label">{{ seccion.titulo }}</p>
               </div>
@@ -59,13 +69,10 @@ function contenidoCompleto(text) {
           </div>
 
           <div class="card" v-if="seccion.titulo === 'Visión'">
-            <div
-              class="front"
-              :style="{
-                backgroundImage:
-                  'url(/img/backgroundCard/background-vision.webp)',
-              }"
-            >
+            <div class="front" :style="{
+              backgroundImage:
+                'url(/img/backgroundCard/background-vision.webp)',
+            }">
               <div class="front__content">
                 <p class="card__label">{{ seccion.titulo }}</p>
               </div>
@@ -77,13 +84,10 @@ function contenidoCompleto(text) {
             </div>
           </div>
           <div class="card" v-if="seccion.titulo === 'Valores'">
-            <div
-              class="front"
-              :style="{
-                backgroundImage:
-                  'url(/img/backgroundCard/background-valores.jpeg)',
-              }"
-            >
+            <div class="front" :style="{
+              backgroundImage:
+                'url(/img/backgroundCard/background-valores.jpeg)',
+            }">
               <div class="front__content">
                 <p class="card__label">{{ seccion.titulo }}</p>
               </div>
@@ -101,39 +105,42 @@ function contenidoCompleto(text) {
 
     <!-- info proyecto -->
     <section class="proyecto">
-      <div
-        class="proyecto__contenido"
-        v-if="pageStore.contenidoNosotros.length > 0"
-      >
-        <img
-          class="proyecto__img"
-          src="/img/backgroundCard/about_project.png"
-          alt="hojas"
-        />
+      <div class="proyecto__contenido" v-if="pageStore.contenidoNosotros.length > 0">
+        <img class="proyecto__img" src="/img/backgroundCard/about_project.png" alt="hojas" />
         <h1 class="proyecto__titulo">
           {{ pageStore.contenidoNosotros[0].title }}
         </h1>
-        <div
-          class="proyecto__informacion"
-          v-html="contenidoCompleto(pageStore.contenidoNosotros[0].content)"
-        ></div>
+        <div class="proyecto__informacion" v-html="contenidoCompleto(pageStore.contenidoNosotros[0].content)"></div>
       </div>
     </section>
     <!-- Fin info proyecto -->
 
     <!-- financiadores -->
     <section class="financiadores">
-      <div
-        class="financiadores__contenido"
-        v-if="pageStore.contenidoNosotros.length > 0"
-      >
+      <div class="financiadores__contenido" v-if="pageStore.contenidoNosotros.length > 0">
         <h1 class="financiadores__titulo">
           {{ pageStore.contenidoNosotros[7].title }}
         </h1>
-        <div
-          class="financiadores__informacion"
-          v-html="contenidoCompleto(pageStore.contenidoNosotros[7].content)"
-        ></div>
+
+
+        <table class="table__financiers">
+          <thead>
+            <tr>
+              <th>Entidad</th>
+              <th>Valor</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(item, index) in parseData(pageStore.contenidoNosotros[7].content)" :key="index">
+              <td>{{ item[0] }}</td>
+              <td>{{ item[1] }}</td>
+            </tr>
+          </tbody>
+        </table>
+
+
+
+
       </div>
     </section>
     <!-- Fin financiadores -->
@@ -141,8 +148,6 @@ function contenidoCompleto(text) {
 </template>
 
 <style scoped>
-
-
 /* inicio - banner */
 .banner {
   margin-top: 4rem;
@@ -199,9 +204,11 @@ function contenidoCompleto(text) {
     height: 30rem;
     margin-bottom: 5rem;
   }
+
   .banner__logo {
     width: 8rem;
   }
+
   .banner__text {
     font-size: 2.5rem;
     width: 60%;
@@ -215,6 +222,7 @@ function contenidoCompleto(text) {
   position: relative;
   perspective: 1000px;
 }
+
 .front,
 .back {
   position: absolute;
@@ -236,6 +244,7 @@ function contenidoCompleto(text) {
     width: 400px;
     height: 300px;
   }
+
   .front,
   .back {
     position: absolute;
@@ -248,6 +257,7 @@ function contenidoCompleto(text) {
   background-position: center;
   background-size: cover;
 }
+
 .front::before {
   content: "";
   position: absolute;
@@ -330,6 +340,7 @@ function contenidoCompleto(text) {
   .planificacion {
     margin: 0 auto;
   }
+
   .planificacion__grid {
     flex-direction: row;
   }
@@ -339,6 +350,7 @@ function contenidoCompleto(text) {
 .proyecto {
   margin-top: -2rem;
 }
+
 .proyecto__contenido {
   text-align: center;
   margin: 0 auto;
@@ -346,6 +358,7 @@ function contenidoCompleto(text) {
   padding: 2rem;
   box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
 }
+
 .proyecto__img {
   position: absolute;
   right: 0;
@@ -369,6 +382,7 @@ function contenidoCompleto(text) {
   .proyecto {
     margin-top: 5rem;
   }
+
   .proyecto__contenido {
     text-align: justify;
     width: 60%;
@@ -379,6 +393,7 @@ function contenidoCompleto(text) {
 .financiadores {
   margin: 1rem 0 2rem 0;
 }
+
 .financiadores__contenido {
   text-align: center;
   margin: 0 auto;
@@ -386,6 +401,7 @@ function contenidoCompleto(text) {
   padding: 2rem;
   box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
 }
+
 .financiadores__img {
   position: absolute;
   right: 0;
@@ -409,9 +425,59 @@ function contenidoCompleto(text) {
   .financiadores {
     margin-top: 2rem;
   }
+
   .financiadores__contenido {
     text-align: justify;
     width: 60%;
   }
 }
+
+/* styles to financiers table  */
+.table__financiers {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: .6rem;
+}
+
+@media (min-width: 768px) {
+  .table__financiers{
+    font-size: 1.2rem;
+  }
+}
+
+.table__financiers thead tr {
+  display: grid;
+  grid-template-columns: 50% 50%;
+  gap: 1rem;
+  border: 1px solid var(--primary);
+}
+
+.table__financiers thead th {
+  padding: 1rem;
+}
+
+.table__financiers thead th:first-child{
+  border-right: 1px solid var(--primary);
+}
+
+.table__financiers tbody tr {
+  display: grid;
+  grid-template-columns: 50% 50%;
+  align-items: center;
+  gap: 1rem;
+  border: 1px solid var(--primary);
+}
+
+.table__financiers tbody td {
+  padding: 1rem;
+}
+
+.table__financiers tbody td:first-child {
+  border-right: 1px solid var(--primary);
+}
+
+.table__financiers tbody td:last-child {
+  font-weight: 500;
+}
+
 </style>

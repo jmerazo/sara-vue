@@ -214,8 +214,6 @@ scrollToTop();
                 <div class="list__item" v-html="listFormatB"></div>
               </div>
 
-
-
             </div>
             <!-- fin header -->
           </div>
