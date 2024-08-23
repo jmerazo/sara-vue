@@ -339,7 +339,6 @@ scrollToTop();
         </div>
       </section>
 
-
       <section class="general">
         <div class="componentes">
 
@@ -389,6 +388,15 @@ scrollToTop();
   line-height: 2;
   margin-bottom: 3rem;
   margin-top: 1rem;
+}
+
+.subtitle__italic {
+  font-size: 1rem;
+  line-height: 2;
+  margin-bottom: 3rem;
+  margin-top: 1rem;
+  font-style: italic;
+  color: red;
 }
 
 /* header */

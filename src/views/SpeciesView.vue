@@ -84,7 +84,7 @@ const displayedPageRange = computed(() => {
     <!-- fin header vista especie -->
 
     <div class="download__forestSpecies">
-      <span class="text__exportSF">Exportar listado especies forestales:</span>
+      <span class="text__exportSF">Exportar listado de especies forestales en proceso de elaboración de protocolo:</span>
       <a @click="descargarExcel(reportGeneral.datosImport, `Listado_especies_forestales - ${obtenerFecha()}`)" class="button" href="#">
         <font-awesome-icon class="button__excel" :icon="['fas', 'file-excel']"/>
       </a>

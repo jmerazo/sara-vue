@@ -183,16 +183,67 @@ export const ordenarPorFechas = (dataArray, campoFecha) => {
 
 //create styles to text
 
-export function formatSubtitle(text) {
+/* export function formatSubtitle(text) {
   try {
     return text.replace(/<([^>]+)>/g, (match, p1) => {
-      return `<br><br><strong class="subtitle" >${p1}:</strong><br>`;
+        return `<br><br><strong class="subtitle" >${p1}:</strong><br>`;     
     });
   } catch (error) {
     return text
   }
+} */
+  /* export function formatSubtitle(text, applyItalic = true) {
+    try {
+      return text.replace(/<([^>]+)>/g, (match, p1) => {
+        // Verificar si el subtítulo contiene la palabra clave
+        const keyword = "Hábitats y Ecosistemas";
+        const hasKeyword = p1.includes(keyword);
+        
+        // Estilo condicional: si contiene la palabra clave y applyItalic es true, se aplica negrita y cursiva
+        const style = applyItalic && hasKeyword 
+          ? 'font-weight: bold; font-style: italic;' 
+          : 'font-weight: bold;';
+        
+        return `<br><br><strong style="${style}">${p1}</strong><br>`;
+      });
+    } catch (error) {
+      return text;
+    }
+  } */
+export function formatSubtitle(text, applyItalic = true) {
+  try {
+    // Reemplazo para subtítulos y manejo de estilo
+    let formattedText = text.replace(/<([^>]+)>/g, (match, p1) => {
+      const keyword = "Hábitats y Ecosistemas";
+      
+      // Estilo condicional: si contiene la palabra clave y applyItalic es true, se aplica negrita y cursiva
+      let style = 'font-weight: bold;'; // Estilo por defecto
+
+      if (applyItalic && p1.includes(keyword)) {
+        style = 'font-weight: bold; font-style: italic;';
+      }
+      
+      return `<br><br><strong style="${style}">${p1}</strong><br>`;
+    });
+
+    // Reemplazo para agregar salto de línea después de dos puntos solo si no hay una viñeta después
+    formattedText = formattedText.replace(/:\s(?!•)/g, ':<br>');
+
+    // Reemplazo para manejar viñetas que terminan con "..", eliminando un punto y aplicando un doble salto de línea
+    formattedText = formattedText.replace(/•\s(.*?)\.\.\s*/g, '• $1.<br><br>');
+
+    // Reemplazo para separar viñetas (•) y otros textos
+    formattedText = formattedText.replace(/•\s/g, '<br>• ')
+                                 .replace(/(\.\))\s([A-Z])/g, '$1<br>$2')
+                                 .replace(/(<\/strong><br>)\s*\n*(<br>)/g, '</strong><br>');
+
+    return formattedText;
+  } catch (error) {
+    return text;
+  }
 }
 
+      
 export function formatList(text) {
   try {
     text = text.replace(/([^,]+),?/g, (match, p1) => {
