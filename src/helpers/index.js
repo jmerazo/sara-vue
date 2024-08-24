@@ -209,40 +209,52 @@ export const ordenarPorFechas = (dataArray, campoFecha) => {
     } catch (error) {
       return text;
     }
-  } */
+  } */   
+
 export function formatSubtitle(text, applyItalic = true) {
   try {
-    // Reemplazo para subtítulos y manejo de estilo
-    let formattedText = text.replace(/<([^>]+)>/g, (match, p1) => {
-      const keyword = "Hábitats y Ecosistemas";
-      
-      // Estilo condicional: si contiene la palabra clave y applyItalic es true, se aplica negrita y cursiva
-      let style = 'font-weight: bold;'; // Estilo por defecto
-
-      if (applyItalic && p1.includes(keyword)) {
-        style = 'font-weight: bold; font-style: italic;';
-      }
-      
-      return `<br><br><strong style="${style}">${p1}</strong><br>`;
+    // Paso 1: Reemplazo para palabras entre <_palabra_> con estilo específico y eliminación de decoradores
+    let formattedText = text.replace(/<_([^>]+)_>/g, (match, p1) => {
+      // Eliminar los decoradores "_" y aplicar el estilo de cursiva y negrita
+      return `<br><br><strong>${p1}</strong><br>`;
     });
 
-    // Reemplazo para agregar salto de línea después de dos puntos solo si no hay una viñeta después
+    // Paso 2: Reemplazo para subtítulos y manejo de estilo para texto entre <>
+    formattedText = formattedText.replace(/<([^_>]+)>/g, (match, p1) => {
+      return `<br><br><strong>${p1}</strong><br>`;
+    });
+
+    // Paso 3: Reemplazo para agregar salto de línea después de dos puntos solo si no hay una viñeta después
     formattedText = formattedText.replace(/:\s(?!•)/g, ':<br>');
 
-    // Reemplazo para manejar viñetas que terminan con "..", eliminando un punto y aplicando un doble salto de línea
+    // Paso 4: Reemplazo para manejar viñetas que terminan con "..", eliminando un punto y aplicando un doble salto de línea
     formattedText = formattedText.replace(/•\s(.*?)\.\.\s*/g, '• $1.<br><br>');
 
-    // Reemplazo para separar viñetas (•) y otros textos
+    // Paso 5: Reemplazo para separar viñetas (•) y otros textos
     formattedText = formattedText.replace(/•\s/g, '<br>• ')
-                                 .replace(/(\.\))\s([A-Z])/g, '$1<br>$2')
-                                 .replace(/(<\/strong><br>)\s*\n*(<br>)/g, '</strong><br>');
+                                  .replace(/(\.\))\s([A-Z])/g, '$1<br>$2')
+                                  .replace(/(<\/strong><br>)\s*\n*(<br>)/g, '</strong><br>');
+
+    // Paso 6: Aplicar el estilo condicional al último <strong>
+    const keyword = "Hábitats y Ecosistemas";
+    if (applyItalic && formattedText.includes(keyword)) {
+      formattedText = formattedText.replace(
+        new RegExp(`(<strong>)([^<]*${keyword}[^<]*)(</strong>)`),
+        (match, p1, p2, p3) => `<strong style="font-weight: bold; font-style: italic;">${p2}</strong>`
+      );
+    } else {
+      formattedText = formattedText.replace(
+        /(<strong>)([^<]*)(<\/strong>)/g,
+        '<strong style="font-weight: bold;">$2</strong>'
+      );
+    }
 
     return formattedText;
   } catch (error) {
     return text;
   }
 }
-
+    
       
 export function formatList(text) {
   try {
@@ -261,9 +273,26 @@ export function formatList(text) {
 export function formatListB(text) {
   try {
     text = text.replace(/([^;]+);?/g, (match, p1) => {
+      // Verificar si hay citas en el formato [número] y dejarlas sin formato
+      if (/\[\d+\]/.test(p1)) {
+        // Extraer la cita y el texto restante por separado
+        const citationMatch = p1.match(/\[\d+\]/);
+        const citationText = citationMatch ? citationMatch[0] : '';
+        const textWithoutCitation = p1.replace(/\[\d+\]/, '').trim();
+
+        // Aplicar el formato adecuado al texto sin cita
+        let formattedText = formatTextWithoutCitation(textWithoutCitation);
+
+        // Devolver el texto formateado junto con la cita sin formatear
+        return `
+          <svg style="width: 1rem;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M5.99805 3C9.48787 3 12.3812 5.55379 12.9112 8.8945C14.0863 7.72389 15.7076 7 17.498 7H21.998V9.5C21.998 13.0899 19.0879 16 15.498 16H12.998V21H10.998V13H8.99805C5.13205 13 1.99805 9.86599 1.99805 6V3H5.99805ZM19.998 9H17.498C15.0128 9 12.998 11.0147 12.998 13.5V14H15.498C17.9833 14 19.998 11.9853 19.998 9.5V9ZM5.99805 5H3.99805V6C3.99805 8.76142 6.23662 11 8.99805 11H10.998V10C10.998 7.23858 8.75947 5 5.99805 5Z"></path></svg>
+          ${formattedText.trim()} ${citationText}\n<br>`;
+      }
+
+      // Si no hay cita, aplicar el formato normal
       return `
         <svg style="width: 1rem;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M5.99805 3C9.48787 3 12.3812 5.55379 12.9112 8.8945C14.0863 7.72389 15.7076 7 17.498 7H21.998V9.5C21.998 13.0899 19.0879 16 15.498 16H12.998V21H10.998V13H8.99805C5.13205 13 1.99805 9.86599 1.99805 6V3H5.99805ZM19.998 9H17.498C15.0128 9 12.998 11.0147 12.998 13.5V14H15.498C17.9833 14 19.998 11.9853 19.998 9.5V9ZM5.99805 5H3.99805V6C3.99805 8.76142 6.23662 11 8.99805 11H10.998V10C10.998 7.23858 8.75947 5 5.99805 5Z"></path></svg>
-       ${p1.trim()}\n<br>`;
+        ${formatTextWithoutCitation(p1).trim()}\n<br>`;
     });
 
     return text;
@@ -271,3 +300,32 @@ export function formatListB(text) {
     return text;
   }
 }
+
+// Función auxiliar para formatear el texto sin las citas
+function formatTextWithoutCitation(text) {
+  // Formato del texto fuera y dentro de los paréntesis
+  let outsideText = '';
+  let insideText = '';
+
+  // Dividir el texto en partes fuera y dentro de los paréntesis
+  const parts = text.split(/\s*\(([^)]+)\)\s*/);
+
+  // El primer elemento es el texto fuera de los paréntesis
+  outsideText = parts[0].trim();
+
+  // Si existe texto dentro de los paréntesis
+  if (parts.length > 1) {
+    insideText = parts[1].trim();
+  }
+
+  // Formatear el texto fuera de los paréntesis en cursiva y negrita
+  let formattedText = `<strong style="font-weight: bold; font-style: italic;">${outsideText}</strong>`;
+
+  // Si hay texto dentro de los paréntesis, formatearlo en solo negrita
+  if (insideText) {
+    formattedText += ` <strong>${insideText}</strong>`;
+  }
+
+  return formattedText;
+}
+

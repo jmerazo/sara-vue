@@ -481,6 +481,7 @@ scrollToTop();
 .general__text {
   font-size: 1rem;
   line-height: 1.6;
+  text-align: justify;
 }
 
 @media (min-width: 768px) {
@@ -573,6 +574,7 @@ scrollToTop();
   margin: 0;
   line-height: 1.6;
   font-size: 1.1rem;
+  text-align: justify;
 }
 
 .section__information.section__information-distribution {
