@@ -87,3 +87,42 @@ input{
 li{
   list-style-type: none;
 }
+
+/* Personalización de la barra de desplazamiento para navegadores basados en Webkit */
+::-webkit-scrollbar {
+  width: 12px; /* Ancho de la barra de desplazamiento vertical */
+  height: 12px; /* Altura de la barra de desplazamiento horizontal */
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1); /* Fondo ligeramente transparente para el track */
+  backdrop-filter: blur(10px); /* Efecto de desenfoque en navegadores compatibles */
+  -webkit-backdrop-filter: blur(10px); /* Efecto de desenfoque para Safari */
+  border-radius: 10px; /* Bordes redondeados para el track */
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.5); /* Color del thumb ligeramente transparente */
+  border-radius: 10px; /* Bordes redondeados para el thumb */
+  border: 3px solid rgba(255, 255, 255, 0.1); /* Espacio alrededor del thumb para evitar el efecto de recorte */
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(255, 255, 255, 0.8); /* Aumenta la opacidad al pasar el ratón */
+}
+
+::-webkit-scrollbar-button {
+  display: block;
+  background-color: rgba(255, 255, 255, 0.5); /* Color del botón de flecha */
+  border-radius: 50%; /* Bordes redondeados para los botones de flecha */
+}
+
+::-webkit-scrollbar-button:hover {
+  background-color: rgba(255, 255, 255, 0.8); /* Aumenta la opacidad al pasar el ratón */
+}
+
+/* Personalización de la barra de desplazamiento para Firefox */
+body {
+  scrollbar-width: thin; /* Barra de desplazamiento más delgada */
+  scrollbar-color: rgba(255, 255, 255, 0.5) rgba(0, 0, 0, 0); /* Colores personalizados para el thumb y el track */
+}

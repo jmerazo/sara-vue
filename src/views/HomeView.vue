@@ -13,6 +13,94 @@ const pageStore = usePageContent();
 const homeStore = useHomeStore();
 const consulta = useConsultaStore();
 
+const especiesNaturalist = ref([]);
+const currentIndex = ref(0);
+
+// Referencia al contenedor del slider
+const sliderWrapper = ref(null);
+
+const abrirUrl = (url) => {
+      if (url) {
+        window.open(url, '_blank');
+      } else {
+        console.error('URL no válida');
+      }
+    };
+
+// Script para obtener datos de especies y abrir la página de iNaturalist
+const fetchEspeciesData = async () => {
+  try {
+    // URL de la API de GBIF
+    const response = await fetch('https://api.gbif.org/v1/occurrence/search?limit=100&mediaType=StillImage');
+    const data = await response.json();
+    console.log('Datos de GBIF:', data);
+
+    // Verificamos que 'results' exista y sea un array
+    if (data.results && Array.isArray(data.results)) {
+      // Filtrar y mapear datos, excluyendo los desconocidos y aleatorizar el orden
+      especiesNaturalist.value = data.results
+        .filter(item => 
+          item.species && 
+          item.media && 
+          Array.isArray(item.media) && 
+          item.media.length > 0 && 
+          item.media[0].identifier && 
+          item.kingdom === 'Plantae'
+        )
+        .map(item => ({
+          nombre: item.species || 'Especie desconocida',
+          descripcion: item.genericName || 'Sin descripción disponible',
+          imagen: item.media[0]?.identifier || '',
+          taxon_iconico: item.kingdom || 'Desconocido',
+          otrosDatos: item.issue && item.issue.length === 0 ? 'Datos completos' : 'Datos incompletos',
+          url: `https://www.gbif.org/occurrence/${item.key}` // Enlace a la página de la especie en GBIF
+        }))
+        .sort(() => Math.random() - 0.5); // Orden aleatorio
+    } else {
+      console.warn('No se encontraron resultados válidos en la respuesta de la API.');
+      especiesNaturalist.value = []; // Asignar un array vacío si no hay resultados válidos
+    }
+
+  } catch (error) {
+    console.error('Error al obtener datos de especies:', error);
+  }
+};
+
+// Función para abrir la página de iNaturalist
+const openSpeciesPage = (url) => {
+  if (url) {
+    window.open(url, '_blank'); // Abrir en una nueva pestaña
+  }
+};
+
+
+// Función para mostrar el siguiente slide
+const nextSlide = () => {
+  if (currentIndex.value < especiesNaturalist.value.length - 1) {
+    currentIndex.value++;
+  } else {
+    currentIndex.value = 0;
+  }
+  updateSliderPosition();
+};
+
+// Función para mostrar el slide anterior
+const prevSlide = () => {
+  if (currentIndex.value > 0) {
+    currentIndex.value--;
+  } else {
+    currentIndex.value = especiesNaturalist.value.length - 1;
+  }
+  updateSliderPosition();
+};
+
+// Función para actualizar la posición del slider
+const updateSliderPosition = () => {
+  if (sliderWrapper.value) {
+    sliderWrapper.value.style.transform = `translateX(-${currentIndex.value * 100}%)`;
+  }
+};
+
 
 const mostrarTodo = ref(false);
 
@@ -20,6 +108,7 @@ onMounted(async () => {
   /*   await geoStore.fetchData(); */
   await pageStore.fetchData();
   await homeStore.fetchData();
+  fetchEspeciesData();
 });
 
 //top de especies
@@ -34,6 +123,66 @@ function contenidoResumido() {
 <template>
   <div>
     <Header />
+
+    <!-- Sección del Slider con la Fanpage de Facebook -->
+    <section class="contenedor especiesSlider">
+      <div class="especiesSlider__contenedor">
+        <!-- Columna del Slider -->
+        <div class="slider-container">
+          <h3 class="especiesSlider__heading">
+            <svg class="icon__species" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M18 7C18 7.2624 17.9832 7.52086 17.9505 7.77437C19.7712 8.80457 21 10.7588 21 13C21 16.3137 18.3137 19 15 19C14.2987 19 13.6256 18.8797 13 18.6586V22H11V18.4003C10.2499 18.7837 9.40022 19 8.5 19C5.46243 19 3 16.5376 3 13.5C3 12.0474 3.56312 10.7263 4.48297 9.74318C4.87725 10.8232 5.49744 11.7944 6.28576 12.5989L7.71424 11.1991C6.99071 10.4607 6.45705 9.53767 6.1906 8.50688C6.06607 8.02541 6 7.5204 6 7C6 3.68629 8.68629 1 12 1C15.3137 1 18 3.68629 18 7Z"></path>
+            </svg>
+            GBIF - Datos de Especies Forestales
+          </h3>
+          <div class="slider">
+            <div class="slider__wrapper" ref="sliderWrapper">
+              <!-- Los slides se generarán dinámicamente -->
+              <div
+                class="slider__slide"
+                v-for="(especie, index) in especiesNaturalist"
+                :key="index"
+                @click="abrirUrl(especie.url)"
+              >
+                <div class="especie__contenido">
+                  <div class="especie__imagen-container">
+                    <!-- Mostrar imagen si está disponible -->
+                    <img v-if="especie.imagen" :src="especie.imagen" alt="Imagen de {{ especie.nombre }}" class="especie__imagen">
+                  </div>
+                  <div class="especie__texto">
+                    <h4 class="especie__nombre">{{ especie.nombre }}</h4>
+                    <p class="especie__descripcion">{{ especie.descripcion }}</p>
+                    <p class="especie__iconico">Taxón icónico: {{ especie.nombreIconico }}</p>
+                    <p class="especie__otros">{{ especie.otrosDatos }}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- Botones de navegación del slider -->
+            <button @click="prevSlide" class="slider__button slider__button--left">
+              &#10094;
+            </button>
+            <button @click="nextSlide" class="slider__button slider__button--right">
+              &#10095;
+            </button>
+          </div>
+        </div>
+
+         <!-- Columna del widget de Facebook -->
+         <div class="facebook-widget">
+          <iframe
+            src="https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2FCorpoamazonia&tabs=timeline&width=340&height=700&small_header=false&adapt_container_width=true&hide_cover=false&show_facepile=true&appId"
+            width="340"
+            height="400"
+            style="border:none;overflow:hidden"
+            scrolling="no"
+            frameborder="0"
+            allowfullscreen="true"
+            allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
+          ></iframe>
+        </div>
+      </div>
+    </section>
     
     <section
       v-if="pageStore.contenidoNosotros.length > 0"
@@ -101,6 +250,141 @@ function contenidoResumido() {
 </template>
 
 <style scoped>
+/* API GBIF */
+/* Contenedor principal del slider y el widget de Facebook */
+.especiesSlider__contenedor {
+  display: flex; /* Flexbox para alinear en una fila */
+  flex-wrap: wrap; /* Permitir que las columnas se ajusten a múltiples filas si es necesario */
+  width: 100%;
+  max-width: 100%; /* Asegura que no se desborde */
+  align-items: flex-start; /* Alinea el contenido al inicio verticalmente */
+  gap: 1rem; /* Espacio entre el slider y el widget */
+  box-sizing: border-box; /* Incluir padding y border en el ancho total */
+  overflow: hidden; /* Oculta el desbordamiento si ocurre */
+}
+
+/* Estilo para la columna del widget de Facebook */
+.facebook-widget {
+  flex: 0 0 10%; /* La columna de Facebook ocupa el 10% del ancho */
+  max-width: 340px; /* Asegura que el widget no se haga más ancho que esto */
+  box-sizing: border-box; /* Incluir padding y border en el ancho total */
+}
+
+/* Estilo para la columna del slider */
+.slider-container {
+  flex: 1; /* La columna del slider ocupa el restante 90% */
+  min-width: 0; /* Asegura que el contenido no fuerce un desbordamiento horizontal */
+  box-sizing: border-box; /* Incluir padding y border en el ancho total */
+}
+
+/* API GBIF */
+.contenedor.especiesSlider {
+  margin-top: 2.5rem;
+  max-width: 106rem; /* Asegura que coincida con el ancho de las otras secciones */
+  margin: 0 auto; /* Centra el contenedor */
+  padding: 1rem; /* Ajusta el padding si es necesario para el espaciado */
+  box-sizing: border-box; /* Incluir padding y border en el ancho total */
+}
+
+@media (min-width: 920px) {
+  .contenedor.especiesSlider {
+    grid-template-columns: repeat(3, 1fr);
+    margin-top: 5rem;
+    max-width: 60%;
+  }
+}
+
+.icon__species {
+  width: 1rem;
+}
+
+.slider {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+}
+
+.slider__wrapper {
+  display: flex;
+  transition: transform 0.5s ease-in-out;
+}
+
+.slider__slide {
+  flex: 0 0 calc(100% / 3); /* Mostrar 3 slides a la vez */
+  box-sizing: border-box;
+  padding: 0.5rem; /* Reduce el padding para disminuir el espacio entre slides */
+  display: flex;
+  align-items: center;
+  justify-content: center; /* Centra el contenido */
+  cursor: pointer;
+}
+
+.especie__contenido {
+  display: flex;
+  align-items: center;
+  background-color: var(--blanco);
+  border-radius: 8px;
+  text-align: left;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 1rem;
+  max-width: 100%; /* Asegura que el contenido no se extienda más allá de la tarjeta */
+}
+
+.especie__imagen-container {
+  flex-shrink: 0;
+  margin-right: 1rem;
+}
+
+.especie__imagen {
+  width: 150px; /* Ajusta el tamaño de la imagen */
+  height: auto;
+  border-radius: 8px;
+}
+
+.especie__texto {
+  flex-grow: 1;
+}
+
+.especie__nombre {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: var(--primary);
+  margin-bottom: 0.5rem;
+}
+
+.especie__descripcion, .especie__iconico, .especie__otros {
+  font-size: 1rem;
+  color: var(--gris-fuente);
+  margin: 0.5rem 0;
+}
+
+.slider__button {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
+  border: none;
+  font-size: 2rem;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  border-radius: 50%;
+  transition: background-color 0.3s ease;
+  margin: 0 30px; /* Agrega margen para separar los botones de las tarjetas */
+}
+
+.slider__button:hover {
+  background-color: rgba(0, 0, 0, 0.7);
+}
+
+.slider__button--left {
+  left: -30px; /* Mueve el botón a la izquierda fuera de las tarjetas */
+}
+
+.slider__button--right {
+  right: -30px; /* Mueve el botón a la derecha fuera de las tarjetas */
+}
+
 /* información proyecto */
 
 .proyecto {
