@@ -45,6 +45,7 @@ const changeImage = (index) => {
 
 
 <style scoped>
+
 .contenido {
   /* overflow: hidden; */
   position: relative;
@@ -53,8 +54,9 @@ const changeImage = (index) => {
   width: 100%;
 }
 .vista__imagenes {
-  width: 100%;
+  width: 800px;
   height: 496px;
+  margin: 0 auto;
   overflow: hidden;
   border-radius: .6rem;
 }
@@ -62,7 +64,6 @@ const changeImage = (index) => {
   display: flex;
   width: 800px;
   height: 496px;
-
   transition: transform 0.3s ease; /* Transición suave para el deslizamiento */
 }
 .imagen__activa {

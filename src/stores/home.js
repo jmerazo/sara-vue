@@ -35,7 +35,7 @@ export const useHomeStore = defineStore('home', () => {
         
     }
 
-    
+  
 
     return {
         colaboradores,

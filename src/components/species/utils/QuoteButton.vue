@@ -63,6 +63,7 @@ const copyText = () => {
   width: 100%;
   height: 100%;
   background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
 }
 /* Contenido del modal */
 .modal__contenido {
@@ -92,6 +93,7 @@ const copyText = () => {
   cursor: pointer;
   border-radius: 10px;
   transition: color 0.3s ease;
+  
 }
 .modal__close:hover{
   color: var(--primary);
@@ -101,7 +103,7 @@ const copyText = () => {
   position: fixed;
   top: 90%;
   right: 0;
-  z-index: 50;
+  z-index: 10000;
 }
 .citar__boton {
   background-color: var(
