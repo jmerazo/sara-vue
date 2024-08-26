@@ -2,6 +2,7 @@
 import { onBeforeRouteLeave } from "vue-router";
 import { ref, computed } from "vue";
 import { useGlossaryStore } from "@/stores/glossary";
+import ButtonTop from '@/components/shared/ButtonTop.vue';
 
 const glossary = useGlossaryStore();
 
@@ -155,6 +156,7 @@ const displayedPageRange = computed(() => {
     </section>
     <!--fin texto validacion buscador -->
   </div>
+  <ButtonTop/>
 </template>
 
 <style scoped>

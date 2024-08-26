@@ -5,6 +5,7 @@ import { ref, computed } from "vue";
 
 import Family from "@/components/families/Family.vue";
 import ModalFamily from "@/components/families/ModalFamily.vue";
+import ButtonTop from '@/components/shared/ButtonTop.vue';
 
 const familias = useFamiliasStore();
 const valueSerached = ref("");
@@ -134,6 +135,7 @@ const displayedPageRange = computed(() => {
     <!--fin texto validacion buscador -->
 
     <ModalFamily/>
+    <ButtonTop/>
   </div>
 </template>
 

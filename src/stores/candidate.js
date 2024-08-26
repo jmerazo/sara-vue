@@ -465,6 +465,6 @@ export const useGeoCandidateTrees = defineStore("geoCandidateTrees", () => {
     exportToKML,
     validateUrl,
     sourceData,
-    enrichDataWithCoordinates
+    enrichDataWithCoordinates,
   };
 });

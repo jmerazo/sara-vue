@@ -16,6 +16,7 @@ export const useEspeciesStore = defineStore('especies', () => {
     const noResultados = computed(() => species.value.length === 0 );
     const speciesOriginals = ref([]);
     const uniqueNomComunes = ref([]);
+    const sisaList = ref([]);
 
     // variables para paginación
     const currentPage = ref(1); // Página actual
@@ -62,11 +63,24 @@ export const useEspeciesStore = defineStore('especies', () => {
       return species.value.slice(start, end);
     });
 
-    //función para cambiar de página
+    // Función para cambiar de página
     function changePage(page) {
       if (page >= 1 && page <= totalPages.value) {
         currentPage.value = page;
+        window.scrollTo({ top: 0, behavior: 'smooth' }); // Mueve la página al inicio
       }
+    }
+
+    // Función para ir a la primera página
+    function goToFirstPage() {
+      currentPage.value = 1;
+      window.scrollTo({ top: 0, behavior: 'smooth' }); // Mueve la página al inicio
+    }
+
+    // Función para ir a la última página
+    function goToLastPage() {
+      currentPage.value = totalPages.value;
+      window.scrollTo({ top: 0, behavior: 'smooth' }); // Mueve la página al inicio
     }
   
     function selectSpecie(code_specie) {
@@ -140,6 +154,11 @@ export const useEspeciesStore = defineStore('especies', () => {
         console.error('Error al comunicarse con el servidor: ', error);
       }
     };  
+
+    async function loadSpeciesSisa(){
+      const responseSisa = await APIService.getSisa()
+      sisaList.value = responseSisa.data;
+    }
     
     return {
       cargando,
@@ -162,6 +181,9 @@ export const useEspeciesStore = defineStore('especies', () => {
       selectedForestSpecieUpdate,
       updateForestSpecie,
       addForestSpecie,
-     
+      loadSpeciesSisa,
+      sisaList,
+      goToFirstPage,
+      goToLastPage
     };
 });

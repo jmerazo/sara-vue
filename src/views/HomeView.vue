@@ -8,6 +8,7 @@ import { usePageContent } from "@/stores/page";
 import { useConsultaStore } from "@/stores/consulta";
 
 import Header from '@/components/home/Header.vue';
+import ButtonTop from '@/components/shared/ButtonTop.vue'
 
 const pageStore = usePageContent();
 const homeStore = useHomeStore();
@@ -247,6 +248,7 @@ function contenidoResumido() {
       </div>
     </section>
   </div>
+  <ButtonTop/>
 </template>
 
 <style scoped>

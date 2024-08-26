@@ -3,7 +3,7 @@ import { computed, ref } from "vue";
 import { RouterLink } from "vue-router";
 import { useNurseriesStore } from "@/stores/nurseries";
 
-
+import ButtonTop from '@/components/shared/ButtonTop.vue';
 
 const valueSearched = ref("");
 const isSearching = computed(() => valueSearched.value !== "");
@@ -100,6 +100,7 @@ const nurseries = useNurseriesStore();
       </div>
     </main>
   </div>
+  <ButtonTop/>
 </template>
 
 <style scoped>

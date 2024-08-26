@@ -2,6 +2,8 @@
 import { onMounted } from "vue";
 import { usePageContent } from "@/stores/page";
 
+import ButtonTop from '@/components/shared/ButtonTop.vue';
+
 const pageStore = usePageContent();
 
 onMounted(async () => {
@@ -17,7 +19,6 @@ function contenidoCompleto(text) {
   return fixedText;
 }
 
-
 function parseData(text) {
   const textFormatted = text.split(';')
   const ArrayFinanciers = []
@@ -29,8 +30,6 @@ function parseData(text) {
   return ArrayFinanciers;
   ;
 }
-
-
 </script>
 
 <template>
@@ -137,14 +136,11 @@ function parseData(text) {
             </tr>
           </tbody>
         </table>
-
-
-
-
       </div>
     </section>
     <!-- Fin financiadores -->
   </div>
+  <ButtonTop/>
 </template>
 
 <style scoped>

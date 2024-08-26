@@ -34,7 +34,10 @@ const getBackgroundImageStyle = (images) => {
       >
         <div class="card__data">
           <h2 class="card__titulo">{{ specie.vernacularName }}</h2>
-          <span class="card__descripcion">{{ specie.scientificName }} {{ specie.scientificNameAuthorship }}</span>
+          <span class="card__descripcion">
+            <em class="scientific-name">{{ specie.scientificName }}</em>
+            <strong class="authorship-name">{{ specie.scientificNameAuthorship }}</strong>
+          </span>
           <span class="card__descripcion">familia: {{ specie.family }}</span>
           <button
             class="card__boton animacion"
@@ -139,5 +142,15 @@ const getBackgroundImageStyle = (images) => {
 }
 .animacion:hover::after {
   left: 0;
+}
+
+.scientific-name {
+  font-style: italic; /* Cursiva */
+  font-weight: bold;  /* Negrita */
+  margin-right: 0.5rem; /* Añade un margen a la derecha */
+}
+
+.authorship-name {
+  font-weight: bold;  /* Negrita */
 }
 </style>
