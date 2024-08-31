@@ -62,12 +62,14 @@ const charts = useChartsStore()
 .image svg {
   width: 3rem;
   opacity: 0.6;
+  transition: all .3s ease-in-out;
 }
 
 .card__cant {
   font-size: 2rem;
   margin: 0;
   padding: 0;
+ 
 }
 
 .card__box {
@@ -75,6 +77,7 @@ const charts = useChartsStore()
   align-items: center;
   justify-content: space-between;
   padding: 1rem;
+  
 }
 
 .card__data {
@@ -83,12 +86,12 @@ const charts = useChartsStore()
   color: var(--blanco);
   box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
   border-radius: 0.5rem;
-  transition: all .3s ease-in-out;
+  
 }
 
 .card__data:hover .image svg {
   transform: scale(1.2);
-  transition: all .5s ease-in-out;
+  
 }
 
 .card__data--tree {

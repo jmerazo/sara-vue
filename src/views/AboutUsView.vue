@@ -11,14 +11,6 @@ onMounted(async () => {
 });
 
 
-function contenidoCompleto(text) {
-  // Reemplaza los saltos de línea con etiquetas <br>
-  var fixedText = "";
-  fixedText = text.replace(/\n/g, "<br>");
-  /* pageStore.contenidoNosotros[0].content.replace(/\n/g, '<br>'); */
-  return fixedText;
-}
-
 function parseData(text) {
   const textFormatted = text.split(';')
   const ArrayFinanciers = []
@@ -30,6 +22,16 @@ function parseData(text) {
   return ArrayFinanciers;
   ;
 }
+
+function formatText(text) {
+  return text
+    .split('.')
+    .map((sentence) => {
+      // Busca subtítulos entre dos puntos y los pone en negrita
+      return sentence.replace(/([^.]*?:)/g, '<strong>$1</strong><br/><br/>');
+    })
+    .join('.<br/><br/>'); // Une las frases y agrega un salto de línea después de cada punto
+}
 </script>
 
 <template>
@@ -37,7 +39,7 @@ function parseData(text) {
     <!-- banner acerca -->
     <section class="banner">
       <div class="banner__info">
-        <!-- <img class="banner__logo" src="../assets/sara.png" alt="logo" /> -->
+       
 
         <p class="banner__text">
           ACERCA DEL PROYECTO
@@ -81,6 +83,7 @@ function parseData(text) {
               </p>
             </div>
           </div>
+
           <div class="card" v-if="seccion.titulo === 'Valores'">
             <div class="front" :style="{
               backgroundImage:
@@ -108,7 +111,8 @@ function parseData(text) {
         <h1 class="proyecto__titulo">
           {{ pageStore.contenidoNosotros[0].title }}
         </h1>
-        <div class="proyecto__informacion" v-html="contenidoCompleto(pageStore.contenidoNosotros[0].content)"></div>
+        <div v-html="formatText(pageStore.contenidoNosotros[0].content) "></div>
+      
       </div>
     </section>
     <!-- Fin info proyecto -->

@@ -133,7 +133,6 @@ const convertPdfToImages = async (pdfUrl) => {
     }
 
     images.value = await Promise.all(imagePromises);
-    console.log('Imágenes cargadas en orden:', images.value);
   } catch (error) {
     console.error('Error al convertir PDF a imágenes:', error);
   }
@@ -329,33 +328,7 @@ onMounted(async () => {
           </div>
         </div>
       </section>
-      <!-- FIN section 2 - tarjetas de componentes -->
-      <!-- section 3- chart -->
-      <!-- <section class="general" v-if="averageStore.valores.length > 0">
-        <div class="componentes">
-          <div class="chart">
-            <div class="chart__information">
-              <h4 class="chart__titulo">
-                Promedios de Altura respecto a
-                <span>{{ averageStore.cantIndividuos }}</span> individuos
-                registrados
-              </h4>
-              <p class="chart__subtitulo">
-                Total Promedio :
-                <span>{{ averageStore.valores[0] }} metros</span>
-              </p>
-              <p class="chart__subtitulo">
-                Total Fuste (aprovechable para usos):
-                <span>{{ averageStore.valores[1] }} metros</span>
-              </p>
-            </div>
 
-            <ChartAverage class="chart__componente" />
-          </div>
-        </div>
-      </section> -->
-      <!-- FIN section 3- chart -->
-      <!-- section 4 - mapa -->
 
       <section class="general">
         <div class="general__information">
@@ -420,21 +393,33 @@ onMounted(async () => {
       <FlowerCalendar />
       <FruitCalendar />
       <!-- End section calendar flower  -->
-
+      <div class="card__doc-container">
+        <CardDoc :fileDoc="expectedData" />
+      </div>
     </div>
 
     <PagesQueries :scientificName="scientificName" :vernacularName="vernacularName" />
-    <!--  <div class="download__forestSpecies">
-      <span class="text__exportSF">Exportar listado especies forestales:</span>      
-      <a @click="descargarPdfs(especie.especie,`Ficha técnica - ${obtenerFecha()}`, 6, 0)" class="button" href="#">
-        <font-awesome-icon class="button__pdf" :icon="['fas', 'file-pdf']"/>
-      </a>
-    </div> -->
+    <ModalSpecieComponent />
   </div>
-  <ModalSpecieComponent />
+
 </template>
 
 <style scoped>
+.card__doc-container {
+  padding: 1rem;
+  margin: 0 auto;
+  margin-top: 3rem;
+}
+
+@media (min-width: 768px) {
+  .card__doc-container {
+    padding: 0;
+    width: 30%;
+    margin: 0 auto;
+    margin-top: 5rem;
+  }
+}
+
 .subtitle__format {
   font-size: 1rem;
   line-height: 2;
@@ -448,7 +433,6 @@ onMounted(async () => {
   margin-bottom: 3rem;
   margin-top: 1rem;
   font-style: italic;
-  color: red;
 }
 
 /* header */
@@ -613,7 +597,7 @@ onMounted(async () => {
 }
 
 .section__information .section__information-title {
-  margin: 0;
+  margin: 0 0 2rem 0;
   text-align: center;
   font-size: 2rem;
 }

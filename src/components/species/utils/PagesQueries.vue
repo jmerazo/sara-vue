@@ -2,64 +2,117 @@
 import { defineProps } from 'vue';
 
 const props = defineProps({
-  scientificName: String,
-  vernacularName: String
+  scientificName: {
+    type: String,
+    required: true,
+  },
+  vernacularName: {
+    type: String,
+    required: true,
+  },
 });
+
+const relatedLinks = [
+  {
+    url: 'https://catalogoplantasdecolombia.unal.edu.co/es/',
+    img: '/logos/cat_plantas_liquines_col.png',
+    title: 'Catálogo de plantas y liquenes de Colombia'
+  },
+  {
+    url: `https://tropicos.org/name/Search?name=${props.scientificName}`,
+    img: '/logos/tropicos.png',
+    title: 'Trópicos'
+  },
+  {
+    url: `https://catalogofloravalleaburra.eia.edu.co/search?key_search=${props.scientificName}`,
+    img: '/logos/aburra.svg',
+    title: 'Catálogo virtual de flora del Valle de Aburrá'
+  },
+  {
+    url: `https://powo.science.kew.org/results?q=${props.scientificName}`,
+    img: '/logos/powo.png',
+    title: 'Plants of the World Online'
+  },
+  {
+    url: `https://www.sinchi.org.co`,
+    img: '/logos/sinchi.png',
+    title: 'SINCHI'
+  },
+  {
+    url: `https://www.gbif.org/es/search?q=${props.scientificName}`,
+    img: '/logos/gbif.png',
+    title: 'GBIF'
+  },
+  {
+    url: `https://catalogo.biodiversidad.co/search/basic?q=${props.scientificName}`,
+    img: '/logos/SIB.png',
+    title: 'SIB Colombia'
+  }
+];
 </script>
 
 <template>
-  <div class="relacionados">
-    <h2 class="relacionados__titulo">Páginas de consultas relacionadas</h2>
-    
-    <div class="relacionados__flex">
-      <a :href="'https://catalogoplantasdecolombia.unal.edu.co/es/'" target="_blank" class="relacionados__enlace">
-        <img src="/logos/cat_plantas_liquines_col.png" title="Catálogo de plantas y liquenes de Colombia" />
-      </a>
-      <a :href="`https://tropicos.org/name/Search?name=${props.scientificName}`" target="_blank" class="relacionados__enlace">
-        <img src="/logos/tropicos.png" title="Trópicos" />
-      </a>
-      <a :href="`https://catalogofloravalleaburra.eia.edu.co/search?key_search=${props.scientificName}`" target="_blank" class="relacionados__enlace">
-        <img src="/logos/aburra.svg" title="Catálogo virtual de flora del Valle de Aburrá" />
-      </a>
-      <a :href="`https://powo.science.kew.org/results?q=${props.scientificName}`" target="_blank" class="relacionados__enlace">
-        <img src="/logos/powo.png" title="Plants of the World Online" />
-      </a>
-      <a href="https://herbario.sinchi.org.co/herbario_v/dashboard/" target="_blank" class="relacionados__enlace">        
-        <img src="/logos/sinchi.png" title="SINCHI" />
-      </a>
-      <a :href="`https://www.gbif.org/es/search?q=${props.scientificName}`" target="_blank" class="relacionados__enlace">
-        <img src="/logos/gbif.png" title="GBIF" />
-      </a>
-      <a :href="`https://catalogo.biodiversidad.co/search/basic?q=${props.scientificName}`" target="_blank" class="relacionados__enlace">
-        <img src="/logos/SIB.png" title="SIB Colombia" />
-      </a>      
+  <div class="related__page">
+
+    <h2>Consultar la especie <span style="border-bottom: 3px solid var(--primary);">{{ props.vernacularName }}</span> en:</h2>
+    <div class="related__page-content">
+
+      <div v-for="(link, index) in relatedLinks" :key="index" class="related__page-link">
+        <a :href="link.url" target="_blank">
+          <img :src="link.img" :title="link.title" />
+        </a>
+      </div>
     </div>
   </div>
 </template>
 
 <style scoped>
-.relacionados{
-  margin: 3rem 0 2rem 0;
-}
-.relacionados__titulo{
-  text-align: center;
-  font-size: 1rem;
-}
-.relacionados__flex{
+.related__page {
+  margin-top: 10rem;
+  padding-bottom: 5rem;
+  width: 100%;
   display: flex;
-  justify-content: center;
-  align-content: center;
+  flex-direction: column;
   align-items: center;
-  gap: 2rem;
+  justify-content: center;
+  background-image: linear-gradient(to top, var(--primary-backgound), var(--blanco));
 }
 
-.relacionados__enlace{
-  width: 3rem;
-  padding: 0;
-  margin: 0;
-  transition: transform .3s ease-in-out;
+.related__page h2 {
+  color: var(--gris);
+  margin-bottom: 3rem;
+  text-align: center;
 }
-.relacionados__enlace:hover{
+
+.related__page .related__page-content {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  align-items: center;
+  justify-content: center;
+}
+
+@media (min-width: 768px) {
+  .related__page .related__page-content {
+    display: flex;
+    flex-direction: row;
+    gap: 2rem;
+  }
+}
+
+.related__page-content .related__page-link a {
+  display: block;
+  transition: all .2s ease-in-out;
+
+}
+
+.related__page-content .related__page-link:hover a {
   transform: scale(1.2);
+}
+
+
+
+.related__page-content .related__page-link img {
+  width: 5rem;
 }
 </style>
