@@ -7,7 +7,8 @@ const chartStore = useChartsStore();
 const porcentaje = (cantidad) => {
   const valor = cantidad;
   const total = chartStore.totalDepartamentos;
-  return Math.ceil((valor / total) * 100);
+  
+  return parseFloat(((valor / total) * 100).toFixed(1));
 };
 
 const colores = ref([
@@ -23,15 +24,17 @@ const colores = ref([
 <template>
   <div class="contenedor">
     <h1 class="titulo__graficos">
-      Monitoreos:
+      Total Monitoreos:
       <span class="grafico__cantidad">{{ chartStore.separarMiles(chartStore.totalDepartamentos) }}</span>
     </h1>
+
     <div class="graficos">
+
       <div v-for="(departamento, index) in chartStore.departamentos" :key="departamento">
         <div :class="{
-        grafico: true,
-        menor: porcentaje(chartStore.CantidadDepartamento[index]) < 50,
-      }" :style="{
+          grafico: true,
+          menor: porcentaje(chartStore.CantidadDepartamento[index]) < 50,
+        }" :style="{
         '--i': porcentaje(chartStore.CantidadDepartamento[index]),
         '--clr': colores[index],
       }">
@@ -42,12 +45,13 @@ const colores = ref([
             {{ departamento }}
             <span class="grafico__cantidad" id="grafico__cantidad">
               {{
-        chartStore.separarMiles(chartStore.CantidadDepartamento[index])
-      }}
+                chartStore.separarMiles(chartStore.CantidadDepartamento[index])
+              }}
             </span>
           </h4>
         </div>
       </div>
+
     </div>
   </div>
 </template>
@@ -87,7 +91,7 @@ const colores = ref([
     flex-direction: row;
     gap: 2rem;
     margin-bottom: 3rem;
-    
+
   }
 }
 

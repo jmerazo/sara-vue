@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, computed } from "vue";
 import { useRouter } from "vue-router";
 import { getFullImageUrl } from "@/helpers/";
 import { obtenerFecha, formatSubtitle, formatList, formatListB } from "@/helpers";
@@ -22,7 +22,7 @@ import ImageSlider from "@/components/species/utils/ImageSlider.vue";
 import ModalSpecieComponent from "@/components/species/modals/ModalSpecieComponent.vue";
 import FlowerCalendar from "@/components/species/calendars/FlowerCalendar.vue";
 import FruitCalendar from "@/components/species/calendars/FruitCalendar.vue";
-
+import CardDoc from "@/components/species/utils/CardDoc.vue";
 
 const router = useRouter();
 
@@ -163,6 +163,14 @@ const scrollToTop = () => {
   window.scrollTo(0, 0);
 };
 scrollToTop();
+
+
+const expectedData = {
+  title: `Protocolos de la especie ${vernacularName}`,
+  file: '/path/backendURL',
+  name: 'nameFileToDownload.pdf',
+  type: 'pdf'
+}
 </script>
 
 <template>
@@ -277,33 +285,7 @@ scrollToTop();
           </div>
         </div>
       </section>
-      <!-- FIN section 2 - tarjetas de componentes -->
-      <!-- section 3- chart -->
-      <!-- <section class="general" v-if="averageStore.valores.length > 0">
-        <div class="componentes">
-          <div class="chart">
-            <div class="chart__information">
-              <h4 class="chart__titulo">
-                Promedios de Altura respecto a
-                <span>{{ averageStore.cantIndividuos }}</span> individuos
-                registrados
-              </h4>
-              <p class="chart__subtitulo">
-                Total Promedio :
-                <span>{{ averageStore.valores[0] }} metros</span>
-              </p>
-              <p class="chart__subtitulo">
-                Total Fuste (aprovechable para usos):
-                <span>{{ averageStore.valores[1] }} metros</span>
-              </p>
-            </div>
 
-            <ChartAverage class="chart__componente" />
-          </div>
-        </div>
-      </section> -->
-      <!-- FIN section 3- chart -->
-      <!-- section 4 - mapa -->
 
       <section class="general">
         <div class="general__information">
@@ -368,21 +350,33 @@ scrollToTop();
       <FlowerCalendar />
       <FruitCalendar />
       <!-- End section calendar flower  -->
-
+      <div class="card__doc-container">
+        <CardDoc :fileDoc="expectedData" />
+      </div>
     </div>
 
     <PagesQueries :scientificName="scientificName" :vernacularName="vernacularName" />
-    <!--  <div class="download__forestSpecies">
-      <span class="text__exportSF">Exportar listado especies forestales:</span>      
-      <a @click="descargarPdfs(especie.especie,`Ficha técnica - ${obtenerFecha()}`, 6, 0)" class="button" href="#">
-        <font-awesome-icon class="button__pdf" :icon="['fas', 'file-pdf']"/>
-      </a>
-    </div> -->
+    <ModalSpecieComponent />
   </div>
-  <ModalSpecieComponent />
+
 </template>
 
 <style scoped>
+.card__doc-container {
+  padding: 1rem;
+  margin: 0 auto;
+  margin-top: 3rem;
+}
+
+@media (min-width: 768px) {
+  .card__doc-container {
+    padding: 0;
+    width: 30%;
+    margin: 0 auto;
+    margin-top: 5rem;
+  }
+}
+
 .subtitle__format {
   font-size: 1rem;
   line-height: 2;
@@ -396,7 +390,6 @@ scrollToTop();
   margin-bottom: 3rem;
   margin-top: 1rem;
   font-style: italic;
-  color: red;
 }
 
 /* header */
@@ -561,7 +554,7 @@ scrollToTop();
 }
 
 .section__information .section__information-title {
-  margin: 0;
+  margin: 0 0 2rem 0;
   text-align: center;
   font-size: 2rem;
 }

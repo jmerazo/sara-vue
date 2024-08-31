@@ -84,6 +84,7 @@ function parseData(text) {
               {{ specie.family }}
             </p>
             <h3 class="modal__titulo modal__titulo-otros">Otros nombres:</h3>
+
             <div class="other__names">
               <div v-for="(item, index) in parseData(specie.otherNames)" :key="index">
                 <p>
@@ -393,26 +394,19 @@ function parseData(text) {
 .modal-texto--container {
   overflow: hidden;
   display: -webkit-box;
-  -webkit-line-clamp: 7;
   /* Número de líneas a mostrar */
   -webkit-box-orient: vertical;
   text-overflow: ellipsis;
   /* Agrega los puntos suspensivos */
 }
 
-.modal-texto--cortar {
-  overflow: hidden;
-  display: -webkit-box;
-  -webkit-line-clamp: 5;
-  /* Número de líneas a mostrar */
-  -webkit-box-orient: vertical;
-  text-overflow: ellipsis;
-  /* Agrega los puntos suspensivos */
-}
+
 
 .modal__info .other__names {
+  height: 160px;
   display: grid;
   gap: .5rem;
+  overflow-y: auto;
 }
 
 .modal__info .other__names div p {

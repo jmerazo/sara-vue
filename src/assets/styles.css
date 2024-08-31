@@ -15,7 +15,7 @@ font-family: 'Roboto', sans-serif;
   --secondary-hover:#0c141a;
   --primary-backgound:#eaf2ed;
   --gris-claro:#f1f7ef;
-  --gris:#0f1a22;
+  --gris:#1a2a35;
   --negro: #080E06;
   --blanco: #FFF;
   --fuente-principal: 'Montserrat', sans-serif;
@@ -88,7 +88,7 @@ li{
   list-style-type: none;
 }
 
-/* Personalización de la barra de desplazamiento para navegadores basados en Webkit */
+Personalización de la barra de desplazamiento para navegadores basados en Webkit
 ::-webkit-scrollbar {
   width: 12px; /* Ancho de la barra de desplazamiento vertical */
   height: 12px; /* Altura de la barra de desplazamiento horizontal */
@@ -123,6 +123,6 @@ li{
 
 /* Personalización de la barra de desplazamiento para Firefox */
 body {
-  scrollbar-width: thin; /* Barra de desplazamiento más delgada */
-  scrollbar-color: rgba(255, 255, 255, 0.5) rgba(0, 0, 0, 0); /* Colores personalizados para el thumb y el track */
+  scrollbar-width: thin; 
+  /* scrollbar-color: rgba(255, 255, 255, 0.5) rgba(0, 0, 0, 0);  */
 }

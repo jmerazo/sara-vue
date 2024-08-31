@@ -148,7 +148,8 @@ onMounted(() => {
   box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.4);
   padding: 1rem;
   margin-bottom: 2rem;
-  font-weight: 900;
+  font-weight: 500;
+  margin-bottom: 1rem;
 }
 
 .mapa__territorial {
@@ -162,6 +163,9 @@ onMounted(() => {
 }
 
 @media (min-width: 1200px) {
+  .texto__bienvenida{
+    margin-bottom: 5rem;
+  }
   .contenido__grid {
     display: grid;
     grid-template-columns: 2fr 1fr;

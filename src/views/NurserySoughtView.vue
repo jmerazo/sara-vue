@@ -15,6 +15,9 @@ const handleSubmit = () => {
   console.log("Message:", message.value);
   // Aquí puedes agregar la lógica para enviar el formulario.
 };
+
+
+
 </script>
 
 <template>
