@@ -35,7 +35,13 @@ function changeBackgroundImage(direction) {
 
 <template>
   <header class="header">
-    <!-- Imagenes con fade-in/out -->
+    <!-- Texto sobre las imágenes -->
+    <div class="header__text">
+      Sistema de información de Semillas y Árboles de la
+      Región sur de la Amazonía.
+    </div>
+
+    <!-- Imágenes con fade-in/out -->
     <div
       v-for="(image, index) in images"
       :key="index"
@@ -70,6 +76,19 @@ function changeBackgroundImage(direction) {
   width: 100%;
   top: 0;
   overflow: hidden;
+}
+
+.header__text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  font-size: 2.5rem;
+  font-weight: bold;
+  text-align: center;
+  z-index: 3; /* Asegura que esté sobre las imágenes */
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7); /* Sombra para mayor legibilidad */
 }
 
 .header__image {
@@ -151,6 +170,10 @@ function changeBackgroundImage(direction) {
 @media (min-width: 1900px) {
   .header {
     height: 850px;
+  }
+
+  .header__text {
+    font-size: 3rem;
   }
 }
 </style>

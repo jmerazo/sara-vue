@@ -328,4 +328,3 @@ function formatTextWithoutCitation(text) {
 
   return formattedText;
 }
-

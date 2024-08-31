@@ -125,6 +125,59 @@ function contenidoResumido() {
   <div>
     <Header />
 
+    <section class="contenedor planificacion">
+      <div class="planificacion__grid">
+        <div v-for="seccion in pageStore.informacionUsuario" :key="seccion.title">
+          <div class="card" v-if="seccion.titulo === 'Misión'">
+            <div class="front" :style="{
+              backgroundImage:
+                'url(/img/backgroundCard/background-mision.jpeg)',
+            }">
+              <div class="front__content">
+                <p class="card__label">{{ seccion.titulo }}</p>
+              </div>
+            </div>
+            <div class="back">
+              <p class="card__text">
+                {{ seccion.descripcion }}
+              </p>
+            </div>
+          </div>
+
+          <div class="card" v-if="seccion.titulo === 'Visión'">
+            <div class="front" :style="{
+              backgroundImage:
+                'url(/img/backgroundCard/background-vision.webp)',
+            }">
+              <div class="front__content">
+                <p class="card__label">{{ seccion.titulo }}</p>
+              </div>
+            </div>
+            <div class="back">
+              <p class="card__text">
+                {{ seccion.descripcion }}
+              </p>
+            </div>
+          </div>
+          <div class="card" v-if="seccion.titulo === 'Valores'">
+            <div class="front" :style="{
+              backgroundImage:
+                'url(/img/backgroundCard/background-valores.jpeg)',
+            }">
+              <div class="front__content">
+                <p class="card__label">{{ seccion.titulo }}</p>
+              </div>
+            </div>
+            <div class="back">
+              <p class="card__text">
+                {{ seccion.descripcion }}
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- Sección del Slider con la Fanpage de Facebook -->
     <section class="contenedor especiesSlider">
       <div class="especiesSlider__contenedor">
@@ -174,7 +227,7 @@ function contenidoResumido() {
           <iframe
             src="https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2FCorpoamazonia&tabs=timeline&width=340&height=700&small_header=false&adapt_container_width=true&hide_cover=false&show_facepile=true&appId"
             width="340"
-            height="400"
+            height="500"
             style="border:none;overflow:hidden"
             scrolling="no"
             frameborder="0"
@@ -182,21 +235,6 @@ function contenidoResumido() {
             allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
           ></iframe>
         </div>
-      </div>
-    </section>
-    
-    <section
-      v-if="pageStore.contenidoNosotros.length > 0"
-      class="contenedor proyecto"
-    >
-      <div class="proyecto__contenido">
-        <h2 class="proyecto__heading">
-          {{ pageStore.contenidoNosotros[0].title }}
-        </h2>
-        <p class="proyecto__texto" v-if="!mostrarTodo">
-          {{ contenidoResumido() }}
-          <a><RouterLink :to="{ name: 'aboutus' }">Ver más...</RouterLink></a>
-        </p>
       </div>
     </section>
 
@@ -263,6 +301,7 @@ function contenidoResumido() {
   gap: 1rem; /* Espacio entre el slider y el widget */
   box-sizing: border-box; /* Incluir padding y border en el ancho total */
   overflow: hidden; /* Oculta el desbordamiento si ocurre */
+  max-height: 498px;
 }
 
 /* Estilo para la columna del widget de Facebook */
@@ -279,9 +318,12 @@ function contenidoResumido() {
   box-sizing: border-box; /* Incluir padding y border en el ancho total */
 }
 
-/* API GBIF */
+.especiesSlider__heading {
+  text-align: center;
+}
+
 .contenedor.especiesSlider {
-  margin-top: 2.5rem;
+  margin-top: 3rem;
   max-width: 106rem; /* Asegura que coincida con el ancho de las otras secciones */
   margin: 0 auto; /* Centra el contenedor */
   padding: 1rem; /* Ajusta el padding si es necesario para el espaciado */
@@ -291,7 +333,7 @@ function contenidoResumido() {
 @media (min-width: 920px) {
   .contenedor.especiesSlider {
     grid-template-columns: repeat(3, 1fr);
-    margin-top: 5rem;
+    margin-top: 3rem;
     max-width: 60%;
   }
 }
@@ -314,27 +356,29 @@ function contenidoResumido() {
 .slider__slide {
   flex: 0 0 calc(100% / 3); /* Mostrar 3 slides a la vez */
   box-sizing: border-box;
-  padding: 0.5rem; /* Reduce el padding para disminuir el espacio entre slides */
+  padding: 0.5rem;
   display: flex;
-  align-items: center;
-  justify-content: center; /* Centra el contenido */
+  align-items: stretch; /* Asegura que las tarjetas se estiren a la misma altura */
+  justify-content: center;
   cursor: pointer;
 }
 
 .especie__contenido {
   display: flex;
+  flex-direction: column;
   align-items: center;
   background-color: var(--blanco);
   border-radius: 8px;
-  text-align: left;
+  text-align: center;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   padding: 1rem;
-  max-width: 100%; /* Asegura que el contenido no se extienda más allá de la tarjeta */
+  max-width: 100%;
+  height: 82%; /* Asegura que el contenedor se expanda completamente */
+  box-sizing: border-box; /* Incluye padding y border en el cálculo del tamaño */
 }
 
 .especie__imagen-container {
-  flex-shrink: 0;
-  margin-right: 1rem;
+  margin-bottom: 1rem; /* Espacio debajo de la imagen */
 }
 
 .especie__imagen {
@@ -344,7 +388,7 @@ function contenidoResumido() {
 }
 
 .especie__texto {
-  flex-grow: 1;
+  width: 100%; /* Asegura que el texto se expanda a todo el ancho del contenedor */
 }
 
 .especie__nombre {
@@ -372,7 +416,7 @@ function contenidoResumido() {
   cursor: pointer;
   border-radius: 50%;
   transition: background-color 0.3s ease;
-  margin: 0 30px; /* Agrega margen para separar los botones de las tarjetas */
+  margin: 0 30px;
 }
 
 .slider__button:hover {
@@ -380,75 +424,16 @@ function contenidoResumido() {
 }
 
 .slider__button--left {
-  left: -30px; /* Mueve el botón a la izquierda fuera de las tarjetas */
+  left: -30px;
 }
 
 .slider__button--right {
-  right: -30px; /* Mueve el botón a la derecha fuera de las tarjetas */
-}
-
-/* información proyecto */
-
-.proyecto {
-  display: grid;
-  grid-template-rows: repeat(2, 1fr);
-  background-image: url("/img/pi2.jpg");
-  background-repeat: no-repeat;
-  background-position: bottom center;
-  margin-top: 3rem;
-  border-radius: 10px;
-}
-
-@media (min-width: 920px) {
-  .proyecto {
-    grid-template-columns: repeat(3, 1fr);
-    margin-top: 5rem;
-    max-width: 60%;
-  }
-}
-
-.proyecto__contenido {
-  background-color: var(--blanco);
-  padding: 1rem;
-}
-
-@media (min-width: 920px) {
-  .proyecto__contenido {
-    grid-column: 2/4;
-  }
-}
-
-.proyecto__heading {
-  margin-bottom: 1rem;
-  text-align: center;
-  font-size: 1rem;
-  margin-top: 0;
-}
-
-@media (min-width: 768px) {
-  .proyecto__heading {
-    font-size: 1.1rem;
-  }
-}
-.proyecto__texto {
-  font-size: 0.7rem;
-}
-
-@media (min-width: 920px) {
-  .proyecto__heading {
-    text-align: left;
-    font-size: 1.2rem;
-  }
-
-  .proyecto__texto {
-    margin-bottom: 1rem;
-    font-size: 1rem;
-  }
+  right: -30px;
 }
 
 /* top especies **********************************/
 .topEspecies {
-  margin-top: 8rem;
+  margin-top: 3rem;
 }
 .topEspecies__heading {
   font-size: 1rem;
@@ -609,6 +594,137 @@ function contenidoResumido() {
   .colaborador {
     width: 5rem;
   }
+}
+
+/* MISION Y VISION */
+/* mision vision y valores */
+.planificacion__grid {
+  margin: 0 auto;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 3rem;
+}
+
+@media (min-width: 1440px) {
+  .planificacion {
+    margin: 0 auto;
+  }
+
+  .planificacion__grid {
+    flex-direction: row;
+  }
+}
+
+.card {
+  width: 300px;
+  height: 200px;
+  position: relative;
+  perspective: 1000px;
+}
+
+.front,
+.back {
+  position: absolute;
+  width: 300px;
+  height: 200px;
+  backface-visibility: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+  box-sizing: border-box;
+  transition: transform 0.9s;
+  border-radius: 1rem;
+  box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+@media (min-width: 768px) {
+  .card {
+    width: 400px;
+    height: 300px;
+  }
+
+  .front,
+  .back {
+    position: absolute;
+    width: 400px;
+    height: 300px;
+  }
+}
+
+.front {
+  background-position: center;
+  background-size: cover;
+}
+
+.front::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  z-index: 1;
+  border-radius: 1rem;
+}
+
+.back {
+  background-color: rgb(255, 255, 255);
+  transform: rotateY(180deg);
+}
+
+.card:hover .front {
+  transform: rotateY(-180deg);
+}
+
+.card:hover .back {
+  transform: rotateY(0deg);
+}
+
+.card .front {
+  transform: rotateY(0deg);
+}
+
+.card .back {
+  transform: rotateY(180deg);
+}
+
+.card__label {
+  padding: 0;
+  margin: 0;
+  text-align: center;
+  font-size: 1.7rem;
+  font-weight: 700;
+  color: white;
+  z-index: 100;
+}
+
+.card__text {
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+@media (min-width: 768px) {
+  .card__text {
+    font-size: 1rem;
+    text-align: center;
+  }
+}
+
+.front__content {
+  border-radius: 50%;
+  width: 8rem;
+  height: 8rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid var(--blanco);
+  z-index: 100;
 }
 </style>
 

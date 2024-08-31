@@ -1,17 +1,17 @@
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, nextTick } from "vue";
 import { useRouter } from "vue-router";
 import { getFullImageUrl } from "@/helpers/";
+import mammoth from "mammoth"; // Importa la librería Mammoth
 import { obtenerFecha, formatSubtitle, formatList, formatListB } from "@/helpers";
 import { descargarPdfs } from "@/helpers/exportDataSheet";
-import APIService from "@/services/APIService";
+import { getDocument, GlobalWorkerOptions } from 'pdfjs-dist';
 
 //store
 import { useConsultaStore } from "@/stores/consulta";
 import { useGeoCandidateTrees } from "@/stores/candidate";
 import { useAverageSpecie } from "@/stores/average";
 import { useModalStore } from "@/stores/modal";
-
 
 //components
 import QuoteButton from "@/components/species/utils/QuoteButton.vue";
@@ -23,6 +23,8 @@ import ModalSpecieComponent from "@/components/species/modals/ModalSpecieCompone
 import FlowerCalendar from "@/components/species/calendars/FlowerCalendar.vue";
 import FruitCalendar from "@/components/species/calendars/FruitCalendar.vue";
 
+// Configurar el worker de PDF.js con la versión correcta
+GlobalWorkerOptions.workerSrc = 'https://unpkg.com/pdfjs-dist@2.16.105/build/pdf.worker.min.js';
 
 const router = useRouter();
 
@@ -31,7 +33,11 @@ const geoStore = useGeoCandidateTrees();
 const averageStore = useAverageSpecie();
 const modal = useModalStore();
 
-console.log('data sought: ', specie.specie)
+const isLoading = ref(true); // Indicador de carga
+const images = ref([]);
+const currentPage = ref(0);
+const pageWidth = ref(400); // Ancho de una sola página
+const pageHeight = ref(600);
 
 const dateNow = new Date();
 const year = dateNow.getFullYear();
@@ -45,73 +51,12 @@ const filteredData = ref([]);
 
 const averageAltitude = ref(0);
 
-async function downloadDataSpecie() {
-  try {
-    const response = await APIService.getDownloadDataSpecie(code);
-    console.log("url data", response.headers);
-
-    if (response.headers["content-type"] === "application/pdf") {
-      const blob = new Blob([response.data], { type: "application/pdf" });
-      const url = window.URL.createObjectURL(blob);
-
-      // Obtén el nombre del archivo del encabezado Content-Disposition si está presente
-      const contentDisposition = response.headers["content-disposition"];
-      let fileName = name_specie + "_" + codigo + "_" + formatDate; // Nombre predeterminado
-
-      if (contentDisposition) {
-        const fileNameMatch = contentDisposition.match(/filename="(.+)"/);
-        if (fileNameMatch && fileNameMatch.length > 1) {
-          fileName = fileNameMatch[1];
-        }
-      }
-
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = fileName;
-
-      a.style.display = "none";
-      document.body.appendChild(a);
-      a.click();
-
-      window.URL.revokeObjectURL(url);
-      document.body.removeChild(a);
-    } else {
-      console.error("La respuesta no es un archivo PDF.");
-    }
-  } catch (error) {
-    console.error("Error al descargar el archivo PDF:", error);
-    // Manejar errores si es necesario
-  }
-}
 
 async function filterGeo(codigo, data) {
   return await data
     .filter((item) => item.codigo === codigo)
     .map((item) => ({ lon: item.lon, lat: item.lat }));
 }
-
-onMounted(async () => {
-
-  if (!specie.specie.code_specie) {
-    router.push({ name: "especies" });
-    return;
-  }
-
-  /* averageStore.code_specie = specie.specie.code_specie;
-  await averageStore.fetchData(); //store graficar
- */
-  geoStore.validateUrl([
-    getFullImageUrl(specie.specie.images[0].img_general),
-    getFullImageUrl(specie.specie.images[0].img_landscape_one),
-    getFullImageUrl(specie.specie.images[0].img_landscape_two),
-    getFullImageUrl(specie.specie.images[0].img_landscape_three),
-  ]);
-
-  await geoStore.fetchData();
-  filteredData.value = await filterGeo(code, geoStore.geoCandidateData); //coordenadas de los individuos de la especie consultada
-});
-
-
 
 const {
   vernacularName,
@@ -162,13 +107,120 @@ const scrollToTop = () => {
   // para cuando se consulta desde la vista Especies
   window.scrollTo(0, 0);
 };
+
 scrollToTop();
+
+const convertPdfToImages = async (pdfUrl) => {
+  try {
+    const pdf = await getDocument(pdfUrl).promise;
+    const numPages = pdf.numPages;
+    const imagePromises = [];
+
+    for (let pageNum = 1; pageNum <= numPages; pageNum++) {
+      imagePromises.push(
+        pdf.getPage(pageNum).then(async (page) => {
+          const viewport = page.getViewport({ scale: 1 });
+          const canvas = document.createElement('canvas');
+          const context = canvas.getContext('2d');
+          canvas.height = viewport.height;
+          canvas.width = viewport.width;
+
+          await page.render({ canvasContext: context, viewport }).promise;
+
+          return canvas.toDataURL('image/png');
+        })
+      );
+    }
+
+    images.value = await Promise.all(imagePromises);
+    console.log('Imágenes cargadas en orden:', images.value);
+  } catch (error) {
+    console.error('Error al convertir PDF a imágenes:', error);
+  }
+};
+
+const nextPage = () => {
+  if (currentPage.value < Math.ceil(images.value.length / 2) - 1) {
+    currentPage.value++;
+  }
+  console.log(`Página actual: ${currentPage.value}`);
+};
+
+const prevPage = () => {
+  if (currentPage.value > 0) {
+    currentPage.value--;
+  }
+  console.log(`Página actual: ${currentPage.value}`);
+};
+
+// Código ejecutado cuando el componente se monta
+onMounted(async () => {
+  if (!specie.specie.code_specie) {
+    // Redirigir si no hay un código de especie
+    router.push({ name: "especies" });
+    return;
+  }
+
+  // Obtener la URL del PDF a partir de los datos de la especie
+  const pdfUrl = getFullImageUrl(specie.specie.images[0].protocol);
+  console.log('pdfUrl ', pdfUrl);
+
+  // Convertir el PDF a imágenes
+  await convertPdfToImages(pdfUrl);
+
+  if (images.value.length === 0) {
+    console.error('Error: No se pudieron cargar las imágenes del PDF.');
+  } else {
+    console.log('Total de imágenes cargadas: ', images.value.length);
+  }
+
+  // Validar y cargar otras imágenes relacionadas con la especie
+  geoStore.validateUrl([
+    getFullImageUrl(specie.specie.images[0].img_general),
+    getFullImageUrl(specie.specie.images[0].img_landscape_one),
+    getFullImageUrl(specie.specie.images[0].img_landscape_two),
+    getFullImageUrl(specie.specie.images[0].img_landscape_three),
+  ]);
+
+  // Obtener datos geográficos y filtrar resultados
+  await geoStore.fetchData();
+  filteredData.value = await filterGeo(code, geoStore.geoCandidateData);
+});
 </script>
 
 <template>
   <div class="main">
     <QuoteButton></QuoteButton>
+
     <div class="content">
+      <div class="flipbook-container">
+        <div class="flipbook" :style="{ width: `${pageWidth * 2}px`, height: `${pageHeight}px` }">
+          <div
+            v-for="(image, index) in images"
+            :key="index"
+            class="page"
+            :class="{ 
+              flipped: index < currentPage * 2,
+              hidden: index < currentPage * 2 || index > currentPage * 2 + 1
+            }"
+            :style="{ 
+              left: `${index % 2 === 0 ? '0' : '50%'}`,
+              zIndex: images.length - index
+            }"
+          >
+            <div class="page-front">
+              <img :src="image" :alt="`Página ${index + 1}`" class="page-image" />
+            </div>
+            <div class="page-back" v-if="index % 2 === 0 && images[index + 1]">
+              <img :src="images[index + 1]" :alt="`Página ${index + 2}`" class="page-image" />
+            </div>
+          </div>
+        </div>
+        <div class="controls">
+          <button @click="prevPage" :disabled="currentPage === 0">Anterior</button>
+          <button @click="nextPage" :disabled="currentPage >= Math.ceil(images.length / 2) - 1">Siguiente</button>
+        </div>
+      </div>
       <!-- section 1 - information general -->
       <section class="general">
         <ImageSlider class="slider" v-if="geoStore.validImages.length > 0" />
@@ -762,5 +814,68 @@ scrollToTop();
   .jurisdiccion__titulo {
     font-size: 1.8rem;
   }
+}
+
+/* FLIPBOOK */
+.flipbook-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.flipbook {
+  position: relative;
+  perspective: 1500px;
+}
+
+.page {
+  position: absolute;
+  width: 50%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 0.6s ease;
+  transform-origin: left;
+}
+
+.page.flipped {
+  transform: rotateY(-180deg);
+}
+
+.page.hidden {
+  display: none;
+}
+
+.page-front,
+.page-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  overflow: hidden;
+}
+
+.page-back {
+  transform: rotateY(180deg);
+}
+
+.page-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.controls {
+  margin-top: 20px;
+}
+
+.controls button {
+  margin: 0 10px;
+  padding: 10px;
+  cursor: pointer;
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 </style>
