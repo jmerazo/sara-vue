@@ -40,6 +40,8 @@ export const descargarExcel = (datos, excelName) => {
   return exportFromJSON({ data, fileName, exportType });
 };
 
+
+
 export const descargarPdfs = (datos, tituloTabla, columnas, inicio) => {
   const doc = new jsPDF({
     orientation: 'landscape',

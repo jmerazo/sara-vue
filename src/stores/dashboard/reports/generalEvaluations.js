@@ -19,6 +19,8 @@ export const useGeneralEvaluations = defineStore("generalEvaluations", () => {
     const { data } = await APIService.getAssessmentData();
     evaluacionData.value = data;    
     evaluacionDataOriginal.value = data;
+    console.log(evaluacionData.value);
+    
     ordenarPorFechas(evaluacionData.value, "eventDate");
     ordenarPorFechas(evaluacionDataOriginal.value, "eventDate");
     cargando.value = false;

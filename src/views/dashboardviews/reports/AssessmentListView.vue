@@ -2,7 +2,7 @@
 import { computed } from "vue";
 import { onBeforeRouteLeave } from "vue-router";
 import { useGeneralEvaluations } from "@/stores/dashboard/reports/generalEvaluations";
-import { descargarExcel, descargarPdf, obtenerFecha } from "@/helpers";
+import { descargarExcel, descargarPdfs, obtenerFecha } from "@/helpers";
 import { useModalStore } from "@/stores/modal";
 //componentes
 import LoadingData from "@/components/shared/LoadingData.vue";
@@ -62,7 +62,7 @@ const displayedPageRange = computed(() => {
         /></a>
         <a
           @click="
-            descargarPdf(
+            descargarPdfs(
               report.datosImport,
               `Reporte general de evaluaciones - ${obtenerFecha()}`,
               9,

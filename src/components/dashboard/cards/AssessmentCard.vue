@@ -28,7 +28,7 @@ function toggleDetalles(contenedor) {
       <div class="card__encabezado">
         <p class="fecha__evaluacion">
           Fecha Evaluación:
-          <span class="dato">{{ evaluacion.fecha_evaluacion }}</span>
+          <span class="dato">{{ evaluacion.eventDate }}</span>
         </p>
       </div>
       <!-- datos de la especie -->
@@ -212,9 +212,9 @@ function toggleDetalles(contenedor) {
           </p>
           <p class="datos__item">
             Evaluador:
-            <span class="dato" :class="{ sinInfo: !evaluacion.usuario_evaluador }">{{
-            evaluacion.usuario_evaluador
-              ? evaluacion.usuario_evaluador
+            <span class="dato" :class="{ sinInfo: !evaluacion.user.first_name }">{{
+            evaluacion.user.first_name
+              ? evaluacion.user.first_name + ' ' + evaluacion.user.last_name
               : "No reportado"
           }}</span>
           </p>
