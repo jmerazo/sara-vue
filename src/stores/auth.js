@@ -37,7 +37,7 @@ export const useAuthTokenStore = defineStore('authToken', () => {
   });
   // Método para cargar los permisos del usuario
   const loadUserPermissions = async (email) => {
-    console.log('email ', email)
+    
     isLoadingPermissions.value = true;  // Comienza la carga
     try {
       const response = await APIService.modulesUser(email); // Asume que este método realiza la llamada API al endpoint

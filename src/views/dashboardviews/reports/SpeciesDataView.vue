@@ -72,12 +72,7 @@ const displayedPageRange = computed(() => {
         </div>
         <hr />
         <div class="card__contenido">
-          <div class="card__datos">
-            <p class="card__descripcion">
-              <font-awesome-icon :icon="['fas', 'hashtag']" /> Código especie:
-            </p>
-            <p class="card__dato">{{ especie.cod_especie }}</p>
-          </div>
+         
           <div class="card__datos">
             <p class="card__descripcion">
               <font-awesome-icon :icon="['fas', 'magnifying-glass-location']" />

@@ -45,23 +45,18 @@ function toggleDetalles(contenedor) {
           </svg>
         </div>
         <p class="especie__info">
-          <span class="dato" :class="{ sinInfo: !monitoreo.nom_comunes }">{{
-            monitoreo.nom_comunes
+          <span class="dato" :class="{ sinInfo: !monitoreo.specie.vernacularName }">{{
+            monitoreo.specie.vernacularName
           }}</span>
         </p>
         <p class="especie__info">
           <span
             class="dato"
-            :class="{ sinInfo: !monitoreo.nombre_cientifico }"
-            >{{ monitoreo.nombre_cientifico }}</span
+            :class="{ sinInfo: !monitoreo.specie.nombre_cientifico }"
+            >{{ monitoreo.specie.nombre_cientifico }}</span
           >
         </p>
-        <p class="especie__info">
-          código especie:
-          <span class="dato" :class="{ sinInfo: !monitoreo.cod_especie }">{{
-            monitoreo.evaluacion.cod_especie_id
-          }}</span>
-        </p>
+       
         <p class="especie__info">
           # placa:
           <span class="dato" :class="{ sinInfo: !monitoreo.numero_placa }">{{

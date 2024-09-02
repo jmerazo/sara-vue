@@ -19,7 +19,7 @@ const isRequest = ref(false)
 const handleLoginFirebase = async () => {
   try {
     const response = await store.loginFirebase(email.value, password.value)
-    console.log("response login: ", response.success)
+    
     if (response.success) {
       router
         .push({

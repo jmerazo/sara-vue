@@ -51,19 +51,20 @@ function toggleDetalles(contenedor) {
           </svg>
     
       <p class="especie__info nombre__comun">
-        <span class="dato" :class="{ sinInfo: !muestra.nom_comunes }">{{
-          muestra.nom_comunes
+        <span class="dato" :class="{ sinInfo: !muestra.specie.vernacularName }"> {{
+          muestra.specie.vernacularName
         }}</span>
       </p>
       <p class="especie__info">
-        <span class="dato" :class="{ sinInfo: !muestra.nombre_cientifico }">{{
-          muestra.nombre_cientifico
+        <span class="dato" :class="{ sinInfo: !muestra.specie.nombre_cientifico }">{{
+          muestra.specie.nombre_cientifico
         }}</span>
       </p>
+      
       <p class="especie__info">
-        código especie:
-        <span class="dato" :class="{ sinInfo: !muestra.cod_especie }">{{
-          muestra.cod_especie
+        Estado: 
+        <span class="dato" :class="{ sinInfo: !muestra.verificado }" style="text-transform: lowercase;">{{
+          muestra.verificado
         }}</span>
       </p>
       <p class="especie__info">

@@ -32,6 +32,19 @@ const displayedPageRange = computed(() => {
     (_, index) => rangeStart + index
   );
 });
+
+const defaultImageUrl = '/img/sin_img.png';
+
+const getBackgroundImageStyle = (images) => {
+  if (images && images.length > 0 && images[0].img_general) {
+    return {
+      backgroundImage: `url(${getFullImageUrl(images[0].img_general)})`
+    };
+  }
+  return {
+    backgroundImage: `url(${defaultImageUrl})`
+  };
+};
 </script>
 <template>
   <div class="contenedor">
@@ -62,44 +75,43 @@ const displayedPageRange = computed(() => {
       <main class="reporte__grid">
         <div
           class="card"
-          v-for="especie in especies.displayedEspecies"
-          v-bind:key="especie.cod_especie"
+          v-for="(especie, index) in especies.displayedEspecies"
+          v-bind:key="especie.code_specie"
         >
-          <div class="card__grid" v-if="especie.cod_especie">
+          <div class="card__grid" v-if="especie.code_specie">
             <div
               class="card__imagen"
-              :style="{
-                backgroundImage: `url(${getFullImageUrl(especie.img_general)})`,
-              }"
+              :style="getBackgroundImageStyle(especie.images)"
             ></div>
             <div class="card__contenido">
-              <p class="card__titulo">{{ especie.nom_comunes }}</p>
+              <p class="card__titulo">{{ especie.vernacularName }}</p>
               <p class="card__subtitulo">{{ especie.nombre_cientifico }}</p>
               <p class="card__subtitulo">
-                Familia: <span class="card__dato">{{ especie.familia }}</span>
+                Familia: <span class="card__dato">{{ especie.family }}</span>
               </p>
-              <p class="card__subtitulo">
-                Código de especie:
-                <span class="card__dato">{{ especie.cod_especie }}</span>
-              </p>
+              
               <div class="card__botones">
                 <button
                   class="boton__primario"
-                  @click="candidatos.verCandidatosEspecie(especie.nom_comunes)"
+                  @click="candidatos.verCandidatosEspecie(especie.vernacularName)"
                 >
                   <font-awesome-icon :icon="['fas', 'leaf']" /> Ver candidatos
                 </button>
+
+
                 <button
                   class="boton__secundario"
                   @click="
                     especieMonitoreos.verMonitoreosEspecie(
-                      especie.cod_especie,
-                      especie.nom_comunes
+                      especie.code_specie,
+                      especie.vernacularName
                     )
                   "
                 >
                   <font-awesome-icon :icon="['fas', 'eye']" /> Ver Monitoreos
                 </button>
+
+                
               </div>
             </div>
           </div>

@@ -9,7 +9,7 @@ import LoadingData from "@/components/shared/LoadingData.vue";
 import SamplesCard from "@/components/dashboard/cards/SamplesCard.vue";
 
 const samples = useSamplesMade();
-console.log('samples: ', samples)
+
 //limpiar filtros antes de cambiar de vista
 onBeforeRouteLeave((to, from, next) => {
   samples.quitarFiltroBuscado();

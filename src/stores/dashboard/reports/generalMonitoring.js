@@ -61,20 +61,18 @@ export const useGeneralMonitoring = defineStore("generalMonitoring", () => {
     changePage(1);
     monitoringData.value = monitoringDataOriginal.value.filter((term) => {
       const lowerTermino = termino.toLowerCase();
-      const lowerComun = term.nom_comunes ? term.nom_comunes.toLowerCase() : "";
-      const lowerNombre_cientifico = term.nombre_cientifico
-        ? term.nombre_cientifico.toLowerCase()
+      const lowerComun = term.specie.vernacularName ? term.specie.vernacularName.toLowerCase() : "";
+      const lowerNombre_cientifico = term.specie.nombre_cientifico
+        ? term.specie.nombre_cientifico.toLowerCase()
         : "";
-      // Verifica si la placa es igual al término (ya sea número o cadena)
-      const termCdoEspecie =
-        term.cod_especie != null ? term.cod_especie.toString() : ""; // Convierte el número a cadena
+      
       const termPlaca =
-        term.numero_placa != null ? term.numero_placa.toString() : ""; // Convierte el número a cadena
+        term.evaluacion.numero_placa != null ? term.evaluacion.numero_placa.toString() : ""; // Convierte el número a cadena
 
       return (
         lowerComun.includes(lowerTermino) ||
         lowerNombre_cientifico.includes(lowerTermino) ||
-        termCdoEspecie === termino || // Compara término y numero placa
+        
         termPlaca === termino // Compara término y numero placa
       );
     });

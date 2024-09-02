@@ -44,10 +44,7 @@ function toggleDetalles(contenedor) {
           <p class="especie__info nombre__comun">Expediente:</p>
           <span class="dato" :class="{ sinInfo: !evaluacion.cod_expediente }">{{ evaluacion.cod_expediente }}</span>
         </div>
-        <p class="especie__info">
-          código especie:
-          <span class="dato" :class="{ sinInfo: !evaluacion.cod_especie }">{{ evaluacion.cod_especie.code_specie }}</span>
-        </p>
+        
         <p class="especie__info">
           # placa:
           <span class="dato" :class="{ sinInfo: !evaluacion.numero_placa }">{{

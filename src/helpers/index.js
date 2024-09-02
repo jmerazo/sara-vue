@@ -7,8 +7,6 @@ import api from "@/api/axios";
 //para funcion descargarExcel
 import exportFromJSON from "export-from-json";
 
-//Import log
-/* import logSara from '/public/icons/sara.png'; */
 
 //para funcion descargarPDF
 import pdfMake from "pdfmake/build/pdfmake";
@@ -42,7 +40,7 @@ export const descargarExcel = (datos, excelName) => {
 
 
 
-export const descargarPdfs = (datos, tituloTabla, columnas, inicio) => {
+export const descargarPdfs = (datos, tituloTabla, columnas, inicio,customHeaders) => {
   const doc = new jsPDF({
     orientation: 'landscape',
     unit: 'px',
@@ -52,10 +50,7 @@ export const descargarPdfs = (datos, tituloTabla, columnas, inicio) => {
   const columnasMostrar = Math.min(columnas, Object.keys(datos[0]).length);
   const headers = Object.keys(datos[0]).slice(inicio, inicio + columnasMostrar);
 
-  const customHeaders = [
-    ["Código", "Nombre común", "Nombre científico", "Evaluados", "Monitoreados", "Muestras"]
-  ];
-
+  
   // Preparar los datos para la tabla
   const body = datos.map(objeto =>
     headers.map(header => objeto[header])
@@ -64,7 +59,7 @@ export const descargarPdfs = (datos, tituloTabla, columnas, inicio) => {
   // Añadir título
   doc.setFontSize(18);
   doc.setFont('helvetica', 'bold');
-  /* doc.addImage(logSara, 'PNG', 27, 10, 40, 30); */
+  doc.addImage('/public/icons/sara.png', 'PNG', 27, 10, 40, 30);
   doc.text(tituloTabla, doc.internal.pageSize.getWidth() / 2, 40, { align: 'center' });
 
   // Añadir tabla
@@ -103,7 +98,7 @@ export const descargarPdf = (datos, tituloTabla, columnas, inicio) => {
         ordenado.value,
         columnasMostrar + ordenado.value
       );
-      //ojo esta varible no se puede cambiar la solicita la liberia
+      //ojo esta variable no se puede cambiar la solicita la librería
       const documentDefinition = {
         pageOrientation: "landscape", //para vertical seria: portrait
         content: [
