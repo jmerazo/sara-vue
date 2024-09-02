@@ -1,3 +1,4 @@
+
 <script setup>
 import { onMounted } from "vue";
 import { usePageContent } from "@/stores/page";
@@ -42,15 +43,14 @@ function formatText(text) {
        
 
         <p class="banner__text">
-          Sistema de información de Semillas y Árboles de la Región sur de la
-          Amazonía.
+          ACERCA DEL PROYECTO
         </p>
       </div>
     </section>
     <!-- Fin banner acerca  -->
 
     <!-- mision vision y valores -->
-    <main class="planificacion">
+    <!-- <main class="planificacion">
       <div class="planificacion__grid">
         <div v-for="seccion in pageStore.informacionUsuario" :key="seccion.title">
           <div class="card" v-if="seccion.titulo === 'Misión'">
@@ -102,7 +102,7 @@ function formatText(text) {
           </div>
         </div>
       </div>
-    </main>
+    </main> -->
     <!-- Fin mision vision y valores -->
 
     <!-- info proyecto -->
