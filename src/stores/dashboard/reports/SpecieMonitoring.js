@@ -1,7 +1,7 @@
 import { ref, reactive, computed, watch } from "vue";
 import { defineStore } from "pinia";
 import { useRouter } from "vue-router";
-import {ordenarPorFechas} from '@/helpers'
+import { ordenarPorFechas } from '@/helpers'
 import APIService from "@/services/APIService";
 
 export const useSpecieMonitoring = defineStore("especieMonitoreo", () => {
@@ -14,24 +14,32 @@ export const useSpecieMonitoring = defineStore("especieMonitoreo", () => {
   const nombreEspecie = ref("");
 
   const datosImport = ref([]);
-  
+
   // variables para paginación
   const currentPage = ref(1); // Página actual
   const itemsPerPage = ref(12); // Elementos por página
 
-  
+
 
   //consultar monitoreos de una especie
   async function verMonitoreosEspecie(cod_especie, nombre_especie) {
-    cargando.value = true;
-    nombreEspecie.value = nombre_especie;
-    const { data } = await APIService.lookMonitoringSpecie(cod_especie);
-    monitoreosEspecie.value = data
-    monitoreosEspecieOriginal.value = data
-    ordenarPorFechas(monitoreosEspecie.value,'fecha_monitoreo')
-    ordenarPorFechas(monitoreosEspecieOriginal.value,'fecha_monitoreo')
-    router.push("/panel/monitoring-species");
-    cargando.value = false;
+
+    try {
+      cargando.value = true;
+      nombreEspecie.value = nombre_especie;
+      const { data } = await APIService.lookMonitoringSpecie(cod_especie);
+      monitoreosEspecie.value = data
+      monitoreosEspecieOriginal.value = data
+      ordenarPorFechas(monitoreosEspecie.value, 'fecha_monitoreo')
+      ordenarPorFechas(monitoreosEspecieOriginal.value, 'fecha_monitoreo')
+      router.push("/panel/monitoring-species");
+      cargando.value = false;
+
+    } catch (error) {
+      console.log(error);
+      cargando.value = false;
+    }
+
   }
 
   function cargarData() {
@@ -58,10 +66,10 @@ export const useSpecieMonitoring = defineStore("especieMonitoreo", () => {
   // Calcula el numero de páginas a monitoreos por especie
   const displayedMonitoring = computed(() => {
     try {
-    const start = (currentPage.value - 1) * itemsPerPage.value;
-    const end = start + itemsPerPage.value;
-    return monitoreosEspecie.value.slice(start, end);
-    }catch{
+      const start = (currentPage.value - 1) * itemsPerPage.value;
+      const end = start + itemsPerPage.value;
+      return monitoreosEspecie.value.slice(start, end);
+    } catch {
       console.log('no hay paginación')
     }
   });

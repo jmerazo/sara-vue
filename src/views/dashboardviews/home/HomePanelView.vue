@@ -23,10 +23,11 @@ const authStore = useAuthTokenStore();
 
 watch(() => authStore.userPermissions, (newPermissions) => {
   if (newPermissions) {
-    console.log('Permisos actualizados:', newPermissions);
+    console.log('');
     // Realizar acciones en base a los nuevos permisos
   }
 }, { immediate: true });
+
 const storedPermissions = JSON.parse(localStorage.getItem('user_permissions') || '{}');
 
 

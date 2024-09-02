@@ -34,7 +34,7 @@ const fetchEspeciesData = async () => {
     // URL de la API de GBIF
     const response = await fetch('https://api.gbif.org/v1/occurrence/search?limit=100&mediaType=StillImage');
     const data = await response.json();
-    console.log('Datos de GBIF:', data);
+   
 
     // Verificamos que 'results' exista y sea un array
     if (data.results && Array.isArray(data.results)) {

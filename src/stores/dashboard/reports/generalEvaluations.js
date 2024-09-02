@@ -19,7 +19,7 @@ export const useGeneralEvaluations = defineStore("generalEvaluations", () => {
     const { data } = await APIService.getAssessmentData();
     evaluacionData.value = data;    
     evaluacionDataOriginal.value = data;
-    console.log(evaluacionData.value);
+   
     
     ordenarPorFechas(evaluacionData.value, "eventDate");
     ordenarPorFechas(evaluacionDataOriginal.value, "eventDate");
@@ -28,7 +28,14 @@ export const useGeneralEvaluations = defineStore("generalEvaluations", () => {
 
   function cargarData() {
     evaluacionData.value.forEach((dato) => {
-      datosImport.value.push(dato);
+      console.log(dato);
+      
+      const { eventDate, cod_expediente   } = dato
+      const { vernacularName, scientificName, scientificNameAuthorship  } = dato.cod_especie
+      datosImport.value.push([eventDate, cod_expediente, vernacularName, `${scientificName} - ${scientificNameAuthorship}`]);
+     
+      
+      
     });
   }
 
@@ -52,14 +59,12 @@ export const useGeneralEvaluations = defineStore("generalEvaluations", () => {
         : "";
 
       // Verifica si la placa es igual al término (ya sea número o cadena)
-      const termCdoEspecie =
-        term.code_specie != null ? term.cod_especie.toString() : ""; // Convierte el número a cadena
+     
       const termPlaca =
         term.numero_placa != null ? term.numero_placa.toString() : ""; // Convierte el número a cadena
 
       return (
         lowerCod_expediente.includes(lowerTermino) ||
-        termCdoEspecie === termino || // Compara término y numero placa
         termPlaca === termino // Compara término y numero placa
       );
     });
