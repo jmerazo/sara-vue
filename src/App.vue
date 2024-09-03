@@ -1,5 +1,6 @@
 <script setup>
 import { RouterView} from "vue-router";
+import ToastContainer from "./components/shared/ToastContainer.vue";
 
 </script>
 
@@ -7,6 +8,7 @@ import { RouterView} from "vue-router";
   
   <main  >
     <RouterView  />
+    <ToastContainer />
   </main> 
 
 </template>

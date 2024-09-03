@@ -214,7 +214,36 @@ const router = createRouter({
 });
 
 router.beforeEach(async (to, from, next) => {
-  const store = useAuthTokenStore();
+  const authStore = useAuthTokenStore();
+  const homeStore = useHomeStore();
+
+  if (to.matched.some((record) => record.meta.isMaintenance)) {
+    if (homeStore.maintenance) {
+      return next("/maintenance");
+    }
+  }
+
+  if (to.matched.some((record) => record.meta.auth)) {
+    const isAuthenticated = await authStore.checkTokenValidity();
+    if (!isAuthenticated) {
+      console.log("No autenticado, redirigiendo a /auth");
+      return next("/auth");
+    }
+
+    if (to.meta.roles && to.meta.roles.length) {
+      const userRole = authStore.userData?.role;
+      if (!userRole || !to.meta.roles.includes(userRole)) {
+        console.log("Usuario no tiene los roles necesarios");
+        return next("/auth");
+      }
+    }
+  }
+
+  next();
+});
+
+/* router.beforeEach(async (to, from, next) => {
+  const authStore = useAuthTokenStore();
   const homeStore = useHomeStore();
 
   // Verificación de mantenimiento
@@ -226,17 +255,31 @@ router.beforeEach(async (to, from, next) => {
 
   // Verificación de autenticación
   if (to.matched.some((record) => record.meta.auth)) {
-    if (!store.refreshToken) {
-      return next("/auth"); // Redirige si no hay refreshToken
+    if (!authStore.token) {
+      console.log("No hay token, redirigiendo a /auth");
+      return next("/auth");
     } else {
-      if (!store.accessToken) {
-        await store.rehydrateAuth(); // Intenta obtener un nuevo accessToken
+      // Verificar si el token es válido
+      const isTokenValid = await authStore.checkTokenValidity();
+      if (!isTokenValid) {
+        console.log("Token no válido, redirigiendo a /auth");
+        authStore.logout();
+        return next("/auth");
+      }
+    }
+
+    // Verificar roles si es necesario
+    if (to.meta.roles && to.meta.roles.length) {
+      const userRole = authStore.userData?.role;
+      if (!userRole || !to.meta.roles.includes(userRole)) {
+        console.log("Usuario no tiene los roles necesarios");
+        return next("/unauthorized");
       }
     }
   }
 
   // Si no se cumplen ninguna de las condiciones anteriores, continúa
   next();
-});
+}); */
 
 export default router;

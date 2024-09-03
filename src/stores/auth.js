@@ -8,39 +8,53 @@ import { auth } from '../firebase/firebase';
 import { signInWithEmailAndPassword, signOut } from 'firebase/auth';
 
 export const useAuthTokenStore = defineStore('authToken', () => {
-  const accessToken = ref(null);
-  const refreshToken = ref(localStorage.getItem('refresh_token') || null);
+  /* const token = ref(localStorage.getItem('auth_token') || null); */
+  const firebaseToken = ref(null);
   const userData = ref(null);
   const errorAuth = ref(null);
   const authActive = ref(false);
   const userPermissions = ref(null);
   const isLoadingPermissions = ref(false);
 
-  const departments = ref({});
-  const cities = ref({});
-
   const router = useRouter();
-  const isRehydrated = ref(false);
   
   onMounted(async () => {
-    isAuth();
-    await rehydrateAuth();
-    try {
-      const departmentsResponse = await APIService.getDepartments();
-      departments.value = departmentsResponse.data;
-
-      const citiesResponse = await APIService.getCities();
-      cities.value = citiesResponse.data;
-    } catch (error) {
-      console.error('Error al obtener datos:', error);
-    }
+    /* checkAuth(); */
+    initializeAuthListener();
   });
+
+  const initializeAuthListener = () => {
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        firebaseToken.value = await user.getIdToken();
+        authActive.value = true;
+        await getUserData(firebaseToken.value);
+      } else {
+        firebaseToken.value = null;
+        userData.value = null;
+        authActive.value = false;
+      }
+    });
+  };
+
+  const getUserData = async (token) => {
+    try {
+      const response = await APIService.loginFirebase(token);
+      if (response.status === 200) {
+        userData.value = response.data.user_data;
+        localStorage.setItem('user_data', JSON.stringify(response.data.user_data));
+        await loadUserPermissions(userData.value.email);
+      }
+    } catch (error) {
+      console.error('Error al obtener datos del usuario:', error);
+    }
+  };
+
   // Método para cargar los permisos del usuario
   const loadUserPermissions = async (email) => {
-    console.log('email ', email)
     isLoadingPermissions.value = true;  // Comienza la carga
     try {
-      const response = await APIService.modulesUser(email); // Asume que este método realiza la llamada API al endpoint
+      const response = await APIService.modulesUser(email);
       if (response.status === 200) {
         userPermissions.value = response.data;
         localStorage.setItem('user_permissions', JSON.stringify(response.data));
@@ -54,76 +68,32 @@ export const useAuthTokenStore = defineStore('authToken', () => {
     }
   };
 
-  const rehydrateAuth = async () => {
-    if (refreshToken.value) {
-      try {
-        const response = await APIService.refreshAuthToken({ refresh: refreshToken.value });
-        if (response.status === 200 && response.data.access) {
-          accessToken.value = response.data.access;
-          userData.value = response.data.user_data;
-          authActive.value = true;
-          isRehydrated.value = true;
-        } else {
-          throw new Error('Failed to refresh token');
-        }
-      } catch (error) {
-        console.error('Error al rehidratar la autenticación:', error);
-        logout();  // Si hay un error, asegúrate de limpiar el estado
-      }
-    } else {
-      return
-    }
-  };
-
-
-  const login = async (credentials, authType) => {
-    try {
-      const response = await APIService.getAuthToken(credentials, authType);
-      if (response.status === 200) {
-        accessToken.value = response.data.access;
-        refreshToken.value = response.data.refresh;
-        userData.value = response.data.user_data;
-        authActive.value = true;
-        errorAuth.value = null;
-        localStorage.setItem('refresh_token', response.data.refresh);
-        localStorage.setItem('user_data', JSON.stringify(response.data.user_data));
-        await loadUserPermissions();
-        return { success: true };
-
-      } else {
-        errorAuth.value = 'Credenciales incorrectas';
-        return { success: false };
-      }
-    } catch (error) {
-      console.error('Error en el inicio de sesión:', error);
-      errorAuth.value = error;
-      return { success: false, error };
-    }
-  };
-
-  const signInAndGetToken = async (email, password) => {
-    try {
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      const user = userCredential.user;
-      const token = await user.getIdToken(); // Obtén el token de ID
-      return token;
-    } catch (error) {
-      console.error("Error during login:", error);
-      throw error;
-    }
-  };
-
   const loginFirebase = async (email, password) => {
     try {
-      const token = await signInAndGetToken(email, password);
-      const response = await APIService.loginFirebase(token);
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      firebaseToken.value = await userCredential.user.getIdToken();
+      await getUserData(firebaseToken.value);
+      return { success: true };
+    } catch (error) {
+      console.error("Error durante el inicio de sesión:", error);
+      errorAuth.value = error.message;
+      return { success: false, error: error.message };
+    }
+  };
+
+  /* const loginFirebase = async (email, password) => {
+    try {
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const firebaseToken = await userCredential.user.getIdToken();
+      const response = await APIService.loginFirebase(firebaseToken);
+      console.log('response: ', response)
+      
       if (response.status === 200) {
-        accessToken.value = response.data.access;
-        refreshToken.value = response.data.refresh;
+        token.value = response.data.token;
         userData.value = response.data.user_data;
         authActive.value = true;
         errorAuth.value = null;
-        localStorage.setItem('refresh_token', response.data.refresh);
+        localStorage.setItem('auth_token', response.data.token);
         localStorage.setItem('user_data', JSON.stringify(response.data.user_data));
         await loadUserPermissions(email);
         return { success: true };
@@ -132,58 +102,82 @@ export const useAuthTokenStore = defineStore('authToken', () => {
         return { success: false };
       }
     } catch (error) {
-      console.error("Error during backend login:", error);
+      console.error("Error during login:", error);
       return { success: false, error: error.message };
     }
-  }
+  } */
 
-  const logoutFirebase = async () => {
-    try {
-      await signOut(auth);
-      this.user = null;
-    } catch (error) {
-      console.error("Error during logout:", error);
-    }
-  }
-
-  const logout = () => {
-    localStorage.removeItem('refresh_token');
-    accessToken.value = null;
-    refreshToken.value = null;
+  /* const logout = () => {
+    localStorage.removeItem('auth_token');
+    localStorage.removeItem('user_data');
+    token.value = null;
     userData.value = null;
     authActive.value = false;
-    router.push('/');
+    router.push('/auth');
+  }; */
+  const logout = async () => {
+    try {
+      await signOut(auth);
+      firebaseToken.value = null;
+      userData.value = null;
+      authActive.value = false;
+      router.push('/auth');
+    } catch (error) {
+      console.error("Error durante el cierre de sesión:", error);
+    }
   };
 
-  function isAuth() {
-    const auth = accessToken.value;
-    if (auth) {
+  /* const checkAuth = () => {
+    if (token.value) {
       authActive.value = true;
     } else {
       authActive.value = false;
     }
-  }
+  }; */
 
+  /* const checkTokenValidity = async () => {
+    if (!token.value) {
+      return false;
+    }
 
+    try {
+      const response = await APIService.verifyTokenAuth(token.value);
+      if (response.data.isValid) {
+        userData.value = response.data.userData;
+        localStorage.setItem('user_data', JSON.stringify(response.data.userData));
+      }
+      return response.data.isValid;
+    } catch (error) {
+      console.error("Error al verificar el token:", error);
+      return false;
+    }
+  }; */
+  const checkTokenValidity = async () => {
+    if (!firebaseToken.value) return false;
+    try {
+      const user = auth.currentUser;
+      if (user) {
+        // Forzar la actualización del token
+        firebaseToken.value = await user.getIdToken(true);
+        return true;
+      }
+      return false;
+    } catch (error) {
+      console.error("Error al verificar el token:", error);
+      return false;
+    }
+  };
 
   return {
-    accessToken,
-    refreshToken,
     userData,
     errorAuth,
     authActive,
     useAuthTokenStore,
-    isRehydrated,
-    departments,
-    cities,
-    login,
     logout,
-    isAuth,
-    rehydrateAuth,
     userPermissions,
     isLoadingPermissions,
     loadUserPermissions,
     loginFirebase,
-    logoutFirebase,
+    checkTokenValidity
   };
 });

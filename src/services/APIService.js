@@ -26,6 +26,9 @@ export default {
     getRoles(){
         return api.get('/users/roles')
     },
+    verifyTokenAuth(token){
+        return api.post('/auth/verify-token', {token})
+    },
     /* ==================================================================================================================== */
     /* ==================================================================================================================== */
     // ENDPOINT →→ CRUD FORREST SPECIES
@@ -90,46 +93,26 @@ export default {
     },
     // (PROTECT) Lista los individuos evaluados totales -- http://localhost:8000/api/candidates/trees
     getAssessmentData(){
-        const store = useAuthTokenStore();
-        return api.get('/candidates/trees', {
-            headers: {
-                Authorization: `Bearer ${store.accessToken}`
-            }
-        })
+        return api.get('/candidates/trees')
     },
     addCandidate(data){
         return api.post(`/candidates/trees`, data) 
     },
     // (PROTECT) Exporta en excel los individuos evaluados totales -- http://localhost:8000/api/candidates/export/all
     candidateExportXLSX(){
-        const store = useAuthTokenStore();
-        return api.get('/candidates/export/all', {
-            headers: {
-                Authorization: `Bearer ${store.accessToken}`
-            }
-        })
+        return api.get('/candidates/export/all')
     },
     /* ==================================================================================================================== */
     /* ==================================================================================================================== */
     // ENDPOINT →→ MONITORING
     // (PROTECT) Retorna la cantidad mensual de monitoreos realizados, pendientes y total por municipios -- http://localhost:8000/api/monitoring/data
     getMonitoringData(){
-        const store = useAuthTokenStore();
-        return api.get('/monitoring/report/data', {
-            headers: {
-                Authorization: `Bearer ${store.accessToken}`
-            }
-        })
+        return api.get('/monitoring/report/data')
     },
     
     // (PROTECT) Retorna la cantidad mensual de monitoreos realizados, pendientes y total por municipios -- http://localhost:8000/api/monitoring/report/general/total
     getValuesByDepartment(){
-        const store = useAuthTokenStore();
-        return api.get('/monitoring/report/general/total', {
-            headers: {
-                Authorization: `Bearer ${store.accessToken}`
-            }
-        })
+        return api.get('/monitoring/report/general/total')
     },
     
     // Retorna el listado de monitoreos del individuo consultado -- http://localhost:8000/api/monitoring/search/code
@@ -178,7 +161,7 @@ export default {
     pageCountVisit(code){
         return api.get(`/page/count/${code}`)
     },
-    pageTopSpecies(code){
+    pageTopSpecies(){
         return api.get(`/page/top_species`)
     },
     pagesGet(){
@@ -210,24 +193,14 @@ export default {
     // ENDPOINT →→ SAMPLES
     // (PROTECT) Exporta todas las muestras registradas -- http://localhost:8000/api/samples/report/data
     getSamplesData(){
-        const store = useAuthTokenStore();
-        return api.get('/samples/report/data', {
-            headers: {
-                Authorization: `Bearer ${store.accessToken}`
-            }
-        })
+        return api.get('/samples/report/data')
     },
     
     /* ==================================================================================================================== */
     /* ==================================================================================================================== */
     // ENDPOINT →→ USERS
     getUsers(){
-        const store = useAuthTokenStore();
-        return api.get('/users/', {
-            headers: {
-                Authorization: `Bearer ${store.accessToken}`
-            }
-        })
+        return api.get('/users/')
     },
     createUsers(data){
         return api.post('/users/', data)
@@ -240,13 +213,7 @@ export default {
     },
     // Retorna los permisos del usuario -- http://localhost:8000/api/users/modules
     modulesUser(email) {
-        const store = useAuthTokenStore();
-        return api.get('/users/modules', {
-          params: { email },  // Correcta estructura para enviar parámetros de consulta
-          headers: {
-            Authorization: `Bearer ${store.accessToken}`
-          }
-        });
+        return api.get('/users/modules', { params: { email }});
     },
     /* ==================================================================================================================== */
     /* ==================================================================================================================== */
@@ -263,7 +230,9 @@ export default {
     getSisa(){
         return api.get(`/utils/sisa/`)
     },
-
+    sendEmail(data){
+        return api.post(`/utils/send-email/`, data)
+    },
     /* ==================================================================================================================== */
     /* ==================================================================================================================== */
     // ENDPOINT →→ NURSERIES
