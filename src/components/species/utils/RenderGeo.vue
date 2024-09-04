@@ -1,81 +1,103 @@
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, watch, shallowRef } from 'vue';
 import Map from 'ol/Map';
 import View from 'ol/View';
 import TileLayer from 'ol/layer/Tile';
 import OSM from 'ol/source/OSM';
 import VectorLayer from 'ol/layer/Vector';
 import VectorSource from 'ol/source/Vector';
-import { Style, Fill, Stroke, Circle, Icon } from 'ol/style';
+import GeoJSON from "ol/format/GeoJSON";
+import { Style, Fill, Stroke, Icon } from 'ol/style';
 import { fromLonLat } from 'ol/proj';
 import Point from 'ol/geom/Point';
 import Feature from 'ol/Feature';
-import treeIconPath from '/icons/icon_geo.png'
+import treeIconPath from "/icons/icon_tree_green.png";
 
 const mapContainer = ref(null);
-const { filteredData } =  defineProps(['filteredData']);
+const map = shallowRef(null);
+const { filteredData } = defineProps(['filteredData']);
 
-onMounted(() => {
-  if (filteredData.length > 0) {
-    const firstCoordinate = [filteredData[0].lon, filteredData[0].lat];
-    drawMap(firstCoordinate);
-  }
+const geojsonSource = new VectorSource({
+  url: '/geojson/export.geojson',
+  format: new GeoJSON(),
 });
 
-function drawMap(centerCoordinate) {
-  const map = new Map({
+const geojsonLayer = new VectorLayer({
+  source: geojsonSource,
+  style: new Style({
+    stroke: new Stroke({
+      color: 'green',
+      width: 2,
+    }),
+    fill: new Fill({
+      color: 'rgba(0, 0, 255, 0.1)',
+    }),
+  }),
+});
+
+const vectorSource = new VectorSource();
+
+const treeIcon = new Icon({
+  src: treeIconPath,
+  scale: 0.06,
+  anchor: [0.5, 1],
+});
+
+const vectorLayer = new VectorLayer({
+  source: vectorSource,
+  style: new Style({
+    image: treeIcon
+  }),
+});
+
+function initMap(centerCoordinate) {
+  map.value = new Map({
     target: mapContainer.value,
     layers: [
       new TileLayer({
         source: new OSM(),
       }),
+      geojsonLayer,
+      vectorLayer,
     ],
     view: new View({
-      center: fromLonLat(centerCoordinate), // New York coordinates
+      center: fromLonLat(centerCoordinate),
       zoom: 5,
-      minZoom: 8, // Establecer el zoom mínimo permitido
-      maxZoom: 9, // Establecer el zoom máximo permitido
+      minZoom: 6.5,
+      maxZoom: 14,
     }),
   });
-
-  /* const points = [
-    { lon: -74.005974, lat: 40.712776 }, // New York
-    { lon: -0.1275, lat: 51.50722 }, // London
-    { lon: -43.1729, lat: -22.9068 }, // Rio de Janeiro
-    { lon: 139.6917, lat: 35.6895 }, // Tokyo
-  ];
- */
-  
-  const vectorSource = new VectorSource({
-    features: filteredData.map((point) => {
-      const geometry = new Point(fromLonLat([point.lon, point.lat]));
-      return new Feature(geometry);
-    }),
-  });
-
-  const treeIcon = new Icon({
-    src: treeIconPath, // Ruta de la imagen del árbol
-    scale: 0.4, // Puedes ajustar este valor para cambiar el tamaño del icono
-    anchor: [0.5, 1], // Posición del icono donde se encuentra el punto (centro inferior del icono)        
-
-  });
-
-  const vectorLayer = new VectorLayer({
-    source: vectorSource,
-    style: new Style({
-        image: treeIcon
-      /* image: new Circle({
-      image: new Circle({
-        radius: 6,
-        fill: new Fill({ color: 'green' }),
-        stroke: new Stroke({ color: 'white', width: 2 }),
-      }), */
-    }),
-  });
-
-  map.addLayer(vectorLayer);
 }
+
+function updateFeatures() {
+  vectorSource.clear();
+  const features = filteredData.map((point) => {
+    const geometry = new Point(fromLonLat([point.lon, point.lat]));
+    return new Feature(geometry);
+  });
+  vectorSource.addFeatures(features);
+}
+
+onMounted(() => {
+  if (filteredData.length > 0) {
+    const firstCoordinate = [filteredData[0].lon, filteredData[0].lat];
+    initMap(firstCoordinate);
+    updateFeatures();
+  }
+});
+
+watch(() => filteredData, (newData) => {
+  if (newData.length > 0 && map.value) {
+    updateFeatures();
+    const extent = vectorSource.getExtent();
+    map.value.getView().fit(extent, { padding: [50, 50, 50, 50], maxZoom: 14 });
+  }
+}, { deep: true });
 </script>
+
+<template>
+  <div class="map-container" ref="mapContainer"></div>
+</template>
 
 <style scoped>
 .map-container {
@@ -84,7 +106,3 @@ function drawMap(centerCoordinate) {
   border-radius: 25px;
 }
 </style>
-
-<template>
-  <div class="map-container" ref="mapContainer"></div>
-</template>

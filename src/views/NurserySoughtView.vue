@@ -2,22 +2,49 @@
 import { ref } from "vue";
 import { useNurseriesStore } from "@/stores/nurseries";
 import { useConsultaStore } from '@/stores/consulta'
+import { useRouter } from "vue-router";
+import { useToast } from '../helpers/ToastManagement';
 
 const consulta = useConsultaStore()
 const nurseries = useNurseriesStore();
 console.log('nurseries: ', nurseries)
 
-const email = ref("");
-const message = ref("");
+const router = useRouter();
+const { addToast } = useToast();
 
-const handleSubmit = () => {
-  console.log("Email:", email.value);
-  console.log("Message:", message.value);
-  // Aquí puedes agregar la lógica para enviar el formulario.
+const formData = ref({
+  subject: 'SARA - SOLICITUD INFORMACIÓN ESPECIES VIVERO',
+  from_email: "",
+  body: ''
+});
+
+const error = ref(null);
+
+const handleSubmit = async () => {
+  try {
+    const response = await nurseries.sendEmail(formData.value);
+    if (response.status === 200) {
+      addToast('Mensaje enviado con éxito', { 
+        type: 'success', 
+        duration: 3000 
+      });
+      setTimeout(() => {
+        router.push({ name: "nurseries" });
+      }, 3000);
+    } else {
+      showError('Error enviando la solicitud');
+    }
+  } catch (err) {
+    showError('Error enviando la solicitud');
+  }
 };
 
-
-
+function showError(message) {
+  addToast(message, { 
+    type: 'error', 
+    duration: 3000 
+  });
+}
 </script>
 
 <template>
@@ -70,18 +97,16 @@ const handleSubmit = () => {
             <input
               type="email"
               id="email"
-              v-model="email"
+              v-model="formData.from_email"
               class="contact__input"
               required
             />
           </div>
           <div class="contact__field">
-            <label for="message" class="contact__label"
-              >Escriba su mensaje:</label
-            >
+            <label for="message" class="contact__label">Escriba su mensaje:</label>
             <textarea
               id="message"
-              v-model="message"
+              v-model="formData.body"
               class="contact__textarea"
               required
             ></textarea>

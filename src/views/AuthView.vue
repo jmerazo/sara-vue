@@ -4,11 +4,12 @@ import APIService from "@/services/APIService";
 import { useAuthTokenStore } from "@/stores/auth";
 import { locatesColombia } from "@/stores/locates"
 import { useRouter } from "vue-router";
-
+import { useToast } from "../helpers/ToastManagement";
 
 const locates = locatesColombia();
 const store = useAuthTokenStore();
 const router = useRouter();
+const { addToast } = useToast();
 
 const email = ref("");
 const password = ref("");
@@ -26,15 +27,18 @@ const handleLoginFirebase = async () => {
           name: "home-panel", // Nombre de la ruta de la vista del panel
         })
     } else {
-      showLoginError("Credenciales inválidas");
+      addToast(`Usuario: ${email.value} o credenciales invalidas`, {
+        type: 'warning',
+        duration: 4000
+      })
     }
   } catch (e) {
-    showLoginError(e.message);
+    addToast(e, {
+        type: 'error',
+        duration: 4000
+    })
   }
 };
-
-
-
 
 const formData = ref({
   document_type: "Cédula de ciudadanía",

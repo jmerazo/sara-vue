@@ -27,12 +27,21 @@ export const useNurseriesStore = defineStore('nurseries',()=>{
       return [{ lon: coords[1], lat: coords[0] }];
     })
 
+    const sendEmail = async(data) => {
+        try {
+            const response = await APIService.sendEmail(data);
+            return response;
+        } catch (error) {
+            console.error('Error sending email:', error);
+            throw error;
+        }
+    }
 
     return { 
         getNursery,
         nursery,
         nurseriesData,
-        filteredData
-        
+        filteredData,
+        sendEmail
     }
 })

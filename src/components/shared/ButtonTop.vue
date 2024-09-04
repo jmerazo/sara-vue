@@ -4,7 +4,7 @@
       class="button-top"
       @click="scrollToTop"
     >
-      ↑ Top
+      ↑
     </button>
   </template>
   
