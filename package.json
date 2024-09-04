@@ -47,6 +47,8 @@
     "markdown-it-ins": "^3.0.1",
     "markdown-it-prism": "^2.3.0",
     "ol": "^7.4.0",
+    "page-flip": "^2.0.7",
+    "pdfjs-dist": "^2.16.105",
     "pdfkit": "^0.15.0",
     "pdfmake": "^0.2.10",
     "pinia": "^2.1.3",

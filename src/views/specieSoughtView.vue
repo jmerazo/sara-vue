@@ -161,7 +161,7 @@ const initPageFlip = () => {
   });
 
   pageFlip.loadFromHTML(document.querySelectorAll('.page'));
-  
+
   pageFlip.on('flip', (e) => {
     currentPage.value = e.data;
   });
@@ -208,15 +208,17 @@ onUnmounted(() => {
   <div class="main">
     <QuoteButton></QuoteButton>
 
-    <div class="content">
-      <div class="flipbook-container">
-        <div id="book" ref="bookRef" :class="{ 'cover-view': currentPage === 0 }">
-          <div v-for="(image, index) in images" :key="index" class="page">
-            <img :src="image" :alt="`Page ${index + 1}`" />
-          </div>
+    <div class="flipbook">
+      <div id="book" class="book" ref="bookRef" :class="{ 'cover-view': currentPage === 0 }">
+        <div v-for="(image, index) in images" :key="index" class="page">
+          <img :src="image" :alt="`Page ${index + 1}`" />
         </div>
       </div>
-      
+    </div>
+
+    <div class="content">
+
+
       <!-- section 1 - information general -->
       <section class="general">
         <ImageSlider class="slider" v-if="geoStore.validImages.length > 0" />
@@ -390,7 +392,7 @@ onUnmounted(() => {
       <FlowerCalendar />
       <FruitCalendar />
       <!-- End section calendar flower  -->
-<!--       <div class="card__doc-container">
+      <!--       <div class="card__doc-container">
         <CardDoc :fileDoc="expectedData" />
       </div> -->
     </div>
@@ -402,6 +404,51 @@ onUnmounted(() => {
 </template>
 
 <style scoped>
+/* FLIPBOOK */
+.flipbook {
+  height: 500px; 
+  margin: 4rem 0;
+}
+
+@media (min-width: 768px) {
+  .flipbook {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    margin-bottom: 10rem;
+  }
+}
+
+.book {
+  transition: transform 0.5s ease;
+}
+
+.book {
+  transform: translateX(0);
+}
+
+@media (min-width: 768px) {
+  .book.cover-view {
+    transform: translateX(-25%);
+  }
+}
+
+.page img {
+  width: 60%;
+  height: auto;
+  object-fit: cover;
+}
+
+@media (min-width: 768px) {
+  .page img {
+    width: 100%;
+    height: 100%;
+  }
+}
+
+/* header */
 .card__doc-container {
   padding: 1rem;
   margin: 0 auto;
@@ -553,8 +600,6 @@ onUnmounted(() => {
   }
 }
 
-
-
 .list__component {
   margin-top: 3rem;
 }
@@ -586,8 +631,6 @@ onUnmounted(() => {
     line-height: 1.6;
   }
 }
-
-
 
 .section__information {
   margin-top: 8rem;
@@ -795,35 +838,5 @@ onUnmounted(() => {
   .jurisdiccion__titulo {
     font-size: 1.8rem;
   }
-}
-
-/* FLIPBOOK */
-.flipbook-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  margin-top: -3rem;
-  margin-bottom: 5rem;
-  overflow-x: hidden; /* Añade esta línea */
-  width: 100%; /* Asegúrate de que el contenedor ocupe todo el ancho */
-}
-
-#book {
-  transition: transform 0.5s ease;
-}
-
-#book.cover-view {
-  transform: translateX(-25%);
-}
-
-.page {
-  background-color: white;
-}
-
-.page img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
 }
 </style>
