@@ -13,30 +13,17 @@ const changeImage = (index) => {
 <template>
   <div class="contenido">
     <div class="vista__imagenes">
-      <div
-        class="imagen"
-        :style="{ transform: `translateX(-${currentIndex * 100}%)` }"
-      >
+      <div class="imagen" :style="{ transform: `translateX(-${currentIndex * 100}%)` }">
         <!-- activa -->
         <div v-for="(img, index) in geoStore.validImages" :key="index">
-          <div
-            class="imagen__activa"
-            :style="{ backgroundImage: 'url(' + img + ')' }"
-          ></div>
+          <div class="imagen__activa" :style="{ backgroundImage: 'url(' + img + ')' }"></div>
         </div>
       </div>
     </div>
     <div class="vista__minuaturas">
       <!-- Miniaturas  -->
-      <img
-        v-for="(img, index) in geoStore.validImages"
-        :key="'thumb-' + index"
-        :src="img"
-        :alt="'Miniatura ' + index"
-        class="imagen__miniatura"
-        :class="{ active: currentIndex === index }"
-        @click="changeImage(index)"
-      />
+      <img v-for="(img, index) in geoStore.validImages" :key="'thumb-' + index" :src="img" :alt="'Miniatura ' + index"
+        class="imagen__miniatura" :class="{ active: currentIndex === index }" @click="changeImage(index)" />
     </div>
   </div>
 </template>
@@ -45,7 +32,6 @@ const changeImage = (index) => {
 
 
 <style scoped>
-
 .contenido {
   /* overflow: hidden; */
   position: relative;
@@ -53,25 +39,54 @@ const changeImage = (index) => {
   flex-direction: column; */
   width: 100%;
 }
-.vista__imagenes {
-  width: 800px;
-  height: 496px;
-  margin: 0 auto;
-  overflow: hidden;
-  border-radius: .6rem;
-}
-.imagen {
-  display: flex;
-  width: 800px;
-  height: 496px;
-  transition: transform 0.3s ease; /* Transición suave para el deslizamiento */
-}
+
+.imagen,
+.vista__imagenes,
 .imagen__activa {
-  width: 800px;
-  height: 496px;
+
+  width: 350px;
+  height: 296px;
+
+}
+
+.vista__imagenes {
+ margin-left: -.3rem;
+ overflow: hidden;
+ border-radius: .6rem;
+}
+
+@media (min-width: 768px) {
+  .vista__imagenes {
+    margin: 0 auto;
+    overflow: hidden;
+    border-radius: .6rem;
+  }
+}
+
+.imagen {
+
+  display: flex;
+  transition: transform 0.3s ease;
+  /* Transición suave para el deslizamiento */
+}
+
+.imagen__activa {
+
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
+}
+
+@media (min-width: 768px) {
+
+  .imagen,
+  .vista__imagenes,
+  .imagen__activa {
+
+    width: 800px;
+    height: 496px;
+
+  }
 }
 
 .vista__minuaturas {
@@ -80,19 +95,21 @@ const changeImage = (index) => {
   justify-content: center;
   margin-top: 1rem;
 }
+
 .imagen__miniatura {
-  width: 60px; /* Tamaño de las miniaturas */
+  width: 60px;
+  /* Tamaño de las miniaturas */
   height: 50px;
   opacity: 0.5;
   cursor: pointer;
   border-radius: .3rem;
-  margin-right: 5px; /* Espacio entre miniaturas */
+  margin-right: 5px;
+  /* Espacio entre miniaturas */
 }
+
 .imagen__miniatura:hover,
 .imagen__miniatura.active {
-  opacity: 1; /* Opacidad completa cuando se selecciona o se pasa el mouse */
+  opacity: 1;
+  /* Opacidad completa cuando se selecciona o se pasa el mouse */
 }
 </style>
-
-
-  
