@@ -28,6 +28,7 @@ export const useEspeciesStore = defineStore('especies', () => {
       const { data } = await APIService.getSpecies();
       species.value = data;
       speciesOriginals.value = data;
+      
       const uniqueSpecies = [...new Map(data.map(specie => [specie.vernacularName, specie])).values()];
       uniqueNomComunes.value = uniqueSpecies.map(specie => ({
         vernacularName: specie.vernacularName,
@@ -83,7 +84,7 @@ export const useEspeciesStore = defineStore('especies', () => {
       window.scrollTo({ top: 0, behavior: 'smooth' }); // Mueve la página al inicio
     }
   
-    function selectSpecie(code_specie) {
+    function selectSpecie(code_specie) {      
       specie.value = speciesOriginals.value.filter(specie => specie.code_specie === code_specie)
       modal.handleClickModalSpecie();
     }

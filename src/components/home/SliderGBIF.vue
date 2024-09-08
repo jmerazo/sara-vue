@@ -45,7 +45,7 @@ onMounted(async () => {
 </script>
 
 <template>
-    <div class="species__gbif">
+    <section class="species__gbif">
         <h1 style="text-align: center;">GBIF - Datos de Especies Forestales</h1>
 
         <div class="list__slider">
@@ -76,7 +76,7 @@ onMounted(async () => {
 
         </div>
 
-    </div>
+    </section>
 </template>
 
 <style scoped>

@@ -3,7 +3,7 @@
 </script>
 
 <template>
-    <div class="fanPage">
+    <section class="fanPage">
         <div>
             <h1>Encuentra información de interés en nuestra página oficial de <span
                     style="color: #1877F2;">Facebook</span></h1>
@@ -16,7 +16,7 @@
             </iframe>
         </div>
 
-    </div>
+    </section>
 </template>
 
 

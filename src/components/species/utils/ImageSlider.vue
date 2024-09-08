@@ -33,10 +33,7 @@ const changeImage = (index) => {
 
 <style scoped>
 .contenido {
-  /* overflow: hidden; */
   position: relative;
-  /* display: flex;
-  flex-direction: column; */
   width: 100%;
 }
 
@@ -64,28 +61,23 @@ const changeImage = (index) => {
 }
 
 .imagen {
-
   display: flex;
   transition: transform 0.3s ease;
-  /* Transición suave para el deslizamiento */
 }
 
 .imagen__activa {
-
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
 }
 
 @media (min-width: 768px) {
-
   .imagen,
   .vista__imagenes,
   .imagen__activa {
 
     width: 800px;
     height: 496px;
-
   }
 }
 
@@ -98,18 +90,16 @@ const changeImage = (index) => {
 
 .imagen__miniatura {
   width: 60px;
-  /* Tamaño de las miniaturas */
   height: 50px;
   opacity: 0.5;
   cursor: pointer;
   border-radius: .3rem;
   margin-right: 5px;
-  /* Espacio entre miniaturas */
+  
 }
 
 .imagen__miniatura:hover,
 .imagen__miniatura.active {
   opacity: 1;
-  /* Opacidad completa cuando se selecciona o se pasa el mouse */
 }
 </style>

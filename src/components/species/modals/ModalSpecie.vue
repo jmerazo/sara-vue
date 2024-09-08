@@ -1,5 +1,5 @@
 <script setup>
-import { computed, ref } from "vue";
+import { computed, ref, onMounted } from "vue";
 import { useRoute } from "vue-router"
 import { useModalStore } from "@/stores/modal";
 import { useEspeciesStore } from "@/stores/species";
@@ -16,16 +16,18 @@ const route = useRoute();
 const queryPage = computed(() => route.name)
 
 
-const imagen = ref("");
+const imageSelected = ref(null);
 
 const verImg = (url) => {
-  imagen.value = getFullImageUrl(url);
+  console.log(url);
+  
+  imageSelected.value = getFullImageUrl(url);
 };
 //calendar.calendarFlower()
 
 
 const limpiarModal = () => {
-  imagen.value = "";
+  imageSelected.value = null;
 };
 
 function parseData(text) {
@@ -40,6 +42,8 @@ function parseData(text) {
   ;
 }
 
+
+
 </script>
 
 <template>
@@ -50,25 +54,28 @@ function parseData(text) {
         <div class="contenido__derecha">
           <div class="modal__flex">
             <div class="modal__imagen"
-              :style="{ backgroundImage: `url(${getFullImageUrl(specie.images[0].img_general)})` }">
-
+              @click="verImg(specie.images[0].img_general)"
+              :style="{ backgroundImage: `url(${imageSelected ? imageSelected : getFullImageUrl(specie.images[0].img_general)})` }">
+              
             </div>
+           
             <div class="modal__iconos">
               <img @click="verImg(specie.images[0].img_leafs)" class="modal__icono" src="/icons/hojas.png"
-                alt="external-leaves-plants-flaticons-lineal-color-flat-icons-2" />
+                alt="img-icon" />
               <img @click="verImg(specie.images[0].img_flowers)" class="modal__icono" src="/icons/flores.png"
-                alt="external-flowers-valentines-day-flatart-icons-lineal-color-flatarticons" />
+                alt="img-icon" />
               <img @click="verImg(specie.images[0].img_fruits)" class="modal__icono" src="/icons/frutos.png"
-                alt="external-fruits-farm-flaticons-lineal-color-flat-icons-2" />
+                alt="img-icon" />
               <img @click="verImg(specie.images[0].img_seeds)" class="modal__icono" src="/icons/semillas.png"
-                alt="external-fruits-farm-flaticons-lineal-color-flat-icons-2" />
+                alt="img-icon" />
               <img @click="verImg(specie.images[0].img_stem)" class="modal__icono" src="/icons/tallo.png"
-                alt="external-stem-plants-flaticons-lineal-color-flat-icons-2" />
+                alt="img-icon" />
             </div>
           </div>
         </div>
         <div class="contenido__izquierda">
           <div class="modal__info">
+           
             <h3 @click="verImg(specie.images[0].img_general)" class="modal__heading">
               {{ specie.vernacularName }}
             </h3>
@@ -80,6 +87,7 @@ function parseData(text) {
                 " " + specie.scientificNameAuthorship
               }}</span>
             </p>
+            <p>{{ specie.images[0].img_leafs }}</p>
             <p class="modal__texto">
               {{ specie.family }}
             </p>

@@ -15,6 +15,7 @@ const especies = useEspeciesStore();
 const reportGeneral = useEspeciesData();
 const valueSearched = ref("");
 const isSearching = computed(() => valueSearched.value !== "");
+const activeDownload = ref(false)
 
 //limpiar filtros antes de cambiar de vista
 onBeforeRouteLeave((to, from, next) => {
@@ -35,9 +36,21 @@ const displayedPageRange = computed(() => {
   );
 });
 
+const scrollToTop = () => {
+  window.scrollTo({
+    top: 0,
+    behavior: 'smooth', // Smooth scroll effect
+  });
+};
+
 onMounted(async () => {
+  scrollToTop()
   await especies.loadSpeciesSisa();
 });
+
+function showCardDownload() {
+  return activeDownload.value = !activeDownload.value
+}
 </script>
 <template>
   <div>
@@ -48,27 +61,13 @@ onMounted(async () => {
           <h1 class="especies__heading">Listado de especies forestales</h1>
 
           <div class="formulario">
-            <input
-              class="formulario__input"
-              type="text"
-              placeholder="Escribe un término de búsqueda"
-              v-model="valueSearched"
-              @input="especies.buscarTermino($event.target.value)"
-            />
+            <input class="formulario__input" type="text" placeholder="Escribe un término de búsqueda"
+              v-model="valueSearched" @input="especies.buscarTermino($event.target.value)" />
             <div class="formulario__icono">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke-width="1.5"
-                stroke="currentColor"
-                class="w-6 h-6"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="m15.75 15.75-2.489-2.489m0 0a3.375 3.375 0 1 0-4.773-4.773 3.375 3.375 0 0 0 4.774 4.774ZM21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
-                />
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                stroke="currentColor" class="w-6 h-6">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                  d="m15.75 15.75-2.489-2.489m0 0a3.375 3.375 0 1 0-4.773-4.773 3.375 3.375 0 0 0 4.774 4.774ZM21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
               </svg>
             </div>
           </div>
@@ -85,47 +84,70 @@ onMounted(async () => {
         </div>
       </div>
     </header>
-
     <!-- fin header vista especie -->
 
-    <div class="contenedor__principal">
-      <!-- Acordeón como tarjeta desplegable -->
-      <details class="accordion">
-        <summary class="accordion__header">Descargar Listados de Especies Forestales</summary>
-        <div class="accordion__content">
-          <!-- Primer div de descarga -->
-          <div class="download__forestSpecies">
-            <span class="text__exportSF">Exportar listado de especies forestales en proceso de elaboración de protocolo:</span>
-            <a @click="descargarExcel(reportGeneral.datosImport, `Listado_especies_forestales - ${obtenerFecha()}`)" class="button" href="#">
-              <font-awesome-icon class="button__excel" :icon="['fas', 'file-excel']"/>
-            </a>
-            <a @click="descargarPdfs(reportGeneral.datosImport,`Listado especies forestales - ${obtenerFecha()}`, 6, 0)" class="button" href="#">
-              <font-awesome-icon class="button__pdf" :icon="['fas', 'file-pdf']"/>
-            </a>
-          </div>
+    <!-- button download -->
 
-          <!-- Segundo div de descarga -->
-          <div class="download__forestSpecies">
-            <span class="text__exportSF">Exportar listado de especies SISA:</span>
-            <a @click="descargarExcel(especies.sisaList, `Listado_especies_forestales_SISA - ${obtenerFecha()}`)" class="button" href="#">
-              <font-awesome-icon class="button__excel" :icon="['fas', 'file-excel']"/>
-            </a>
-            <a @click="descargarPdfs(especies.sisaList,`Listado especies forestales_SISA - ${obtenerFecha()}`, 6, 0)" class="button" href="#">
-              <font-awesome-icon class="button__pdf" :icon="['fas', 'file-pdf']"/>
-            </a>
+    <div class="downloadSpecies" :style="{ 'height': activeDownload ? '500px' : '100px' }">
+      <button @click="showCardDownload()" class="downloadSpecies__button">
+        <svg class="downloadSpecies__icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+          <path
+            d="M3 19H21V21H3V19ZM13 13.1716L19.0711 7.1005L20.4853 8.51472L12 17L3.51472 8.51472L4.92893 7.1005L11 13.1716V2H13V13.1716Z">
+          </path>
+        </svg>
+        Descargar Especies Forestales
+      </button>
+
+      <div class="downloadSpecies__card" :style="{ 'margin-top': activeDownload ? '1rem' : '-29rem' }">
+        <div class="downloadSpecies__header">
+          <h3 class="downloadSpecies__title">Listado de especies forestales en proceso de elaboración de protocolo:</h3>
+          <div class="downloadSpecies__icons">
+            <svg @click="descargarPdfs(reportGeneral.datosImport,`Listado especies forestales - ${obtenerFecha()}`, 6, 0)" class="downloadSpecies__icon downloadSpecies__icon--red" xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24" fill="currentColor">
+              <path
+                d="M5 4H15V8H19V20H5V4ZM3.9985 2C3.44749 2 3 2.44405 3 2.9918V21.0082C3 21.5447 3.44476 22 3.9934 22H20.0066C20.5551 22 21 21.5489 21 20.9925L20.9997 7L16 2H3.9985ZM10.4999 7.5C10.4999 9.07749 10.0442 10.9373 9.27493 12.6534C8.50287 14.3757 7.46143 15.8502 6.37524 16.7191L7.55464 18.3321C10.4821 16.3804 13.7233 15.0421 16.8585 15.49L17.3162 13.5513C14.6435 12.6604 12.4999 9.98994 12.4999 7.5H10.4999ZM11.0999 13.4716C11.3673 12.8752 11.6042 12.2563 11.8037 11.6285C12.2753 12.3531 12.8553 13.0182 13.5101 13.5953C12.5283 13.7711 11.5665 14.0596 10.6352 14.4276C10.7999 14.1143 10.9551 13.7948 11.0999 13.4716Z">
+              </path>
+            </svg>
+            <svg @click="descargarExcel(reportGeneral.datosImport, `Listado_especies_forestales - ${obtenerFecha()}`)" class="downloadSpecies__icon downloadSpecies__icon--green" xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24" fill="currentColor">
+              <path
+                d="M13.2 12L16 16H13.6L12 13.7143L10.4 16H8L10.8 12L8 8H10.4L12 10.2857L13.6 8H15V4H5V20H19V8H16L13.2 12ZM3 2.9918C3 2.44405 3.44749 2 3.9985 2H16L20.9997 7L21 20.9925C21 21.5489 20.5551 22 20.0066 22H3.9934C3.44476 22 3 21.5447 3 21.0082V2.9918Z">
+              </path>
+            </svg>
           </div>
         </div>
-      </details>
+
+        <div class="downloadSpecies__header">
+          <h3 class="downloadSpecies__title">Listado de especies SISA:</h3>
+          <div class="downloadSpecies__icons">
+            <svg @click="descargarPdfs(especies.sisaList,`Listado especies forestales_SISA - ${obtenerFecha()}`, 6, 0)" class="downloadSpecies__icon downloadSpecies__icon--red" xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24" fill="currentColor">
+              <path
+                d="M5 4H15V8H19V20H5V4ZM3.9985 2C3.44749 2 3 2.44405 3 2.9918V21.0082C3 21.5447 3.44476 22 3.9934 22H20.0066C20.5551 22 21 21.5489 21 20.9925L20.9997 7L16 2H3.9985ZM10.4999 7.5C10.4999 9.07749 10.0442 10.9373 9.27493 12.6534C8.50287 14.3757 7.46143 15.8502 6.37524 16.7191L7.55464 18.3321C10.4821 16.3804 13.7233 15.0421 16.8585 15.49L17.3162 13.5513C14.6435 12.6604 12.4999 9.98994 12.4999 7.5H10.4999ZM11.0999 13.4716C11.3673 12.8752 11.6042 12.2563 11.8037 11.6285C12.2753 12.3531 12.8553 13.0182 13.5101 13.5953C12.5283 13.7711 11.5665 14.0596 10.6352 14.4276C10.7999 14.1143 10.9551 13.7948 11.0999 13.4716Z">
+              </path>
+            </svg>
+            <svg @click="descargarExcel(especies.sisaList, `Listado_especies_forestales_SISA - ${obtenerFecha()}`)" class="downloadSpecies__icon downloadSpecies__icon--green" xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24" fill="currentColor">
+              <path
+                d="M13.2 12L16 16H13.6L12 13.7143L10.4 16H8L10.8 12L8 8H10.4L12 10.2857L13.6 8H15V4H5V20H19V8H16L13.2 12ZM3 2.9918C3 2.44405 3.44749 2 3.9985 2H16L20.9997 7L21 20.9925C21 21.5489 20.5551 22 20.0066 22H3.9934C3.44476 22 3 21.5447 3 21.0082V2.9918Z">
+              </path>
+            </svg>
+          </div>
+        </div>
+        <!-- <button @click="showCardDownload()" class="downloadSpecies__close">Cerrar</button> -->
+      </div>
     </div>
-  
+
+
+
+    <!-- end button download -->
+
+
+
     <!-- listado especies -->
-    <main class="especies">      
+    <main class="especies">
       <div class="especies__grid">
-        <Species
-          v-for="especie in especies.displayedEspecies"
-          :key="especie.id"
-          :specie="especie"
-        />
+        <Species v-for="especie in especies.displayedEspecies" :key="especie.id" :specie="especie" />
       </div>
     </main>
     <!-- fin listado especies -->
@@ -134,49 +156,32 @@ onMounted(async () => {
     <section class="paginador">
       <div class="paginador__botones">
         <!-- Botón de inicio -->
-        <button
-          class="paginador__boton paginador__boton--inicio"
-          v-if="especies.currentPage > 1"
-          @click="especies.goToFirstPage"
-        >
+        <button class="paginador__boton paginador__boton--inicio" v-if="especies.currentPage > 1"
+          @click="especies.goToFirstPage">
           <font-awesome-icon :icon="['fas', 'angle-double-left']" />
         </button>
 
         <!-- Botón anterior -->
-        <button
-          class="paginador__boton paginador__boton--anterior"
-          v-if="especies.currentPage > 1"
-          @click="especies.changePage(especies.currentPage - 1)"
-        >
+        <button class="paginador__boton paginador__boton--anterior" v-if="especies.currentPage > 1"
+          @click="especies.changePage(especies.currentPage - 1)">
           <font-awesome-icon :icon="['fas', 'angle-left']" />
         </button>
 
         <!-- Botones de número de página -->
-        <button
-          v-for="page in displayedPageRange"
-          :key="page"
-          @click="especies.changePage(page)"
-          class="paginador__boton"
-          :class="{ 'paginador__boton-actual': page === especies.currentPage }"
-        >
+        <button v-for="page in displayedPageRange" :key="page" @click="especies.changePage(page)"
+          class="paginador__boton" :class="{ 'paginador__boton-actual': page === especies.currentPage }">
           {{ page }}
         </button>
 
         <!-- Botón siguiente -->
-        <button
-          class="paginador__boton paginador__boton--siguiente"
-          v-if="especies.currentPage < especies.totalPages"
-          @click="especies.changePage(especies.currentPage + 1)"
-        >
+        <button class="paginador__boton paginador__boton--siguiente" v-if="especies.currentPage < especies.totalPages"
+          @click="especies.changePage(especies.currentPage + 1)">
           <font-awesome-icon :icon="['fas', 'angle-right']" />
         </button>
 
         <!-- Botón de final -->
-        <button
-          class="paginador__boton paginador__boton--final"
-          v-if="especies.currentPage < especies.totalPages"
-          @click="especies.goToLastPage"
-        >
+        <button class="paginador__boton paginador__boton--final" v-if="especies.currentPage < especies.totalPages"
+          @click="especies.goToLastPage">
           <font-awesome-icon :icon="['fas', 'angle-double-right']" />
         </button>
       </div>
@@ -194,11 +199,116 @@ onMounted(async () => {
     </section>
     <!--fin texto validacion buscador -->
   </div>
-  <ButtonTop/>
-  <ModalSpecie/>
+  <ButtonTop />
+  <ModalSpecie />
 </template>
 
 <style scoped>
+.downloadSpecies {
+  margin-top: 2rem;
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  z-index: 1;
+  transition: all .3s ease-in-out;
+  overflow: hidden;
+}
+
+@media (min-width: 768px) {
+  .downloadSpecies {
+    left: 40%;
+    margin-top: 5rem;
+  }
+}
+
+.downloadSpecies__button {
+  margin: 0 auto;
+  width: 80%;
+  padding: .5rem;
+  border-radius: 1rem;
+  font-weight: bold;
+  background-color: var(--gris);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+  font-size: 1rem;
+}
+
+@media (min-width: 768px) {
+  .downloadSpecies__button {
+    padding: 1rem;
+    gap: .5rem;
+    width: 90%;
+    font-size: 1.2rem;
+  }
+}
+
+.downloadSpecies__icon {
+  width: 2rem;
+  fill: currentColor;
+}
+
+.downloadSpecies__card {
+  width: 320px;
+  margin: 0 auto;
+  background-color: white;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.05);
+  border-radius: 1rem;
+  padding: 2rem;
+  z-index: 0;
+  transition: all .3s ease-in-out;
+}
+
+@media (min-width: 768px) {
+  .downloadSpecies__card {
+    width: 400px;
+  }
+}
+
+.downloadSpecies__header {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.downloadSpecies__title {
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.downloadSpecies__icons {
+  display: flex;
+}
+.downloadSpecies__icons svg{
+  cursor: pointer;
+}
+
+.downloadSpecies__icon--red {
+  width: 3.5rem;
+  fill: red;
+}
+
+.downloadSpecies__icon--green {
+  width: 3.5rem;
+  fill: green;
+}
+
+.downloadSpecies__close {
+  margin-top: 1rem;
+  padding: 0.5rem 1rem;
+  background-color: var(--gris);
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+  text-align: center;
+  border-radius: 0.5rem;
+}
+
+
+
 /* header */
 .especies__heading {
   font-size: 1.5rem;
@@ -233,12 +343,14 @@ onMounted(async () => {
   justify-content: center;
   flex-direction: column;
 }
+
 .header_formulario {
   display: flex;
   flex-direction: column;
   width: 100%;
   margin: 0 auto;
 }
+
 @media (min-width: 768px) {
   .header_formulario {
     width: 80%;
@@ -263,25 +375,30 @@ onMounted(async () => {
   border-radius: 1rem;
   font-size: 0.95rem;
 }
+
 .formulario__icono {
   width: 2rem;
   color: var(--gris);
   display: flex;
 }
+
 .formulario__resultados {
   text-align: center;
   max-width: 80%;
   margin: 0.2rem auto;
 }
+
 @media (min-width: 768px) {
   .formulario {
     width: 60%;
   }
+
   .formulario__input {
     padding: 0.8rem;
     border-radius: 1rem;
     font-size: 1rem;
   }
+
   .formulario__icono {
     width: 2rem;
     color: var(--gris);
@@ -291,21 +408,24 @@ onMounted(async () => {
 
 /* main */
 .especies {
-  margin-top: 2rem;
+  margin-top: 8rem;
 }
+
 @media (min-width: 768px) {
   .especies {
     display: flex;
     margin: 0 auto;
-    margin-top: 5rem;
+    margin-top: 15rem;
   }
 }
+
 .especies__grid {
   display: grid;
   gap: 1.5rem;
   width: 80%;
   margin: 0 auto;
 }
+
 @media (min-width: 600px) {
   .especies__grid {
     display: grid;
@@ -314,6 +434,7 @@ onMounted(async () => {
     margin: 0 auto;
   }
 }
+
 @media (min-width: 992px) {
   .especies__grid {
     display: grid;
@@ -322,6 +443,7 @@ onMounted(async () => {
     margin: 0 auto;
   }
 }
+
 @media (min-width: 1300px) {
   .especies__grid {
     display: grid;
@@ -329,6 +451,7 @@ onMounted(async () => {
     gap: 1rem;
   }
 }
+
 @media (min-width: 1800px) {
   .especies__grid {
     display: grid;
@@ -375,19 +498,26 @@ onMounted(async () => {
 /* Contenedor principal para alinear la tarjeta a la derecha */
 .contenedor__principal {
   display: flex;
-  justify-content: flex-end; /* Alinea el acordeón a la derecha */
+  justify-content: flex-end;
+  /* Alinea el acordeón a la derecha */
   padding: 1rem;
 }
 
 /* Estilos del acordeón como tarjeta desplegable */
 .accordion {
-  width: 500px; /* Ancho fijo de la tarjeta */
+  width: 500px;
+  /* Ancho fijo de la tarjeta */
   margin-top: 1.5rem;
-  border: 1px solid #ddd; /* Borde del acordeón */
-  border-radius: 8px; /* Borde redondeado */
-  overflow: hidden; /* Asegura que el contenido no se desborde */
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra para dar efecto de tarjeta */
-  background-color: var(--blanco); /* Color de fondo de la tarjeta */
+  border: 1px solid #ddd;
+  /* Borde del acordeón */
+  border-radius: 8px;
+  /* Borde redondeado */
+  overflow: hidden;
+  /* Asegura que el contenido no se desborde */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  /* Sombra para dar efecto de tarjeta */
+  background-color: var(--blanco);
+  /* Color de fondo de la tarjeta */
 }
 
 /* Estilos del encabezado del acordeón */
@@ -399,49 +529,60 @@ onMounted(async () => {
   font-size: 1.2rem;
   color: var(--gris);
   display: flex;
-  justify-content: space-between; /* Espacio entre el título y cualquier icono */
+  justify-content: space-between;
+  /* Espacio entre el título y cualquier icono */
 }
 
 .accordion__header:hover {
-  background-color: var(--gris-claro); /* Color de fondo al pasar el ratón */
+  background-color: var(--gris-claro);
+  /* Color de fondo al pasar el ratón */
 }
 
 /* Estilos del contenido del acordeón */
 .accordion__content {
   padding: 1rem;
   display: flex;
-  flex-direction: column; /* Mantiene los divs en una columna */
-  gap: 1rem; /* Espacio entre los divs */
+  flex-direction: column;
+  /* Mantiene los divs en una columna */
+  gap: 1rem;
+  /* Espacio entre los divs */
 }
 
 /* Estilos de descarga */
 .download__forestSpecies {
   display: flex;
   align-items: center;
-  justify-content: space-between; /* Distribuye espacio entre el texto y los botones */
+  justify-content: space-between;
+  /* Distribuye espacio entre el texto y los botones */
   margin-top: 1rem;
 }
 
 @media (max-width: 600px) {
   .download__forestSpecies {
     justify-content: center;
-    flex-direction: column; /* En pantallas pequeñas, coloca el contenido en una columna */
-    text-align: center; /* Centra el texto */
+    flex-direction: column;
+    /* En pantallas pequeñas, coloca el contenido en una columna */
+    text-align: center;
+    /* Centra el texto */
   }
 }
 
 .button {
-  margin-left: 1rem; /* Ajusta el margen a la izquierda para separar los botones del texto */
+  margin-left: 1rem;
+  /* Ajusta el margen a la izquierda para separar los botones del texto */
 }
 
 .button__excel,
 .button__pdf {
-  font-size: 2rem; /* Tamaño del icono */
+  font-size: 2rem;
+  /* Tamaño del icono */
 }
 
 .text__exportSF {
   font-weight: bold;
-  margin-right: 1rem; /* Ajusta el margen a la derecha del texto */
-  flex-grow: 1; /* Hace que el texto ocupe el espacio restante */
+  margin-right: 1rem;
+  /* Ajusta el margen a la derecha del texto */
+  flex-grow: 1;
+  /* Hace que el texto ocupe el espacio restante */
 }
 </style>
