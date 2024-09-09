@@ -213,33 +213,22 @@ const router = createRouter({
   ],
 });
 
+
+// En tu archivo de router
 router.beforeEach(async (to, from, next) => {
   const authStore = useAuthTokenStore();
-  const homeStore = useHomeStore();
+  const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
 
-  if (to.matched.some((record) => record.meta.isMaintenance)) {
-    if (homeStore.maintenance) {
-      return next("/maintenance");
-    }
-  }
-
-  if (to.matched.some((record) => record.meta.auth)) {
-    const isAuthenticated = await authStore.checkTokenValidity();
+  if (requiresAuth) {
+    const isAuthenticated = await authStore.checkAuth();
     if (!isAuthenticated) {
-      console.log("No autenticado, redirigiendo a /auth");
-      return next("/auth");
+      next('/auth');
+    } else {
+      next();
     }
-
-    if (to.meta.roles && to.meta.roles.length) {
-      const userRole = authStore.userData?.role;
-      if (!userRole || !to.meta.roles.includes(userRole)) {
-        console.log("Usuario no tiene los roles necesarios");
-        return next("/auth");
-      }
-    }
+  } else {
+    next();
   }
-
-  next();
 });
 
 /* router.beforeEach(async (to, from, next) => {

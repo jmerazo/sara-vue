@@ -1,42 +1,50 @@
 <script setup>
-import { ref, computed } from "vue";
-import APIService from "@/services/APIService";
+import { ref, computed, onMounted } from "vue";
+import { useReCaptcha } from "vue-recaptcha-v3";
 import { useAuthTokenStore } from "@/stores/auth";
+import { useUsersStore } from "@/stores/users"
 import { locatesColombia } from "@/stores/locates"
 import { useRouter } from "vue-router";
 import { useToast } from "../helpers/ToastManagement";
+import LoadingData from "@/components/shared/LoadingData.vue";
+import { getAuth, signInWithPopup, GoogleAuthProvider, OAuthProvider } from 'firebase/auth';
 
 const locates = locatesColombia();
 const store = useAuthTokenStore();
+const usersStore = useUsersStore();
 const router = useRouter();
 const { addToast } = useToast();
+const auth = getAuth();
+
+const { executeRecaptcha, recaptchaLoaded } = useReCaptcha();
 
 const email = ref("");
 const password = ref("");
-
 const error = ref(null);
-const isRequest = ref(false)
+const isRequest = ref(false);
+const isRequestOAuth2 = ref(true);
 
 const handleLoginFirebase = async () => {
   try {
-    const response = await store.loginFirebase(email.value, password.value)
+    await recaptchaLoaded();
+    const recaptchaToken = await executeRecaptcha('login');
+    const response = await store.loginFirebase(email.value, password.value, recaptchaToken);
     
     if (response.success) {
-      router
-        .push({
-          name: "home-panel", // Nombre de la ruta de la vista del panel
-        })
+      router.push({
+        name: "home-panel",
+      });
     } else {
-      addToast(`Usuario: ${email.value} o credenciales invalidas`, {
+      addToast(`Usuario: ${email.value} o credenciales inválidas`, {
         type: 'warning',
         duration: 4000
-      })
+      });
     }
   } catch (e) {
     addToast(e, {
-        type: 'error',
-        duration: 4000
-    })
+      type: 'error',
+      duration: 4000
+    });
   }
 };
 
@@ -54,115 +62,139 @@ const formData = ref({
 });
 
 function changeForm() {
-  isRequest.value = !isRequest.value
-  return isRequest.value
+  isRequest.value = !isRequest.value;
+  return isRequest.value;
 }
 
 const filteredCities = computed(() => {
   const { department } = formData.value;
-
   if (department) {
-    const filtered = locates.cities.filter(
-      (city) => city.department === department
-    );
-    console.log('filtered: ', filtered)
-    return filtered;
+    return locates.cities.filter(city => city.department === department);
   }
   return [];
 });
-
 
 async function sendData(e) {
   e.preventDefault();
 
   if (isRequest.value) {
-
     if (Object.values(formData.value).includes('')) {
-      showLoginError('Todos los campos son obligatorios')
-      setTimeout(() => {
-        error.value = null
-      }, 3000)
-
-      return
+      showLoginError('Todos los campos son obligatorios');
+      return;
     }
     if (formData.value.password !== formData.value.confirm_password) {
-      showLoginError('Las contraseñas no coinciden')
-      setTimeout(() => {
-        error.value = null
-      }, 3000)
-
-      return
+      showLoginError('Las contraseñas no coinciden');
+      return;
     }
-    //function to validate and create new user
     try {
-      await APIService.createUsers(formData.value);
-      resetForm()
+      const recaptchaToken = await executeRecaptcha('register');
+      await usersStore.createUser({ ...formData.value, recaptcha_token: recaptchaToken });
+      resetForm();
       window.location.reload();
     } catch (error) {
       console.log(error);
+      addToast('Error en el registro', { type: 'error', duration: 4000 });
     }
   } else {
     if (email.value === '' || password.value === '') {
-      showLoginError('Todos los campos son obligatorios')
-      setTimeout(() => {
-        error.value = null
-      }, 3000)
-
-      return
+      showLoginError('Todos los campos son obligatorios');
+      return;
     }
-    //function to sign in
-    handleLoginFirebase()
+    handleLoginFirebase();
   }
+}
 
+async function handleSocialRegister(provider) {
+  try {
+    let authProvider;
+    switch(provider) {
+      case 'google':
+        authProvider = new GoogleAuthProvider();
+        break;
+      case 'microsoft':
+        authProvider = new OAuthProvider('microsoft.com');
+        break;
+      default:
+        throw new Error('Proveedor no soportado');
+    }
+
+    const result = await signInWithPopup(auth, authProvider);
+    const user = result.user;
+
+    // Preparar datos para el registro social
+    const socialUserData = {
+      email: user.email,
+      first_name: user.displayName?.split(' ')[0] || '',
+      last_name: user.displayName?.split(' ').slice(1).join(' ') || '',
+      uuid_firebase: user.uid,
+      provider: provider,
+      is_social_auth: true,
+      department: 0,
+      city: 1128
+    };
+
+    // Enviar datos directamente al backend
+    try {
+      await usersStore.createUser(socialUserData);
+      addToast('Registro social exitoso. Por favor, complete su perfil.', { type: 'success', duration: 4000 });
+      // Redirigir al usuario o mostrar mensaje para completar perfil
+      window.location.reload();
+    } catch (error) {
+      addToast('Error en el registro con red social', { type: 'error', duration: 4000 });
+    }
+  } catch (error) {
+    addToast('Error en la autenticación con red social', { type: 'error', duration: 4000 });
+  }
 }
 
 function resetForm() {
   Object.keys(formData.value).forEach((key) => {
-    formData.key = "";
+    formData.value[key] = "";
   });
 }
-
 
 function showLoginError(message) {
   error.value = message;
   setTimeout(() => {
     error.value = null;
-  }, 3000); // El mensaje de error desaparecerá después de 3 segundos
-};
+  }, 3000);
+}
 </script>
 
 <template>
   <div class="container__login" :class="{ 'mode__signin': isRequest }">
     <div class="login__content">
+      
       <div class="forms">
+        <div class="loading__auth" :class="{ active: store.loading }">
+          <LoadingData v-if="store.loading" />
+        </div>
 
-        <!-- form to sign in -->
-        <form class="form__sign-in">
+        <!-- form to sign int -->
+        <form class="form__sign-in" @submit.prevent="sendData">
           <h2 class="title">Iniciar sesión</h2>
           <div class="form__field">
             <div class="icon">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                <path
-                  d="M3 3H21C21.5523 3 22 3.44772 22 4V20C22 20.5523 21.5523 21 21 21H3C2.44772 21 2 20.5523 2 20V4C2 3.44772 2.44772 3 3 3ZM20 7.23792L12.0718 14.338L4 7.21594V19H20V7.23792ZM4.51146 5L12.0619 11.662L19.501 5H4.51146Z">
+                <path d="M3 3H21C21.5523 3 22 3.44772 22 4V20C22 20.5523 21.5523 21 21 21H3C2.44772 21 2 20.5523 2 20V4C2 3.44772 2.44772 3 3 3ZM20 7.23792L12.0718 14.338L4 7.21594V19H20V7.23792ZM4.51146 5L12.0619 11.662L19.501 5H4.51146Z">
                 </path>
               </svg>
             </div>
-
             <input type="text" v-model="email" placeholder="Correo electrónico">
           </div>
           <div class="form__field">
             <div class="icon">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                <path
-                  d="M18 8H20C20.5523 8 21 8.44772 21 9V21C21 21.5523 20.5523 22 20 22H4C3.44772 22 3 21.5523 3 21V9C3 8.44772 3.44772 8 4 8H6V7C6 3.68629 8.68629 1 12 1C15.3137 1 18 3.68629 18 7V8ZM5 10V20H19V10H5ZM11 14H13V16H11V14ZM7 14H9V16H7V14ZM15 14H17V16H15V14ZM16 8V7C16 4.79086 14.2091 3 12 3C9.79086 3 8 4.79086 8 7V8H16Z">
+                <path d="M18 8H20C20.5523 8 21 8.44772 21 9V21C21 21.5523 20.5523 22 20 22H4C3.44772 22 3 21.5523 3 21V9C3 8.44772 3.44772 8 4 8H6V7C6 3.68629 8.68629 1 12 1C15.3137 1 18 3.68629 18 7V8ZM5 10V20H19V10H5ZM11 14H13V16H11V14ZM7 14H9V16H7V14ZM15 14H17V16H15V14ZM16 8V7C16 4.79086 14.2091 3 12 3C9.79086 3 8 4.79086 8 7V8H16Z">
                 </path>
               </svg>
             </div>
             <input type="password" v-model="password" placeholder="Contraseña">
           </div>
           <p v-if="error" class="error">{{ error }}</p>
-          <input @click="sendData" type="submit" value="Ingresar" class="login__button solid">
+          <input type="submit" value="Ingresar" class="login__button solid">
         </form>
+        
         <!-- form to sign out -->
         <form class="form__sign-up">
           <h2 class="title">Solicitar ingreso</h2>
@@ -279,6 +311,17 @@ function showLoginError(message) {
           </div>
           <p v-if="error" class="error">{{ error }}</p>
           <input @click="sendData" type="submit" value="Enviar" class="login__button solid">
+          <div class="content__registerOauth2">
+            <span>Registrarse con: </span><br>
+            <div class="logos__container">
+              <button @click="handleSocialRegister('google')">
+                <img src="/icons/google.png" class="logos__oauth2">
+              </button>
+              <button @click="handleSocialRegister('microsoft')">
+                <img src="/icons/outlook.png" class="logos__oauth2">
+              </button>
+            </div>
+          </div>
         </form>
       </div>
     </div>
@@ -321,6 +364,22 @@ function showLoginError(message) {
   font-weight: 500;
 }
 
+.content__registerOauth2 {
+  text-align: center;
+}
+
+.logos__container {
+  display: flex;
+  justify-content: center;
+  margin-top: 0.5rem;
+}
+
+.logos__oauth2 {
+  width: 2rem;
+  margin: 0 0.5rem;
+  background-color: transparent; /* Asegura que el fondo sea transparente */
+}
+
 .container__login {
   position: relative;
   width: 100%;
@@ -350,6 +409,31 @@ function showLoginError(message) {
   height: 100%;
   top: 0;
   left: 0;
+}
+
+.loading__auth {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(255, 255, 255, 0.8); /* Fondo semi-transparente */
+  z-index: 10; /* Asegura que esté por encima del formulario */
+}
+
+.loading__auth {
+  /* ... otros estilos ... */
+  transition: opacity 0.3s ease-in-out;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.loading__auth.active {
+  opacity: 1;
+  pointer-events: auto;
 }
 
 .forms {

@@ -47,9 +47,9 @@ export const useUsersStore = defineStore("useUsersStore", () => {
     { deep: true }
   );
 
-  async function createUser (data) {
+  async function createUser (data, recaptcha_token) {
     try{
-      const response = await APIService.createUsers(data)
+      const response = await APIService.createUsers(data, recaptcha_token)
       
       if (response.status === 201) {
         users.value.push(response.data); // Agrega el nuevo objeto al array

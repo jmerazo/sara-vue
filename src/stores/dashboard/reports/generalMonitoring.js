@@ -25,8 +25,6 @@ export const useGeneralMonitoring = defineStore("generalMonitoring", () => {
   const placas = ref({});
   const isEdit = ref(false)
   const error = ref("");
-  
-
 
   onMounted(async () => {
     cargando.value = true;

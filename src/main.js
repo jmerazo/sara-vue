@@ -2,13 +2,13 @@ import "./assets/main.css";
 
 import { createApp } from "vue";
 import { createPinia } from "pinia";
+import { VueReCaptcha } from 'vue-recaptcha-v3'
 
 import App from "./App.vue";
 import router from "./router";
 
 import "../src/assets/styles.css";
 import "../src/assets/normalize.css";
-import Toaster from "@meforma/vue-toaster";
 
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { library } from "@fortawesome/fontawesome-svg-core";
@@ -29,10 +29,13 @@ library.add(fas, fab, faCopy, faCircleUser);
 
 app.use(createPinia());
 app.use(router);
-app.use(Toaster, {
-  position: "top-right",
-  duration: 5000,
-});
+app.use(VueReCaptcha, {
+  siteKey: '6Lce8DcqAAAAAGgDW7_virMFwDDTLizlLqdh7i7-',
+  loaderOptions: {
+    useRecaptchaNet: true,
+    autoHideBadge: false  // Cambia a true si quieres ocultar el badge
+  }
+})
 app.component("font-awesome-icon", FontAwesomeIcon);
 
 

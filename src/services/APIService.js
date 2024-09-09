@@ -20,8 +20,8 @@ export default {
     socialAuth(code){
         return api.post('/auth/callback', { code: code })
     },
-    loginFirebase(token){
-        return api.post('/auth/login',  { token })
+    loginFirebase(token, recaptchaToken) {
+        return api.post('/auth/login', { token, recaptcha_token: recaptchaToken })
     },
     getRoles(){
         return api.get('/users/roles')
@@ -59,7 +59,7 @@ export default {
         return api.get('/species/family/filter')
     },
     getFamiliesData(){
-        return api.get('/species/families')
+        return api.get('/species/families/')
     },
     
     // Retorna las especies buscadas por su nombre de familia -- http://localhost:8000/api/species/search/family/BIGNONIACEAE
@@ -202,8 +202,8 @@ export default {
     getUsers(){
         return api.get('/users/')
     },
-    createUsers(data){
-        return api.post('/users/', data)
+    createUsers(data, recaptcha_token){
+        return api.post('/users/', data, recaptcha_token)
     },
     updateUsers(uid, data){
         return api.put(`/users/${uid}`, data)
