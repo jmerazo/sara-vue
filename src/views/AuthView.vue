@@ -29,7 +29,7 @@ const handleLoginFirebase = async () => {
     await recaptchaLoaded();
     const recaptchaToken = await executeRecaptcha('login');
     const response = await store.loginFirebase(email.value, password.value, recaptchaToken);
-    
+
     if (response.success) {
       router.push({
         name: "home-panel",
@@ -107,7 +107,7 @@ async function sendData(e) {
 async function handleSocialRegister(provider) {
   try {
     let authProvider;
-    switch(provider) {
+    switch (provider) {
       case 'google':
         authProvider = new GoogleAuthProvider();
         break;
@@ -164,7 +164,7 @@ function showLoginError(message) {
 <template>
   <div class="container__login" :class="{ 'mode__signin': isRequest }">
     <div class="login__content">
-      
+
       <div class="forms">
         <div class="loading__auth" :class="{ active: store.loading }">
           <LoadingData v-if="store.loading" />
@@ -176,7 +176,8 @@ function showLoginError(message) {
           <div class="form__field">
             <div class="icon">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M3 3H21C21.5523 3 22 3.44772 22 4V20C22 20.5523 21.5523 21 21 21H3C2.44772 21 2 20.5523 2 20V4C2 3.44772 2.44772 3 3 3ZM20 7.23792L12.0718 14.338L4 7.21594V19H20V7.23792ZM4.51146 5L12.0619 11.662L19.501 5H4.51146Z">
+                <path
+                  d="M3 3H21C21.5523 3 22 3.44772 22 4V20C22 20.5523 21.5523 21 21 21H3C2.44772 21 2 20.5523 2 20V4C2 3.44772 2.44772 3 3 3ZM20 7.23792L12.0718 14.338L4 7.21594V19H20V7.23792ZM4.51146 5L12.0619 11.662L19.501 5H4.51146Z">
                 </path>
               </svg>
             </div>
@@ -185,7 +186,8 @@ function showLoginError(message) {
           <div class="form__field">
             <div class="icon">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M18 8H20C20.5523 8 21 8.44772 21 9V21C21 21.5523 20.5523 22 20 22H4C3.44772 22 3 21.5523 3 21V9C3 8.44772 3.44772 8 4 8H6V7C6 3.68629 8.68629 1 12 1C15.3137 1 18 3.68629 18 7V8ZM5 10V20H19V10H5ZM11 14H13V16H11V14ZM7 14H9V16H7V14ZM15 14H17V16H15V14ZM16 8V7C16 4.79086 14.2091 3 12 3C9.79086 3 8 4.79086 8 7V8H16Z">
+                <path
+                  d="M18 8H20C20.5523 8 21 8.44772 21 9V21C21 21.5523 20.5523 22 20 22H4C3.44772 22 3 21.5523 3 21V9C3 8.44772 3.44772 8 4 8H6V7C6 3.68629 8.68629 1 12 1C15.3137 1 18 3.68629 18 7V8ZM5 10V20H19V10H5ZM11 14H13V16H11V14ZM7 14H9V16H7V14ZM15 14H17V16H15V14ZM16 8V7C16 4.79086 14.2091 3 12 3C9.79086 3 8 4.79086 8 7V8H16Z">
                 </path>
               </svg>
             </div>
@@ -194,7 +196,7 @@ function showLoginError(message) {
           <p v-if="error" class="error">{{ error }}</p>
           <input type="submit" value="Ingresar" class="login__button solid">
         </form>
-        
+
         <!-- form to sign out -->
         <form class="form__sign-up">
           <h2 class="title">Solicitar ingreso</h2>
@@ -279,8 +281,8 @@ function showLoginError(message) {
                 </path>
               </svg>
             </div>
-            <select :disabled="filteredCities.length === 0" v-model="formData.city"
-              style="color: gray;" name="city" id="city">
+            <select :disabled="filteredCities.length === 0" v-model="formData.city" style="color: gray;" name="city"
+              id="city">
               <option value="">--Ciudad--</option>
               <option v-for="city in filteredCities" :key="city.id" :value="city.id">
                 {{ city.name }}
@@ -311,18 +313,22 @@ function showLoginError(message) {
           </div>
           <p v-if="error" class="error">{{ error }}</p>
           <input @click="sendData" type="submit" value="Enviar" class="login__button solid">
-        </form>
-        <div class="content__registerOauth2">
-          <span>Registrarse con: </span><br>
-          <div class="logos__container">
-            <button @click="handleSocialRegister('google')">
-              <img src="/icons/google.png" class="logos__oauth2">
-            </button>
-            <button @click="handleSocialRegister('microsoft')">
-              <img src="/icons/outlook.png" class="logos__oauth2">
-            </button>
+
+          <div class="content__registerOauth2">
+            <p>Registrarse con: </p>
+            <div class="logos__container">
+
+              <div class="logo" @click="handleSocialRegister('google')">
+                <img src="/icons/google.png" class="logos__oauth2">
+              </div>
+
+              <div class="logo" @click="handleSocialRegister('microsoft')">
+                <img src="/icons/outlook.png" class="logos__oauth2">
+              </div>
+
+            </div>
           </div>
-        </div>
+        </form>
       </div>
     </div>
     <div class="walls__container">
@@ -343,6 +349,7 @@ function showLoginError(message) {
         <div class="wall__content">
           <h3>¿Ya eres usuario SARA? </h3>
           <p>Si tienes una cuenta validada ingresa tus credenciales</p>
+
           <button @click="changeForm" class="login__button transparent">
             Ingresar
           </button>
@@ -365,19 +372,40 @@ function showLoginError(message) {
 }
 
 .content__registerOauth2 {
+  margin: 1rem 0 3rem 0;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: .5rem;
+}
+
+.content__registerOauth2 p {
   text-align: center;
+  margin: 0;
+  font-weight: bold;
+  color: var(--gris);
 }
 
 .logos__container {
   display: flex;
+  gap: 1rem;
   justify-content: center;
   margin-top: 0.5rem;
+}
+
+.logos__container .logo {
+  transition: all .3s ease-in-out;
+}
+
+.logos__container .logo:hover {
+  transform: scale(1.2);
 }
 
 .logos__oauth2 {
   width: 2rem;
   margin: 0 0.5rem;
-  background-color: transparent; /* Asegura que el fondo sea transparente */
+  background-color: transparent;
+  /* Asegura que el fondo sea transparente */
 }
 
 .container__login {
@@ -420,8 +448,10 @@ function showLoginError(message) {
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: rgba(255, 255, 255, 0.8); /* Fondo semi-transparente */
-  z-index: 10; /* Asegura que esté por encima del formulario */
+  background-color: rgba(255, 255, 255, 0.8);
+  /* Fondo semi-transparente */
+  z-index: 10;
+  /* Asegura que esté por encima del formulario */
 }
 
 .loading__auth {
@@ -637,7 +667,7 @@ form.form__sign-up {
 
 @media (max-width: 870px) {
   .container__login {
-    min-height: 800px;
+    min-height: 1000px;
     height: 100vh;
   }
 
@@ -645,7 +675,7 @@ form.form__sign-up {
     width: 1500px;
     height: 1500px;
     left: 30%;
-    bottom: 68%;
+    bottom: 63%;
     transform: translateX(-50%);
     right: initial;
     top: initial;
@@ -660,7 +690,6 @@ form.form__sign-up {
   }
 
   .walls__container {
-
     z-index: 10;
     grid-template-columns: 1fr;
     grid-template-rows: 1fr 2fr 1fr;
@@ -674,6 +703,7 @@ form.form__sign-up {
   }
 
   .wall .wall__content {
+    margin-bottom: -2rem;
     padding-right: 15%;
     transition: .9s .8s ease-in-out;
   }
@@ -714,7 +744,7 @@ form.form__sign-up {
 
   .container__login.mode__signin::before {
     transform: translate(-50%, 100%);
-    bottom: 32%;
+    bottom: 22%;
     right: initial;
   }
 
@@ -736,7 +766,7 @@ form.form__sign-up {
 
 @media (max-width: 570px) {
   .forms form {
-    padding: 0 1.5rem;
+    padding: 2rem 1.5rem;
   }
 
   .image {
@@ -748,15 +778,16 @@ form.form__sign-up {
   }
 
   .wall .wall__content {
-    padding: .5rem 1rem;
+    padding:.5rem 1rem;
+
   }
 
   .wall__content {
-    margin-top: -3rem;
+    margin-top: -7rem;
   }
 
   .container__login::before {
-    bottom: 68%;
+    bottom: 73%;
     left: 50%;
   }
 

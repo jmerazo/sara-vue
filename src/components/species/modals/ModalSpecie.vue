@@ -87,7 +87,7 @@ function parseData(text) {
                 " " + specie.scientificNameAuthorship
               }}</span>
             </p>
-            <p>{{ specie.images[0].img_leafs }}</p>
+            
             <p class="modal__texto">
               {{ specie.family }}
             </p>
