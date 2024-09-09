@@ -45,7 +45,6 @@ const filteredData = ref([]);
 
 const averageAltitude = ref(0);
 
-
 async function filterGeo(codigo, data) {
   return await data
     .filter((item) => item.codigo === codigo)
@@ -147,24 +146,30 @@ const convertPdfToImages = async (pdfUrl) => {
 }
 
 const initPageFlip = () => {
-  pageFlip = new PageFlip(bookRef.value, {
-    width: pageWidth,
-    height: pageHeight,
-    size: "fixed",
-    minWidth: pageWidth,
-    maxWidth: pageWidth,
-    minHeight: pageHeight,
-    maxHeight: pageHeight,
-    maxShadowOpacity: 0.5,
-    showCover: true,
-    mobileScrollSupport: false
-  });
+  try {
+    pageFlip = new PageFlip(bookRef.value, {
+      width: pageWidth,
+      height: pageHeight,
+      size: "fixed",
+      minWidth: pageWidth,
+      maxWidth: pageWidth,
+      minHeight: pageHeight,
+      maxHeight: pageHeight,
+      maxShadowOpacity: 0.5,
+      showCover: true,
+      mobileScrollSupport: false
+    });
 
-  pageFlip.loadFromHTML(document.querySelectorAll('.page'));
+    pageFlip.loadFromHTML(document.querySelectorAll('.page'));
 
-  pageFlip.on('flip', (e) => {
-    currentPage.value = e.data;
-  });
+    pageFlip.on('flip', (e) => {
+      currentPage.value = e.data;
+    });
+
+  } catch (error) {
+    console.log('no se puedo crear el flipbook');
+
+  }
 };
 
 // Código ejecutado cuando el componente se monta
@@ -197,11 +202,6 @@ onMounted(async () => {
   filteredData.value = await filterGeo(code, geoStore.geoCandidateData);
 });
 
-onUnmounted(() => {
-  if (flipbook.value) {
-    flipbook.value.turn('destroy');
-  }
-});
 </script>
 
 <template>
@@ -392,9 +392,7 @@ onUnmounted(() => {
       <FlowerCalendar />
       <FruitCalendar />
       <!-- End section calendar flower  -->
-      <!--       <div class="card__doc-container">
-        <CardDoc :fileDoc="expectedData" />
-      </div> -->
+      
     </div>
 
     <PagesQueries :scientificName="scientificName" :vernacularName="vernacularName" />
@@ -406,7 +404,7 @@ onUnmounted(() => {
 <style scoped>
 /* FLIPBOOK */
 .flipbook {
-  height: 500px; 
+  height: 500px;
   margin: 4rem 0;
 }
 
@@ -448,36 +446,8 @@ onUnmounted(() => {
   }
 }
 
-/* header */
-.card__doc-container {
-  padding: 1rem;
-  margin: 0 auto;
-  margin-top: 3rem;
-}
 
-@media (min-width: 768px) {
-  .card__doc-container {
-    padding: 0;
-    width: 30%;
-    margin: 0 auto;
-    margin-top: 5rem;
-  }
-}
 
-.subtitle__format {
-  font-size: 1rem;
-  line-height: 2;
-  margin-bottom: 3rem;
-  margin-top: 1rem;
-}
-
-.subtitle__italic {
-  font-size: 1rem;
-  line-height: 2;
-  margin-bottom: 3rem;
-  margin-top: 1rem;
-  font-style: italic;
-}
 
 /* header */
 .main {
