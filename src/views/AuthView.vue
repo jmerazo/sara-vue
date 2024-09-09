@@ -311,18 +311,18 @@ function showLoginError(message) {
           </div>
           <p v-if="error" class="error">{{ error }}</p>
           <input @click="sendData" type="submit" value="Enviar" class="login__button solid">
-          <div class="content__registerOauth2">
-            <span>Registrarse con: </span><br>
-            <div class="logos__container">
-              <button @click="handleSocialRegister('google')">
-                <img src="/icons/google.png" class="logos__oauth2">
-              </button>
-              <button @click="handleSocialRegister('microsoft')">
-                <img src="/icons/outlook.png" class="logos__oauth2">
-              </button>
-            </div>
-          </div>
         </form>
+        <div class="content__registerOauth2">
+          <span>Registrarse con: </span><br>
+          <div class="logos__container">
+            <button @click="handleSocialRegister('google')">
+              <img src="/icons/google.png" class="logos__oauth2">
+            </button>
+            <button @click="handleSocialRegister('microsoft')">
+              <img src="/icons/outlook.png" class="logos__oauth2">
+            </button>
+          </div>
+        </div>
       </div>
     </div>
     <div class="walls__container">
