@@ -3,7 +3,7 @@ import { ref, computed } from "vue";
 import { RouterLink, useRoute } from "vue-router";
 
 const route = useRoute();
-const paginaNoImage = computed(() => route.name === "glossary" || route.name === "auth" || route.name === "register" || route.name === "nursery" || route.name === "busqueda");
+const paginaNoImage = computed(() => route.name === "glossary" || route.name === "auth" || route.name === "register" || route.name === "nursery");
 
 //mostrar barra lateral
 const navMovil = ref(true);
