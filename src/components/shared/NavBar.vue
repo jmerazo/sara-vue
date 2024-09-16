@@ -3,8 +3,15 @@ import { ref, computed } from "vue";
 import { RouterLink, useRoute } from "vue-router";
 
 const route = useRoute();
-const paginaNoImage = computed(() => route.name === "glossary" || route.name === "auth" || route.name === "register" || route.name === "nursery");
-
+const paginaNoImage = computed(() =>
+  route.name === "glossary"
+  || route.name === "auth"
+  || route.name === "register"
+  || route.name === "nursery"
+  || route.name === 'authVerify'
+  || route.name === 'signUpSuccess'
+);
+console.log('current path', route.name)
 //mostrar barra lateral
 const navMovil = ref(true);
 const mostrarNavMovil = () => {
@@ -39,11 +46,7 @@ const nuevoEstilo = () => {
     <div class="nav__movil">
       <div class="navegacion__logo--movil">
         <RouterLink :to="{ name: 'home' }">
-          <img
-            src="/icons/sara.png"
-            alt="Logotipo"
-            :style="{ display: navMovil ? 'none' : 'block' }"
-          />
+          <img src="/icons/sara.png" alt="Logotipo" :style="{ display: navMovil ? 'none' : 'block' }" />
         </RouterLink>
       </div>
       <!-- boton movil  -->
@@ -55,11 +58,7 @@ const nuevoEstilo = () => {
     </div>
     <!--fin nav movil -->
 
-    <div
-      id="navegacion"
-      class="navegacion"
-      :class="{ navegacion__show: navMovil }"
-    >
+    <div id="navegacion" class="navegacion" :class="{ navegacion__show: navMovil }">
       <div class="navegacion__logo">
         <RouterLink :to="{ name: 'home' }">
           <img src="/icons/sara.png" alt="Logotipo" />
@@ -68,61 +67,33 @@ const nuevoEstilo = () => {
       <!-- barra de navegacion -->
 
       <nav class="navegacion__barra">
-        <RouterLink
-          :to="{ name: 'home' }"
-          class="navegacion__enlace"
-          :class="{ glosario: paginaNoImage }"
-          @click="mostrarNavMovil"
-        >
+        <RouterLink :to="{ name: 'home' }" class="navegacion__enlace" :class="{ glosario: paginaNoImage }"
+          @click="mostrarNavMovil">
           Inicio
         </RouterLink>
 
-        <RouterLink
-          :to="{ name: 'especies' }"
-          class="navegacion__enlace"
-          :class="{ glosario: paginaNoImage }"
-          @click="mostrarNavMovil"
-        >
+        <RouterLink :to="{ name: 'especies' }" class="navegacion__enlace" :class="{ glosario: paginaNoImage }"
+          @click="mostrarNavMovil">
           Especies
         </RouterLink>
-        <RouterLink
-          :to="{ name: 'familias' }"
-          class="navegacion__enlace"
-          :class="{ glosario: paginaNoImage }"
-          @click="mostrarNavMovil"
-        >
+        <RouterLink :to="{ name: 'familias' }" class="navegacion__enlace" :class="{ glosario: paginaNoImage }"
+          @click="mostrarNavMovil">
           Familias
         </RouterLink>
 
-        <RouterLink
-          :to="{ name: 'glossary' }"
-          class="navegacion__enlace"
-          :class="{ glosario: paginaNoImage }"
-          @click="mostrarNavMovil"
-        >
+        <RouterLink :to="{ name: 'glossary' }" class="navegacion__enlace" :class="{ glosario: paginaNoImage }"
+          @click="mostrarNavMovil">
           Glosario
         </RouterLink>
-        <RouterLink
-          :to="{ name: 'nurseries' }"
-          class="navegacion__enlace"
-          :class="{ glosario: paginaNoImage }"
-          @click="mostrarNavMovil"
-        >
+        <RouterLink :to="{ name: 'nurseries' }" class="navegacion__enlace" :class="{ glosario: paginaNoImage }"
+          @click="mostrarNavMovil">
           Viveros
         </RouterLink>
-        <RouterLink
-          :to="{ name: 'aboutus' }"
-          class="navegacion__enlace"
-          :class="{ glosario: paginaNoImage }"
-          @click="mostrarNavMovil"
-        >
+        <RouterLink :to="{ name: 'aboutus' }" class="navegacion__enlace" :class="{ glosario: paginaNoImage }"
+          @click="mostrarNavMovil">
           Acerca de
         </RouterLink>
-        <RouterLink
-          @click="mostrarNavMovil"
-          :to="{ name: 'auth' }"
-          class="navegacion__enlace--loging"
-        >
+        <RouterLink @click="mostrarNavMovil" :to="{ name: 'auth' }" class="navegacion__enlace--loging">
           <font-awesome-icon :icon="['far', 'circle-user']" />
           <span>Ingresar</span>
         </RouterLink>
@@ -204,6 +175,7 @@ const nuevoEstilo = () => {
     transform: translateX(40%);
   }
 }
+
 @media (max-width: 468px) {
   .navegacion__show {
     transform: translateX(50%);
@@ -225,13 +197,13 @@ const nuevoEstilo = () => {
 }
 
 .navegacion__enlace:hover {
-  backdrop-filter: blur(
-    5px
-  ); /* Cambia el valor según el nivel de desenfoque que desees */
+  backdrop-filter: blur(5px);
+  /* Cambia el valor según el nivel de desenfoque que desees */
   opacity: 1;
   background-color: rgba(38, 47, 33, 0.3);
   border-radius: 5px;
 }
+
 .navegacion__enlace--loging {
   background-color: var(--primary);
   border-radius: 5px;
@@ -239,6 +211,7 @@ const nuevoEstilo = () => {
   padding: 0rem 0.3rem;
   font-weight: 700;
 }
+
 .navegacion__enlace--loging:hover {
   background-color: var(--primary-hover);
 }
@@ -259,6 +232,7 @@ const nuevoEstilo = () => {
   .navegacion__enlace {
     font-size: 0.9rem;
   }
+
   .navegacion__logo {
     max-width: 4rem;
     margin-top: 0.5rem;
@@ -297,6 +271,7 @@ const nuevoEstilo = () => {
     z-index: 1000;
     top: 0;
   }
+
   .navegacion__logo--movil {
     width: 4rem;
     padding: 0 2rem;
@@ -313,14 +288,17 @@ const nuevoEstilo = () => {
 .background__ver {
   background: var(--blanco);
 }
+
 .cambiar__fuente {
   color: var(--gris);
 }
+
 .glosario {
   color: var(--blanco);
 }
+
 @media (min-width: 992px) {
-  .glosario{
+  .glosario {
     color: var(--gris);
   }
 }

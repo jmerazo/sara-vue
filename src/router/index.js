@@ -77,6 +77,16 @@ const router = createRouter({
           name: "auth",
           component: () => import("../views/AuthView.vue"),
         },
+        {
+          path: "auth/verify-Account",
+          name: "authVerify",
+          component: () => import("../views/AuthVerifyView.vue"),
+        },
+        {
+          path: "auth/signUp-success",
+          name: "signUpSuccess",
+          component: () => import("../views/SingUpSuccess.vue"),
+        },
         
 
       ]

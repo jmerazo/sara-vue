@@ -11,19 +11,19 @@ const changeImage = (index) => {
 </script>
 
 <template>
-  <div class="contenido">
-    <div class="vista__imagenes">
+  <div class="slider__specie">
+    <div class="slider__specie-content">
       <div class="imagen" :style="{ transform: `translateX(-${currentIndex * 100}%)` }">
         <!-- activa -->
         <div v-for="(img, index) in geoStore.validImages" :key="index">
-          <div class="imagen__activa" :style="{ backgroundImage: 'url(' + img + ')' }"></div>
+          <div class="image__active" :style="{ backgroundImage: 'url(' + img + ')' }"></div>
         </div>
       </div>
     </div>
-    <div class="vista__minuaturas">
-      <!-- Miniaturas  -->
+    <div class="thumbnail__images">
+      
       <img v-for="(img, index) in geoStore.validImages" :key="'thumb-' + index" :src="img" :alt="'Miniatura ' + index"
-        class="imagen__miniatura" :class="{ active: currentIndex === index }" @click="changeImage(index)" />
+        class="image" :class="{ active: currentIndex === index }" @click="changeImage(index)" />
     </div>
   </div>
 </template>
@@ -32,28 +32,20 @@ const changeImage = (index) => {
 
 
 <style scoped>
-.contenido {
+.slider__specie {
   position: relative;
   width: 100%;
 }
 
-.imagen,
-.vista__imagenes,
-.imagen__activa {
 
-  width: 350px;
-  height: 296px;
-
-}
-
-.vista__imagenes {
- margin-left: -.3rem;
+.slider__specie-content {
  overflow: hidden;
  border-radius: .6rem;
+ margin: 0 auto;
 }
 
 @media (min-width: 768px) {
-  .vista__imagenes {
+  .slider__specie-content {
     margin: 0 auto;
     overflow: hidden;
     border-radius: .6rem;
@@ -65,41 +57,61 @@ const changeImage = (index) => {
   transition: transform 0.3s ease;
 }
 
-.imagen__activa {
+.image__active {
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
 }
 
-@media (min-width: 768px) {
-  .imagen,
-  .vista__imagenes,
-  .imagen__activa {
+.imagen,
+.slider__specie-content,
+.image__active {
+  width: 360px;
+  height: 320px;
 
-    width: 800px;
-    height: 496px;
+}
+
+@media (min-width: 1024px) {
+  .imagen,
+  .slider__specie-content,
+  .image__active {
+
+    width: 900px;
+    height: 600px;
   }
 }
 
-.vista__minuaturas {
+@media (min-width: 1920px) {
+  .imagen,
+  .slider__specie-content,
+  .image__active {
+
+    width: 1000px;
+    height: 650px;
+  }
+}
+
+.thumbnail__images {
   display: flex;
   overflow-x: auto;
   justify-content: center;
   margin-top: 1rem;
 }
 
-.imagen__miniatura {
-  width: 60px;
+.image {
+  width: 50px;
   height: 50px;
   opacity: 0.5;
   cursor: pointer;
-  border-radius: .3rem;
-  margin-right: 5px;
-  
+  border-radius: 50%;
+  margin-right: 10px;
+  transition: all .1s ease-in-out;
+  border: 2.5px solid transparent;
 }
 
-.imagen__miniatura:hover,
-.imagen__miniatura.active {
+.image:hover,
+.image.active {
   opacity: 1;
+  border: 2.5px solid white;
 }
 </style>
