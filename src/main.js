@@ -33,7 +33,7 @@ app.use(VueReCaptcha, {
   siteKey: '6Lce8DcqAAAAAGgDW7_virMFwDDTLizlLqdh7i7-',
   loaderOptions: {
     useRecaptchaNet: true,
-    autoHideBadge: false  // Cambia a true si quieres ocultar el badge
+    autoHideBadge: true  // Cambia a true si quieres ocultar el badge
   }
 })
 app.component("font-awesome-icon", FontAwesomeIcon);

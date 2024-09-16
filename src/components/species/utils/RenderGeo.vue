@@ -39,7 +39,7 @@ const vectorSource = new VectorSource();
 
 const treeIcon = new Icon({
   src: treeIconPath,
-  scale: 0.06,
+  scale: 0.05,
   anchor: [0.5, 1],
 });
 
@@ -102,7 +102,15 @@ watch(() => filteredData, (newData) => {
 <style scoped>
 .map-container {
   width: auto;
-  height: 600px;
-  border-radius: 25px;
+  height: 500px;
+  border-radius: 1rem;
+  overflow: hidden;
+}
+
+@media (min-width: 768px) {
+  .map-container{
+    height: 760px;
+    
+  }
 }
 </style>
