@@ -79,18 +79,18 @@
           </div>
           <!-- footer social -->
           <div class="footer__social">
-            <a target="_blank" href="https://www.facebook.com/Corpoamazonia/?locale=es_LA"
+            <a href="https://www.facebook.com/Corpoamazonia/?ref=embed_page" target="_blank"
               ><font-awesome-icon
                 :icon="['fab', 'facebook']"
                 class="mr-2 s-icon"
             /></a>
-            <a target="_blank" href="https://www.instagram.com/corpoamazonia1/?hl=es-la"
+            <a href="https://www.instagram.com/corpoamazonia1/" target="_blank"
               ><font-awesome-icon
                 :icon="['fab', 'instagram']"
                 class="mr-2 s-icon"
             /></a>
-            <a target="_blank" href="https://x.com/corpoamazonia1"><font-awesome-icon :icon="['fab', 'x-twitter']" /></a>
-            <a target="_blank" href="https://www.youtube.com/channel/UCrbi-byEYcjQy2TZp497Cwg"
+            <a href="https://x.com/Corpoamazonia1" target="_blank"><font-awesome-icon :icon="['fab', 'x-twitter']" /></a>
+            <a href="https://www.youtube.com/@corpoamazonia7563" target="_blank"
               ><font-awesome-icon :icon="['fab', 'youtube']" class="s-icon"
             /></a>
           </div>

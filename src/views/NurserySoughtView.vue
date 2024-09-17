@@ -72,21 +72,26 @@ function showError(message) {
       </div>
       <div class="species">
         <h3>Especies</h3>
-        <div
-          v-for="specie in nurseries.nursery.especies"
-          :key="specie.id"
-          class="species__card"
-        >
-          <div class="species__content">
-            <h4 class="species__common-name">{{ specie.nom_comunes }}</h4>
-            <p class="species__scientific-name">
-              {{ specie.nombre_cientifico_especie }} -
-              {{ specie.nombre_autor_especie }}
-            </p>
-            <p class="species__sale-type">{{ specie.tipo_venta }}</p>
-            <p class="species__unit">{{ specie.unidad_medida }}</p>
+        <div v-if="nurseries.nursery.especies && nurseries.nursery.especies.length > 0">
+          <div
+            v-for="specie in nurseries.nursery.especies"
+            :key="specie.id"
+            class="species__card"
+          >
+            <div class="species__content">
+              <h4 class="species__common-name">{{ specie.nom_comunes }}</h4>
+              <p class="species__scientific-name">
+                {{ specie.nombre_cientifico_especie }} -
+                {{ specie.nombre_autor_especie }}
+              </p>
+              <p class="species__sale-type">{{ specie.tipo_venta }}</p>
+              <p class="species__unit">{{ specie.unidad_medida }}</p>
+            </div>
+            <button @click="consulta.consultSpecie(specie.especie_forestal_id)" class="species__button">Ver especie</button>
           </div>
-          <button @click="consulta.consultSpecie(specie.especie_forestal_id)" class="species__button">Ver especie</button>
+        </div>
+        <div v-else class="species__empty">
+          <p>No hay especies disponibles para este vivero.</p>
         </div>
       </div>
       <div class="contact">
@@ -196,6 +201,7 @@ body {
 
 .species {
   margin-top: 2rem;
+  padding: 0.9rem;
 }
 
 .species__card {

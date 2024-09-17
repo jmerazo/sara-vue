@@ -1,0 +1,95 @@
+<script setup>
+
+</script>
+
+<template>
+    <div class="confirmation">
+        <div class="confirmation__grid">
+            <div class="confirmation__content">
+                <h1>Gracias por confirmar tu cuenta</h1>
+                <p>Ahora puedes <span>Iniciar sesión</span> como
+                    invitado</p>
+                <p>Recuerda que tu perfil está siendo analizado para la asignación del rol</p>
+                <button>Ingresar</button>
+            </div>
+            <div class="image">
+                <img src="/img/auth/verify-account.svg" alt="img-verify">
+            </div>
+
+        </div>
+    </div>
+</template>
+
+
+<style scoped>
+.confirmation {
+    margin: 0 auto;
+    padding: 0 2rem;
+    margin-bottom: 2rem;
+    transition: all .3s ease-in-out;
+}
+
+.confirmation__grid {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    margin-top: 6rem;
+
+}
+
+.confirmation__content h1 {
+    color: var(--gris);
+    font-size: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.confirmation__content p span {
+    color: var(--primary);
+    font-weight: 700;
+}
+
+.confirmation__content button {
+    background-color: var(--primary);
+    border: none;
+    color: var(--blanco);
+    padding: 1rem;
+    border-radius: 1rem;
+    font-weight: bold;
+    margin-top: 2rem;
+}
+
+.confirmation__grid .image {
+    width: 6rem;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+}
+
+@media (min-width: 768px) {
+    .confirmation {
+        max-width: 1200px;
+        margin: 0 auto;
+        margin-bottom: 0;
+    }
+
+
+    .confirmation__grid {
+        display: grid;
+        grid-template-columns: 60% 40%;
+        margin-top: 20rem;
+        gap: 4rem;
+    }
+
+    .confirmation__content h1 {
+        color: var(--gris);
+        font-size: 2rem;
+        margin-bottom: 1rem;
+    }
+
+    .confirmation__grid .image {
+        width: auto;
+        position: unset;
+    }
+
+}
+</style>

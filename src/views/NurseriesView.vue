@@ -1,14 +1,57 @@
 <script setup>
-import { computed, ref } from "vue";
+import { computed, ref, onMounted, watch } from "vue";
 import { RouterLink } from "vue-router";
 import { useNurseriesStore } from "@/stores/nurseries";
-
 import ButtonTop from '@/components/shared/ButtonTop.vue';
 
 const valueSearched = ref("");
 const isSearching = computed(() => valueSearched.value !== "");
 
 const nurseries = useNurseriesStore();
+
+const displayedPageRange = computed(() => {
+  const currentPage = nurseries.currentPage;
+  const totalPages = nurseries.totalPages;
+  const rangeStart = Math.max(1, currentPage - 1);
+  const rangeEnd = Math.min(totalPages, rangeStart + 3);
+
+  return Array.from(
+    { length: rangeEnd - rangeStart + 1 },
+    (_, index) => rangeStart + index
+  );
+});
+
+const scrollToTop = () => {
+  window.scrollTo({
+    top: 0,
+    behavior: 'smooth',
+  });
+};
+
+const performSearch = () => {
+  nurseries.searchTerm(valueSearched.value);
+};
+
+// Debounce function
+const debounce = (fn, delay) => {
+  let timeoutId;
+  return (...args) => {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => fn(...args), delay);
+  };
+};
+
+// Debounced search
+const debouncedSearch = debounce(performSearch, 300);
+
+// Watch for changes in valueSearched
+watch(valueSearched, () => {
+  debouncedSearch();
+});
+
+onMounted(async () => {
+  scrollToTop();
+});
 </script>
 
 <template>
@@ -24,6 +67,7 @@ const nurseries = useNurseriesStore();
               type="text"
               placeholder="Buscar un vivero o especie"
               v-model="valueSearched"
+              @input="performSearch"
             />
             <div class="form__icon">
               <svg
@@ -52,27 +96,30 @@ const nurseries = useNurseriesStore();
       </div>
     </header>
     <!-- end header -->
-    <main
-      class="main"
-      v-for="nursery in nurseries.nurseriesData"
-      :key="nursery.id"
-    >
+    <main class="main">
       <div class="results__grid">
         <!-- nurseries -->
-        <article class="card">
+        <article class="card" v-for="nursery in nurseries.paginatedNurseries" :key="nursery.id">
+          <div class="card__image-container">
+            <div class="card__image">
+              <img :src="nursery.image_url || '/img/no_img_nurseries.png'" :alt="nursery.nombre_vivero" class="nursery-image">
+            </div>
+          </div>
           <div class="card__contact">
             <div class="card__information">
               <h5 class="card__title">{{ nursery.nombre_vivero }}</h5>
               <div class="information">
                 <p>
-                  R/Legal:
+                  <span class="information__title">Rep. Legal:</span>
                   <span>{{ nursery.first_name }} {{ nursery.last_name }}</span>
                 </p>
                 <p>
-                  Departamento: <span>{{ nursery.departamento }}</span>
+                  <span class="information__title">Departamento:</span> 
+                  <span>{{ nursery.departamento }}</span>
                 </p>
                 <p>
-                  Municipio: <span>{{ nursery.municipio }}</span>
+                  <span class="information__title">Municipio:</span> 
+                  <span>{{ nursery.municipio }}</span>
                 </p>
 
                 <a
@@ -80,7 +127,8 @@ const nurseries = useNurseriesStore();
                   :href="`https://api.whatsapp.com/send?phone=57${nursery.phone_number}&text=Hola, me puedes dar información sobre el vivero ${nursery.nombre_vivero}?`"
                   ref="noopener noreferrer"
                   target="_blank"
-                  >WhatsApp
+                >
+                <span class="information__title">WhatsApp</span>
                   <font-awesome-icon :icon="['fab', 'whatsapp']" />
                 </a>
               </div>
@@ -90,15 +138,47 @@ const nurseries = useNurseriesStore();
                 class="card__button"
                 :to="{ name: 'nursery' }"
                 @click="nurseries.getNursery(nursery)"
-                >Especies</RouterLink
               >
+                Especies
+              </RouterLink>
             </div>
           </div>
-
-          
         </article>
       </div>
     </main>
+    <!-- Paginador -->
+    <section class="paginador">
+      <div class="paginador__botones">
+        <button class="paginador__boton paginador__boton--inicio" v-if="nurseries.currentPage > 1"
+          @click="nurseries.goToFirstPage">
+          <font-awesome-icon :icon="['fas', 'angle-double-left']" />
+        </button>
+
+        <button class="paginador__boton paginador__boton--anterior" v-if="nurseries.currentPage > 1"
+          @click="nurseries.changePage(nurseries.currentPage - 1)">
+          <font-awesome-icon :icon="['fas', 'angle-left']" />
+        </button>
+
+        <button v-for="page in displayedPageRange" :key="page" @click="nurseries.changePage(page)"
+          class="paginador__boton" :class="{ 'paginador__boton-actual': page === nurseries.currentPage }">
+          {{ page }}
+        </button>
+
+        <button class="paginador__boton paginador__boton--siguiente" v-if="nurseries.currentPage < nurseries.totalPages"
+          @click="nurseries.changePage(nurseries.currentPage + 1)">
+          <font-awesome-icon :icon="['fas', 'angle-right']" />
+        </button>
+
+        <button class="paginador__boton paginador__boton--final" v-if="nurseries.currentPage < nurseries.totalPages"
+          @click="nurseries.goToLastPage">
+          <font-awesome-icon :icon="['fas', 'angle-double-right']" />
+        </button>
+      </div>
+
+      <div class="paginador__info">
+        Página {{ nurseries.currentPage }} de {{ nurseries.totalPages }}
+      </div>
+    </section>
   </div>
   <ButtonTop/>
 </template>
@@ -275,6 +355,30 @@ const nurseries = useNurseriesStore();
   }
 }
 
+.card__image-container {
+  width: 250px;
+  flex-shrink: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.card__image {
+  width: 250px;
+  height: 250px;
+  border-radius: 50%;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.nursery-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
 /* section card information */
 .information {
   display: flex;
@@ -297,6 +401,12 @@ const nurseries = useNurseriesStore();
   font-weight: 500;
   margin-bottom: 0.3rem;
 }
+
+.information__title {
+  font-weight: bold;
+  margin-right: 0.5rem;
+}
+
 .buttons__information{
   display: flex;
   flex-direction: column;
@@ -329,4 +439,37 @@ const nurseries = useNurseriesStore();
   }
 }
 
+.paginador__botones {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.paginador__boton {
+  background-color: var(--primary);
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
+.paginador__boton:hover {
+  background-color: var(--primary-hover);
+}
+
+.paginador__boton-actual {
+  background-color: var(--secondary);
+  font-weight: bold;
+}
+
+.paginador__info {
+  margin-top: 1rem;
+  text-align: center;
+  font-size: 1rem;
+  margin-bottom: 2rem;
+}
 </style>

@@ -183,6 +183,16 @@ watch(() => filteredData, (newData) => {
 .map-container > div:first-child {
   height: 600px;
   border-radius: 25px;
+  height: 500px;
+  border-radius: 1rem;
+  overflow: hidden;
+}
+
+@media (min-width: 768px) {
+  .map-container{
+    height: 760px;
+    
+  }
 }
 
 .legend {

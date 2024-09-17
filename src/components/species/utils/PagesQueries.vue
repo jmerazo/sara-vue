@@ -37,6 +37,11 @@ const relatedLinks = [
     url: `https://catalogo.biodiversidad.co/search/basic?q=${props.scientificName}`,
     img: '/logos/SIB.png',
     title: 'SIB Colombia'
+  },
+  {
+    url: `http://www.biovirtual.unal.edu.co/es/colecciones/result/species/${props.scientificName}/plants/`,
+    img: '/logos/unal.png',
+    title: 'Universidad Nacional de Colombia'
   }
 ];
 </script>
