@@ -17,6 +17,7 @@ export const useGeoCandidateTrees = defineStore("geoCandidateTrees", () => {
   const combinedGeoData = ref([]);
   const geoEnrichData = ref([]);
   const geoCandidateEnrichGBIFData = ref([]);
+  const currentCodeFilter = ref(null);
 
   const validateUrl = async (array) => {
     const newValidImages = [];
@@ -34,7 +35,7 @@ export const useGeoCandidateTrees = defineStore("geoCandidateTrees", () => {
     
   };
 
-  const fetchData = async () => {
+  const fetchData = async (codeFilter = null) => {
     if (!isDataLoaded) {
       const { data } = await APIService.getGeoCandidateTrees();
       geoCandidateData.value = data;
@@ -82,6 +83,15 @@ export const useGeoCandidateTrees = defineStore("geoCandidateTrees", () => {
         cod_especie: ct.cod_especie,
         departamento: ct.departamento,
       }));
+
+      if (codeFilter) {
+        filterGeo(null, null, codeFilter);
+      } else {
+        geoDataNew.value = combinedGeoData.value;
+      }
+    } else if (codeFilter) {
+      // Si los datos ya están cargados, solo aplicar el filtro
+      filterGeo(null, null, codeFilter);
     }
   };
 

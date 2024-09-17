@@ -51,7 +51,7 @@ const filteredCities = computed(() => {
 });
 
 const formData = ref({
-    ShortcutIDEV: '',
+    id: '',
     cod_expediente: '',
     cod_especie : '',
     fecha_evaluacion : '',

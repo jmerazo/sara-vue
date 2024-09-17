@@ -8,7 +8,6 @@ import { locatesColombia } from "@/stores/locates";
 const locates = locatesColombia();
 const geoStore = useGeoCandidateTrees();
 const species = useEspeciesStore();
-console.log('species map: ', species)
 
 const renderGeoMapRef = ref(null);
 const codeFind = ref("");

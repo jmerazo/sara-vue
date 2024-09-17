@@ -14,19 +14,9 @@ const props = defineProps({
 
 const relatedLinks = [
   {
-    url: 'https://catalogoplantasdecolombia.unal.edu.co/es/',
-    img: '/logos/cat_plantas_liquines_col.png',
-    title: 'Catálogo de plantas y liquenes de Colombia'
-  },
-  {
     url: `https://tropicos.org/name/Search?name=${props.scientificName}`,
     img: '/logos/tropicos.png',
     title: 'Trópicos'
-  },
-  {
-    url: `https://catalogofloravalleaburra.eia.edu.co/search?key_search=${props.scientificName}`,
-    img: '/logos/aburra.svg',
-    title: 'Catálogo virtual de flora del Valle de Aburrá'
   },
   {
     url: `https://powo.science.kew.org/results?q=${props.scientificName}`,

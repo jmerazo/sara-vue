@@ -1,65 +1,80 @@
-<template >
-  <div class="map-container" ref="mapContainer"></div>
-  <div class="info__map" ref="infoContainer">
-    <div v-if="selectedFeature" class="contenedor">
-      <p class="map__datos" v-if="selectedFeature.getProperties().source === 'original'">
-        <font-awesome-icon :icon="['fas', 'fingerprint']" />
-        Código especie:
-        <span class="dato">{{ selectedFeature.getProperties().codigo }} </span>
-      </p>
-      <p class="map__datos">
-        <font-awesome-icon :icon="['fab', 'glide']" /> Nombre común:
-        <span class="dato">{{
-          selectedFeature.getProperties().nombre_comun
-        }}</span>
-      </p>
-      <p class="map__datos">
-        <font-awesome-icon :icon="['fas', 'signature']" /> Nombre científico:
-        <span class="dato">{{
-          selectedFeature.getProperties().nombre_cientifico
-        }}</span>
-      </p>
-      <p class="map__datos" v-if="selectedFeature.getProperties().source === 'original'">
-        <font-awesome-icon :icon="['fas', 'hashtag']" /> Número de placa:
-        <span class="dato">{{
-          selectedFeature.getProperties().numero_placa
-        }}</span>
-      </p>
-      <p class="map__datos">
-        <font-awesome-icon :icon="['fas', 'location-crosshairs']" />
-        Coordenadas:
-        <span class="dato">{{
-          selectedFeature.getProperties().coordenadas
-        }}</span>
-      </p>
-      <p class="map__datos" v-if="selectedFeature.getProperties().source === 'original'">
-        <font-awesome-icon :icon="['fab', 'squarespace']" /> Departamento:
-        <span class="dato">{{
-          selectedFeature.getProperties().departamento
-        }}</span>
-      </p>
-      <p class="map__datos" v-if="selectedFeature.getProperties().source === 'original'">
-        <font-awesome-icon :icon="['fab', 'squarespace']" /> Municipio:
-        <span class="dato">{{
-          selectedFeature.getProperties().municipio
-        }}</span>
-      </p>
-      <p class="map__datos" v-if="selectedFeature.getProperties().source === 'original'">
-        <font-awesome-icon :icon="['fab', 'squarespace']" /> Vereda:
-        <span class="dato">{{ selectedFeature.getProperties().vereda }}</span>
-      </p>
-      <!-- <p class="map__datos" v-if="selectedFeature.getProperties().source === 'original'">
-        <font-awesome-icon :icon="['fas', 'location-dot']" /> Nombre del predio:
-        <span class="dato">{{
-          selectedFeature.getProperties().nombre_del_predio
-        }}</span>
-      </p> -->
-      <p class="map__datos" v-if="selectedFeature.getProperties().source === 'original'">
-        <font-awesome-icon :icon="['fas', 'star']" /> Puntaje evaluación:
-        <span class="dato">{{
-          selectedFeature.getProperties().resultado
-        }}</span>
-      </p>
+<template>
+  <div class="map-container">
+    <div ref="mapContainer"></div>
+    <div class="info__map" ref="infoContainer">
+      <div v-if="selectedFeature" class="contenedor">
+        <p class="map__datos" v-if="selectedFeature.getProperties().source === 'original'">
+          <font-awesome-icon :icon="['fas', 'fingerprint']" />
+          Código especie:
+          <span class="dato">{{ selectedFeature.getProperties().codigo }} </span>
+        </p>
+        <p class="map__datos">
+          <font-awesome-icon :icon="['fab', 'glide']" /> Nombre común:
+          <span class="dato">{{
+            selectedFeature.getProperties().nombre_comun
+          }}</span>
+        </p>
+        <p class="map__datos">
+          <font-awesome-icon :icon="['fas', 'signature']" /> Nombre científico:
+          <span class="dato">{{
+            selectedFeature.getProperties().nombre_cientifico
+          }}</span>
+        </p>
+        <p class="map__datos" v-if="selectedFeature.getProperties().source === 'original'">
+          <font-awesome-icon :icon="['fas', 'hashtag']" /> Número de placa:
+          <span class="dato">{{
+            selectedFeature.getProperties().numero_placa
+          }}</span>
+        </p>
+        <p class="map__datos">
+          <font-awesome-icon :icon="['fas', 'location-crosshairs']" />
+          Coordenadas:
+          <span class="dato">{{
+            selectedFeature.getProperties().coordenadas
+          }}</span>
+        </p>
+        <p class="map__datos" v-if="selectedFeature.getProperties().source === 'original'">
+          <font-awesome-icon :icon="['fab', 'squarespace']" /> Departamento:
+          <span class="dato">{{
+            selectedFeature.getProperties().departamento
+          }}</span>
+        </p>
+        <p class="map__datos" v-if="selectedFeature.getProperties().source === 'original'">
+          <font-awesome-icon :icon="['fab', 'squarespace']" /> Municipio:
+          <span class="dato">{{
+            selectedFeature.getProperties().municipio
+          }}</span>
+        </p>
+        <p class="map__datos" v-if="selectedFeature.getProperties().source === 'original'">
+          <font-awesome-icon :icon="['fab', 'squarespace']" /> Vereda:
+          <span class="dato">{{ selectedFeature.getProperties().vereda }}</span>
+        </p>
+        <p class="map__datos" v-if="selectedFeature.getProperties().source === 'original'">
+          <font-awesome-icon :icon="['fas', 'star']" /> Puntaje evaluación:
+          <span class="dato">{{
+            selectedFeature.getProperties().resultado
+          }}</span>
+        </p>
+      </div>
+    </div>
+    <div class="legend">
+      <h4>Leyenda</h4>
+      <div class="legend-item">
+        <img :src="treeIconPath" alt="Árbol Corpoamazonia" class="legend-icon">
+        <span>Árbol - Corpoamazonia</span>
+      </div>
+      <div class="legend-item">
+        <img :src="treePalmIconGreenPath" alt="Palma Corpoamazonia" class="legend-icon">
+        <span>Palma - Corpoamazonia</span>
+      </div>
+      <div class="legend-item">
+        <img :src="treeIconGBIFPath" alt="Árbol GBIF" class="legend-icon">
+        <span>Árbol - GBIF (Global Biodiversity Information Facility)</span>
+      </div>
+      <div class="legend-item">
+        <img :src="treePalmIconPinkPath" alt="Palma GBIF" class="legend-icon">
+        <span>Palma - GBIF (Global Biodiversity Information Facility)</span>
+      </div>
     </div>
   </div>
 </template>
@@ -230,9 +245,6 @@ function drawMap(perimeterCoordinates, vectorSource) {
         }),
       }),
       geojsonLayer, // Añadir la capa GeoJSON aquí
-      new VectorLayer({
-        source: vectorSource,
-      }),
     ],
     view: new View({
       center: fromLonLat(newCenter),
@@ -367,28 +379,72 @@ function drawMap(perimeterCoordinates, vectorSource) {
   border-radius: 10px;
 }
 
+.map-container > div:first-child {
+  height: 100%;
+  border-radius: 10px;
+}
+
 .info__map {
   position: absolute;
-  top: 50%; /* Ajusta la posición vertical según necesites */
-  right: 2%; /* Ajusta la posición horizontal según necesites */
+  top: 10px;
+  right: 10px;
   background-color: white;
   border: 1px solid #ccc;
-  padding: 0.1rem;
-  display: none;
+  padding: 10px;
   border-radius: 5px;
+  max-width: 300px;
+  max-height: 80%;
+  overflow-y: auto;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
+
+.map__datos {
+  margin: 5px 0;
+  font-size: 0.9em;
+}
+
+.dato {
+  font-weight: 700;
+}
+
+.legend {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  background-color: rgba(255, 255, 255, 0.9);
+  padding: 10px;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  max-width: 300px;
+}
+
+.legend h4 {
+  margin-top: 0;
+  margin-bottom: 10px;
+  font-size: 1em;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 5px;
+}
+
+.legend-icon {
+  width: 20px;
+  height: 20px;
+  margin-right: 10px;
+}
+
+.legend-item span {
+  font-size: 0.8em;
+}
+
 @media (min-width: 992px) {
   .info__map {
     right: 5.5%;
-    top: 57%;
+    top: 10px;
     max-width: 21.5%;
   }
-}
-.map__datos {
-  margin: 0.1rem;
-  padding: 0;
-}
-.dato {
-  font-weight: 700;
 }
 </style>

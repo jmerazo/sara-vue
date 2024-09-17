@@ -39,7 +39,7 @@ const month = dateNow.getMonth() + 1; // Los meses comienzan desde 0, por lo que
 const day = dateNow.getDate();
 const formatDate = `${day}-${month}-${year}`;
 
-const code = specie.specie.code_specie;
+const codeFilter = specie.specie.code_specie;
 const name_specie = specie.specie.vernacularName;
 const filteredData = ref([]);
 
@@ -115,8 +115,14 @@ const totalPages = computed(() => images.value.length);
 const isFirstPage = computed(() => currentPage.value === 0);
 const isLastPage = computed(() => currentPage.value === totalPages.value - 1);
 const isShowingCover = computed(() => currentPage.value === 0);
+const isFlipbookVisible = ref(false);
 
 const convertPdfToImages = async (pdfUrl) => {
+  if (!pdfUrl || pdfUrl === "/img/sin_img.png") {
+    console.log('URL del PDF no proporcionada o vacía. No se procesará nada.');
+    return;
+  }
+
   try {
     const pdf = await getDocument(pdfUrl).promise
     const numPages = pdf.numPages
@@ -166,9 +172,10 @@ const initPageFlip = () => {
       currentPage.value = e.data;
     });
 
+    isFlipbookVisible.value = true;
   } catch (error) {
     console.log('no se puedo crear el flipbook');
-
+    isFlipbookVisible.value = false;
   }
 };
 
@@ -198,17 +205,16 @@ onMounted(async () => {
   ]);
 
   // Obtener datos geográficos y filtrar resultados
-  await geoStore.fetchData();
-  filteredData.value = await filterGeo(code, geoStore.geoCandidateData);
+  await geoStore.fetchData(codeFilter);
+  filteredData.value = geoStore.geoDataNew;
 });
-
 </script>
 
 <template>
   <div class="main">
     <QuoteButton></QuoteButton>
 
-    <div class="flipbook">
+    <div v-show="isFlipbookVisible" class="flipbook">
       <div id="book" class="book" ref="bookRef" :class="{ 'cover-view': currentPage === 0 }">
         <div v-for="(image, index) in images" :key="index" class="page">
           <img :src="image" :alt="`Page ${index + 1}`" />

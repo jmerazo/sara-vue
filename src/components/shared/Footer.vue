@@ -48,7 +48,7 @@
                 <font-awesome-icon :icon="['fas', 'phone-volume']" /> Contactos
               </h3>
               <p class="footer__texto">
-                Línea directa nacional Amazonas, Caquetá y Putumayo: <br>018000-930506
+                Línea directa nacional: <br>018000-930506
               </p>
               <p class="footer__texto">Celular: 3152370176</p>
               <p class="footer__texto">Teléfono: (123) 456-7890</p>
@@ -72,25 +72,25 @@
               <p class="footer__texto footer__texto--titulo">
               </p>
               <p class="footer__texto">
-                de Lunes a Viernes de 8:00 am a 12:00 m y de 2:00 a 6:00 pm
+                Lunes a Viernes de 8:00 am a 12:00 m y de 2:00 a 6:00 pm
               </p>
             </div>
             <!--fin footer ubicacion -->
           </div>
           <!-- footer social -->
           <div class="footer__social">
-            <a href="#"
+            <a target="_blank" href="https://www.facebook.com/Corpoamazonia/?locale=es_LA"
               ><font-awesome-icon
                 :icon="['fab', 'facebook']"
                 class="mr-2 s-icon"
             /></a>
-            <a href="#"
+            <a target="_blank" href="https://www.instagram.com/corpoamazonia1/?hl=es-la"
               ><font-awesome-icon
                 :icon="['fab', 'instagram']"
                 class="mr-2 s-icon"
             /></a>
-            <a href="#"><font-awesome-icon :icon="['fab', 'x-twitter']" /></a>
-            <a href="#"
+            <a target="_blank" href="https://x.com/corpoamazonia1"><font-awesome-icon :icon="['fab', 'x-twitter']" /></a>
+            <a target="_blank" href="https://www.youtube.com/channel/UCrbi-byEYcjQy2TZp497Cwg"
               ><font-awesome-icon :icon="['fab', 'youtube']" class="s-icon"
             /></a>
           </div>
@@ -120,7 +120,7 @@
 .footer__texto {
   text-align: center;
   font-weight: 700;
-  font-size: 0.7rem;
+  font-size: 0.9rem;
 }
 .footer__texto--titulo {
   font-weight: 700;
