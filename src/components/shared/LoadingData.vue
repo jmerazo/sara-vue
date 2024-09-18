@@ -18,6 +18,7 @@ defineProps(["color"]);
 </template>
 <style scoped>
 .contenedor{
+  position: relative;
   margin: 2rem auto;
 }
 .texto {

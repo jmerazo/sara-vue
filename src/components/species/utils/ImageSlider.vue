@@ -22,8 +22,9 @@ const changeImage = (index) => {
     </div>
     <div class="thumbnail__images">
       
-      <img v-for="(img, index) in geoStore.validImages" :key="'thumb-' + index" :src="img" :alt="'Miniatura ' + index"
+      <img v-for="(img, index) in geoStore.validImages" :key="'thumb-' + index" :src="img" :alt="'Miniatura' + index"
         class="image" :class="{ active: currentIndex === index }" @click="changeImage(index)" />
+      
     </div>
   </div>
 </template>
@@ -66,11 +67,20 @@ const changeImage = (index) => {
 .imagen,
 .slider__specie-content,
 .image__active {
-  width: 360px;
-  height: 320px;
+  width: 350px;
+  height: 330px;
 
 }
 
+@media (min-width: 768px) {
+  .imagen,
+  .slider__specie-content,
+  .image__active {
+
+    width: 750px;
+    height: 650px;
+  }
+}
 @media (min-width: 1024px) {
   .imagen,
   .slider__specie-content,
@@ -93,14 +103,16 @@ const changeImage = (index) => {
 
 .thumbnail__images {
   display: flex;
-  overflow-x: auto;
+  align-items: center;
   justify-content: center;
   margin-top: 1rem;
+  
 }
 
+
 .image {
-  width: 50px;
-  height: 50px;
+  width: 40px;
+  height: 40px;
   opacity: 0.5;
   cursor: pointer;
   border-radius: 50%;
@@ -109,6 +121,12 @@ const changeImage = (index) => {
   border: 2.5px solid transparent;
 }
 
+@media (min-width: 768px) {
+  .image{
+    width: 50px;
+    height: 50px;
+  }
+}
 .image:hover,
 .image.active {
   opacity: 1;

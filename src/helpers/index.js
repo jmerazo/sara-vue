@@ -20,13 +20,17 @@ import 'jspdf-autotable'; // Importar autoTable plugin
 //funcion para obtener la ruta de una imagen formateada
 export const getFullImageUrl = (relativePath) => {
 
-  if (relativePath) {
-    return `${api.defaults.baseURL}/${relativePath.replace(/\\/g, "/")}`;
-  } else {
+  try {
+    if (relativePath) {
+      return `${api.defaults.baseURL}/${relativePath.replace(/\\/g, "/")}`;
+    } else {
+      return "/img/sin_img.png";
+    }
+  } catch (error) {
     return "/img/sin_img.png";
   }
 
-  
+
 };
 
 //descargar reportes en excel
@@ -40,7 +44,7 @@ export const descargarExcel = (datos, excelName) => {
 
 
 
-export const descargarPdfs = (datos, tituloTabla, columnas, inicio,customHeaders) => {
+export const descargarPdfs = (datos, tituloTabla, columnas, inicio, customHeaders) => {
   const doc = new jsPDF({
     orientation: 'landscape',
     unit: 'px',
@@ -50,7 +54,7 @@ export const descargarPdfs = (datos, tituloTabla, columnas, inicio,customHeaders
   const columnasMostrar = Math.min(columnas, Object.keys(datos[0]).length);
   const headers = Object.keys(datos[0]).slice(inicio, inicio + columnasMostrar);
 
-  
+
   // Preparar los datos para la tabla
   const body = datos.map(objeto =>
     headers.map(header => objeto[header])
@@ -189,24 +193,24 @@ export const ordenarPorFechas = (dataArray, campoFecha) => {
     return text
   }
 } */
-  /* export function formatSubtitle(text, applyItalic = true) {
-    try {
-      return text.replace(/<([^>]+)>/g, (match, p1) => {
-        // Verificar si el subtítulo contiene la palabra clave
-        const keyword = "Hábitats y Ecosistemas";
-        const hasKeyword = p1.includes(keyword);
-        
-        // Estilo condicional: si contiene la palabra clave y applyItalic es true, se aplica negrita y cursiva
-        const style = applyItalic && hasKeyword 
-          ? 'font-weight: bold; font-style: italic;' 
-          : 'font-weight: bold;';
-        
-        return `<br><br><strong style="${style}">${p1}</strong><br>`;
-      });
-    } catch (error) {
-      return text;
-    }
-  } */   
+/* export function formatSubtitle(text, applyItalic = true) {
+  try {
+    return text.replace(/<([^>]+)>/g, (match, p1) => {
+      // Verificar si el subtítulo contiene la palabra clave
+      const keyword = "Hábitats y Ecosistemas";
+      const hasKeyword = p1.includes(keyword);
+      
+      // Estilo condicional: si contiene la palabra clave y applyItalic es true, se aplica negrita y cursiva
+      const style = applyItalic && hasKeyword 
+        ? 'font-weight: bold; font-style: italic;' 
+        : 'font-weight: bold;';
+      
+      return `<br><br><strong style="${style}">${p1}</strong><br>`;
+    });
+  } catch (error) {
+    return text;
+  }
+} */
 
 export function formatSubtitle(text, applyItalic = true) {
   try {
@@ -229,8 +233,8 @@ export function formatSubtitle(text, applyItalic = true) {
 
     // Paso 5: Reemplazo para separar viñetas (•) y otros textos
     formattedText = formattedText.replace(/•\s/g, '<br>• ')
-                                  .replace(/(\.\))\s([A-Z])/g, '$1<br>$2')
-                                  .replace(/(<\/strong><br>)\s*\n*(<br>)/g, '</strong><br>');
+      .replace(/(\.\))\s([A-Z])/g, '$1<br>$2')
+      .replace(/(<\/strong><br>)\s*\n*(<br>)/g, '</strong><br>');
 
     // Paso 6: Aplicar el estilo condicional al último <strong>
     const keyword = "Hábitats y Ecosistemas";
@@ -251,8 +255,8 @@ export function formatSubtitle(text, applyItalic = true) {
     return text;
   }
 }
-    
-      
+
+
 export function formatList(text) {
   try {
     text = text.replace(/([^,]+),?/g, (match, p1) => {

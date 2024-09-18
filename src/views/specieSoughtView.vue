@@ -38,7 +38,15 @@ const codeFilter = specie.specie.code_specie;
 const name_specie = specie.specie.vernacularName;
 const filteredData = ref([]);
 
+const images = ref([]);
+const bookRef = ref(null);
+let pageFlip;
 
+const pageWidth = ref(0);
+const pageHeight = ref(0);
+
+const currentPage = ref(0);
+const isFlipbookVisible = ref(false);
 
 //variable to take the value from nav
 const navValue = ref('protocol')
@@ -58,7 +66,6 @@ const {
   scientificName,
 } = specie.specie;
 
-
 const scrollToTop = () => {
   // para cuando se consulta desde la vista Especies
   window.scrollTo(0, 0);
@@ -66,19 +73,11 @@ const scrollToTop = () => {
 
 scrollToTop();
 
-const images = ref([]);
-const bookRef = ref(null);
-let pageFlip;
 
-const pageWidth = 600;
-const pageHeight = 800;
-
-const currentPage = ref(0);
 const totalPages = computed(() => images.value.length);
 const isFirstPage = computed(() => currentPage.value === 0);
 const isLastPage = computed(() => currentPage.value === totalPages.value - 1);
 const isShowingCover = computed(() => currentPage.value === 0);
-const isFlipbookVisible = ref(false);
 
 const convertPdfToImages = async (pdfUrl) => {
   if (!pdfUrl || pdfUrl === "/img/sin_img.png") {
@@ -108,7 +107,7 @@ const convertPdfToImages = async (pdfUrl) => {
     }
 
     images.value = await Promise.all(imagePromises)
-    console.log('Imágenes cargadas:', images.value.length)
+
   } catch (error) {
     console.error('Error al convertir PDF a imágenes:', error)
   }
@@ -117,13 +116,13 @@ const convertPdfToImages = async (pdfUrl) => {
 const initPageFlip = () => {
   try {
     pageFlip = new PageFlip(bookRef.value, {
-      width: pageWidth,
-      height: pageHeight,
+      width: pageWidth.value,
+      height: pageHeight.value,
       size: "fixed",
-      minWidth: pageWidth,
-      maxWidth: pageWidth,
-      minHeight: pageHeight,
-      maxHeight: pageHeight,
+      minWidth: pageWidth.value,
+      maxWidth: pageWidth.value,
+      minHeight: pageHeight.value,
+      maxHeight: pageHeight.value,
       maxShadowOpacity: 0.5,
       showCover: true,
       mobileScrollSupport: false
@@ -144,11 +143,14 @@ const initPageFlip = () => {
 
 // Código ejecutado cuando el componente se monta
 onMounted(async () => {
+  console.log('mensaje', 'lo primero que se debe imprimir')
   if (!specie.specie.code_specie) {
     // Redirigir si no hay un código de especie
     router.push({ name: "especies" });
     return;
   }
+
+  getFlipbookDimensions()
 
   // Obtener la URL del PDF a partir de los datos de la especie
   const pdfUrl = getFullImageUrl(specie.specie.images[0].protocol);
@@ -174,16 +176,49 @@ onMounted(async () => {
   await geoStore.fetchData(codeFilter);
   filteredData.value = geoStore.geoDataNew;
 });
+
+const backgroundStyle = computed(() => {
+  const leafImage = specie.specie.images?.[0]?.img_leafs;
+  return leafImage ? { backgroundImage: `url(${getFullImageUrl(leafImage)})` } : {};
+});
+
+const getFlipbookDimensions = () => {
+  const screenWidth = window.innerWidth;
+  if (screenWidth <= 500) {
+    // phone
+    pageWidth.value = 600; 
+    pageHeight.value = 800;
+    return
+  } else if (screenWidth <= 768) {
+    //tablet
+    pageWidth.value = 400; 
+    pageHeight.value = 600;
+    return
+  } else if (screenWidth <= 1440) {
+    // desktop
+    pageWidth.value = 500;
+    pageHeight.value = 700;
+    return
+  } else {
+    // big screen
+    pageWidth.value = 600;
+    pageHeight.value = 800;
+    return
+  }
+};
 </script>
 
+
 <template>
-  <div class="sought" :style="{
-    backgroundImage: 'url(' + getFullImageUrl(specie.specie.images[0].img_leafs) + ')',
-  }">
+  <div class="sought" :style="backgroundStyle">
     <div class="shadow"></div>
     <div class="sought__content">
-      <div v-show="isFlipbookVisible" class="flipbook" :class="{ 'show__content': navValue === 'protocol' }">
-        <LoadingData :color="'white'" v-if="images.length === 0"/>
+
+      <div class="flipbook" :class="{ 'show__content': navValue === 'protocol' }">
+        <div style="">
+          <LoadingData :color="'white'" v-if="!isFlipbookVisible" />
+        </div>
+
         <div id="book" class="book" ref="bookRef" :class="{ 'cover-view': currentPage === 0 }">
           <div v-for="(image, index) in images" :key="index" class="page">
             <img :src="image" :alt="`Page ${index + 1}`" />
@@ -192,12 +227,13 @@ onMounted(async () => {
       </div>
 
       <div class="map" :class="{ 'show__content': navValue === 'map' }">
-        <LoadingData :color="'white'" v-if="filteredData.length <= 0"/>
+        <LoadingData :color="'white'" v-if="filteredData.length <= 0" />
         <RenderGeo v-if="filteredData.length > 0" :filteredData="filteredData" />
       </div>
 
       <div class="gallery" :class="{ 'show__content': navValue === 'gallery' }">
-        <LoadingData :color="'white'" v-if="geoStore.validImages.length <= 0"/>
+
+        <LoadingData :color="'white'" v-if="geoStore.validImages.length <= 0" />
         <ImageSlider class="slider" v-if="geoStore.validImages.length > 0" />
       </div>
     </div>
@@ -248,6 +284,7 @@ onMounted(async () => {
   z-index: 0;
   bottom: 0%;
   z-index: 10;
+  
 }
 
 .sought__nav ul {
@@ -267,6 +304,18 @@ onMounted(async () => {
 }
 
 @media (min-width: 768px) {
+  .sought__nav {
+    position: absolute;
+    z-index: 2;
+    bottom: 0%;
+    width: 90%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+@media (min-width: 1440px) {
   .sought__nav {
     position: absolute;
     z-index: 2;
@@ -306,12 +355,18 @@ onMounted(async () => {
 
 }
 
+@media (min-width: 1440px) {
+  .gallery{
+    left: 3%;
+  }
+}
+
 
 /* map */
 .map {
   margin-top: 5rem;
   width: 100%;
-  height: 500px;
+  height: 600px;
   overflow: hidden;
   transition: all .3s ease-in-out;
   opacity: 1;
@@ -325,23 +380,33 @@ onMounted(async () => {
 @media (min-width: 768px) {
   .map {
     margin-top: 8rem;
-    width: 50%;
+    width: 80%;
     top: 0;
-    left: 25%;
+    left: 10%;
+    height: 1000px;
+  }
+}
+@media (min-width: 1440px) {
+  .map {
+    margin-top: 8rem;
+    width: 60%;
+    top: 0;
+    left: 22%;
     height: 1000px;
   }
 }
 
 /* FLIPBOOK */
 .flipbook {
-  margin-top: 4rem;
+  margin-top: 5rem;
   position: absolute;
   height: 500px;
   overflow: hidden;
   transition: all .3s ease-in-out;
   opacity: 0;
   z-index: 1;
-  left: 4%;
+  left: 3%;
+  width: 100%;
 }
 
 
@@ -360,20 +425,18 @@ onMounted(async () => {
 
 .book {
   transition: transform 0.5s ease;
-}
-
-.book {
   transform: translateX(0);
 }
 
-@media (min-width: 768px) {
+
+@media (min-width: 1440px) {
   .book.cover-view {
     transform: translateX(-25%);
   }
 }
 
 .page img {
-  width: 60%;
+  width: 56%;
   height: auto;
   object-fit: cover;
 }

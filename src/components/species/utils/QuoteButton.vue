@@ -28,26 +28,19 @@ const copyText = () => {
   </div>
   <div id="modal" v-if="showText" class="modal">
     <div class="modal__contenido">
-      <span
-        @click="showText = !showText"
-        class="modal__close"
-        ><font-awesome-icon :icon="['fas', 'circle-xmark']" /></span
-      >
+      <span @click="showText = !showText" class="modal__close"><font-awesome-icon
+          :icon="['fas', 'circle-xmark']" /></span>
       <p class="modal__titulo">Cítese como</p>
       <p class="modal__texto">
         Bernal, R., S.R. Gradstein & M. Celis (eds.). 2019. Sistema de
         información de Arboles y plantas del Sur de la Amazonia colombiana,
         Corpoamazonia, Bogotá. https://sara.amazoniaesenciadevida.com.co
       </p>
-      <button
-        @click="
-          () => {
-            copyText();
-            showText = !showText;
-          }
-        "
-        class="modal__boton"
-      >
+      <button @click="() => {
+        copyText();
+        showText = !showText;
+      }
+        " class="modal__boton">
         <font-awesome-icon icon="copy" class="mr-2" /> Copiar
       </button>
     </div>
@@ -65,6 +58,7 @@ const copyText = () => {
   background-color: rgba(0, 0, 0, 0.5);
   z-index: 1000;
 }
+
 /* Contenido del modal */
 .modal__contenido {
   position: absolute;
@@ -78,11 +72,12 @@ const copyText = () => {
   width: 15rem;
 }
 
-@media (min-width: 768px){
-  .modal__contenido{
+@media (min-width: 768px) {
+  .modal__contenido {
     width: 35rem;
   }
 }
+
 /* Botón para cerrar el modal */
 .modal__close {
   position: absolute;
@@ -93,35 +88,46 @@ const copyText = () => {
   cursor: pointer;
   border-radius: 10px;
   transition: color 0.3s ease;
-  
+
 }
-.modal__close:hover{
+
+.modal__close:hover {
   color: var(--primary);
 }
+
 /* citar */
 .citar {
   position: fixed;
-  top: 90%;
+  top: 11.5%;
   right: 0;
   z-index: 10000;
 }
+
+@media (min-width: 1024px) {
+  .citar {
+    top: 90%;
+  }
+}
+
 .citar__boton {
-  background-color: var(
-    --primary
-  ); /* Reemplazar con el color personalizado de tu elección */
+  background-color: var(--primary);
+  /* Reemplazar con el color personalizado de tu elección */
   color: white;
   border-radius: 8px 0 0 8px;
   padding: 8px 12px;
   cursor: pointer;
   transition: background-color 0.3s ease;
 }
+
 .modal__titulo {
   font-weight: 700;
 }
+
 .modal__texto {
   line-height: 1.8;
   text-align: center;
 }
+
 .modal__boton {
   font-weight: 700;
   margin-top: 1rem;
@@ -136,4 +142,3 @@ const copyText = () => {
   background-color: var(--primary-hover);
 }
 </style>
-
