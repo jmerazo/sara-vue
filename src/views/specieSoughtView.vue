@@ -357,7 +357,14 @@ const getFlipbookDimensions = () => {
 
 @media (min-width: 1440px) {
   .gallery{
-    left: 3%;
+    left: 2%;
+    margin-top: 8rem;
+  }
+}
+@media (min-width: 1920px) {
+  .gallery{
+    left:1.4%;
+    margin-top: 10rem;
   }
 }
 
