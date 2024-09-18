@@ -37,8 +37,8 @@ function changeBackgroundImage(direction) {
   <header class="header">
     <!-- Texto sobre las imágenes -->
     <div class="header__text">
-      Sistema de información de Semillas y Árboles de la
-      Región sur de la Amazonía.
+      SISTEMA DE INFORMACIÓN DE SEMILLAS Y ÁRBOLES DE LA
+      REGIÓN SUR DE LA AMAZONÍA.
     </div>
 
     <!-- Imágenes con fade-in/out -->

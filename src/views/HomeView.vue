@@ -48,6 +48,8 @@ function contenidoResumido() {
 <template>
   <div>
     <Header />
+
+    <TopSpecies/>
     <!-- misión, visión y valores -->
     <section class="contenedor planificacion">
       <div class="planificacion__grid">
@@ -106,8 +108,6 @@ function contenidoResumido() {
     <SliderGBIF />
 
     <FanPage />
-
-    <TopSpecies/>
 
     <Financiers/>
     

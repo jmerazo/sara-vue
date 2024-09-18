@@ -19,6 +19,7 @@ import PagesQueries from "@/components/species/utils/PagesQueries.vue";
 import RenderGeo from "@/components/species/utils/RenderGeo.vue";
 import ImageSlider from "@/components/species/utils/ImageSlider.vue";
 import LoadingData from "../components/shared/LoadingData.vue";
+import DownloadFile from '@/components/species/utils/DownloadFile.vue'
 
 //check to delete
 import ChartAverage from "@/components/species/charts/ChartAverage.vue";
@@ -33,12 +34,21 @@ const router = useRouter();
 
 const specie = useConsultaStore();
 const geoStore = useGeoCandidateTrees();
+console.log('specie ', specie.specie)
 
 const codeFilter = specie.specie.code_specie;
 const name_specie = specie.specie.vernacularName;
 const filteredData = ref([]);
 
-
+const downloadsList = computed(() => [
+  { title: "Protocolo", url: getFullImageUrl(specie.specie.images[0].protocol), icon: "/icons/file_pdf.svg" }, 
+  { title: "Protocolo de resolución", url: getFullImageUrl(specie.specie.images[0].resolution_protocol), icon: "/icons/file_word.svg" },
+  { title: "Anexo 1", url: getFullImageUrl(specie.specie.images[0].annex_one), icon: "/icons/file_pdf.svg" },
+  { title: "Anexo 2", url: getFullImageUrl(specie.specie.images[0].annex_two), icon: "/icons/file_pdf.svg" },
+  { title: "Formato de coordenadas", url: getFullImageUrl(specie.specie.images[0].format_coordinates), icon: "/icons/file_excel.svg" },
+  { title: "Formato de inventario", url: getFullImageUrl(specie.specie.images[0].format_inventary), icon: "/icons/file_word.svg" },
+  { title: "Instructivo de coordenadas", url: getFullImageUrl(specie.specie.images[0].intructive_coordinates), icon: "/icons/file_excel.svg" }
+])
 
 //variable to take the value from nav
 const navValue = ref('protocol')
@@ -200,6 +210,11 @@ onMounted(async () => {
         <LoadingData :color="'white'" v-if="geoStore.validImages.length <= 0"/>
         <ImageSlider class="slider" v-if="geoStore.validImages.length > 0" />
       </div>
+
+      <div class="downloads" :class="{ 'show__content': navValue === 'downloads' }">
+        <LoadingData :color="'white'" v-if="geoStore.validImages.length <= 0"/>
+        <DownloadFile v-else :downloads="downloadsList" />
+      </div>
     </div>
 
     <div class="sought__nav">
@@ -207,6 +222,7 @@ onMounted(async () => {
         <li @click="changeValueNav('protocol')" :class="{ 'border__nav': navValue === 'protocol' }">Protocolo</li>
         <li @click="changeValueNav('map')" :class="{ 'border__nav': navValue === 'map' }">Mapa</li>
         <li @click="changeValueNav('gallery')" :class="{ 'border__nav': navValue === 'gallery' }">Galería</li>
+        <li @click="changeValueNav('downloads')" :class="{ 'border__nav': navValue === 'downloads' }">Descargas</li>
       </ul>
     </div>
   </div>
@@ -356,6 +372,23 @@ onMounted(async () => {
     height: 100%;
     left: 0;
   }
+}
+
+.downloads {
+  margin-top: 10rem;
+  width: 100%;
+  overflow: hidden;
+  transition: all .3s ease-in-out;
+  opacity: 0;
+  position: absolute;
+  left: 0%;
+  top: 0%;
+  z-index: 1;
+}
+
+.show__content {
+  opacity: 1;
+  z-index: 2;
 }
 
 .book {

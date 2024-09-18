@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 import { useNurseriesStore } from "@/stores/nurseries";
 import { useConsultaStore } from '@/stores/consulta'
 import { useRouter } from "vue-router";
@@ -7,7 +7,6 @@ import { useToast } from '../helpers/ToastManagement';
 
 const consulta = useConsultaStore()
 const nurseries = useNurseriesStore();
-console.log('nurseries: ', nurseries)
 
 const router = useRouter();
 const { addToast } = useToast();
@@ -45,6 +44,14 @@ function showError(message) {
     duration: 3000 
   });
 }
+
+/* onMounted(async () => {
+  if (!nurseries.nursery.id) {
+    // Redirigir si no hay un id
+    router.push({ name: "nurseries" });
+    return;
+  }
+}); */
 </script>
 
 <template>
@@ -54,20 +61,44 @@ function showError(message) {
       <h2 class="general__title">{{ nurseries.nursery.nombre_vivero }}</h2>
       <div class="nursery__data">
         <p>
-          Representante Legal:
+          <span class="information__title">Representante legal:</span>
           <span
             >{{ nurseries.nursery.first_name }}
             {{ nurseries.nursery.last_name }}</span
           >
         </p>
         <p>
-          Departamento: <span>{{ nurseries.nursery.departamento }}</span>
+          <span class="information__title">Email:</span>   
+          <span>{{ nurseries.nursery.email }}</span>
         </p>
         <p>
-          Municipio: <span>{{ nurseries.nursery.municipio }}</span>
+          <span class="information__title">Contacto:</span>   
+          <span>{{ nurseries.nursery.telefono }}</span>
         </p>
         <p>
-          Contacto: <span>{{ nurseries.nursery.telefono }}</span>
+          <span class="information__title">Vigencia ICA:</span>
+          <span>{{ nurseries.nursery.vigencia_registro === 1 ? 'Sí' : 'No' }}</span>
+        </p>
+        <p>
+          <span class="information__title">Número registro:</span>
+          <span>{{ nurseries.nursery.numero_registro_ica || 'Sin información' }}</span>
+        </p>
+        <p>
+          <span class="information__title">Tipo registro:</span>
+          <span>{{ nurseries.nursery.tipo_registro || 'Sin información' }}</span>
+        </p>
+        <p>
+          <span class="information__title">Clase de vivero:</span>
+          <span>{{ nurseries.nursery.clase_vivero || 'Sin información' }}</span>
+        </p>
+        <hr>
+        <p>
+          <span class="information__title">Departamento:</span>  
+          <span>{{ nurseries.nursery.departamento }}</span>
+        </p>
+        <p>
+          <span class="information__title">Municipio:</span>
+          <span>{{ nurseries.nursery.municipio }}</span>
         </p>
       </div>
       <div class="species">
@@ -328,5 +359,10 @@ body {
 .button__map:hover {
   background: var(--primary);
   color: var(--blanco);
+}
+
+.information__title {
+  font-weight: bold;
+  margin-right: 0.5rem;
 }
 </style>

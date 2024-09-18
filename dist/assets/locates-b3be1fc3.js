@@ -1,0 +1,1 @@
+import{B as i,r as s,o as l,C as r}from"./index-58a73ee5.js";const p=i("locatesColombia",()=>{const e=s([]),t=s({});return l(async()=>{try{const n=(await r.getDepartments()).data.filter(o=>o.name==="Putumayo"||o.name==="Caquetá");e.value=n;const c=await r.getCities();t.value=c.data}catch(a){console.error("Error al obtener datos: ",a)}}),{departments:e,cities:t}});export{p as l};

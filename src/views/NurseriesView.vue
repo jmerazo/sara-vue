@@ -121,6 +121,22 @@ onMounted(async () => {
                   <span class="information__title">Municipio:</span> 
                   <span>{{ nursery.municipio }}</span>
                 </p>
+                <p>
+                  <span class="information__title">Vigencia ICA:</span>
+                  <span>{{ nursery.vigencia_registro === 1 ? 'Sí' : 'No' }}</span>
+                </p>
+                <p v-if="nursery.vigencia_registro === 1">
+                  <span class="information__title">Número registro:</span>
+                  <span>{{ nursery.numero_registro_ica || 'Sin información' }}</span>
+                </p>
+                <p>
+                  <span class="information__title">Tipo registro:</span>
+                  <span>{{ nursery.tipo_registro || 'Sin información' }}</span>
+                </p>
+                <p>
+                  <span class="information__title">Clase de vivero:</span>
+                  <span>{{ nursery.clase_vivero || 'Sin información' }}</span>
+                </p>
 
                 <a
                   style="color: var(--primary); margin-top: 1rem"
