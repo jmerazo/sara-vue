@@ -77,7 +77,7 @@ const vectorLayer = new VectorLayer({
   style: function (feature) {
     const source = feature.get('source');
     const habito = feature.get('habito');
-    
+
     if (source === 'original') {
       if (habito === 'Árbol') {
         return treeIconStyle;
@@ -153,7 +153,7 @@ watch(() => filteredData, (newData) => {
   <div class="map-container">
     <div ref="mapContainer"></div>
     <div class="legend">
-      <h4>Leyenda</h4>
+
       <div class="legend-item">
         <img :src="treeIconPath" alt="Árbol Corpoamazonia" class="legend-icon">
         <span>Árbol - Corpoamazonia</span>
@@ -180,34 +180,39 @@ watch(() => filteredData, (newData) => {
   height: auto;
 }
 
-.map-container > div:first-child {
-  height: 600px;
+.map-container>div:first-child {
+  height: 290px;
   border-radius: 25px;
-  height: 500px;
   border-radius: 1rem;
   overflow: hidden;
 }
 
 @media (min-width: 768px) {
-  .map-container{
-    height: 760px;
+  .map-container>div:first-child {
+    height: 600px;
+  }
+}
+@media (min-width: 1440px) {
+  .map-container>div:first-child {
+    height: 500px;
+    
+  }
+}
+@media (min-width: 1920px) {
+  .map-container>div:first-child {
+    height: 600px;
     
   }
 }
 
 .legend {
-  margin-top: 20px;
+  margin-top: 10px;
   padding: 15px;
-  background-color: rgba(255, 255, 255, 0.8);
+  background-color: rgba(255, 255, 255, 0.85);
   border-radius: 10px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.legend h4 {
-  margin-top: 0;
-  margin-bottom: 10px;
-  font-size: 1.1em;
-}
 
 .legend-item {
   display: flex;
@@ -222,6 +227,6 @@ watch(() => filteredData, (newData) => {
 }
 
 .legend-item span {
-  font-size: 0.9em;
+  font-size: 1rem;
 }
 </style>
