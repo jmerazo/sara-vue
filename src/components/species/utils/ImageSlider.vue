@@ -87,7 +87,7 @@ const changeImage = (index) => {
   .image__active {
 
     width: 600px;
-    height: 450px;
+    height: 340px;
   }
 }
 
@@ -101,15 +101,6 @@ const changeImage = (index) => {
   }
 }
 
-@media (min-width: 1920px) {
-  .imagen,
-  .slider__specie-content,
-  .image__active {
-
-    width: 1000px;
-    height: 650px;
-  }
-}
 
 .thumbnail__images {
   display: flex;

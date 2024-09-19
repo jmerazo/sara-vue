@@ -42,20 +42,16 @@ defineProps({
   .download-cards {
     display: grid;
     grid-template-columns: repeat(4, 220px);
-    gap: 1.5rem;
+    gap: 1rem;
     max-width: 960px;
     width: 100%;
     overflow-x: hidden;
   }
 }
+
 @media (min-width: 1440px) {
   .download-cards {
-    display: grid;
-    grid-template-columns: repeat(4, 220px);
     gap: 1.5rem;
-    max-width: 960px;
-    width: 100%;
-    overflow-x: hidden;
   }
 }
 
@@ -70,11 +66,22 @@ defineProps({
   display: flex;
   flex-direction: column;
   align-items: center;
+
 }
 
 @media (min-width: 920px) {
-  .download-card{
+  .download-card {
     padding: 1rem;
+    width: 185px;
+    height: 165px;
+  }
+}
+
+@media (min-width: 1440px) {
+  .download-card {
+    padding: 1rem;
+    width: auto;
+    height: auto;
   }
 }
 
@@ -88,10 +95,39 @@ defineProps({
   margin-bottom: 1rem;
 }
 
+@media (min-width: 920px) {
+  .card-icon {
+    width: 35px;
+    height: 35px;
+    margin-bottom: 0;
+  }
+}
+
+@media (min-width: 1440px) {
+  .card-icon {
+    width: 48px;
+    height: 48px;
+    margin-bottom: 0;
+  }
+}
+
 .download-card h3 {
   color: var(--gris-fuente);
   margin-bottom: 1rem;
   font-size: 1.1rem;
+}
+
+@media (min-width: 920px) {
+  .download-card h3 {
+    margin-bottom: 1rem;
+    font-size: .9rem;
+  }
+}
+@media (min-width: 1440px) {
+  .download-card h3 {
+    margin-bottom: 1rem;
+    font-size: 1.1rem;
+  }
 }
 
 .download-button {
