@@ -197,18 +197,18 @@ watch(() => filteredData, (newData) => {
     height: 400px;
   }
 }
+@media (min-width: 1340px) {
+  .map-container>div:first-child {
+    height:200px;
+  }
+}
 @media (min-width: 1440px) {
   .map-container>div:first-child {
     height: 500px;
     
   }
 }
-@media (min-width: 1920px) {
-  .map-container>div:first-child {
-    height: 600px;
-    
-  }
-}
+
 
 .legend {
   margin-top: 10px;

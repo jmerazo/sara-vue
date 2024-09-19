@@ -193,7 +193,7 @@ onMounted(async () => {
     getFullImageUrl(specie.specie.images[0].img_leafs),
     getFullImageUrl(specie.specie.images[0].img_flowers),
     getFullImageUrl(specie.specie.images[0].img_fruits),
-  ]);
+  ])
 
   // Obtener datos geográficos y filtrar resultados
   await geoStore.fetchData(codeFilter);
@@ -213,10 +213,10 @@ const getFlipbookDimensions = () => {
     pageWidth.value = 600;
     pageHeight.value = 800;
     return
-  } else if (screenWidth <= 1400) {
+  }else if (screenWidth <= 1400) {
     // desktop
-    pageWidth.value = 400;
-    pageHeight.value = 600;
+    pageWidth.value = 300;
+    pageHeight.value = 450;
     return
   } else if (screenWidth <= 1440) {
     // desktop
@@ -225,8 +225,8 @@ const getFlipbookDimensions = () => {
     return
   }else {
     // big screen
-    pageWidth.value = 600;
-    pageHeight.value = 800;
+    pageWidth.value = 500;
+    pageHeight.value = 700;
     return
   }
 };
@@ -469,14 +469,20 @@ const getFlipbookDimensions = () => {
     height: 1000px;
   }
 }
+@media (min-width: 920px) {
+  .map {
+    margin-top: 8rem;
+    width: 50%;
+    top: 0;
+    left: 22%;
+   
+  }
+}
 
 @media (min-width: 1440px) {
   .map {
-    margin-top: 8rem;
     width: 60%;
-    top: 0;
     left: 20%;
-    height: 1000px;
   }
 }
 
@@ -494,6 +500,11 @@ const getFlipbookDimensions = () => {
 
 }
 
+@media (min-width: 1340px) {
+  .gallery {
+    margin-top: 6rem;
+  }
+}
 @media (min-width: 1440px) {
   .gallery {
     left: 2%;
@@ -501,12 +512,7 @@ const getFlipbookDimensions = () => {
   }
 }
 
-@media (min-width: 1920px) {
-  .gallery {
-    left: 1.4%;
-    margin-top: 10rem;
-  }
-}
+
 
 /* downloads */
 .downloads {
@@ -523,7 +529,7 @@ const getFlipbookDimensions = () => {
 
 @media (min-width: 920px) {
   .downloads{
-    margin-top: 8rem;
+    margin-top: 6rem;
   }
 }
 @media (min-width: 1440px) {
