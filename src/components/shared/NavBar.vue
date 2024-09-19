@@ -11,7 +11,7 @@ const paginaNoImage = computed(() =>
   || route.name === 'authVerify'
   || route.name === 'signUpSuccess'
 );
-console.log('current path', route.name)
+
 //mostrar barra lateral
 const navMovil = ref(true);
 const mostrarNavMovil = () => {

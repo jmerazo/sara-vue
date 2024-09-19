@@ -1,23 +1,23 @@
 <template>
-    <div class="download-cards-container">
-      <div class="download-cards">
-        <div v-for="(download, index) in downloads" :key="index" class="download-card">
-          <img :src="download.icon" :alt="download.title + ' icon'" class="card-icon" />
-          <h3>{{ download.title }}</h3>
-          <a :href="download.url" download class="download-button">
-            Descargar
-          </a>
-        </div>
+  <div class="download-cards-container">
+    <div class="download-cards">
+      <div v-for="(download, index) in downloads" :key="index" class="download-card">
+        <img :src="download.icon" :alt="download.title + ' icon'" class="card-icon" />
+        <h3>{{ download.title }}</h3>
+        <a :href="download.url" download class="download-button">
+          Descargar
+        </a>
       </div>
     </div>
+  </div>
 </template>
 
 <script setup>
 defineProps({
-downloads: {
+  downloads: {
     type: Array,
     required: true
-}
+  }
 })
 </script>
 
@@ -30,11 +30,23 @@ downloads: {
 }
 
 .download-cards {
-  display: grid;
-  grid-template-columns: repeat(4, 220px);
-  gap: 1.5rem;
-  max-width: 960px;
-  width: 100%;
+  display: flex;
+  gap: 1rem;
+  overflow-y: hidden;
+  overflow-x: scroll;
+  scroll-snap-type: x mandatory;
+  scroll-snap-align: center;
+}
+
+@media (min-width: 1440px) {
+  .download-cards {
+    display: grid;
+    grid-template-columns: repeat(4, 220px);
+    gap: 1.5rem;
+    max-width: 960px;
+    width: 100%;
+    overflow-x: hidden;
+  }
 }
 
 .download-card {
