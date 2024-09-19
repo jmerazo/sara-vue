@@ -179,7 +179,7 @@ function parseData(text) {
   }
 }
 
-@media (min-width: 992px) {
+@media (min-width: 920px) {
   .modal__contenido {
     width: 80%;
     padding: 40px;
@@ -187,6 +187,11 @@ function parseData(text) {
 }
 
 @media (min-width: 1440px) {
+  .modal__contenido {
+    width: 60%;
+  }
+}
+@media (min-width: 1920px) {
   .modal__contenido {
     width: 40%;
   }

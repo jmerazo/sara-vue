@@ -166,7 +166,7 @@ const initPageFlip = () => {
 
 // Código ejecutado cuando el componente se monta
 onMounted(async () => {
-  console.log('mensaje', 'lo primero que se debe imprimir')
+  
   if (!specie.specie.code_specie) {
     // Redirigir si no hay un código de especie
     router.push({ name: "especies" });
@@ -207,13 +207,14 @@ const backgroundStyle = computed(() => {
 
 const getFlipbookDimensions = () => {
   const screenWidth = window.innerWidth;
+  console.log('screen', screenWidth)
   if (screenWidth <= 500) {
     // phone
     pageWidth.value = 600;
     pageHeight.value = 800;
     return
-  } else if (screenWidth <= 768) {
-    //tablet
+  } else if (screenWidth <= 1400) {
+    // desktop
     pageWidth.value = 400;
     pageHeight.value = 600;
     return
@@ -222,7 +223,7 @@ const getFlipbookDimensions = () => {
     pageWidth.value = 500;
     pageHeight.value = 700;
     return
-  } else {
+  }else {
     // big screen
     pageWidth.value = 600;
     pageHeight.value = 800;
@@ -381,71 +382,6 @@ const getFlipbookDimensions = () => {
     text-align: center;
   }
 }
-
-/* gallery */
-.gallery {
-  margin-top: 10rem;
-  width: 100%;
-  overflow: hidden;
-  transition: all .3s ease-in-out;
-  opacity: 0;
-  position: absolute;
-  left: 0%;
-  top: 0%;
-  z-index: 1;
-
-}
-
-@media (min-width: 1440px) {
-  .gallery {
-    left: 2%;
-    margin-top: 8rem;
-  }
-}
-
-@media (min-width: 1920px) {
-  .gallery {
-    left: 1.4%;
-    margin-top: 10rem;
-  }
-}
-
-
-/* map */
-.map {
-  margin-top: 5rem;
-  width: 100%;
-  height: 600px;
-  overflow: hidden;
-  transition: all .3s ease-in-out;
-  opacity: 1;
-  position: absolute;
-  left: 0%;
-  top: 0%;
-  z-index: 1;
-  opacity: 0;
-}
-
-@media (min-width: 768px) {
-  .map {
-    margin-top: 8rem;
-    width: 80%;
-    top: 0;
-    left: 10%;
-    height: 1000px;
-  }
-}
-
-@media (min-width: 1440px) {
-  .map {
-    margin-top: 8rem;
-    width: 60%;
-    top: 0;
-    left: 20%;
-    height: 1000px;
-  }
-}
-
 /* FLIPBOOK */
 .flipbook {
   margin-top: 5rem;
@@ -484,7 +420,8 @@ const getFlipbookDimensions = () => {
 }
 
 
-@media (min-width: 1440px) {
+
+@media (min-width: 920px) {
   .book.cover-view {
     transform: translateX(-22.8%);
   }
@@ -508,6 +445,69 @@ const getFlipbookDimensions = () => {
   border-bottom: 3px solid white;
 }
 
+/* map */
+.map {
+  margin-top: 5rem;
+  width: 100%;
+  height: 600px;
+  overflow: hidden;
+  transition: all .3s ease-in-out;
+  opacity: 1;
+  position: absolute;
+  left: 0%;
+  top: 0%;
+  z-index: 1;
+  opacity: 0;
+}
+
+@media (min-width: 768px) {
+  .map {
+    margin-top: 8rem;
+    width: 80%;
+    top: 0;
+    left: 10%;
+    height: 1000px;
+  }
+}
+
+@media (min-width: 1440px) {
+  .map {
+    margin-top: 8rem;
+    width: 60%;
+    top: 0;
+    left: 20%;
+    height: 1000px;
+  }
+}
+
+/* gallery */
+.gallery {
+  margin-top: 10rem;
+  width: 100%;
+  overflow: hidden;
+  transition: all .3s ease-in-out;
+  opacity: 0;
+  position: absolute;
+  left: 0%;
+  top: 0%;
+  z-index: 1;
+
+}
+
+@media (min-width: 1440px) {
+  .gallery {
+    left: 2%;
+    margin-top: 8rem;
+  }
+}
+
+@media (min-width: 1920px) {
+  .gallery {
+    left: 1.4%;
+    margin-top: 10rem;
+  }
+}
+
 /* downloads */
 .downloads {
   margin-top: 10rem;
@@ -519,7 +519,17 @@ const getFlipbookDimensions = () => {
   left: 0%;
   top: 0%;
   z-index: 1;
+}
 
+@media (min-width: 920px) {
+  .downloads{
+    margin-top: 8rem;
+  }
+}
+@media (min-width: 1440px) {
+  .downloads{
+    margin-top: 10rem;
+  }
 }
 
 /* display selection nav */

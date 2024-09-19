@@ -38,6 +38,16 @@ defineProps({
   scroll-snap-align: center;
 }
 
+@media (min-width: 920px) {
+  .download-cards {
+    display: grid;
+    grid-template-columns: repeat(4, 220px);
+    gap: 1.5rem;
+    max-width: 960px;
+    width: 100%;
+    overflow-x: hidden;
+  }
+}
 @media (min-width: 1440px) {
   .download-cards {
     display: grid;
@@ -60,6 +70,12 @@ defineProps({
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+
+@media (min-width: 920px) {
+  .download-card{
+    padding: 1rem;
+  }
 }
 
 .download-card:hover {

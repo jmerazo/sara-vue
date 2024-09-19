@@ -192,6 +192,11 @@ watch(() => filteredData, (newData) => {
     height: 600px;
   }
 }
+@media (min-width: 920px) {
+  .map-container>div:first-child {
+    height: 400px;
+  }
+}
 @media (min-width: 1440px) {
   .map-container>div:first-child {
     height: 500px;

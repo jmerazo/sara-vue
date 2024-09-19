@@ -81,7 +81,17 @@ const changeImage = (index) => {
     height: 650px;
   }
 }
-@media (min-width: 1024px) {
+@media (min-width: 920px) {
+  .imagen,
+  .slider__specie-content,
+  .image__active {
+
+    width: 600px;
+    height: 450px;
+  }
+}
+
+@media (min-width: 1440px) {
   .imagen,
   .slider__specie-content,
   .image__active {
