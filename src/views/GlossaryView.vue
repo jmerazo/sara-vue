@@ -67,7 +67,7 @@ const displayedPageRange = computed(() => {
   <div class="contenedor">
     <!-- header glosario -->
     <header class="header__glosario">
-      <h1 class="glosario__heading">Glosario</h1>
+      <h1 class="glosario__heading">GLOSARIO</h1>
       <div class="header__contenido">
         <form class="buscador__formulario">
           <label for="selectLetra" class="header__label">Buscar letra:</label>

@@ -41,13 +41,13 @@ const name_specie = specie.specie.vernacularName;
 const filteredData = ref([]);
 
 const downloadsList = computed(() => [
-  { title: "Protocolo", url: getFullImageUrl(specie.specie.images[0].protocol), icon: "/icons/file_pdf.svg" }, 
-  { title: "Protocolo de resolución", url: getFullImageUrl(specie.specie.images[0].resolution_protocol), icon: "/icons/file_word.svg" },
-  { title: "Anexo 1", url: getFullImageUrl(specie.specie.images[0].annex_one), icon: "/icons/file_pdf.svg" },
-  { title: "Anexo 2", url: getFullImageUrl(specie.specie.images[0].annex_two), icon: "/icons/file_pdf.svg" },
-  { title: "Formato de coordenadas", url: getFullImageUrl(specie.specie.images[0].format_coordinates), icon: "/icons/file_excel.svg" },
-  { title: "Formato de inventario", url: getFullImageUrl(specie.specie.images[0].format_inventary), icon: "/icons/file_word.svg" },
-  { title: "Instructivo de coordenadas", url: getFullImageUrl(specie.specie.images[0].intructive_coordinates), icon: "/icons/file_excel.svg" }
+  { title: "Protocolo para el manejo sostenible de la especie", url: getFullImageUrl(specie.specie.images[0].protocol), icon: "/icons/file_pdf.svg" }, 
+  { title: "Resolución de adopción del protocolo", url: getFullImageUrl(specie.specie.images[0].resolution_protocol), icon: "/icons/file_word.svg" },
+  { title: "Anexo 1 - Instrucciones para los interesados", url: getFullImageUrl(specie.specie.images[0].annex_one), icon: "/icons/file_pdf.svg" },
+  { title: "Anexo 2 - Instrucciones para los usuarios", url: getFullImageUrl(specie.specie.images[0].annex_two), icon: "/icons/file_pdf.svg" },
+  { title: "Formato para coordenadas del predio", url: getFullImageUrl(specie.specie.images[0].format_coordinates), icon: "/icons/file_excel.svg" },
+  { title: "Instructivo para el diligenciamiento de coordenadas", url: getFullImageUrl(specie.specie.images[0].intructive_coordinates), icon: "/icons/file_excel.svg" },
+  { title: "Formato para informe de inventario", url: getFullImageUrl(specie.specie.images[0].format_inventary), icon: "/icons/file_word.svg" },
 ])
 
 //variable to take the value from nav
