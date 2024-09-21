@@ -3,6 +3,8 @@ import { ref } from "vue";
 
 //para funcion de getFullImageUrl
 import api from "@/api/axios";
+import ExcelJS from 'exceljs';
+import { saveAs } from 'file-saver';
 
 //para funcion descargarExcel
 import exportFromJSON from "export-from-json";
@@ -33,56 +35,208 @@ export const getFullImageUrl = (relativePath) => {
 
 };
 
+
+// FUNCIONES ACTUALIZADAS Y FINALES
+export const descargarExcels = async (datos, excelName) => {
+  if (!Array.isArray(datos) || datos.length === 0) {
+    console.error('No hay datos para generar el Excel');
+    return;
+  }
+
+  // Crear un nuevo workbook y agregar una hoja
+  const workbook = new ExcelJS.Workbook();
+  const worksheet = workbook.addWorksheet('Datos');
+
+  // Extraer los encabezados de la primera fila de datos
+  const headers = datos[0];
+
+  // Extraer los datos del resto de las filas
+  const bodyData = datos.slice(1);
+
+  // Añadir la primera fila (encabezados)
+  worksheet.addRow(headers);
+
+  // Añadir las filas de datos
+  bodyData.forEach(row => {
+    worksheet.addRow(row);
+  });
+
+  // Obtener el número total de columnas y filas para asegurar que todo esté dentro del margen
+  const totalColumns = headers.length;
+  const totalRows = worksheet.rowCount;
+
+  // Establecer el estilo de los encabezados
+  headers.forEach((header, index) => {
+    const cell = worksheet.getRow(1).getCell(index + 1); // Fila 1, columna correspondiente
+    cell.fill = {
+      type: 'pattern',
+      pattern: 'solid',
+      fgColor: { argb: 'FF10953E' }, // Verde oscuro
+    };
+    cell.font = {
+      color: { argb: 'FFFFFFFF' }, // Texto blanco
+      bold: true,
+    };
+    cell.border = {
+      top: { style: 'thin' },
+      left: { style: 'thin' },
+      bottom: { style: 'thin' },
+      right: { style: 'thin' },
+    };
+  });
+
+  // Aplicar bordes a todas las celdas, incluyendo vacías, dentro del rango de la tabla
+  for (let rowIndex = 1; rowIndex <= totalRows; rowIndex++) {
+    const row = worksheet.getRow(rowIndex);
+    for (let colIndex = 1; colIndex <= totalColumns; colIndex++) {
+      const cell = row.getCell(colIndex);
+      cell.border = {
+        top: { style: 'thin' },
+        left: { style: 'thin' },
+        bottom: { style: 'thin' },
+        right: { style: 'thin' },
+      };
+    }
+  }
+
+  // Ajustar el ancho de las columnas automáticamente
+  worksheet.columns.forEach((column) => {
+    let maxLength = 0;
+    column.eachCell({ includeEmpty: true }, (cell) => {
+      const columnLength = cell.value ? cell.value.toString().length : 10;
+      if (columnLength > maxLength) {
+        maxLength = columnLength;
+      }
+    });
+    column.width = maxLength + 2; // Ajustar un poco más de espacio
+  });
+
+  // Generar el archivo Excel
+  const buffer = await workbook.xlsx.writeBuffer();
+
+  // Guardar el archivo usando file-saver
+  const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+  saveAs(blob, `${excelName}.xlsx`);
+};
+
 //descargar reportes en excel
 export const descargarExcel = (datos, excelName) => {
-  const data = datos;
+  if (!Array.isArray(datos) || datos.length === 0) {
+    console.error('No hay datos para generar el Excel');
+    return;
+  }
+
+  // Extraer los encabezados de la primera fila de datos
+  const headers = datos[0];
+
+  // Extraer los datos del resto de las filas
+  const bodyData = datos.slice(1);
+
+  // Convertir los datos en objetos dinámicos basados en los encabezados
+  const data = bodyData.map(row => {
+    const obj = {};
+    headers.forEach((header, index) => {
+      obj[header] = row[index];
+    });
+    return obj;
+  });
+
   const fileName = excelName;
-  // const exportType= exportFromJSON.types.xls
   const exportType = exportFromJSON.types.xls;
+
+  // Export the data as Excel file
   return exportFromJSON({ data, fileName, exportType });
 };
 
-
-
+// FUNCIONES ACTUALIZADAS Y FINALES
 export const descargarPdfs = (datos, tituloTabla, columnas, inicio, customHeaders) => {
+  if (!Array.isArray(datos) || datos.length === 0) {
+    console.error('No hay datos para generar el PDF');
+    return;
+  }
+
   const doc = new jsPDF({
     orientation: 'landscape',
-    unit: 'px',
+    unit: 'pt',
     format: 'a4'
   });
 
-  const columnasMostrar = Math.min(columnas, Object.keys(datos[0]).length);
-  const headers = Object.keys(datos[0]).slice(inicio, inicio + columnasMostrar);
+  const pageWidth = doc.internal.pageSize.getWidth();
+  const pageHeight = doc.internal.pageSize.getHeight();
+  const margin = 40;
+  const availableWidth = pageWidth - 2 * margin;
 
+  // Extraer la primera fila como headers
+  const dataHeaders = Object.keys(datos[0]);
+  const columnasMostrar = Math.min(columnas, dataHeaders.length);
+  
+  // Usar la primera fila de 'datos' como los headers
+  const extractedHeaders = datos[0]; // Primera fila para los headers
+
+  // Usar customHeaders si se proporciona, de lo contrario usar los headers extraídos
+  const headersToUse = Array.isArray(customHeaders) ? customHeaders : Object.values(extractedHeaders).slice(inicio, inicio + columnasMostrar);
+
+  // Eliminar la primera fila de los datos para no incluirla en el cuerpo
+  const bodyData = datos.slice(1); // Datos sin la primera fila (que contiene los headers)
 
   // Preparar los datos para la tabla
-  const body = datos.map(objeto =>
-    headers.map(header => objeto[header])
+  const body = bodyData.map(objeto =>
+    headersToUse.map((header, index) => {
+      const value = objeto[dataHeaders[inicio + index]];
+      return value !== undefined && value !== null ? String(value) : '';
+    })
   );
 
   // Añadir título
   doc.setFontSize(18);
   doc.setFont('helvetica', 'bold');
-  doc.addImage('/public/icons/sara.png', 'PNG', 27, 10, 40, 30);
-  doc.text(tituloTabla, doc.internal.pageSize.getWidth() / 2, 40, { align: 'center' });
+  doc.addImage('/public/icons/sara.png', 'PNG', margin, margin, 40, 30);
+  doc.text(tituloTabla, pageWidth / 2, margin + 40, { align: 'center' });
+
+  // Calcular el ancho de cada columna
+  const columnWidth = availableWidth / headersToUse.length;
 
   // Añadir tabla
   doc.autoTable({
-    head: customHeaders,
+    head: [headersToUse],
     body: body,
-    startY: 60,
-    theme: 'grid',
+    startY: margin + 60,
+    margin: { top: margin, right: margin, bottom: margin, left: margin },
     styles: {
-      fillColor: [255, 255, 255], // Background table color
-      lineColor: [16, 97, 62], // Color line
-      lineWidth: 0.5, // 
+      overflow: 'linebreak',
+      cellWidth: 'wrap',
+      fontSize: 8,
+      cellPadding: 3,
+      fillColor: [255, 255, 255],
+      lineColor: [16, 97, 62],
+      lineWidth: 0.5,
     },
     headStyles: {
       fillColor: [16, 97, 62],
       textColor: [255, 255, 255],
       fontStyle: 'bold',
-      halign: 'center'
-    }
+      halign: 'center',
+      valign: 'middle',
+      fontSize: 9
+    },
+    columnStyles: headersToUse.reduce((styles, _, index) => {
+      styles[index] = { 
+        cellWidth: columnWidth,
+        halign: 'left',
+        valign: 'top'
+      };
+      return styles;
+    }, {}),
+    didParseCell: function(data) {
+      if (data.section === 'body') {
+        data.cell.styles.fillColor = data.row.index % 2 === 0 ? [255, 255, 255] : [245, 245, 245];
+      }
+    },
+    didDrawPage: function (data) {
+      // Agregar número de página
+      doc.setFontSize(10);
+      doc.text('Página ' + doc.internal.getNumberOfPages(), data.settings.margin.left, pageHeight - 10);
+    },
   });
 
   // Guardar el PDF
