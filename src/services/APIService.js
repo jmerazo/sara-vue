@@ -243,7 +243,7 @@ export default {
     /* ==================================================================================================================== */
     // ENDPOINT →→ NURSERIES
     listNurseries(){
-        return api.get('/nurseries')
+        return api.get('/nurseries/')
     },
     listNurseriesId(id){
         return api.get(`/nurseries/search/${id}`)
