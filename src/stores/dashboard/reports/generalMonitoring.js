@@ -30,7 +30,6 @@ export const useGeneralMonitoring = defineStore("generalMonitoring", () => {
     cargando.value = true;
     const { data } = await APIService.getMonitoringData();
     monitoringData.value = data;
-    console.log('Monitorings: ', monitoringData.value)
     monitoringDataOriginal.value = data;
     ordenarPorFechas(monitoringData.value, "fecha_monitoreo");
     ordenarPorFechas(monitoringDataOriginal.value, "fecha_monitoreo");
@@ -38,10 +37,36 @@ export const useGeneralMonitoring = defineStore("generalMonitoring", () => {
     generarPlacasUnicas();
   });
 
-  function cargarData() {
+  /* function cargarData() {
     monitoringData.value.forEach((dato) => {
       datosImport.value.push(dato);
     });
+  } */
+
+  function cargarData() {
+    const headers = [
+      'Fecha',
+      'Especie',
+      'Temperatura',
+      'Humedad',
+      'Precipitación',
+      'Fac. Climatico',
+      'Flor',
+      'Frutos'
+    ];
+  
+    const data = monitoringData.value.map(dato => [
+      dato.fecha_monitoreo,
+      dato.specie.vernacularName,
+      dato.temperatura,
+      dato.humedad,
+      dato.precipitacion,
+      dato.factor_climatico,
+      dato.flor_abierta,
+      dato.frutos_verdes,
+    ]);
+  
+    datosImport.value = [headers, ...data];
   }
 
   //cargar datos de importacion

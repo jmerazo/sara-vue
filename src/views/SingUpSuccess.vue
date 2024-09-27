@@ -1,5 +1,10 @@
 <script setup>
+import { useRouter } from 'vue-router'
+const router = useRouter()
 
+function navigateToAuthVerify() {
+  router.push({ name: 'home' })
+}
 </script>
 
 <template>
@@ -7,19 +12,14 @@
         <div class="confirmation__grid">
             <div class="confirmation__content">
                 <h1>Registro exitoso</h1>
-                <p>Por favor verifica tu <span>correo</span> para confirmar tu cuenta</p>
-               
-                <button>Aceptar</button>
+                <p>Por favor verifica tu <span>correo</span> para confirmar tu cuenta</p>               
+                <button @click="navigateToAuthVerify" class="button">Aceptar</button>
             </div>
             <div class="image">
                 <img class="image" src="/img/auth/create-account.svg" alt="img-verify">
             </div>
-
         </div>
-    </div>
-    
-    
-    
+    </div>  
 </template>
 
 

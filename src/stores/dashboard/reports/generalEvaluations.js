@@ -27,17 +27,30 @@ export const useGeneralEvaluations = defineStore("generalEvaluations", () => {
   });
 
   function cargarData() {
+    const headers = [
+      'Fecha del Evento',
+      'Cód. Expediente',
+      'Nombre Común',
+      'Nombre Científico'
+    ];
+  
+    const data = evaluacionData.value.map(dato => [
+      dato.eventDate,
+      dato.cod_expediente,
+      dato.cod_especie.vernacularName,
+      `${dato.cod_especie.scientificName} - ${dato.cod_especie.scientificNameAuthorship}`
+    ]);
+  
+    datosImport.value = [headers, ...data];
+  }
+
+  /* function cargarData() {
     evaluacionData.value.forEach((dato) => {
-      console.log(dato);
-      
       const { eventDate, cod_expediente   } = dato
       const { vernacularName, scientificName, scientificNameAuthorship  } = dato.cod_especie
-      datosImport.value.push([eventDate, cod_expediente, vernacularName, `${scientificName} - ${scientificNameAuthorship}`]);
-     
-      
-      
+      datosImport.value.push([eventDate, cod_expediente, vernacularName, ${scientificName} - ${scientificNameAuthorship}]);    
     });
-  }
+  } */
 
   //cargar datos de importacion
   watch(

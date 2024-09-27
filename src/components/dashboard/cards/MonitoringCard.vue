@@ -59,7 +59,7 @@ function toggleDetalles(contenedor) {
        
         <p class="especie__info">
           # placa:
-          <span class="dato" :class="{ sinInfo: !monitoreo.numero_placa }">{{
+          <span class="dato" :class="{ sinInfo: !monitoreo.evaluacion.numero_placa }">{{
             monitoreo.evaluacion.numero_placa ? monitoreo.evaluacion.numero_placa : "Sin placa"
           }}</span>
         </p>

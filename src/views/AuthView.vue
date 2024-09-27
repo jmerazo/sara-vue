@@ -49,6 +49,7 @@ const handleLoginFirebase = async () => {
 };
 
 const formData = ref({
+  uuid_firebase: "NA",
   document_type: "Cédula de ciudadanía",
   document_number: "",
   first_name: "",
@@ -88,9 +89,13 @@ async function sendData(e) {
     }
     try {
       const recaptchaToken = await executeRecaptcha('register');
-      await usersStore.createUser({ ...formData.value, recaptcha_token: recaptchaToken });
+      const response = await usersStore.registerUser({ ...formData.value, recaptcha_token: recaptchaToken });
+      console.log('response ', response)
       resetForm();
-      window.location.reload();
+      if(response.status === 201){
+        addToast('Registro social exitoso. Por favor, complete su perfil.', { type: 'success', duration: 4000 });
+        router.push({ name: "signUpSuccess" });
+      }
     } catch (error) {
       console.log(error);
       addToast('Error en el registro', { type: 'error', duration: 4000 });
@@ -135,10 +140,12 @@ async function handleSocialRegister(provider) {
 
     // Enviar datos directamente al backend
     try {
-      await usersStore.createUser(socialUserData);
-      addToast('Registro social exitoso. Por favor, complete su perfil.', { type: 'success', duration: 4000 });
-      // Redirigir al usuario o mostrar mensaje para completar perfil
-      window.location.reload();
+      const response = await usersStore.registerUser(socialUserData);
+      console.log('response view register ', response)
+      if(response.status === 201){
+        addToast('Registro social exitoso. Por favor, complete su perfil.', { type: 'success', duration: 4000 });
+        router.push({ name: "signUpSuccess" });
+      }
     } catch (error) {
       addToast('Error en el registro con red social', { type: 'error', duration: 4000 });
     }

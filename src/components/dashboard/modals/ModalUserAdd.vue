@@ -5,12 +5,14 @@ import { useUsersStore } from "@/stores/users";
 import { locatesColombia } from "@/stores/locates";
 import APIService from "@/services/APIService";
 import { useRouter } from "vue-router";
+import { useToast } from '../../../helpers/ToastManagement';
 
 const router = useRouter();
 const locates = locatesColombia();
 const modal = useModalStore();
 const usersStore = useUsersStore();
 const error = ref('')
+const { addToast } = useToast();
 
 const passwordVisible = ref(false);
 const confirmPasswordVisible = ref(false);
@@ -25,7 +27,6 @@ const formData = ref({
   confirm_password: "",
   cellphone: "",
   rol: "",
-  entity: "",
   department: "",
   city: "",
 });
@@ -51,18 +52,29 @@ async function userAdd() {
   }
 
   try {
-    await APIService.createUser(formData.value);
-    /* $toaster.success(`Usuario ${usersStore.userSelected[0].email} actualizado`); */
-    alert(`Usuario ${formData.value.first_name + " " + formData.value.last_name } creado`);
-    modal.handleClickModalUserAdd();
-    router.go();
+    const response = await usersStore.createUser(formData.value);
+    console.log('response add ', response);
+
+    if (response.status === 201) {
+      addToast(response.msg, { 
+        type: 'success', 
+        duration: 3000 
+      });
+      modal.handleClickModalUserAdd();
+    }
   } catch (error) {
-    if (error.response && error.response.data && error.response.data.error) {
-      // Si hay un mensaje de error en la respuesta, lo puedes mostrar
-      alert(error.response.data.error);
+    console.log('error ', error)
+    // Mostrar el mensaje de error en el toast
+    if (error.message) {
+      addToast(error.message, { 
+        type: 'error',
+        duration: 3000
+      });
     } else {
-      // En caso de un error inesperado
-      alert("Ocurrió un error al procesar la solicitud.");
+      addToast("Ocurrió un error al procesar la solicitud.", { 
+        type: 'error',
+        duration: 3000
+      });
     }
   }
 }
@@ -176,27 +188,6 @@ watch([() => formData.value.password, () => formData.value.confirm_password], ()
               <input id="contacto" type="number" class="form__modal--input" v-model="formData.cellphone" />
             </div>
             <div class="form__modal--field">
-              <label class="form__modal--label" for="state">
-                Entidad :</label>
-              <select name="rol" id="state" class="form__modal--input" v-model="formData.entity">
-                <option value="null" selected disabled>
-                  Seleccione una entidad...
-                </option>
-                <option value="CORPOAMAZONIA">
-                  CORPOAMAZONIA
-                </option>
-                <option value="BIOVERSITY">
-                  BIOVERSITY
-                </option>
-                <option value="UNIVERSIDAD DE LA AMAZONIA">
-                  UNIVERSIDAD DE LA AMAZONIA
-                </option>
-                <option value="INSTITUTO TECNOLÓGICO DEL PUTUMAYO">
-                  INSTITUTO TECNOLÓGICO DEL PUTUMAYO
-                </option>
-              </select>
-            </div>
-            <div class="form__modal--field">
               <label for="rol" class="form__modal--label">Rol
                 :</label>
               <select name="rol" id="rol" class="form__modal--input" v-model="formData.rol">
@@ -216,7 +207,7 @@ watch([() => formData.value.password, () => formData.value.confirm_password], ()
                 <option value="null" selected disabled>
                   Seleccione un departamento...
                 </option>
-                <option v-for="loc in locates.departments" :key="loc.code" :value="loc.code">
+                <option v-for="loc in locates.departments" :key="loc.id" :value="loc.id">
                   {{ loc.name }}
                 </option>
               </select>

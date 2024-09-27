@@ -9,11 +9,13 @@ export const locatesColombia = defineStore("locatesColombia", () => {
   onMounted(async () => {
     try {
       const departmentsResponse = await APIService.getDepartments();
+      console.log('departmentsResponse ', departmentsResponse)
       // Filtrar solo los departamentos que deseas mantener (Putumayo y Caquetá)
       const filteredDepartments = departmentsResponse.data.filter(
-        (department) => department.name === "Putumayo" || department.name === "Caquetá"
+        (department) => department.name === "PUTUMAYO" || department.name === "CAQUETÁ"
       );
       departments.value = filteredDepartments;
+      console.log('departments.value ', departments.value)
 
       // Obtener ciudades, podrías obtener las ciudades nuevamente basadas en los departamentos filtrados si es necesario
 

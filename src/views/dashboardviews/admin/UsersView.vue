@@ -1,5 +1,5 @@
 <script setup>
-import { computed, watch } from "vue";
+import { computed, onMounted} from "vue";
 import { onBeforeRouteLeave } from "vue-router";
 import { useUsersStore } from "@/stores/users";
 import { useModalStore } from "@/stores/modal";
@@ -18,6 +18,10 @@ import LoadingData from "@/components/shared/LoadingData.vue";
 
 const usersStore = useUsersStore();
 const modal = useModalStore();
+
+onMounted(async () => {
+    await usersStore.fetchUsers();
+});
 
 //limpiar filtros antes de cambiar de vista
 onBeforeRouteLeave((to, from, next) => {

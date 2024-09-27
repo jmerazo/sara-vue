@@ -2,9 +2,8 @@
 import { computed } from "vue";
 import { onBeforeRouteLeave } from "vue-router";
 
-
 import { useGeneralMonitoring } from "@/stores/dashboard/reports/generalMonitoring";
-import { descargarExcel, descargarPdf, obtenerFecha } from "@/helpers";
+import { descargarExcels, descargarPdfs, obtenerFecha } from "@/helpers";
 
 //componentes
 import LoadingData from "@/components/shared/LoadingData.vue";
@@ -12,8 +11,6 @@ import ModalFormMonitoring from "@/components/dashboard/modalsForm/monitoring/Mo
 import MonitoringCardVue from "@/components/dashboard/cards/MonitoringCard.vue";
 
 const report = useGeneralMonitoring();
-
-
 
 //limpiar filtros antes de cambiar de vista
 onBeforeRouteLeave((to, from, next) => {
@@ -63,7 +60,7 @@ function toggleDetalles(contenedor) {
       <div class="botones__descarga" v-if="displayedPageRange.length >= 1">
         <a
           @click="
-            descargarExcel(
+            descargarExcels(
               report.datosImport,
               `Reporte general de monitoreos - ${obtenerFecha()}`
             )
@@ -76,11 +73,11 @@ function toggleDetalles(contenedor) {
         /></a>
         <a
           @click="
-            descargarPdf(
+            descargarPdfs(
               report.datosImport,
               `Reporte general de monitoreos - ${obtenerFecha()}`,
-              9,
-              5
+              8,
+              0
             )
           "
           class="boton"

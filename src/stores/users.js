@@ -20,7 +20,13 @@ export const useUsersStore = defineStore("useUsersStore", () => {
   const currentPage = ref(1); // Página actual
   const itemsPerPage = ref(12); // Elementos por página
 
-  onMounted(async () => {
+  /* onMounted(async () => {
+    cargando.value = true
+    
+    cargando.value = false
+  });
+ */
+  const fetchUsers = async () => {
     cargando.value = true
     const { data } = await APIService.getUsers();
     users.value = data;
@@ -29,7 +35,7 @@ export const useUsersStore = defineStore("useUsersStore", () => {
     const response = await APIService.getRoles();
     roles.value = response.data;
     cargando.value = false
-  });
+  }
 
   function cargarData() {
     users.value.forEach((dato) => {
@@ -47,13 +53,41 @@ export const useUsersStore = defineStore("useUsersStore", () => {
     { deep: true }
   );
 
-  async function createUser (data, recaptcha_token) {
-    try{
-      const response = await APIService.createUsers(data, recaptcha_token)
-      
+  async function createUser(data, recaptcha_token) {
+    try {
+      const response = await APIService.createUsers(data, recaptcha_token);
+      console.log('response ', response);
+  
       if (response.status === 201) {
         users.value.push(response.data); // Agrega el nuevo objeto al array
-        usersOriginal.value.push(response.data); 
+        usersOriginal.value.push(response.data);
+        // Retornar la respuesta con un mensaje personalizado
+        return { status: response.status, msg: response.data.msg, data: response.data };
+      } else {
+        // Si el estado no es 201, lanzar una excepción con el mensaje de error
+        console.log('error ', response.data.msg);
+        throw new Error(response.data.msg || 'Error desconocido al crear el usuario.');
+      }
+    } catch (error) {
+      // Si el error proviene de Axios (error en la solicitud)
+      if (error.response && error.response.data && error.response.data.msg) {
+        console.error("Error al comunicarse con el servidor: ", error.response.data.msg);
+        throw new Error(error.response.data.msg);
+      } else {
+        // Otros errores (por ejemplo, errores de red)
+        console.error("Error al comunicarse con el servidor: ", error.message);
+        throw new Error('Error al comunicarse con el servidor.');
+      }
+    }
+  }  
+  
+  async function registerUser (data, recaptcha_token) {
+    try{
+      const response = await APIService.registerUser(data, recaptcha_token)      
+      if (response.status === 201) {
+       /*  users.value.push(response.data); // Agrega el nuevo objeto al array
+        usersOriginal.value.push(response.data); */
+        return response; 
       } else {
         console.error("Error al agregar el usuario: ", response.statusText);
       }
@@ -162,6 +196,8 @@ export const useUsersStore = defineStore("useUsersStore", () => {
     changeStateUser,
     deleteUser,
     roles,
-    createUser
+    createUser,
+    registerUser,
+    fetchUsers
   };
 });

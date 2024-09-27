@@ -1,5 +1,38 @@
 <script setup>
+import { onMounted, ref } from 'vue'
+import { useRouter } from 'vue-router'
+import api from '@/api/axios'
+import { useToast } from "../helpers/ToastManagement";
 
+const router = useRouter()
+const { addToast } = useToast();
+
+onMounted(async () => {
+  // Obtener el token de la URL
+  const urlParams = new URLSearchParams(window.location.search)
+  const token = urlParams.get('token')
+
+  if (token) {
+    try {
+      // Llamada a la API para verificar el token
+      const response = await api.get(`/users/verify-email/${ token }`)
+      if (response.status === 200) {
+        addToast('Tu cuenta ha sido verificada con éxito.', { type: 'success', duration: 4000 });
+      } else {
+        addToast('Hubo un problema al verificar tu cuenta.', { type: 'error', duration: 4000 });
+      }
+    } catch (error) {
+        addToast('Error al verificar la cuenta', { type: 'error', duration: 4000 });
+        console.error('Error:', error)
+    }
+  } else {
+    addToast('No se encontró el token de verificación en la URL.', { type: 'warning', duration: 4000 });
+  }
+})
+
+function navigateToAuthVerify() {
+  router.push({ name: 'auth' })
+}
 </script>
 
 <template>
@@ -10,7 +43,7 @@
                 <p>Ahora puedes <span>Iniciar sesión</span> como
                     invitado</p>
                 <p>Recuerda que tu perfil está siendo analizado para la asignación del rol</p>
-                <button>Ingresar</button>
+                <button @click="navigateToAuthVerify" class="button">Ingresar</button>
             </div>
             <div class="image">
                 <img src="/img/auth/verify-account.svg" alt="img-verify">

@@ -2,7 +2,7 @@
 import { computed } from "vue";
 import { onBeforeRouteLeave } from "vue-router";
 import { useGeneralEvaluations } from "@/stores/dashboard/reports/generalEvaluations";
-import { descargarExcel, descargarPdfs, obtenerFecha } from "@/helpers";
+import { descargarExcels, descargarPdfs, obtenerFecha } from "@/helpers";
 import { useModalStore } from "@/stores/modal";
 //componentes
 import LoadingData from "@/components/shared/LoadingData.vue";
@@ -48,7 +48,7 @@ const customHeaders = [
       </div>
       <div class="botones__descarga" v-if="displayedPageRange.length >= 1">
         <a @click="
-          descargarExcel(
+          descargarExcels(
             report.datosImport,
             `Reporte general de evaluaciones - ${obtenerFecha()}`
           )
@@ -58,8 +58,7 @@ const customHeaders = [
             report.datosImport,
             `Reporte general de evaluaciones - ${obtenerFecha()}`,
             4,
-            0,
-            customHeaders
+            0
           )
           " class="boton" href="#"><font-awesome-icon class="boton__pdf" :icon="['fas', 'file-pdf']" /></a>
       </div>

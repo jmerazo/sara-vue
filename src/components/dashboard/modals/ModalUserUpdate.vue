@@ -14,6 +14,8 @@ const modal = useModalStore();
 const usersStore = useUsersStore();
 const error = ref('')
 
+console.log('usersStore ', usersStore.userSelected[0])
+
 const formData = ref({
   document_type: "",
   document_number: "",
@@ -22,8 +24,6 @@ const formData = ref({
   email: "",
   cellphone: "",
   rol: "",
-  profession: "",
-  entity: "",
   department: "",
   city: "",
 });
@@ -66,8 +66,10 @@ async function userUpdate() {
 
 function validateForm() {
   const formKeys = Object.keys(formData.value);
+  
   for (const key of formKeys) {
     if (!formData.value[key]) {
+      console.log('formKeys ', formData.value[key])
       return false;
     }
   }
@@ -85,8 +87,6 @@ const initializeFormData = () => {
       email: selectedUser.email || "",
       cellphone: selectedUser.cellphone || "",
       rol: selectedUser.rol || "",
-      profession: selectedUser.profession || "",
-      entity: selectedUser.entity || "",
       department: selectedUser.department || "",
       city: selectedUser.city || "",
     };
@@ -187,36 +187,11 @@ function delUser(id, nu) {
               <input id="contacto" type="number" class="form__modal--input" v-model="formData.cellphone" />
             </div>
             <div class="form__modal--field">
-              <label for="entidad" class="form__modal--label">Entidad
-                :</label>
-              <input id="entidad" type="text" class="form__modal--input" v-model="formData.entity" />
-            </div>
-            <div class="form__modal--field">
               <label for="rol" class="form__modal--label">Rol :</label>
               <select name="rol" id="rol" class="form__modal--input" v-model="formData.rol">
-                <option value="null" selected>
-                  {{ usersStore.userSelected[0].rol }}
-                </option>
-                <option value="DEFAULT" class="font-bold">DEFAULT</option>
-                <option value="ADMINISTRADOR" class="font-bold">
-                  ADMINISTRADOR
-                </option>
-                <option value="ADMINISTRADOR" class="font-bold">
-                  TECNICO
-                </option>
-              </select>
-            </div>
-            <div class="form__modal--field">
-              <label for="profesion" class="form__modal--label">Profesión
-                :</label>
-              <select name="rol" id="profesion" class="form__modal--input" v-model="formData.profession">
-                <option value="null" selected>
-                  {{ usersStore.userSelected[0].profession }}
-                </option>
-                <option value="BIÓLOGO" class="font-bold">BIÓLOGO</option>
-                <option value="INGENIERO" class="font-bold">INGENIERO</option>
-                <option value="ESTUDIANTE" class="font-bold">ESTUDIANTE</option>
-                <option value="ABOGADO" class="font-bold">ABOGADO</option>
+                <option v-for="r in usersStore.roles" :key="r.id" :value="r.id">
+                  {{ r.name }}
+                </option>                
               </select>
             </div>
             <div class="form__modal--field">
@@ -226,7 +201,7 @@ function delUser(id, nu) {
                 <option value="null" selected disabled>
                   Seleccione un departamento...
                 </option>
-                <option v-for="loc in locates.departments" :key="loc.code" :value="loc.code">
+                <option v-for="loc in locates.departments" :key="loc.id" :value="loc.id">
                   {{ loc.name }}
                 </option>
               </select>

@@ -28,6 +28,6 @@ const { visibleToasts, removeToast } = useToast();
     display: flex;
     flex-direction: column;
     align-items: flex-end;
-    z-index: 9999;
+    z-index: 9999999;
 }
 </style>

@@ -12,7 +12,8 @@ const router = useRouter();
 const { addToast } = useToast();
 
 const formData = ref({
-  subject: 'SARA - SOLICITUD INFORMACIÓN ESPECIES VIVERO',
+  nursery: nurseries.nursery.nombre_vivero,
+  to_email: nurseries.nursery.email,
   from_email: "",
   body: ''
 });

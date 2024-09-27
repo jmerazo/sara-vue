@@ -13,6 +13,9 @@ export default {
         }
         return api.post('/auth/token/', data)
     },
+    getCsrfToken(){
+        return api.get('/utils//get-csrf-token/')
+    },
     // Refresca el token -- http://localhost:8000/api/auth/refresh
     refreshAuthToken(credentials){
         return api.post('/auth/token/refresh/', credentials)
@@ -204,6 +207,9 @@ export default {
     },
     createUsers(data, recaptcha_token){
         return api.post('/users/', data, recaptcha_token)
+    },
+    registerUser(data, recaptcha_token){
+        return api.post('/users/register/', data, recaptcha_token)
     },
     updateUsers(uid, data){
         return api.put(`/users/${uid}`, data)
