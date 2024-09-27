@@ -1,5 +1,6 @@
 import { ref, onMounted, computed } from 'vue'
 import { defineStore } from 'pinia'
+import { useRouter } from 'vue-router'
 import APIService from '../services/APIService'
 
 export const useNurseriesStore = defineStore('nurseries', () => {
@@ -7,7 +8,7 @@ export const useNurseriesStore = defineStore('nurseries', () => {
     const nurseriesOriginalData = ref([]);
     const nursery = ref([]);
     const nurseries = ref([]);
-
+    const router = useRouter()
     // variables para paginación
     const currentPage = ref(1);
     const itemsPerPage = ref(6);
@@ -43,7 +44,7 @@ export const useNurseriesStore = defineStore('nurseries', () => {
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
     }
-    
+
     function goToFirstPage() {
         changePage(1);
     }
@@ -53,11 +54,15 @@ export const useNurseriesStore = defineStore('nurseries', () => {
     }
 
     const filteredData = computed(() => {
-        const coords = nursery.value.ubicacion.split(',').map(coord => parseFloat(coord.trim()));
-        return [{ lon: coords[1], lat: coords[0] }];
+        try {
+            const coords = nursery.value.ubicacion.split(',').map(coord => parseFloat(coord.trim()));
+            return [{ lon: coords[1], lat: coords[0] }];
+        } catch (error) {
+            return router.push({name: 'nurseries'})
+        }
     })
 
-    const sendEmail = async(data) => {
+    const sendEmail = async (data) => {
         try {
             const response = await APIService.sendEmail(data);
             return response;
@@ -71,28 +76,28 @@ export const useNurseriesStore = defineStore('nurseries', () => {
     function searchTerm(terms) {
         changePage(1)
         nurseriesData.value = nurseriesOriginalData.value.filter(term => {
-          const lowerTermino = terms.toLowerCase();
-          const lowerNameNursery = term.nombre_vivero ? term.nombre_vivero.toLowerCase() : '';
-          const lowerNit = term.nit ? term.nit.toLowerCase(): '';
-          const lowerFirstName = term.first_name ? term.first_name.toLowerCase(): '';
-          const lowerLastName = term.last_name ? term.last_name.toLowerCase(): '';
-          const lowerDepartment = term.departamento ? term.departamento.toLowerCase(): '';
-          const lowerMunicipality = term.municipio ? term.municipio.toLowerCase(): '';
-          const lowerSpecies = term.especies.vernacularName ? term.especies.vernacularName.toLowerCase(): '';
-    
-          return (
-            lowerNameNursery.includes(lowerTermino) ||
-            lowerNit.includes(lowerTermino) ||
-            lowerFirstName.includes(lowerTermino) ||
-            lowerLastName.includes(lowerTermino) ||
-            lowerDepartment.includes(lowerTermino) ||
-            lowerMunicipality.includes(lowerTermino) ||
-            lowerSpecies.includes(lowerTermino)
-          );
+            const lowerTermino = terms.toLowerCase();
+            const lowerNameNursery = term.nombre_vivero ? term.nombre_vivero.toLowerCase() : '';
+            const lowerNit = term.nit ? term.nit.toLowerCase() : '';
+            const lowerFirstName = term.first_name ? term.first_name.toLowerCase() : '';
+            const lowerLastName = term.last_name ? term.last_name.toLowerCase() : '';
+            const lowerDepartment = term.departamento ? term.departamento.toLowerCase() : '';
+            const lowerMunicipality = term.municipio ? term.municipio.toLowerCase() : '';
+            const lowerSpecies = term.especies.vernacularName ? term.especies.vernacularName.toLowerCase() : '';
+
+            return (
+                lowerNameNursery.includes(lowerTermino) ||
+                lowerNit.includes(lowerTermino) ||
+                lowerFirstName.includes(lowerTermino) ||
+                lowerLastName.includes(lowerTermino) ||
+                lowerDepartment.includes(lowerTermino) ||
+                lowerMunicipality.includes(lowerTermino) ||
+                lowerSpecies.includes(lowerTermino)
+            );
         });
     }
 
-    return { 
+    return {
         getNursery,
         nursery,
         nurseriesData,

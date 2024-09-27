@@ -1,7 +1,8 @@
 <script setup>
+
+import { ref, computed, onMounted } from "vue";
 import { onBeforeRouteLeave } from "vue-router";
 import { useFamiliasStore } from "@/stores/families";
-import { ref, computed } from "vue";
 
 import Family from "@/components/families/Family.vue";
 import ModalFamily from "@/components/families/ModalFamily.vue";
@@ -29,6 +30,24 @@ const displayedPageRange = computed(() => {
     (_, index) => rangeStart + index
   );
 });
+
+onMounted(() => {
+  scrollTop()
+})
+
+function scrollTop() {
+  if (isSearching.value) {
+    window.scrollTo({
+      top: 400,
+      behavior: 'smooth',
+    })
+  } else {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth',
+    })
+  }
+}
 </script>
 <template>
   <div>
@@ -37,28 +56,14 @@ const displayedPageRange = computed(() => {
       <div class="header__contenido">
         <div class="header__formulario">
           <h1 class="familias__heading">Listado de Familias forestales</h1>
-          <div class="formulario">
-            <input
-              class="formulario__input"
-              type="text"
-              placeholder="Escríbe el nombre de la familia"
-              v-model="valueSerached"
-              @input="familias.buscarTermino($event.target.value)"
-            />
+          <div class="formulario" :class="{ 'isSearching': isSearching }">
+            <input class="formulario__input" type="text" placeholder="Escríbe el nombre de la familia"
+              v-model="valueSerached" @input="familias.buscarTermino($event.target.value), scrollTop()" />
             <div class="formulario__icono">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke-width="1.5"
-                stroke="currentColor"
-                class="w-6 h-6"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="m15.75 15.75-2.489-2.489m0 0a3.375 3.375 0 1 0-4.773-4.773 3.375 3.375 0 0 0 4.774 4.774ZM21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
-                />
+              <svg :style="{ color: isSearching ? 'white' : 'var(--gris)' }" xmlns="http://www.w3.org/2000/svg"
+                fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                  d="m15.75 15.75-2.489-2.489m0 0a3.375 3.375 0 1 0-4.773-4.773 3.375 3.375 0 0 0 4.774 4.774ZM21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
               </svg>
             </div>
           </div>
@@ -85,13 +90,9 @@ const displayedPageRange = computed(() => {
     </header>
     <!-- fin header vista familia -->
 
-    <main class="familias">
+    <main class="familias" :style="{ marginTop: isSearching ? '10rem' : '' }">
       <div class="familias__grid">
-        <Family
-          v-for="familia in familias.displayedFamilias"
-          :key="familia.familia"
-          :familia="familia"
-        >
+        <Family v-for="familia in familias.displayedFamilias" :key="familia.familia" :familia="familia">
         </Family>
       </div>
     </main>
@@ -99,28 +100,17 @@ const displayedPageRange = computed(() => {
     <!-- paginador -->
     <section class="paginador">
       <div class="paginador__botones">
-        <button
-          class="paginador__boton paginador__boton--anterior"
-          v-if="familias.currentPage > 1"
-          @click="familias.changePage(familias.currentPage - 1)"
-        >
+        <button class="paginador__boton paginador__boton--anterior" v-if="familias.currentPage > 1"
+          @click="familias.changePage(familias.currentPage - 1)">
           <font-awesome-icon :icon="['fas', 'angles-left']" />
         </button>
 
-        <button
-          v-for="page in displayedPageRange"
-          :key="page"
-          @click="familias.changePage(page)"
-          class="paginador__boton"
-          :class="{ 'paginador__boton-actual': page === familias.currentPage }"
-        >
+        <button v-for="page in displayedPageRange" :key="page" @click="familias.changePage(page)"
+          class="paginador__boton" :class="{ 'paginador__boton-actual': page === familias.currentPage }">
           {{ page }}
         </button>
-        <button
-          class="paginador__boton paginador__boton--siguiente"
-          v-if="familias.currentPage < familias.totalPages"
-          @click="familias.changePage(familias.currentPage + 1)"
-        >
+        <button class="paginador__boton paginador__boton--siguiente" v-if="familias.currentPage < familias.totalPages"
+          @click="familias.changePage(familias.currentPage + 1)">
           <font-awesome-icon :icon="['fas', 'angles-right']" />
         </button>
       </div>
@@ -134,8 +124,8 @@ const displayedPageRange = computed(() => {
     </section>
     <!--fin texto validacion buscador -->
 
-    <ModalFamily/>
-    <ButtonTop/>
+    <ModalFamily />
+    <ButtonTop />
   </div>
 </template>
 
@@ -149,11 +139,13 @@ const displayedPageRange = computed(() => {
   z-index: 100;
   padding: 2rem;
 }
+
 @media (min-width: 768px) {
-  .familias__enunciado{
+  .familias__enunciado {
     margin-top: 2rem;
   }
 }
+
 /* header */
 .familias__heading {
   font-size: 1.5rem;
@@ -174,13 +166,13 @@ const displayedPageRange = computed(() => {
   display: flex;
   align-items: center;
   justify-content: center;
-  position: relative;
   margin-bottom: 4rem;
+  /* position: relative; */
 }
 
 
 .header__contenido {
-  position: absolute;
+  /* position: absolute; */
   top: 0;
   left: 0;
   width: 100%;
@@ -190,6 +182,7 @@ const displayedPageRange = computed(() => {
   justify-content: center;
   flex-direction: column;
 }
+
 .header__formulario {
   display: flex;
   flex-direction: column;
@@ -197,6 +190,7 @@ const displayedPageRange = computed(() => {
   margin: 0 auto;
   margin-top: 9.5rem;
 }
+
 @media (min-width: 768px) {
   .header__formulario {
     width: 80%;
@@ -221,30 +215,36 @@ const displayedPageRange = computed(() => {
   border-radius: 1rem;
   font-size: 0.95rem;
 }
+
 .formulario__icono {
   width: 2rem;
   color: var(--gris);
   display: flex;
 }
+
 .formulario__resultados {
   text-align: center;
   max-width: 80%;
   margin: 0.2rem auto;
 }
+
 @media (min-width: 768px) {
   .formulario {
     width: 50%;
   }
+
   .formulario__input {
     padding: 0.8rem;
     border-radius: 1rem;
     font-size: 1rem;
   }
+
   .formulario__icono {
     width: 2rem;
     color: var(--gris);
     display: flex;
   }
+
   .formulario__resultados {
     text-align: center;
     max-width: 80%;
@@ -256,16 +256,51 @@ const displayedPageRange = computed(() => {
 .familias {
   display: flex;
   justify-content: center;
+  transition: all .3s ease-in-out;
 }
-.familias__grid{
+
+.familias__grid {
   display: grid;
   gap: 1rem;
 }
 
 @media (min-width: 992px) {
-  .familias__grid{
-    grid-template-columns: repeat(2,1fr);
+  .familias__grid {
+    grid-template-columns: repeat(2, 1fr);
   }
 }
 
+/* style for form input */
+.isSearching {
+  position: absolute;
+  left: 9.2%;
+  width: 80%;
+  bottom: -7%;
+  background-color: var(--gris);
+  z-index: 10;
+}
+
+@media (min-width: 768px) {
+  .isSearching {
+    width: 60%;
+    left: 20%;
+    bottom: 27%;
+  }
+}
+
+@media (min-width: 1340px) {
+  .isSearching {
+    width: 61%;
+    left: 19.5%;
+    bottom: -25%;
+  }
+}
+
+@media (min-width: 1920px) {
+  .isSearching {
+    left: 28.5%;
+    bottom: 18%;
+    width: 42.5%;
+  }
+}
 </style>

@@ -17,6 +17,8 @@ const valueSearched = ref("");
 const isSearching = computed(() => valueSearched.value !== "");
 const activeDownload = ref(false)
 
+
+
 //limpiar filtros antes de cambiar de vista
 onBeforeRouteLeave((to, from, next) => {
   especies.quitarFiltroEspecie();
@@ -36,22 +38,32 @@ const displayedPageRange = computed(() => {
   );
 });
 
-const scrollToTop = () => {
-  window.scrollTo({
-    top: 0,
-    behavior: 'smooth', // Smooth scroll effect
-  });
-};
-
 onMounted(async () => {
-  scrollToTop()
+  scrollTop()
   await especies.loadSpeciesSisa();
 });
+
 
 function showCardDownload() {
   return activeDownload.value = !activeDownload.value
 }
+
+function scrollTop() {
+    
+  if (isSearching.value) {
+    window.scrollTo({
+      top: 400,
+      behavior: 'smooth',
+    })
+  } else {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth',
+    })
+  }
+}
 </script>
+
 <template>
   <div>
     <!-- header vista especie -->
@@ -60,12 +72,12 @@ function showCardDownload() {
         <div class="header_formulario">
           <h1 class="especies__heading">Listado de especies forestales</h1>
 
-          <div class="formulario">
+          <div class="formulario" :class="{ 'isSearching': isSearching }">
             <input class="formulario__input" type="text" placeholder="Escribe un término de búsqueda"
-              v-model="valueSearched" @input="especies.buscarTermino($event.target.value)" />
+              v-model="valueSearched" @input="especies.buscarTermino($event.target.value), scrollTop()" />
             <div class="formulario__icono">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                stroke="currentColor" class="w-6 h-6">
+              <svg :style="{ color: isSearching ? 'white' : 'var(--gris)' }" xmlns="http://www.w3.org/2000/svg"
+                fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
                 <path stroke-linecap="round" stroke-linejoin="round"
                   d="m15.75 15.75-2.489-2.489m0 0a3.375 3.375 0 1 0-4.773-4.773 3.375 3.375 0 0 0 4.774 4.774ZM21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
               </svg>
@@ -102,13 +114,16 @@ function showCardDownload() {
         <div class="downloadSpecies__header">
           <h3 class="downloadSpecies__title">Listado de especies forestales en proceso de elaboración de protocolo:</h3>
           <div class="downloadSpecies__icons">
-            <svg @click="descargarPdfs(reportGeneral.datosImport,`Listado especies forestales - ${obtenerFecha()}`, 6, 0)" class="downloadSpecies__icon downloadSpecies__icon--red" xmlns="http://www.w3.org/2000/svg"
+            <svg
+              @click="descargarPdfs(reportGeneral.datosImport, `Listado especies forestales - ${obtenerFecha()}`, 6, 0)"
+              class="downloadSpecies__icon downloadSpecies__icon--red" xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24" fill="currentColor">
               <path
                 d="M5 4H15V8H19V20H5V4ZM3.9985 2C3.44749 2 3 2.44405 3 2.9918V21.0082C3 21.5447 3.44476 22 3.9934 22H20.0066C20.5551 22 21 21.5489 21 20.9925L20.9997 7L16 2H3.9985ZM10.4999 7.5C10.4999 9.07749 10.0442 10.9373 9.27493 12.6534C8.50287 14.3757 7.46143 15.8502 6.37524 16.7191L7.55464 18.3321C10.4821 16.3804 13.7233 15.0421 16.8585 15.49L17.3162 13.5513C14.6435 12.6604 12.4999 9.98994 12.4999 7.5H10.4999ZM11.0999 13.4716C11.3673 12.8752 11.6042 12.2563 11.8037 11.6285C12.2753 12.3531 12.8553 13.0182 13.5101 13.5953C12.5283 13.7711 11.5665 14.0596 10.6352 14.4276C10.7999 14.1143 10.9551 13.7948 11.0999 13.4716Z">
               </path>
             </svg>
-            <svg @click="descargarExcel(reportGeneral.datosImport, `Listado_especies_forestales - ${obtenerFecha()}`)" class="downloadSpecies__icon downloadSpecies__icon--green" xmlns="http://www.w3.org/2000/svg"
+            <svg @click="descargarExcel(reportGeneral.datosImport, `Listado_especies_forestales - ${obtenerFecha()}`)"
+              class="downloadSpecies__icon downloadSpecies__icon--green" xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24" fill="currentColor">
               <path
                 d="M13.2 12L16 16H13.6L12 13.7143L10.4 16H8L10.8 12L8 8H10.4L12 10.2857L13.6 8H15V4H5V20H19V8H16L13.2 12ZM3 2.9918C3 2.44405 3.44749 2 3.9985 2H16L20.9997 7L21 20.9925C21 21.5489 20.5551 22 20.0066 22H3.9934C3.44476 22 3 21.5447 3 21.0082V2.9918Z">
@@ -120,13 +135,15 @@ function showCardDownload() {
         <div class="downloadSpecies__header">
           <h3 class="downloadSpecies__title">Listado de especies SISA:</h3>
           <div class="downloadSpecies__icons">
-            <svg @click="descargarPdfs(especies.sisaList,`Listado especies forestales_SISA - ${obtenerFecha()}`, 6, 0)" class="downloadSpecies__icon downloadSpecies__icon--red" xmlns="http://www.w3.org/2000/svg"
+            <svg @click="descargarPdfs(especies.sisaList, `Listado especies forestales_SISA - ${obtenerFecha()}`, 6, 0)"
+              class="downloadSpecies__icon downloadSpecies__icon--red" xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24" fill="currentColor">
               <path
                 d="M5 4H15V8H19V20H5V4ZM3.9985 2C3.44749 2 3 2.44405 3 2.9918V21.0082C3 21.5447 3.44476 22 3.9934 22H20.0066C20.5551 22 21 21.5489 21 20.9925L20.9997 7L16 2H3.9985ZM10.4999 7.5C10.4999 9.07749 10.0442 10.9373 9.27493 12.6534C8.50287 14.3757 7.46143 15.8502 6.37524 16.7191L7.55464 18.3321C10.4821 16.3804 13.7233 15.0421 16.8585 15.49L17.3162 13.5513C14.6435 12.6604 12.4999 9.98994 12.4999 7.5H10.4999ZM11.0999 13.4716C11.3673 12.8752 11.6042 12.2563 11.8037 11.6285C12.2753 12.3531 12.8553 13.0182 13.5101 13.5953C12.5283 13.7711 11.5665 14.0596 10.6352 14.4276C10.7999 14.1143 10.9551 13.7948 11.0999 13.4716Z">
               </path>
             </svg>
-            <svg @click="descargarExcel(especies.sisaList, `Listado_especies_forestales_SISA - ${obtenerFecha()}`)" class="downloadSpecies__icon downloadSpecies__icon--green" xmlns="http://www.w3.org/2000/svg"
+            <svg @click="descargarExcel(especies.sisaList, `Listado_especies_forestales_SISA - ${obtenerFecha()}`)"
+              class="downloadSpecies__icon downloadSpecies__icon--green" xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24" fill="currentColor">
               <path
                 d="M13.2 12L16 16H13.6L12 13.7143L10.4 16H8L10.8 12L8 8H10.4L12 10.2857L13.6 8H15V4H5V20H19V8H16L13.2 12ZM3 2.9918C3 2.44405 3.44749 2 3.9985 2H16L20.9997 7L21 20.9925C21 21.5489 20.5551 22 20.0066 22H3.9934C3.44476 22 3 21.5447 3 21.0082V2.9918Z">
@@ -205,7 +222,8 @@ function showCardDownload() {
 
 <style scoped>
 .downloadSpecies {
-  margin-top: 2rem;
+  margin-top: .5rem;
+  left: -.5rem;
   display: flex;
   flex-direction: column;
   position: absolute;
@@ -216,8 +234,18 @@ function showCardDownload() {
 
 @media (min-width: 768px) {
   .downloadSpecies {
+    left: 20%;
+    margin-top: 3rem;
+  }
+}
+@media (min-width: 1340px) {
+  .downloadSpecies {
+    left: 35%;
+  }
+}
+@media (min-width: 1440px) {
+  .downloadSpecies {
     left: 40%;
-    margin-top: 5rem;
   }
 }
 
@@ -281,7 +309,8 @@ function showCardDownload() {
 .downloadSpecies__icons {
   display: flex;
 }
-.downloadSpecies__icons svg{
+
+.downloadSpecies__icons svg {
   cursor: pointer;
 }
 
@@ -329,11 +358,11 @@ function showCardDownload() {
   display: flex;
   align-items: center;
   justify-content: center;
-  position: relative;
+  /* position: relative; */
 }
 
 .header__contenido {
-  position: absolute;
+  /* position: absolute; */
   top: 0;
   left: 0;
   width: 100%;
@@ -367,6 +396,7 @@ function showCardDownload() {
   margin: 0 auto;
   border-radius: 1.2rem;
   width: 80%;
+  transition: all .3s ease-in-out;
 }
 
 .formulario__input {
@@ -374,11 +404,13 @@ function showCardDownload() {
   width: 100%;
   border-radius: 1rem;
   font-size: 0.95rem;
+
 }
 
 .formulario__icono {
   width: 2rem;
   color: var(--gris);
+
   display: flex;
 }
 
@@ -401,7 +433,6 @@ function showCardDownload() {
 
   .formulario__icono {
     width: 2rem;
-    color: var(--gris);
     display: flex;
   }
 }
@@ -494,95 +525,36 @@ function showCardDownload() {
   margin-bottom: 2rem;
 }
 
-/* BUTTONS DOWNLOAD */
-/* Contenedor principal para alinear la tarjeta a la derecha */
-.contenedor__principal {
-  display: flex;
-  justify-content: flex-end;
-  /* Alinea el acordeón a la derecha */
-  padding: 1rem;
+
+
+/* style for form input */
+.isSearching {
+  position: absolute;
+  left: 9.2%;
+  width: 80%;
+  bottom: -7%;
+  background-color: var(--gris);
+  z-index: 10;
 }
 
-/* Estilos del acordeón como tarjeta desplegable */
-.accordion {
-  width: 500px;
-  /* Ancho fijo de la tarjeta */
-  margin-top: 1.5rem;
-  border: 1px solid #ddd;
-  /* Borde del acordeón */
-  border-radius: 8px;
-  /* Borde redondeado */
-  overflow: hidden;
-  /* Asegura que el contenido no se desborde */
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  /* Sombra para dar efecto de tarjeta */
-  background-color: var(--blanco);
-  /* Color de fondo de la tarjeta */
-}
-
-/* Estilos del encabezado del acordeón */
-.accordion__header {
-  background-color: var(--primary-backgound);
-  padding: 1rem;
-  cursor: pointer;
-  font-weight: bold;
-  font-size: 1.2rem;
-  color: var(--gris);
-  display: flex;
-  justify-content: space-between;
-  /* Espacio entre el título y cualquier icono */
-}
-
-.accordion__header:hover {
-  background-color: var(--gris-claro);
-  /* Color de fondo al pasar el ratón */
-}
-
-/* Estilos del contenido del acordeón */
-.accordion__content {
-  padding: 1rem;
-  display: flex;
-  flex-direction: column;
-  /* Mantiene los divs en una columna */
-  gap: 1rem;
-  /* Espacio entre los divs */
-}
-
-/* Estilos de descarga */
-.download__forestSpecies {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  /* Distribuye espacio entre el texto y los botones */
-  margin-top: 1rem;
-}
-
-@media (max-width: 600px) {
-  .download__forestSpecies {
-    justify-content: center;
-    flex-direction: column;
-    /* En pantallas pequeñas, coloca el contenido en una columna */
-    text-align: center;
-    /* Centra el texto */
+@media (min-width: 768px) {
+  .isSearching {
+    width: 60%;
+    left: 20%;
+    bottom: 18%;
   }
 }
-
-.button {
-  margin-left: 1rem;
-  /* Ajusta el margen a la izquierda para separar los botones del texto */
+@media (min-width: 1340px) {
+  .isSearching {
+    width: 60%;
+    left: 20%;
+    bottom: -40%;
+  }
 }
-
-.button__excel,
-.button__pdf {
-  font-size: 2rem;
-  /* Tamaño del icono */
-}
-
-.text__exportSF {
-  font-weight: bold;
-  margin-right: 1rem;
-  /* Ajusta el margen a la derecha del texto */
-  flex-grow: 1;
-  /* Hace que el texto ocupe el espacio restante */
+@media (min-width: 1920px) {
+  .isSearching {
+    left: 19.7%;
+    bottom: 8%;
+  }
 }
 </style>
