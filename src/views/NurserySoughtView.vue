@@ -1,11 +1,10 @@
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref } from "vue";
 import { useNurseriesStore } from "@/stores/nurseries";
-import { useConsultaStore } from '@/stores/consulta'
 import { useRouter } from "vue-router";
 import { useToast } from '../helpers/ToastManagement';
 
-const consulta = useConsultaStore()
+
 const nurseries = useNurseriesStore();
 
 const router = useRouter();
@@ -17,15 +16,15 @@ const formData = ref({
   body: ''
 });
 
-const error = ref(null);
+
 
 const handleSubmit = async () => {
   try {
     const response = await nurseries.sendEmail(formData.value);
     if (response.status === 200) {
-      addToast('Mensaje enviado con éxito', { 
-        type: 'success', 
-        duration: 3000 
+      addToast('Mensaje enviado con éxito', {
+        type: 'success',
+        duration: 3000
       });
       setTimeout(() => {
         router.push({ name: "nurseries" });
@@ -39,19 +38,13 @@ const handleSubmit = async () => {
 };
 
 function showError(message) {
-  addToast(message, { 
-    type: 'error', 
-    duration: 3000 
+  addToast(message, {
+    type: 'error',
+    duration: 3000
   });
 }
 
-/* onMounted(async () => {
-  if (!nurseries.nursery.id) {
-    // Redirigir si no hay un id
-    router.push({ name: "nurseries" });
-    return;
-  }
-}); */
+
 </script>
 
 <template>
@@ -62,17 +55,15 @@ function showError(message) {
       <div class="nursery__data">
         <p>
           <span class="information__title">Representante legal:</span>
-          <span
-            >{{ nurseries.nursery.first_name }}
-            {{ nurseries.nursery.last_name }}</span
-          >
+          <span>{{ nurseries.nursery.first_name }}
+            {{ nurseries.nursery.last_name }}</span>
         </p>
         <p>
-          <span class="information__title">Email:</span>   
+          <span class="information__title">Email:</span>
           <span>{{ nurseries.nursery.email }}</span>
         </p>
         <p>
-          <span class="information__title">Contacto:</span>   
+          <span class="information__title">Contacto:</span>
           <span>{{ nurseries.nursery.telefono }}</span>
         </p>
         <p>
@@ -93,7 +84,7 @@ function showError(message) {
         </p>
         <hr>
         <p>
-          <span class="information__title">Departamento:</span>  
+          <span class="information__title">Departamento:</span>
           <span>{{ nurseries.nursery.departamento }}</span>
         </p>
         <p>
@@ -104,11 +95,7 @@ function showError(message) {
       <div class="species">
         <h3>Especies</h3>
         <div v-if="nurseries.nursery.especies && nurseries.nursery.especies.length > 0">
-          <div
-            v-for="specie in nurseries.nursery.especies"
-            :key="specie.id"
-            class="species__card"
-          >
+          <div v-for="specie in nurseries.nursery.especies" :key="specie.id" class="species__card">
             <div class="species__content">
               <h4 class="species__common-name">{{ specie.nom_comunes }}</h4>
               <p class="species__scientific-name">
@@ -118,7 +105,7 @@ function showError(message) {
               <p class="species__sale-type">{{ specie.tipo_venta }}</p>
               <p class="species__unit">{{ specie.unidad_medida }}</p>
             </div>
-            <button @click="consulta.consultSpecie(specie.especie_forestal_id)" class="species__button">Ver especie</button>
+            
           </div>
         </div>
         <div v-else class="species__empty">
@@ -130,44 +117,25 @@ function showError(message) {
         <form @submit.prevent="handleSubmit" class="contact__form">
           <div class="contact__field">
             <label for="email" class="contact__label">Ingrese su correo:</label>
-            <input
-              type="email"
-              id="email"
-              v-model="formData.from_email"
-              class="contact__input"
-              required
-            />
+            <input type="email" id="email" v-model="formData.from_email" class="contact__input" required />
           </div>
           <div class="contact__field">
             <label for="message" class="contact__label">Escriba su mensaje:</label>
-            <textarea
-              id="message"
-              v-model="formData.body"
-              class="contact__textarea"
-              required
-            ></textarea>
+            <textarea id="message" v-model="formData.body" class="contact__textarea" required></textarea>
           </div>
           <button type="submit" class="contact__button">Enviar mensaje</button>
         </form>
       </div>
     </section>
-    <section class="general map" style="position: relative">
+    <section class="general map" style="position: relative" v-if="nurseries.filteredData[0]?.lon">
       <h3>Ubicación del vivero</h3>
-      <a
-        class="button__map"
-        target="_blank"
-        :href="`https://www.google.com/maps/dir//1.3973283,${nurseries.filteredData[0].lon}/@${nurseries.filteredData[0].lat},${nurseries.filteredData[0].lon},13z/data=!4m2!4m1!3e0?entry=ttu`"
-        >¿cómo llegar?</a
-      >
+      <a class="button__map" target="_blank"
+        :href="`https://www.google.com/maps/dir//1.3973283,${nurseries.filteredData[0].lon }/@${nurseries.filteredData[0].lat },${nurseries.filteredData[0].lon},13z/data=!4m2!4m1!3e0?entry=ttu`">¿cómo
+        llegar?</a>
       <iframe
-        :src="`https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d15947.46284712634!2d${nurseries.filteredData[0].lon}!3d${nurseries.filteredData[0].lat}!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1ses!2sco!4v1717099826909!5m2!1ses!2sco`"
-        width="100%"
-        height="450"
-        style="border: 0; position: relative;"
-        allowfullscreen=""
-        loading="lazy"
-        referrerpolicy="no-referrer-when-downgrade"
-      ></iframe>
+        :src="`https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d15947.46284712634!2d${nurseries.filteredData[0].lon}!3d${nurseries.filteredData[0].lat }!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1ses!2sco!4v1717099826909!5m2!1ses!2sco`"
+        width="100%" height="450" style="border: 0; position: relative;" allowfullscreen="" loading="lazy"
+        referrerpolicy="no-referrer-when-downgrade"></iframe>
     </section>
   </div>
 </template>
@@ -210,6 +178,7 @@ body {
   .main {
     margin-top: 7rem;
   }
+
   .general {
     width: 50%;
   }
@@ -352,10 +321,11 @@ body {
 }
 
 /* Map */
-.map{
+.map {
   margin-top: 5rem;
   margin-bottom: 5rem;
 }
+
 .button__map:hover {
   background: var(--primary);
   color: var(--blanco);
