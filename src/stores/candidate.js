@@ -192,9 +192,10 @@ export const useGeoCandidateTrees = defineStore("geoCandidateTrees", () => {
     try {
       const response = await APIService.addCandidate(data);
 
-      if (response.status === 200) {
+      if (response.status === 201) {
         // La respuesta del APIService fue satisfactoria
         candidates.value.push(data); // Agrega el nuevo objeto al array
+        return response.status;
       } else {
         console.error("Error al agregar la especie: ", response.statusText);
       }

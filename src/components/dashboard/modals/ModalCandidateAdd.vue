@@ -1,31 +1,31 @@
 <script setup>
-import { ref, onMounted, computed, watch } from 'vue';
-import { useAuthTokenStore } from "../../../stores/auth";
+import { ref, onMounted, computed, watch, nextTick } from 'vue';
+import { locatesColombia } from "@/stores/locates";
 import { useEspeciesStore } from "../../../stores/species";
+import { propertyStore } from '@/stores/dashboard/property'
 import { useGeoCandidateTrees } from "../../../stores/candidate";
 import { useModalStore } from "@/stores/modal";
 
-const locates = useAuthTokenStore();
+const locates = locatesColombia();
 const species = useEspeciesStore();
+const property = propertyStore();
 const candidates = useGeoCandidateTrees();
 const modal = useModalStore();
+var deparment = ref('');
+var city = ref('');
+let folderNumber = ref('');
 
 //PS-1769-18-247-00f48a44-002-23
 // Propiedad computada para generar el código de la especie
 const codeSpecie = computed(() => {
   const myAlphanumericId = generateAlphanumericId(10);
-  let folderNumber = ""
-
-  if (formData.value.departamento === 86) folderNumber = "001";
-  if (formData.value.departamento === 18) folderNumber = "002";
-  if (formData.value.departamento === 91) folderNumber = "003";
 
   const year = new Date().getFullYear().toString().slice(-2);
 
   // Asignar myAlphanumericId a formData
-  formData.value.ShortcutIDEV = myAlphanumericId;
+  formData.value.id = myAlphanumericId;
   // Asegúrate de que formData.municipio o formData.cities se refiere al valor correcto que necesitas
-  var code = `PS-${formData.value.cod_especie}-${formData.value.departamento}-${formData.value.municipio}-${myAlphanumericId}-${folderNumber}-${year}`
+  var code = `PS-${formData.value.cod_especie}-${deparment.value}-${city.value}-${myAlphanumericId}-${folderNumber.value}-${year}`
   formData.value.cod_expediente = code;
   return code;
 });
@@ -45,7 +45,7 @@ const filteredCities = computed(() => {
 
   if (departamento) {
     const filtered = locates.cities.filter(
-      (city) => city.department_id === departamento
+      (city) => city.department === departamento
     );
     return filtered;
   }
@@ -53,41 +53,25 @@ const filteredCities = computed(() => {
 });
 
 const formData = ref({
-    ShortcutIDEV: '',
+    id: '',
     cod_expediente: '',
     cod_especie : '',
-    fecha_evaluacion : '',
-    usuario_evaluador : '',
-    departamento : '',
-    municipio : '',
-    nombre_del_predio : '',
-    nombre_propietario : '',
-    corregimiento : '',
-    vereda : '',
-    correo : '',
-    celular : '',
-    altitud : '',
-    latitud : '',
+    eventDate : '',
+    user : '',
+    property: '',
+    minimumElevationInMeters : '',
+    verbatimLatitude : '',
     g_lat : '',
     m_lat : '',
     s_lat : '',
-    longitud : '',
+    verbatimLongitude : '',
     g_long : '',
     m_long : '',
     s_long : '',
     coordenadas_decimales : '',
     abcisa_xy : '',
-    altura_total : '',
-    altura_fuste : '',
-    cap : '',
-    eje_x : '',
-    eje_y : '',
-    eje_z : '',
     cobertura : '',
-    cober_otro : '',
     entorno_individuo : '',
-    entorno_otro : '',
-    especies_forestales_asociadas : '',
     dominancia_if : '',
     forma_fuste : '',
     dominancia : '',
@@ -101,6 +85,25 @@ const formData = ref({
     observaciones : ''
 });
 
+watch(() => formData.value.property, (newPropertyId) => {
+  if (newPropertyId) {
+    // Filtrar el predio seleccionado a partir del ID
+    const selectedProperty = property.property.find(p => p.id === newPropertyId);
+    
+    if (selectedProperty) {
+      deparment.value = selectedProperty.p_departamento.id;
+      city.value = selectedProperty.p_municipio.id;
+
+      // Comparar correctamente el valor de 'deparment'
+      if (deparment.value === 86) folderNumber.value = "001";
+      if (deparment.value === 18) folderNumber.value = "002";
+      if (deparment.value === 91) folderNumber.value = "003";
+    } else {
+      console.error('No se encontró el predio con el ID seleccionado.');
+    }
+  }
+});
+
 const userData = ref({});
 const userDataString = localStorage.getItem("user_data");
 if (userDataString) {
@@ -111,7 +114,8 @@ if (userDataString) {
 onMounted(() => {
   const hoy = new Date();
   formData.value.fecha_evaluacion = hoy.toISOString().split('T')[0];
-  formData.value.usuario_evaluador = userData.id;
+  formData.value.user = userData.value.id;
+  property.fetchProperty();
 });
 
 function resetForm() {
@@ -123,9 +127,12 @@ function resetForm() {
 const handleSubmit = () => {
   
   try {
-    candidates.addCandidate(formData.value);
-    resetForm();
-    modal.handleClickModalForestSpecieAdd();
+    const response = candidates.addCandidate(formData.value);
+    if(response === 201){
+      resetForm();
+      modal.handleClickModalForestSpecieAdd();
+      window.alert('Individuo agregado satisfactoriamente!.')
+    }    
   } catch (error) {
     if (error.response && error.response.data && error.response.data.error) {
       // Si hay un mensaje de error en la respuesta, lo puedes mostrar
@@ -138,23 +145,31 @@ const handleSubmit = () => {
 };
 
 const coordenadasDecimales = computed(() => {
-    let decimalLat = Number(formData.value.g_lat) + Number(formData.value.m_lat) / 60 + Number(formData.value.s_lat) / 3600;
-    let decimalLong = Number(formData.value.g_long) + Number(formData.value.m_long) / 60 + Number(formData.value.s_long) / 3600;
+  let decimalLat = Number(formData.value.g_lat) + Number(formData.value.m_lat) / 60 + Number(formData.value.s_lat) / 3600;
+  let decimalLong = Number(formData.value.g_long) + Number(formData.value.m_long) / 60 + Number(formData.value.s_long) / 3600;
 
-    if (formData.value.latitud === 'S') {
-        decimalLat = -decimalLat;
-    }
-    if (formData.value.longitud === 'E') {
-        decimalLong = -decimalLong;
-    }
+  if (formData.value.verbatimLatitude === 'S') {
+    decimalLat = -decimalLat;
+  }
+  if (formData.value.verbatimLongitude === 'E') {
+    decimalLong = -decimalLong;
+  }
 
-    return decimalLat.toFixed(6) + ", " + decimalLong.toFixed(6); // Ajusta el número de decimales según necesites
+  return decimalLat.toFixed(6) + ", " + decimalLong.toFixed(6);
 });
 
 // Observa los cambios en coordenadasDecimales y actualiza formData.coordenadas_decimales
 watch(coordenadasDecimales, (newValue) => {
     formData.value.coordenadas_decimales = newValue;
 });
+
+function updateAbcisaXY() {
+  if (!formData.value.abcisa_xy || formData.value.abcisa_xy === '') {
+    if (coordenadasDecimales.value) {
+      formData.value.abcisa_xy = coordenadasDecimales.value;
+    }
+  }
+}
 
 if ("geolocation" in navigator) {
   navigator.geolocation.getCurrentPosition(function(position) {
@@ -227,92 +242,66 @@ watch(evaluacion, (nuevoValor) => {
                 <div class="title__addCandidate">
                     <span>Registrar nuevo individuo</span>
                 </div>
-                <form @submit.prevent="handleSubmit">
-                    <div class="form-section data__evaluation">
-                        <label>Código individuo: </label><input type="text" v-model="formData.cod_expediente" :placeholder="codeSpecie" disabled>
-                        <label class="formulario__label" for="species"
-                        >Especies:</label
-                        >
-                        <select
-                        id="departamento"
-                        class="formulario__input formulario__input--select"
-                        v-model="formData.cod_especie"
-                        >
-                        <option value="" selected disabled>-- Seleccione una especie --</option>
-                        <option
-                            v-for="sp in species.especies"
-                            :key="sp.cod_especie"
-                            :value="sp.cod_especie"
-                        >
-                            {{ sp.cod_especie + " - " + sp.nom_comunes + " - " + sp.nombre_cientifico }}
-                        </option>
-                        </select>
-                        <label>Fecha: </label><input type="date" v-model="formData.fecha_evaluacion" placeholder="">
-                        <label>Usuario: </label><input type="text" v-model="formData.usuario_evaluador" :placeholder="userData.first_name + ' ' + userData.last_name" disabled>
-                    </div>
+                <form @submit.prevent="handleSubmit">                  
+                  <div class="form-section data__evaluation">
+                    <label>Fecha: </label><input type="date" v-model="formData.eventDate" placeholder="">
+                    <label>Usuario: </label><input type="text" :placeholder="userData.first_name + ' ' + userData.last_name" disabled>
+                    <label>Código individuo: </label><input type="text" v-model="formData.cod_expediente" :placeholder="codeSpecie" disabled>
+                    <label class="formulario__label" for="species"
+                    >Especies:</label
+                    >
+                    <select
+                    id="departamento"
+                    class="formulario__input formulario__input--select"
+                    v-model="formData.cod_especie"
+                    >
+                    <option value="" selected disabled>-- Seleccione una especie --</option>
+                    <option
+                        v-for="sp in species.species"
+                        :key="sp.code_specie"
+                        :value="sp.code_specie"
+                    >
+                        {{ sp.code_specie + " - " + sp.vernacularName + " - " + sp.scientificName + " " + sp.scientificNameAuthorship }}
+                    </option>
+                    </select>
+                  </div>
 
                     <div class="form-section data__ubication">
-                        <!-- departamento -->
-                    <label class="formulario__label" for="departamento">Departamento:</label>
+                    <label class="formulario__label" for="departamento">Predio:</label>
                     <select
                         id="departamento"
                         class="formulario__input formulario__input--selectc"
-                        v-model="formData.departamento"
+                        v-model="formData.property"
                     >
                         <option value="">--Seleccione--</option>
                         <option
-                        v-for="loc in locates.departments"
-                        :key="loc.id"
-                        :value="loc.code"
+                        v-for="p in property.property"
+                        :key="p.id"
+                        :value="p.id"
                         >
-                        {{ loc.name }}
+                        {{ p.nombre_predio }}
                         </option>
                     </select>
-                    <!-- ciudad -->
-                    <label class="formulario__label" for="municipio" v-show="filteredCities.length">Ciudad:</label>
-                    <select id="municipio" class="formulario__input formulario__input--select" v-model="formData.municipio" v-show="filteredCities.length">
-                        <option value="">-- Seleccione--</option>
-                        <option
-                        v-for="city in filteredCities"
-                        :key="city.id"
-                        :value="city.id"
-                        >
-                        {{ city.name }}
-                        </option>
-                    </select>
-
-                        <label>Nombre del predio: </label><input type="text" v-model="formData.nombre_del_predio" placeholder="">
-                        <label>Nombre propietario: </label><input type="text" v-model="formData.nombre_propietario" placeholder="">
-                        <label>Corregimiento: </label><input type="text" v-model="formData.corregimiento" placeholder="">
-                        <label>Vereda: </label><input type="text" v-model="formData.vereda" placeholder="">
-                        <label>Correo: </label><input type="email" v-model="formData.correo" placeholder="">
-                        <label>Celular: </label><input type="tel" v-model="formData.celular" placeholder="">
-                        <label>Altitud: </label><input type="number" v-model.number="formData.altitud" placeholder="">
-                        <label>Latitud: </label><select v-model="formData.latitud">
+                        <label>Altitud: </label><input type="number" v-model.number="formData.minimumElevationInMeters" placeholder="">
+                        <label>Latitud: </label><select v-model="formData.verbatimLatitude">
                             <option value="N">Norte (N)</option>
                             <option value="S">Sur (S)</option>
                         </select>
                         <label>Grados: </label><input type="number" v-model.number="formData.g_lat" placeholder="">
                         <label>Minutos: </label><input type="number" v-model.number="formData.m_lat" placeholder="">
                         <label>Segundos: </label><input type="number" v-model.number="formData.s_lat" placeholder="">
-                        <label>Longitud: </label><select v-model="formData.longitud">
+                        <label>Longitud: </label><select v-model="formData.verbatimLongitude">
                             <option value="W">Oeste (W)</option>
                             <option value="E">Este (E)</option>
                         </select>
                         <label>Grados: </label><input type="number" v-model.number="formData.g_long" placeholder="">
                         <label>Minutos: </label><input type="number" v-model.number="formData.m_long" placeholder="">
-                        <label>Segundos: </label><input type="number" v-model.number="formData.s_long" placeholder="">
+                        <label>Segundos: </label><input type="number" v-model.number="formData.s_long" @blur="updateAbcisaXY" placeholder="">
                         <label>Coordenadas decimales: </label><input type="text" v-model="formData.coordenadas_decimales" placeholder="" disabled>
                         <label>Coordenadas: </label><input type="text" v-model="formData.abcisa_xy" :placeholder="formData.abcisa_xy" disabled>
                     </div>
 
                     <div class="form-section data__candidate">
-                        <label>Altura total: </label><input type="number" v-model.number="formData.altura_total" placeholder="">
-                        <label>Altura del fuste: </label><input type="number" v-model.number="formData.altura_fuste" placeholder="">
-                        <label>CAP: </label><input type="number" v-model.number="formData.cap" placeholder="">
-                        <label>Eje X: </label><input type="number" v-model.number="formData.eje_x" placeholder="">
-                        <label>Eje Y: </label><input type="number" v-model.number="formData.eje_y" placeholder="">
-                        <label>Eje Z: </label><input type="number" v-model.number="formData.eje_z" placeholder="">
                         <label>Cobertura: </label>
                         <select v-model="formData.cobertura">
                         <option value="" disabled selected>-- Seleccione una cobertura --</option>
@@ -323,10 +312,7 @@ watch(evaluacion, (nuevoValor) => {
                         <option value="Sistema agroforestal">Sistema agroforestal</option>
                         <option value="Zonas verdes">Zonas verdes</option>
                         <option value="Cultivo forestal (Reforestación)">Cultivo forestal (Reforestación)</option>
-                        <option value="Árbol aislado en otro tipo de cobertura - ¿Cual?">Árbol aislado en otro tipo de cobertura - ¿Cual?</option>
                         </select>
-                        <label v-show="formData.cobertura === 'Árbol aislado en otro tipo de cobertura - ¿Cual?'">Otra cobertura: </label>
-                        <input v-show="formData.cobertura === 'Árbol aislado en otro tipo de cobertura - ¿Cual?'" type="text" v-model="formData.cober_otro" placeholder="">
                         <label>Entorno del individuo: </label>
                         <select v-model="formData.entorno_individuo">
                         <option value="" disabled selected>-- Seleccione un entorno --</option>
@@ -334,10 +320,7 @@ watch(evaluacion, (nuevoValor) => {
                         <option value="Sistema agroforestal">Sistema agroforestal</option>
                         <option value="Agrupación significativa de la misma especie">Agrupación significativa de la misma especie</option>
                         <option value="Asociación arbórea con otras especies forestales">Asociación arbórea con otras especies forestales</option>
-                        <option value="Otro, ¿Cuál?">Otro, ¿Cuál?</option>
                         </select>
-                        <label v-show="formData.entorno_individuo === 'Otro, ¿Cuál?'">Otro entorno del individuo: </label><input v-show="formData.entorno_individuo === 'Otro, ¿Cuál?'" type="text" v-model="formData.entorno_otro" placeholder="">
-                        <label>Especies forestales asociadas: </label><input type="text" v-model="formData.especies_forestales_asociadas" placeholder="">
                     </div> 
                     
                     <div class="form-section data__items">

@@ -9,30 +9,40 @@ const modal = useModalStore();
 const speciesStore = useEspeciesStore();
 
 const formData = ref({
-  cod_especie: "",
-  nom_comunes: "",
-  otros_nombres: "",
-  nombre_cientifico: "",
+  code_specie: "",
+  vernacularName: "",
+  otherNames: "",
+  scientificName: "",
+  scientificNameAuthorship: "",
+  kingdom: "",
+  phylum: "",
+  class: "",
+  order: "",
+  synonyms: "",
+  family: "",
+  genus: "",
+  distribution: "",
+  descriptionGeneral: "",
+  habit: "",
   img_general: "",
-  sinonimos: "",
-  familia: "",
-  distribucion: "",
-  habito: "",
-  follaje: "",
-  forma_copa: "",
-  tipo_hoja: "",
-  disposicion_hojas: "",
-  hojas: "",
+  leaves: "",
   img_leafs: "",
-  flor: "",
+  flowers: "",
   img_flowers: "",
-  frutos: "",
+  fruits: "",
   img_fruits: "",
-  semillas: "",
+  seeds: "",
+  woodUses: "",
+  nonTimberUsers: "",
+  bloom: "",
+  fructification: "",
+  ecology: "",
+  specificEpithet: "",
+  infraspecificEpithet: "",
+  taxonRank: "",
+  taxon_key: "",
   img_seeds: "",
-  tallo: "",
   img_stems: "",
-  raiz: "",
   img_landscape_one: "",
   img_landscape_two: "",
   img_landscape_three: "",
@@ -40,7 +50,7 @@ const formData = ref({
 
 async function forestSpecieUpdate() {
   speciesStore.updateForestSpecie(
-    speciesStore.specieSelected[0].ShortcutID,
+    speciesStore.specieSelected[0].id,
     formData.value
   );
   modal.handleClickModalForestSpecieUpdate();
@@ -54,35 +64,46 @@ const adjustTextareaHeight = (event) => {
 
 const initializeFormData = () => {
   const selectedForestSpecie = speciesStore.specieSelected[0];
+  console.log('selectedForestSpecie ',selectedForestSpecie)
   if (selectedForestSpecie) {
     formData.value = {
-      cod_especie: selectedForestSpecie.cod_especie || "",
-      img_general: selectedForestSpecie.img_general || "",
-      nom_comunes: selectedForestSpecie.nom_comunes || "",
-      otros_nombres: selectedForestSpecie.otros_nombres || "",
-      nombre_cientifico: selectedForestSpecie.nombre_cientifico || "",
-      sinonimos: selectedForestSpecie.sinonimos || "",
-      familia: selectedForestSpecie.familia || "",
-      distribucion: selectedForestSpecie.distribucion || "",
-      habito: selectedForestSpecie.habito || "",
-      follaje: selectedForestSpecie.follaje || "",
-      forma_copa: selectedForestSpecie.forma_copa || "",
-      tipo_hoja: selectedForestSpecie.tipo_hoja || "",
-      disposicion_hojas: selectedForestSpecie.disposicion_hojas || "",
-      hojas: selectedForestSpecie.hojas || "",
-      img_leafs: selectedForestSpecie.img_leafs || "",
-      flor: selectedForestSpecie.flor || "",
-      img_flowers: selectedForestSpecie.img_flowers || "",
-      frutos: selectedForestSpecie.frutos || "",
-      img_fruits: selectedForestSpecie.img_fruits || "",
-      semillas: selectedForestSpecie.semillas || "",
+      code_specie: selectedForestSpecie.code_specie || "",
+      vernacularName: selectedForestSpecie.vernacularName || "",
+      otherNames: selectedForestSpecie.otherNames || "",
+      scientificName: selectedForestSpecie.scientificName || "",
+      scientificNameAuthorship: selectedForestSpecie.scientificNameAuthorship || "",
+      kingdom: selectedForestSpecie.kingdom || "",
+      phylum: selectedForestSpecie.phylum || "",
+      class: selectedForestSpecie.class || "",
+      order: selectedForestSpecie.order || "",
+      synonyms: selectedForestSpecie.synonyms || "",
+      family: selectedForestSpecie.family || "",
+      genus: selectedForestSpecie.genus || "",
+      distribution: selectedForestSpecie.distribution || "",
+      descriptionGeneral: selectedForestSpecie.descriptionGeneral || "",
+      habit: selectedForestSpecie.habit || "",
+      img_general: selectedForestSpecie.images[0].img_general || "",
+      leaves: selectedForestSpecie.leaves || "",
+      img_leafs: selectedForestSpecie.images[0].img_leafs || "",
+      flowers: selectedForestSpecie.flowers || "",
+      img_flowers: selectedForestSpecie.images[0].img_flowers || "",
+      fruits: selectedForestSpecie.fruits || "",
+      img_fruits: selectedForestSpecie.images[0].img_fruits || "",
+      seeds: selectedForestSpecie.seeds || "",
+      woodUses: selectedForestSpecie.woodUses || "",
+      nonTimberUsers: selectedForestSpecie.nonTimberUsers || "",
+      bloom: selectedForestSpecie.bloom || "",
+      fructification: selectedForestSpecie.fructification || "",
+      ecology: selectedForestSpecie.ecology || "",
+      specificEpithet: selectedForestSpecie.specificEpithet || "",
+      infraspecificEpithet: selectedForestSpecie.infraspecificEpithet || "",
+      taxonRank: selectedForestSpecie.taxonRank || "",
+      taxon_key: selectedForestSpecie.taxon_key || "",
       img_seeds: selectedForestSpecie.img_seeds || "",
-      tallo: selectedForestSpecie.tallo || "",
       img_stems: selectedForestSpecie.img_stems || "",
-      raiz: selectedForestSpecie.raiz || "",
-      img_landscape_one: selectedForestSpecie.img_landscape_one || "",
-      img_landscape_two: selectedForestSpecie.img_landscape_two || "",
-      img_landscape_three: selectedForestSpecie.img_landscape_three || "",
+      img_landscape_one: selectedForestSpecie.images[0].img_landscape_one || "",
+      img_landscape_two: selectedForestSpecie.images[0].img_landscape_two || "",
+      img_landscape_three: selectedForestSpecie.images[0].img_landscape_three || "",
     };
   }
 };
@@ -124,16 +145,16 @@ const handleImageLoad = (event) => {
           <img v-if="formData.img_general" :src="getFullImageUrl(formData.img_general)" alt="imagen___especie" />
         </div>
         <h4 class="modal__titulo">
-          {{ speciesStore.especies[0].nom_comunes }}
+          {{ speciesStore.species[0].vernacularName }}
         </h4>
         <p class="modal__titulo">
-          {{ speciesStore.especies[0].nombre_cientifico }}
+          {{ speciesStore.species[0].scientificName + " " + speciesStore.species[0].scientificNameAuthorship }}
         </p>
 
         <p class="modal__titulo">
           Código especie:
           <span class="card__dato">
-            {{ speciesStore.especies[0].cod_especie }}
+            {{ speciesStore.species[0].code_specie }}
           </span>
         </p>
       </div>
@@ -151,32 +172,44 @@ const handleImageLoad = (event) => {
             </h2>
             <div id="generales" class="detalles">
               <div class="formulario__campo">
+                <label for="codigo" class="formulario__label">Código especie:</label>
+                <input v-model="formData.code_specie" id="codigo" type="text" class="formulario__input" required />
+              </div>
+              <div class="formulario__campo">
                 <label for="comun" class="formulario__label">Nombre Común:</label>
-                <input v-model="formData.nom_comunes" id="comun" type="text" class="formulario__input" required />
+                <input v-model="formData.vernacularName" id="comun" type="text" class="formulario__input" required />
               </div>
               <div class="formulario__campo">
                 <label for="cientifico" class="formulario__label">Nombre científico:</label>
-                <input v-model="formData.nombre_cientifico" id="cientifico" type="text" class="formulario__input"
+                <input v-model="formData.scientificName" id="cientifico" type="text" class="formulario__input"
                   required />
               </div>
               <div class="formulario__campo">
-                <label for="codigo" class="formulario__label">Código especie:</label>
-                <input v-model="formData.cod_especie" id="codigo" type="text" class="formulario__input" required />
+                <label for="autor_cientifico" class="formulario__label">Autor Nombre científico:</label>
+                <input v-model="formData.scientificNameAuthorship" id="autor_cientifico" type="text" class="formulario__input"
+                  required />
               </div>
               <div class="formulario__campo">
                 <label for="otros" class="formulario__label">Otros Nombres:</label>
-                <input v-model="formData.otros_nombres" id="otros" type="text" class="formulario__input" />
+                <input v-model="formData.otherNames" id="otros" type="text" class="formulario__input" />
               </div>
               <div class="formulario__campo">
                 <label for="sinonimos" class="formulario__label">Sinónimos:</label>
               </div>
               <div class="formulario__campo fomulario__campo--textarea">
-                <textarea v-model="formData.sinonimos" id="sinonimos" type="text"
+                <textarea v-model="formData.synonyms" id="sinonimos" type="text"
                   class="formulario__textarea"></textarea>
               </div>
               <div class="formulario__campo">
-                <label for="distribucion" class="formulario__label">Distribución:</label>
-                <input v-model="formData.distribucion" id="distribucion" type="text" class="formulario__input" />
+                <label for="family" class="formulario__label">Familia:</label>
+                <input v-model="formData.family" id="family" type="text" class="formulario__input" />
+              </div>
+              <div class="formulario__campo">
+                <label for="description_general" class="formulario__label">Descripción General:</label>
+              </div>
+              <div class="formulario__campo fomulario__campo--textarea">
+                <textarea v-model="formData.descriptionGeneral" id="description_general" type="text"
+                  class="formulario__textarea"></textarea>
               </div>
             </div>
           </li>
@@ -189,25 +222,32 @@ const handleImageLoad = (event) => {
             </h2>
             <div id="atributos" class="detalles">
               <div class="formulario__campo">
+                <label for="kingdom" class="formulario__label">Reino:</label>
+                <input v-model="formData.kingdom" id="kingdom" type="text" class="formulario__input" />
+              </div>
+              <div class="formulario__campo">
+                <label for="phylum" class="formulario__label">Filo:</label>
+                <input v-model="formData.phylum" id="phylum" type="text" class="formulario__input" />
+              </div>
+              <div class="formulario__campo">
+                <label for="class" class="formulario__label">Clase:</label>
+                <input v-model="formData.class" id="class" type="text" class="formulario__input" />
+              </div>
+              <div class="formulario__campo">
+                <label for="order" class="formulario__label">Orden:</label>
+                <input v-model="formData.order" id="order" type="text" class="formulario__input" />
+              </div>
+              <div class="formulario__campo">
+                <label for="genus" class="formulario__label">Genero:</label>
+                <input v-model="formData.genus" id="genus" type="text" class="formulario__input" />
+              </div>
+              <div class="formulario__campo">
+                <label for="distribucion" class="formulario__label">Distribución:</label>
+                <input v-model="formData.distribution" id="distribucion" type="text" class="formulario__input" />
+              </div>
+              <div class="formulario__campo">
                 <label for="habito" class="formulario__label">Hábito:</label>
-                <input v-model="formData.habito" id="habito" type="text" class="formulario__input" />
-              </div>
-              <div class="formulario__campo">
-                <label for="follaje" class="formulario__label">Follaje:</label>
-                <input v-model="formData.follaje" id="follaje" type="text" class="formulario__input" />
-              </div>
-              <div class="formulario__campo">
-                <label for="forma-copa" class="formulario__label">Forma copa:</label>
-                <input v-model="formData.forma_copa" id="foma-copa" type="text" class="formulario__input" />
-              </div>
-              <div class="formulario__campo">
-                <label for="tipo-hoja" class="formulario__label">Tipo de hoja:</label>
-                <input v-model="formData.tipo_hoja" id="tipo-hoja" type="text" class="formulario__input" />
-              </div>
-              <div class="formulario__campo">
-                <label for="disposicion-hojas" class="formulario__label">Disposición de las hojas:</label>
-                <input v-model="formData.disposicion_hojas" id="disposicion-hojas" type="text"
-                  class="formulario__input" />
+                <input v-model="formData.habit" id="habito" type="text" class="formulario__input" />
               </div>
             </div>
           </li>
@@ -224,42 +264,102 @@ const handleImageLoad = (event) => {
                 <label for="hojas" class="formulario__label">Información de las hojas:</label>
               </div>
               <div class="formulario__campo fomulario__campo--textarea">
-                <textarea v-model="formData.hojas" id="hojas" type="text" class="formulario__textarea"></textarea>
+                <textarea v-model="formData.leaves" id="hojas" type="text" class="formulario__textarea"></textarea>
               </div>
               <!-- info flor -->
               <div class="formulario__campo">
                 <label for="flor" class="formulario__label">Información de la flor:</label>
               </div>
               <div class="formulario__campo fomulario__campo--textarea">
-                <textarea v-model="formData.flor" id="flor" type="text" class="formulario__textarea"></textarea>
+                <textarea v-model="formData.flowers" id="flor" type="text" class="formulario__textarea"></textarea>
               </div>
               <!-- info frutos -->
               <div class="formulario__campo">
                 <label for="frutos" class="formulario__label">Información de los frutos:</label>
               </div>
               <div class="formulario__campo fomulario__campo--textarea">
-                <textarea v-model="formData.frutos" id="frutos" type="text" class="formulario__textarea"></textarea>
+                <textarea v-model="formData.fruits" id="frutos" type="text" class="formulario__textarea"></textarea>
               </div>
               <!-- info semillas -->
               <div class="formulario__campo">
                 <label for="semillas" class="formulario__label">Información de las semillas:</label>
               </div>
               <div class="formulario__campo fomulario__campo--textarea">
-                <textarea v-model="formData.semillas" id="semillas" type="text" class="formulario__textarea"></textarea>
+                <textarea v-model="formData.seeds" id="semillas" type="text" class="formulario__textarea"></textarea>
               </div>
-              <!-- info tallo -->
+            </div>
+          </li>
+        </ul>
+
+        <!-- lista de otros datos -->
+        <ul class="lista">
+          <li class="opciones">
+            <h2 class="card__titulo" @click="toggleDetalles('otros-datos')">
+              Otros datos
+            </h2>
+            <div id="otros-datos" class="detalles">
+              <!-- info usos maderables -->
               <div class="formulario__campo">
-                <label for="tallo" class="formulario__label">Información del tallo:</label>
+                <label for="woodUses" class="formulario__label">Usos maderables:</label>
               </div>
               <div class="formulario__campo fomulario__campo--textarea">
-                <textarea v-model="formData.tallo" id="tallo" type="text" class="formulario__textarea"></textarea>
+                <textarea v-model="formData.woodUses" id="woodUses" type="text" class="formulario__textarea"></textarea>
               </div>
-              <!-- info raiz -->
+              <!-- info usos no maderables -->
               <div class="formulario__campo">
-                <label for="raiz" class="formulario__label">Información de la raíz:</label>
+                <label for="nonTimberUsers" class="formulario__label">Usos no maderables:</label>
               </div>
               <div class="formulario__campo fomulario__campo--textarea">
-                <textarea v-model="formData.raiz" id="tallo" type="text" class="formulario__textarea"></textarea>
+                <textarea v-model="formData.nonTimberUsers" id="nonTimberUsers" type="text" class="formulario__textarea"></textarea>
+              </div>
+              <!-- info floración -->
+              <div class="formulario__campo">
+                <label for="bloom" class="formulario__label">Floración:</label>
+              </div>
+              <div class="formulario__campo fomulario__campo--textarea">
+                <textarea v-model="formData.bloom" id="bloom" type="text" class="formulario__textarea"></textarea>
+              </div>
+              <!-- info fructificación -->
+              <div class="formulario__campo">
+                <label for="fructification" class="formulario__label">Fructificación:</label>
+              </div>
+              <div class="formulario__campo fomulario__campo--textarea">
+                <textarea v-model="formData.fructification" id="fructification" type="text" class="formulario__textarea"></textarea>
+              </div>
+              <!-- info ecologia -->
+              <div class="formulario__campo">
+                <label for="ecology" class="formulario__label">Ecologia:</label>
+              </div>
+              <div class="formulario__campo fomulario__campo--textarea">
+                <textarea v-model="formData.ecology" id="ecology" type="text" class="formulario__textarea"></textarea>
+              </div>
+              <!-- info epiteto especifico -->
+              <div class="formulario__campo">
+                <label for="specificEpithet" class="formulario__label">Epíteto específico:</label>
+              </div>
+              <div class="formulario__campo fomulario__campo--textarea">
+                <textarea v-model="formData.specificEpithet" id="specificEpithet" type="text" class="formulario__textarea"></textarea>
+              </div>
+              <!-- info epiteto infragenerico -->
+              <div class="formulario__campo">
+                <label for="infraspecificEpithet" class="formulario__label">Epíteto infragenérico:</label>
+              </div>
+              <div class="formulario__campo fomulario__campo--textarea">
+                <textarea v-model="formData.infraspecificEpithet" id="infraspecificEpithet" type="text" class="formulario__textarea"></textarea>
+              </div>
+              <!-- info categoria del taxon -->
+              <div class="formulario__campo">
+                <label for="taxonRank" class="formulario__label">Categoría del taxón:</label>
+              </div>
+              <div class="formulario__campo fomulario__campo--textarea">
+                <textarea v-model="formData.taxonRank" id="taxonRank" type="text" class="formulario__textarea"></textarea>
+              </div>
+              <!-- info id gbif -->
+              <div class="formulario__campo">
+                <label for="taxon_key" class="formulario__label">Identificador GBIF:</label>
+              </div>
+              <div class="formulario__campo fomulario__campo--textarea">
+                <textarea v-model="formData.taxon_key" id="taxon_key" type="text" class="formulario__textarea"></textarea>
               </div>
             </div>
           </li>

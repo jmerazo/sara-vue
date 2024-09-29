@@ -8,6 +8,7 @@ import { descargarExcel, descargarPdf, obtenerFecha } from "@/helpers";
 import LoadingData from "@/components/shared/LoadingData.vue";
 
 const especies = useEspeciesData();
+console.log('species ', especies)
 
 //limpiar filtros antes de cambiar de vista
 onBeforeRouteLeave((to, from, next) => {

@@ -126,12 +126,12 @@ export const useEspeciesStore = defineStore('especies', () => {
     }
 
     function selectedForestSpecieUpdate(id) {
-      specieSelected.value =  species.value.filter(especie => especie.ShortcutID === id)
+      specieSelected.value =  species.value.filter(especie => especie.id === id)
       modal.handleClickModalForestSpecieUpdate(specieSelected.value); 
     }
 
     const updateForestSpecie = async (sid, data) => {
-      const specieIndex = species.value.findIndex((specie) => specie.ShortcutID === sid);
+      const specieIndex = species.value.findIndex((specie) => specie.id === sid);
       if (specieIndex !== -1) {
           Object.assign(species.value[specieIndex], data);
           await APIService.updateForestSpecies(sid, data)

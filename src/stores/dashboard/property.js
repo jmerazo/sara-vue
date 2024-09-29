@@ -33,6 +33,15 @@ export const propertyStore = defineStore('property',()=>{
       cargando.value = false
   });
 
+  async function fetchProperty () {
+    cargando.value = true
+    const { data } = await APIService.listProperty();
+    property.value = data;
+    propertyOriginal.value = data;
+    totalProperty.value = propertyOriginal.value.length;
+    cargando.value = false
+  }
+
   function loadData() {
       property.value.forEach((dato) => {
       datosImport.value.push(dato);
@@ -214,35 +223,36 @@ export const propertyStore = defineStore('property',()=>{
   }
 
     return { 
-        createProperty,
-        listProperty,
-        property,
-        propertyOriginal,
-        deleteProperty,
-        searchTerm,
-        removeFilterProperty,
-        changePage,
-        displayedProperty,
-        datosImport,
-        cargando,
-        totalProperty,
-        userSelected,
-        selectedUserCreateProperty,
-        createUsersProperty,
-        propertyUsers,
-        selectedUserCreateUsersProperty,
-        userPropertySelected,
-        listPropertyId,
-        propertyUser,
-        listUserSpeciesIds,
-        userSpecies,
-        deleteSpecieUser,
-        selectedPropertyUpdate,
-        updateProperty,
-        
-        propertySelected,
-        currentPage,
-        itemsPerPage,
-        totalPages
+      fetchProperty,
+      createProperty,
+      listProperty,
+      property,
+      propertyOriginal,
+      deleteProperty,
+      searchTerm,
+      removeFilterProperty,
+      changePage,
+      displayedProperty,
+      datosImport,
+      cargando,
+      totalProperty,
+      userSelected,
+      selectedUserCreateProperty,
+      createUsersProperty,
+      propertyUsers,
+      selectedUserCreateUsersProperty,
+      userPropertySelected,
+      listPropertyId,
+      propertyUser,
+      listUserSpeciesIds,
+      userSpecies,
+      deleteSpecieUser,
+      selectedPropertyUpdate,
+      updateProperty,
+      
+      propertySelected,
+      currentPage,
+      itemsPerPage,
+      totalPages
     }
 })

@@ -19,8 +19,6 @@ import ModalForestSpecieAdd from "@/components/dashboard/modals/ModalForestSpeci
 const especies = useEspeciesStore();
 const modal = useModalStore();
 
-console.log('especies: ', especies)
-
 //prueba para protección de eliminación de una especie
 const delSpecie = (id) => {
   const confirmed = window.confirm(
