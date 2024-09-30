@@ -4,6 +4,7 @@ import { useNurseriesStore } from "@/stores/nurseries";
 import { useConsultaStore } from '@/stores/consulta'
 import { useRouter } from "vue-router";
 import { useToast } from '../helpers/ToastManagement';
+import { getFullImageUrl } from "@/helpers";
 
 const consulta = useConsultaStore()
 const nurseries = useNurseriesStore();
@@ -58,7 +59,13 @@ function showError(message) {
 <template>
   <div class="main">
     <section class="general">
-      <div class="general__information"></div>
+      <div class="card__image-container">
+        <div class="card__image">
+          <img :src="getFullImageUrl(nurseries.nursery.logo) || '/img/no_img_nurseries.png'" 
+              :alt="nurseries.nursery.logo" 
+              class="nursery-image">
+        </div>
+      </div>
       <h2 class="general__title">{{ nurseries.nursery.nombre_vivero }}</h2>
       <div class="nursery__data">
         <p>
@@ -365,5 +372,29 @@ body {
 .information__title {
   font-weight: bold;
   margin-right: 0.5rem;
+}
+
+/* image */
+.card__image-container {
+  width: 250px;
+  flex-shrink: 0;
+  display: flex;
+  margin: 0 auto;
+}
+
+.card__image {
+  width: 250px;
+  height: 250px;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.nursery-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;  /* Asegura que la imagen se ajuste al contenedor sin recortarse */
+  object-position: center;  /* Centra la imagen dentro del contenedor */
 }
 </style>

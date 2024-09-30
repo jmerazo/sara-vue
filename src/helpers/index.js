@@ -35,6 +35,20 @@ export const getFullImageUrl = (relativePath) => {
 
 };
 
+export const getFullImageNurseryUrl = (relativePath) => {
+
+  try {
+    if (relativePath) {
+      return `${api.defaults.baseURL}/${relativePath.replace(/\\/g, "/")}`;
+    } else {
+      return "/img/no_img_nurseries.png";
+    }
+  } catch (error) {
+    return "/img/no_img_nurseries.png";
+  }
+
+};
+
 
 // FUNCIONES ACTUALIZADAS Y FINALES
 export const descargarExcels = async (datos, excelName) => {

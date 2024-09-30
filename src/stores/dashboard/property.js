@@ -59,7 +59,6 @@ export const propertyStore = defineStore('property',()=>{
   );
 
   const selectedUserCreateProperty = (id) => {
-    console.log('id ', id)
     userSelected.value = id;
     propertySelected.value = [];
     modal.handleClickModalProperty(false)

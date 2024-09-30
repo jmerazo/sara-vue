@@ -7,14 +7,11 @@ import { locatesColombia } from "@/stores/locates";
 import APIService from "@/services/APIService";
 import { useRouter } from "vue-router";
 
-
 const router = useRouter();
 const locates = locatesColombia();
 const modal = useModalStore();
 const usersStore = useUsersStore();
 const error = ref('')
-
-console.log('usersStore ', usersStore.userSelected[0])
 
 const formData = ref({
   document_type: "",
@@ -241,7 +238,7 @@ function delUser(id, nu) {
 
             </div>
 
-            <div @click="modal.handleClickModalUserUpdate(), verImg(especie.img_general), limpiarModal()"
+            <div @click="modal.handleClickModalUserUpdate(), limpiarModal()"
               class="button__modal--close">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                 stroke="currentColor" class="w-6 h-6">

@@ -30,18 +30,7 @@ onBeforeRouteLeave((to, from, next) => {
 });
 
 function changeUserState(id, state) {
-  const confirmState = window.confirm(
-    `¿Estás seguro de que deseas ${state === 0 ? "activar" : "desactivar"
-    } a este usuario?`
-  );
-  if (!confirmState) {
-    return;
-  }
-  if (state === 1) {
-    usersStore.changeStateUser(id, 0);
-  } else {
-    usersStore.changeStateUser(id, 1);
-  }
+  usersStore.changeStateUser(id, state);
 }
 
 //botones paginador

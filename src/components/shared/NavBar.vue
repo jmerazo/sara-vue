@@ -26,16 +26,19 @@ const nuevoEstilo = () => {
   var navegacion = document.querySelector(".navegacion");
   var enlaces = document.querySelectorAll(".navegacion__enlace");
 
-  if (window.scrollY > 70) {
-    navegacion.classList.add("background__ver");
-    enlaces.forEach(function (enlace) {
-      enlace.classList.add("cambiar__fuente");
-    });
-  } else {
-    navegacion.classList.remove("background__ver");
-    enlaces.forEach(function (enlace) {
-      enlace.classList.remove("cambiar__fuente");
-    });
+  // Verifica si el elemento navegacion y los enlaces existen antes de acceder a sus propiedades
+  if (navegacion && enlaces.length > 0) {
+    if (window.scrollY > 70) {
+      navegacion.classList.add("background__ver");
+      enlaces.forEach(function (enlace) {
+        enlace.classList.add("cambiar__fuente");
+      });
+    } else {
+      navegacion.classList.remove("background__ver");
+      enlaces.forEach(function (enlace) {
+        enlace.classList.remove("cambiar__fuente");
+      });
+    }
   }
 };
 </script>

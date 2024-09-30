@@ -3,13 +3,14 @@ import { computed, ref, onMounted, watch } from "vue";
 import { RouterLink } from "vue-router";
 import { useNurseriesStore } from "@/stores/nurseries";
 import ButtonTop from '@/components/shared/ButtonTop.vue';
-import { obtenerFecha, descargarPdfs, descargarExcels } from "@/helpers";
+import { obtenerFecha, descargarPdfs, descargarExcels, getFullImageNurseryUrl} from "@/helpers";
 
 const valueSearched = ref("");
 const isSearching = computed(() => valueSearched.value !== "");
 const activeDownload = ref(false)
 
 const nurseries = useNurseriesStore();
+console.log('nurseries ', nurseries)
 
 const displayedPageRange = computed(() => {
   const currentPage = nurseries.currentPage;
@@ -167,7 +168,7 @@ function showCardDownload() {
         <article class="card" v-for="nursery in nurseries.paginatedNurseries" :key="nursery.id">
           <div class="card__image-container">
             <div class="card__image">
-              <img :src="nursery.image_url || '/img/no_img_nurseries.png'" :alt="nursery.nombre_vivero" class="nursery-image">
+              <img :src="getFullImageNurseryUrl(nursery.logo)" :alt="nursery.nombre_vivero" class="nursery-image">
             </div>
           </div>
           <div class="card__contact">
@@ -536,17 +537,17 @@ function showCardDownload() {
 
 .card__image-container {
   width: 250px;
-  flex-shrink: 0;
+  height: 250px;
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-shrink: 0;
 }
 
 .card__image {
-  width: 250px;
-  height: 250px;
-  border-radius: 50%;
-  overflow: hidden;
+  width: 100%;
+  height: 100%;
+  overflow: hidden; /* Corta cualquier contenido que sobresalga del contenedor circular */
   display: flex;
   justify-content: center;
   align-items: center;
@@ -555,7 +556,8 @@ function showCardDownload() {
 .nursery-image {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;  /* Ajusta la imagen para que se vea completamente dentro del contenedor */
+  object-position: center; /* Centra la imagen dentro del contenedor */
 }
 
 /* section card information */

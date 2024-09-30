@@ -135,7 +135,7 @@ onMounted(() => {
             <label class="form__modal--label" for="departamento">Departamento:</label>
             <select id="departamento" class="form__modal--input" v-model="formData.p_departamento">
               <option value="">--Seleccione--</option>
-              <option v-for="loc in locates.departments" :key="loc.id" :value="loc.code">
+              <option v-for="loc in locates.departments" :key="loc.id" :value="loc.id">
                 {{ loc.name }}
               </option>
             </select>

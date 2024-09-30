@@ -1,5 +1,5 @@
 <script setup>
-
+import { defineProps } from 'vue';
 import { useUsersStore } from "@/stores/users";
 import { propertyStore } from "@/stores/dashboard/property";
 import { useNurseriesDashStore } from "@/stores/dashboard/nurseries";
@@ -8,17 +8,38 @@ const usersStore = useUsersStore();
 const propertiesStore = propertyStore();
 const nurseriesStore = useNurseriesDashStore();
 
-defineProps({
-    user: {
-        type: Object,
-        required: true
-    },
-    changeUserState: {
-        type: Function,
-        required: true
-    }
+const props = defineProps({
+  user: {
+    type: Object,
+    required: true
+  },
+  changeUserState: {
+    type: Function,
+    required: true
+  }
+});
 
-})
+function onToggleChange(event) {
+  // Evita que el checkbox cambie su estado visual de inmediato
+  event.preventDefault();
+
+  // Cambiamos el estado de is_active invirtiendo el booleano (de true a false o viceversa)
+  const newState = !props.user.is_active;
+
+  // Muestra la confirmación al usuario
+  const confirmState = window.confirm(
+    `¿Estás seguro de que deseas ${newState ? "activar" : "desactivar"} a este usuario?`
+  );
+
+  // Si el usuario cancela la confirmación, restablecemos el estado visual del checkbox
+  if (!confirmState) {
+    event.target.checked = props.user.is_active;
+    return;
+  }
+
+  // Si el usuario confirma, ejecuta el cambio de estado llamando a la función pasada por props
+  props.changeUserState(props.user.id, newState); // Pasamos el nuevo estado booleano (true o false)
+}
 </script>
 
 <template>
@@ -27,9 +48,12 @@ defineProps({
             <div class="card__options">
                 <div class="card__check">
                     <label class="switch">
-                        <input @change="changeUserState(user.id, user.is_active)" :checked="user.is_active === 1"
-                            class="card__input" type="checkbox" />
-
+                        <input
+                            @change="onToggleChange($event)"
+                            :checked="props.user.is_active"
+                            class="card__input"
+                            type="checkbox"
+                        />
                         <span class="card__check--button"></span>
                     </label>
                 </div>
