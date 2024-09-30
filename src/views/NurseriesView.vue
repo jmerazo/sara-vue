@@ -10,7 +10,6 @@ const isSearching = computed(() => valueSearched.value !== "");
 const activeDownload = ref(false)
 
 const nurseries = useNurseriesStore();
-console.log('nurseries ', nurseries)
 
 const displayedPageRange = computed(() => {
   const currentPage = nurseries.currentPage;
@@ -547,6 +546,7 @@ function showCardDownload() {
 .card__image {
   width: 100%;
   height: 100%;
+  border-radius: 50%;
   overflow: hidden; /* Corta cualquier contenido que sobresalga del contenedor circular */
   display: flex;
   justify-content: center;
