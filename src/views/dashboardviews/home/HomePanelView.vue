@@ -15,6 +15,7 @@ import LoadingData from "@/components/shared/LoadingData.vue";
 //monitoreos
 import totalDepartmentMonitoring from "@/components/dashboard/charts/totalDepartmentMonitoring.vue";
 import totalMunicipalMonitoring from "@/components/dashboard/charts/totalMunicipalMonitoring.vue";
+import usersMonitoring from '@/components/dashboard/charts/usersMonitoring.vue'
 
 import { useAuthTokenStore } from '@/stores/auth';
 import { watch } from 'vue';
@@ -70,6 +71,7 @@ onMounted(() => {
           <!-- graficos -->
           <div class="graficos">
             <div class="grafico">
+              <usersMonitoring/>
               <totalDepartmentMonitoring v-if="chartStore.departamentos.length > 0" />
               <totalMunicipalMonitoring v-if="chartStore.municipios.length > 0" />
               <LoadingData v-else />

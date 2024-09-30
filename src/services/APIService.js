@@ -1,3 +1,4 @@
+import { get } from 'jquery';
 import api from '../api/axios';
 import { useAuthTokenStore } from '../stores/auth';
 
@@ -130,6 +131,11 @@ export default {
     //Retorna ocurrencias de flor y frutos de cada mes
     getMonitoringCalendar(){
         return api.get('/monitoring/report/dataFlowerAndFruit')
+    },
+
+    //returns users monitoring
+    getUsersMonitoring(){
+        return api.get('/property/users/monitoring')
     },
     /* ==================================================================================================================== */
     /* ==================================================================================================================== */

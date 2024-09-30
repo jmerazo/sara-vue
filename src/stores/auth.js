@@ -7,10 +7,6 @@ import {
   signInWithEmailAndPassword, 
   signOut, 
   onAuthStateChanged,
-  getAuth, 
-  signInWithPopup, 
-  GoogleAuthProvider, 
-  OAuthProvider
  } from 'firebase/auth';
 
 export const useAuthTokenStore = defineStore('authToken', () => {
