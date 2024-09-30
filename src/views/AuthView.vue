@@ -4,16 +4,17 @@ import { useReCaptcha } from "vue-recaptcha-v3";
 import { useAuthTokenStore } from "@/stores/auth";
 import { useUsersStore } from "@/stores/users"
 import { locatesColombia } from "@/stores/locates"
+import { useToastStore } from '../stores/toast';
 import { useRouter } from "vue-router";
-import { useToast } from "../helpers/ToastManagement";
 import LoadingData from "@/components/shared/LoadingData.vue";
 import { getAuth, signInWithPopup, GoogleAuthProvider, OAuthProvider } from 'firebase/auth';
 
 const locates = locatesColombia();
 const store = useAuthTokenStore();
+const toast = useToastStore()
 const usersStore = useUsersStore();
 const router = useRouter();
-const { addToast } = useToast();
+
 const auth = getAuth();
 
 const { executeRecaptcha, recaptchaLoaded } = useReCaptcha();
@@ -34,17 +35,12 @@ const handleLoginFirebase = async () => {
       router.push({
         name: "home-panel",
       });
+      toast.activateToast('Bienvenido','success')
     } else {
-      addToast(`Usuario: ${email.value} o credenciales inválidas`, {
-        type: 'warning',
-        duration: 4000
-      });
+      toast.activateToast('Usuario o credenciales inválidas', 'error')
     }
   } catch (e) {
-    addToast(e, {
-      type: 'error',
-      duration: 4000
-    });
+    toast.activateToast('Hubo un error al iniciar sesión','error')
   }
 };
 
@@ -93,12 +89,13 @@ async function sendData(e) {
       console.log('response ', response)
       resetForm();
       if(response.status === 201){
-        addToast('Registro social exitoso. Por favor, complete su perfil.', { type: 'success', duration: 4000 });
+        
         router.push({ name: "signUpSuccess" });
+        toast.activateToast('Registro exitoso, completar perfil', 'success')
       }
     } catch (error) {
       console.log(error);
-      addToast('Error en el registro', { type: 'error', duration: 4000 });
+      toast.activateToast('Hubo un error en el registro', 'error')
     }
   } else {
     if (email.value === '' || password.value === '') {
@@ -143,14 +140,16 @@ async function handleSocialRegister(provider) {
       const response = await usersStore.registerUser(socialUserData);
       console.log('response view register ', response)
       if(response.status === 201){
-        addToast('Registro social exitoso. Por favor, complete su perfil.', { type: 'success', duration: 4000 });
+
         router.push({ name: "signUpSuccess" });
+        toast.activateToast('Registro exitoso, completar perfil', 'success')
+        
       }
     } catch (error) {
-      addToast('Error en el registro con red social', { type: 'error', duration: 4000 });
+      toast.activateToast('Error en el registro con red social', 'error')
     }
   } catch (error) {
-    addToast('Error en la autenticación con red social', { type: 'error', duration: 4000 });
+    toast.activateToast('Error en la autenticación con red social', 'error')
   }
 }
 

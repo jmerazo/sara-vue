@@ -1,18 +1,25 @@
 <script setup>
-import { RouterView} from "vue-router";
+import { RouterView } from "vue-router";
 import ToastContainer from "./components/shared/ToastContainer.vue";
+import Toast from './components/shared/Toast.vue'
 </script>
 
 <template>
-  
-  <main  >
-    <RouterView  />
-    <ToastContainer />
-  </main> 
+  <div class="general__content">
+    <Toast/>
+    <main>
+      <RouterView />
+      <ToastContainer />
+    </main>
+  </div>
 
 </template>
 
-<style >
+<style>
+.general__content{
+  overflow-x: hidden;
+  max-width: 100%;
+}
 /* boton agregar */
 .agregar {
   background-image: url("/icons/icon-add.svg");
@@ -28,6 +35,7 @@ import ToastContainer from "./components/shared/ToastContainer.vue";
   width: 3rem;
   transition: transform 0.3s ease-out, box-shadow 0.3s ease-out;
 }
+
 .agregar:hover {
   transform: scale(1.08);
 }
@@ -39,6 +47,7 @@ import ToastContainer from "./components/shared/ToastContainer.vue";
     overflow: hidden;
     border-radius: 50%;
   }
+
   .agregar::before {
     content: "";
     display: block;
@@ -49,17 +58,21 @@ import ToastContainer from "./components/shared/ToastContainer.vue";
     border-radius: 50%;
     transition: transform 0.3s ease-out;
   }
+
   .agregar:hover::before {
     transform: scale(1.08);
   }
+
   .agregar:hover {
     box-shadow: 0 0 0 5px rgba(0, 0, 0, 0.2);
   }
 }
+
 /* fin boton agregar */
 .texto__sara {
   color: var(--primary);
 }
+
 /* buscador */
 .header__label {
   font-weight: 700;
@@ -88,21 +101,25 @@ import ToastContainer from "./components/shared/ToastContainer.vue";
     width: 40%;
   }
 }
+
 @media (min-width: 992px) {
   .header__buscador {
     width: 25%;
   }
 }
+
 /* Paginador */
 .paginador {
   margin: 3rem 0 0 0;
- 
+
 }
+
 .paginador__botones {
   display: flex;
   justify-content: center;
   align-items: center;
 }
+
 .paginador__boton {
   font-weight: 700;
   font-size: 1rem;
@@ -114,77 +131,89 @@ import ToastContainer from "./components/shared/ToastContainer.vue";
   align-items: center;
   background-color: var(--blanco);
 }
+
 @media (min-width: 768px) {
   .paginador__boton {
     font-size: 1.2rem;
   }
 }
+
 .paginador__boton-actual {
   background-color: var(--gris);
   color: var(--blanco);
   border-radius: 50%;
 }
+
 .paginador__boton--anterior {
   width: 2rem;
   background-color: var(--blanco);
 }
+
 .paginador__boton--siguiente {
   width: 2rem;
   background-color: var(--blanco);
 }
+
 .paginador__boton--anterior:hover {
   color: var(--primary);
 }
+
 .paginador__boton--siguiente:hover {
   color: var(--primary);
-  
+
 }
 
 /* validacion */
 .validacion__contenido {
   margin-bottom: 8rem;
 }
+
 .validacion__heading {
   font-size: 1.5rem;
 }
 
 /* =============== modals forms =============== */
-.form__modal--content{
+.form__modal--content {
   padding: .6rem;
 }
-.form__modal--content .form__modal--title{
+
+.form__modal--content .form__modal--title {
   text-align: center;
   margin-bottom: 20px;
   font-size: 1.3rem;
   font-weight: 500;
 }
 
-.form__modal .form__modal--field{
+.form__modal .form__modal--field {
   margin: 1rem 0;
 }
-.form__modal .form__modal--label{
+
+.form__modal .form__modal--label {
   display: block;
   font-size: 1rem;
   font-weight: 500;
   margin-bottom: .5rem;
   text-align: left;
 }
-.form__modal .form__modal--input{
+
+.form__modal .form__modal--input {
   width: 100%;
   padding: .2rem;
   border: 1px solid var(--primary);
   border-radius: 5px;
 }
+
 /* buttons */
-.form__modal .form__modal--buttons{
+.form__modal .form__modal--buttons {
   display: flex;
   justify-content: center;
   align-items: center;
   margin-top: 0rem;
   transition: all .3s ease-in-out;
 }
+
 /* button save */
-.form__modal--buttons .form__modal--save{
+.form__modal--buttons .form__modal--save {
   background: none;
   width: 30px;
   height: 30px;
@@ -194,10 +223,12 @@ import ToastContainer from "./components/shared/ToastContainer.vue";
   padding: .5rem;
   transition: all .3s ease-in-out;
 }
-.form__modal--buttons .form__modal--save:hover{
+
+.form__modal--buttons .form__modal--save:hover {
   background: var(--primary);
   color: var(--blanco);
 }
+
 /* button close modal */
 .button__modal--close {
   position: absolute;

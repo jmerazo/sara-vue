@@ -7,6 +7,9 @@ import {useConsultaStore} from '@/stores/consulta'
 export const useChartsStore = defineStore('charts',()=>{
    
     const consulta = useConsultaStore()
+    //users monitoring
+    const usersMonitoring = ref([])
+
     //grafico 1 departamentos
     const departamentos = ref([]);
     const CantidadDepartamento = ref([]);
@@ -36,9 +39,16 @@ export const useChartsStore = defineStore('charts',()=>{
             cantidadMunicipio.value.push(Number(data.municipios[municipio]));
             totalMunicipios.value += Number(data.municipios[municipio])
         }
+        getDataUserMonitoring()
         consulta.cargando = false
        
     })
+    
+    async function getDataUserMonitoring(){
+        const { data } = await APIService.getUsersMonitoring()
+        usersMonitoring.value = data
+        console.log('users Monitoring', usersMonitoring.value)
+    }
     // formatear los valores con separador de miles
     function separarMiles(valor) {
         return valor.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");

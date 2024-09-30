@@ -1,3 +1,4 @@
+import { get } from 'jquery';
 import api from '../api/axios';
 import { useAuthTokenStore } from '../stores/auth';
 
@@ -131,6 +132,11 @@ export default {
     getMonitoringCalendar(){
         return api.get('/monitoring/report/dataFlowerAndFruit')
     },
+
+    //returns users monitoring
+    getUsersMonitoring(){
+        return api.get('/property/users/monitoring')
+    },
     /* ==================================================================================================================== */
     /* ==================================================================================================================== */
 
@@ -243,7 +249,7 @@ export default {
     /* ==================================================================================================================== */
     // ENDPOINT →→ NURSERIES
     listNurseries(){
-        return api.get('/nurseries')
+        return api.get('/nurseries/')
     },
     listNurseriesId(id){
         return api.get(`/nurseries/search/${id}`)
