@@ -28,7 +28,7 @@ export default {
         return api.post('/auth/login', { token, recaptcha_token: recaptchaToken })
     },
     getRoles(){
-        return api.get('/users/roles')
+        return api.get('/users/roles/')
     },
     verifyTokenAuth(token){
         return api.post('/auth/verify-token', {token})
