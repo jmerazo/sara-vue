@@ -4,9 +4,11 @@ import { watch, onMounted, ref } from "vue";
 import { useModalStore } from "@/stores/modal";
 import { useEspeciesStore } from "@/stores/species";
 import { getFullImageUrl } from "@/helpers";
+import { useToastStore } from '@/stores/toast';
 
 const modal = useModalStore();
 const speciesStore = useEspeciesStore();
+const toast = useToastStore()
 
 const formData = ref({
   code_specie: "",
@@ -16,12 +18,10 @@ const formData = ref({
   scientificNameAuthorship: "",
   kingdom: "",
   phylum: "",
-  class: "",
+  clas: "",
   order: "",
-  synonyms: "",
   family: "",
   genus: "",
-  distribution: "",
   descriptionGeneral: "",
   habit: "",
   img_general: "",
@@ -32,11 +32,6 @@ const formData = ref({
   fruits: "",
   img_fruits: "",
   seeds: "",
-  woodUses: "",
-  nonTimberUsers: "",
-  bloom: "",
-  fructification: "",
-  ecology: "",
   specificEpithet: "",
   infraspecificEpithet: "",
   taxonRank: "",
@@ -64,7 +59,6 @@ const adjustTextareaHeight = (event) => {
 
 const initializeFormData = () => {
   const selectedForestSpecie = speciesStore.specieSelected[0];
-  console.log('selectedForestSpecie ',selectedForestSpecie)
   if (selectedForestSpecie) {
     formData.value = {
       code_specie: selectedForestSpecie.code_specie || "",
@@ -74,12 +68,10 @@ const initializeFormData = () => {
       scientificNameAuthorship: selectedForestSpecie.scientificNameAuthorship || "",
       kingdom: selectedForestSpecie.kingdom || "",
       phylum: selectedForestSpecie.phylum || "",
-      class: selectedForestSpecie.class || "",
+      clas: selectedForestSpecie.clas || "",
       order: selectedForestSpecie.order || "",
-      synonyms: selectedForestSpecie.synonyms || "",
       family: selectedForestSpecie.family || "",
       genus: selectedForestSpecie.genus || "",
-      distribution: selectedForestSpecie.distribution || "",
       descriptionGeneral: selectedForestSpecie.descriptionGeneral || "",
       habit: selectedForestSpecie.habit || "",
       img_general: selectedForestSpecie.images[0].img_general || "",
@@ -90,11 +82,6 @@ const initializeFormData = () => {
       fruits: selectedForestSpecie.fruits || "",
       img_fruits: selectedForestSpecie.images[0].img_fruits || "",
       seeds: selectedForestSpecie.seeds || "",
-      woodUses: selectedForestSpecie.woodUses || "",
-      nonTimberUsers: selectedForestSpecie.nonTimberUsers || "",
-      bloom: selectedForestSpecie.bloom || "",
-      fructification: selectedForestSpecie.fructification || "",
-      ecology: selectedForestSpecie.ecology || "",
       specificEpithet: selectedForestSpecie.specificEpithet || "",
       infraspecificEpithet: selectedForestSpecie.infraspecificEpithet || "",
       taxonRank: selectedForestSpecie.taxonRank || "",
@@ -135,6 +122,27 @@ const handleImageLoad = (event) => {
   height.value = event.target.height;
   return console.log(height.value);
 };
+
+async function deleteSpecieForrest(id, vernacularName) {
+  console.log('delete ', id);
+  const confirmDelete = window.confirm(
+    `¿Estás seguro de que desea eliminar la especie ${vernacularName}?`
+  );
+  if (!confirmDelete) {
+    return;
+  }
+  try {
+    const response = await speciesStore.deleteForestSpecie(id);
+    if (response && response.success) {
+      toast.activateToast(response.message, 'success');
+    } else {
+      const errorMessage = response.message || 'Error al eliminar la especie';
+      toast.activateToast(errorMessage, 'error');
+    }    
+  } catch (error) {
+    toast.activateToast('Error al comunicarse con el servidor', 'error');    
+  } 
+}
 </script>
 
 <template>
@@ -194,13 +202,6 @@ const handleImageLoad = (event) => {
                 <input v-model="formData.otherNames" id="otros" type="text" class="formulario__input" />
               </div>
               <div class="formulario__campo">
-                <label for="sinonimos" class="formulario__label">Sinónimos:</label>
-              </div>
-              <div class="formulario__campo fomulario__campo--textarea">
-                <textarea v-model="formData.synonyms" id="sinonimos" type="text"
-                  class="formulario__textarea"></textarea>
-              </div>
-              <div class="formulario__campo">
                 <label for="family" class="formulario__label">Familia:</label>
                 <input v-model="formData.family" id="family" type="text" class="formulario__input" />
               </div>
@@ -230,8 +231,8 @@ const handleImageLoad = (event) => {
                 <input v-model="formData.phylum" id="phylum" type="text" class="formulario__input" />
               </div>
               <div class="formulario__campo">
-                <label for="class" class="formulario__label">Clase:</label>
-                <input v-model="formData.class" id="class" type="text" class="formulario__input" />
+                <label for="clas" class="formulario__label">Clase:</label>
+                <input v-model="formData.clas" id="class" type="text" class="formulario__input" />
               </div>
               <div class="formulario__campo">
                 <label for="order" class="formulario__label">Orden:</label>
@@ -240,10 +241,6 @@ const handleImageLoad = (event) => {
               <div class="formulario__campo">
                 <label for="genus" class="formulario__label">Genero:</label>
                 <input v-model="formData.genus" id="genus" type="text" class="formulario__input" />
-              </div>
-              <div class="formulario__campo">
-                <label for="distribucion" class="formulario__label">Distribución:</label>
-                <input v-model="formData.distribution" id="distribucion" type="text" class="formulario__input" />
               </div>
               <div class="formulario__campo">
                 <label for="habito" class="formulario__label">Hábito:</label>
@@ -297,42 +294,7 @@ const handleImageLoad = (event) => {
             <h2 class="card__titulo" @click="toggleDetalles('otros-datos')">
               Otros datos
             </h2>
-            <div id="otros-datos" class="detalles">
-              <!-- info usos maderables -->
-              <div class="formulario__campo">
-                <label for="woodUses" class="formulario__label">Usos maderables:</label>
-              </div>
-              <div class="formulario__campo fomulario__campo--textarea">
-                <textarea v-model="formData.woodUses" id="woodUses" type="text" class="formulario__textarea"></textarea>
-              </div>
-              <!-- info usos no maderables -->
-              <div class="formulario__campo">
-                <label for="nonTimberUsers" class="formulario__label">Usos no maderables:</label>
-              </div>
-              <div class="formulario__campo fomulario__campo--textarea">
-                <textarea v-model="formData.nonTimberUsers" id="nonTimberUsers" type="text" class="formulario__textarea"></textarea>
-              </div>
-              <!-- info floración -->
-              <div class="formulario__campo">
-                <label for="bloom" class="formulario__label">Floración:</label>
-              </div>
-              <div class="formulario__campo fomulario__campo--textarea">
-                <textarea v-model="formData.bloom" id="bloom" type="text" class="formulario__textarea"></textarea>
-              </div>
-              <!-- info fructificación -->
-              <div class="formulario__campo">
-                <label for="fructification" class="formulario__label">Fructificación:</label>
-              </div>
-              <div class="formulario__campo fomulario__campo--textarea">
-                <textarea v-model="formData.fructification" id="fructification" type="text" class="formulario__textarea"></textarea>
-              </div>
-              <!-- info ecologia -->
-              <div class="formulario__campo">
-                <label for="ecology" class="formulario__label">Ecologia:</label>
-              </div>
-              <div class="formulario__campo fomulario__campo--textarea">
-                <textarea v-model="formData.ecology" id="ecology" type="text" class="formulario__textarea"></textarea>
-              </div>
+            <div id="otros-datos" class="detalles">  
               <!-- info epiteto especifico -->
               <div class="formulario__campo">
                 <label for="specificEpithet" class="formulario__label">Epíteto específico:</label>
@@ -411,9 +373,15 @@ const handleImageLoad = (event) => {
               <path
                 d="M7 19V13H17V19H19V7.82843L16.1716 5H5V19H7ZM4 3H17L21 7V20C21 20.5523 20.5523 21 20 21H4C3.44772 21 3 20.5523 3 20V4C3 3.44772 3.44772 3 4 3ZM9 15V19H15V15H9Z">
               </path>
-            </svg></button>
+          </svg></button>
 
-
+          <div @click="deleteSpecieForrest(speciesStore.species[0].id , formData.vernacularName), modal.handleClickModalForestSpecieUpdate()">
+            <svg style="width: 2rem;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+              <path
+                d="M17 6H22V8H20V21C20 21.5523 19.5523 22 19 22H5C4.44772 22 4 21.5523 4 21V8H2V6H7V3C7 2.44772 7.44772 2 8 2H16C16.5523 2 17 2.44772 17 3V6ZM18 8H6V20H18V8ZM9 4V6H15V4H9Z">
+              </path>
+            </svg>
+          </div>  
           <div class="button__modal--close" @click="modal.handleClickModalForestSpecieUpdate()">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
               stroke="currentColor" class="w-6 h-6">
@@ -422,10 +390,7 @@ const handleImageLoad = (event) => {
             </svg>
           </div>
         </div>
-
       </form>
-
-
     </div>
   </div>
 </template>
@@ -633,5 +598,10 @@ const handleImageLoad = (event) => {
     grid-column: 1/2;
     grid-row: 1/4;
   }
+}
+
+.button__user-delete:hover {
+  background: var(--rojo);
+  color: var(--blanco);
 }
 </style>

@@ -1,6 +1,4 @@
-import { get } from 'jquery';
 import api from '../api/axios';
-import { useAuthTokenStore } from '../stores/auth';
 
 export default {
     /* ==================================================================================================================== */

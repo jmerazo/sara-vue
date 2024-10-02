@@ -1,31 +1,36 @@
 <script setup>
-import { watch, onMounted, ref } from "vue";
+import { ref } from "vue";
 
 import { useModalStore } from "@/stores/modal";
 import { useEspeciesStore } from "@/stores/species";
+import { useToastStore } from '@/stores/toast';
 
 const modal = useModalStore();
 const speciesStore = useEspeciesStore();
+const toast = useToastStore()
 
 const formData = ref({
-  cod_especie: "",
-  nom_comunes: "",
-  otros_nombres: "",
-  nombre_cientifico: "",
-  sinonimos: "",
-  familia: "",
-  distribucion: "",
-  habito: "",
-  follaje: "",
-  forma_copa: "",
-  tipo_hoja: "",
-  disposicion_hojas: "",
-  hojas: "",
-  flor: "",
-  frutos: "",
-  semillas: "",
-  tallo: "",
-  raiz: "",
+  code_specie: "",
+  vernacularName: "",
+  otherNames: "",
+  scientificName: "",
+  scientificNameAuthorship: "",
+  kingdom: "",
+  phylum: "",
+  clas: "",
+  order: "",
+  family: "",
+  genus: "",
+  habit: "",
+  descriptionGeneral: "",
+  leaves: "",
+  flowers: "",
+  fruits: "",
+  seeds: "",
+  specificEpithet: "",
+  infraspecificEpithet: "",
+  taxonRank: "",
+  taxon_key: "",
   imageInputGeneral: "",
   imageInputLeaf: "",
   imageInputFlower: "",
@@ -72,57 +77,25 @@ const readAndSetImage = (file, fieldName) => {
 };
 
 async function forestSpecieAdd() {
-  speciesStore.addForestSpecie(formData.value);
-  console.log("formData: ", formData.value);
-  modal.handleClickModalForestSpecieAdd();
+  try {
+    const response = await speciesStore.addForestSpecie(formData.value);
+    if (response.success) {
+      toast.activateToast(response.message, 'success');
+      resetForm();
+      modal.handleClickModalForestSpecieAdd();
+    } else {
+      toast.activateToast(response.errors.code_specie[0] || 'Error al agregar la especie', 'error');
+    }
+  } catch (error) {
+    toast.activateToast('Error al comunicarse con el servidor', 'error');
+  }
 }
 
-const adjustTextareaHeight = (event) => {
-  const textarea = event.target;
-  textarea.style.height = "auto";
-  textarea.style.height = textarea.scrollHeight + "px";
-};
-
-const initializeFormData = () => {
-  const selectedForestSpecie = speciesStore.specieSelected[0];
-  if (selectedForestSpecie) {
-    formData.value = {
-      cod_especie: selectedForestSpecie.cod_especie || "",
-      nom_comunes: selectedForestSpecie.nom_comunes || "",
-      otros_nombres: selectedForestSpecie.otros_nombres || "",
-      nombre_cientifico: selectedForestSpecie.nombre_cientifico || "",
-      sinonimos: selectedForestSpecie.sinonimos || "",
-      familia: selectedForestSpecie.familia || "",
-      distribucion: selectedForestSpecie.distribucion || "",
-      habito: selectedForestSpecie.habito || "",
-      follaje: selectedForestSpecie.follaje || "",
-      forma_copa: selectedForestSpecie.forma_copa || "",
-      tipo_hoja: selectedForestSpecie.tipo_hoja || "",
-      disposicion_hojas: selectedForestSpecie.disposicion_hojas || "",
-      hojas: selectedForestSpecie.hojas || "",
-      flor: selectedForestSpecie.flor || "",
-      frutos: selectedForestSpecie.frutos || "",
-      semillas: selectedForestSpecie.semillas || "",
-      tallo: selectedForestSpecie.tallo || "",
-      raiz: selectedForestSpecie.raiz || "",
-    };
-  }
-};
-
-onMounted(() => {
-  // Ajusta la altura inicial de los textareas
-  const textareas = document.querySelectorAll(".auto-resize-textarea");
-  textareas.forEach((textarea) => {
-    adjustTextareaHeight({ target: textarea });
+function resetForm() {
+  Object.keys(formData.value).forEach(key => {
+    formData.value[key] = "";
   });
-});
-
-watch(
-  () => speciesStore.specieSelected,
-  () => {
-    initializeFormData();
-  }
-);
+}
 
 //mostrar u ocultar detalles de las listas
 function toggleDetalles(idLista) {
@@ -134,6 +107,14 @@ function toggleDetalles(idLista) {
 <template>
   <div class="modal" v-if="modal.modalForestSpecieAdd">
     <div class="modal__contenido">
+      <div @click="modal.handleClickModalForestSpecieAdd(); resetForm()"
+              class="button__modal--close">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                stroke="currentColor" class="w-6 h-6">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                  d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+              </svg>
+            </div>
       <!-- modal encabezado -->
       <div class="modal__encabezado">
         <div class="modal__imagen">
@@ -147,7 +128,7 @@ function toggleDetalles(idLista) {
         <div class="formulario__campo">
           <label for="codigo" class="formulario__label">Código especie:</label>
           <input
-            v-model="formData.cod_especie"
+            v-model="formData.code_specie"
             id="codigo"
             type="text"
             class="formulario__input"
@@ -157,20 +138,8 @@ function toggleDetalles(idLista) {
         <div class="formulario__campo">
           <label for="comun" class="formulario__label">Nombre Común:</label>
           <input
-            v-model="formData.nom_comunes"
+            v-model="formData.vernacularName"
             id="comun"
-            type="text"
-            class="formulario__input"
-            required
-          />
-        </div>
-        <div class="formulario__campo">
-          <label for="cientifico" class="formulario__label"
-            >Nombre científico:</label
-          >
-          <input
-            v-model="formData.nombre_cientifico"
-            id="cientifico"
             type="text"
             class="formulario__input"
             required
@@ -180,28 +149,117 @@ function toggleDetalles(idLista) {
         <div class="formulario__campo">
           <label for="otros" class="formulario__label">Otros Nombres:</label>
           <input
-            v-model="formData.otros_nombres"
+            v-model="formData.otherNames"
             id="otros"
             type="text"
             class="formulario__input"
           />
         </div>
+
+        <div class="formulario__campo">
+          <label for="cientifico" class="formulario__label"
+            >Nombre científico:</label
+          >
+          <input
+            v-model="formData.scientificName"
+            id="cientifico"
+            type="text"
+            class="formulario__input"
+            required
+          />
+        </div>
+
+        <div class="formulario__campo">
+          <label for="autor_cientifico" class="formulario__label"
+            >Nombre Autor:</label
+          >
+          <input
+            v-model="formData.scientificNameAuthorship"
+            id="autor_cientifico"
+            type="text"
+            class="formulario__input"
+            required
+          />
+        </div>
+
         <div class="formulario__campo">
           <label for="familia" class="formulario__label">Familia:</label>
           <input
-            v-model="formData.familia"
+            v-model="formData.family"
             id="familia"
             type="text"
             class="formulario__input"
           />
         </div>
+
         <div class="formulario__campo">
-          <label for="sinonimos" class="formulario__label">Sinónimos:</label>
+          <label for="kingdom" class="formulario__label">Reino:</label>
+          <input
+            v-model="formData.kingdom"
+            id="kingdom"
+            type="text"
+            class="formulario__input"
+          />
+        </div>
+
+        <div class="formulario__campo">
+          <label for="phylum" class="formulario__label">Filo:</label>
+          <input
+            v-model="formData.phylum"
+            id="phylum"
+            type="text"
+            class="formulario__input"
+          />
+        </div>
+
+        <div class="formulario__campo">
+          <label for="clas" class="formulario__label">Clase:</label>
+          <input
+            v-model="formData.clas"
+            id="clas"
+            type="text"
+            class="formulario__input"
+          />
+        </div>
+
+        <div class="formulario__campo">
+          <label for="order" class="formulario__label">Orden:</label>
+          <input
+            v-model="formData.order"
+            id="order"
+            type="text"
+            class="formulario__input"
+          />
+        </div>
+
+        <div class="formulario__campo">
+          <label for="genus" class="formulario__label">Genero:</label>
+          <input
+            v-model="formData.genus"
+            id="genus"
+            type="text"
+            class="formulario__input"
+          />
+        </div>
+
+        <div class="formulario__campo">
+          <label for="habit" class="formulario__label">Habito:</label>
+          <select name="habit" id="habit" v-model="formData.habit" class="formulario__label">
+            <option value="" disabled selected>-- Seleccione --</option>
+            <option value="Árbol">Árbol</option>
+            <option value="Palma">Palma</option>
+          </select>
+        </div>
+
+        <div class="formulario__campo">
+          <label for="descriptionGeneral" class="formulario__label"
+            >Descripción general:</label
+          >
         </div>
         <div class="formulario__campo fomulario__campo--textarea">
           <textarea
-            v-model="formData.sinonimos"
-            id="sinonimos"
+            v-model="formData.descriptionGeneral"
+            id="descriptionGeneral"
             type="text"
             class="formulario__textarea"
           ></textarea>
@@ -252,63 +310,14 @@ function toggleDetalles(idLista) {
         </div>
         <!-- fin imagen general -->
         <div class="formulario__campo">
-          <label for="distribucion" class="formulario__label"
-            >Distribución:</label
-          >
-          <input
-            v-model="formData.distribucion"
-            id="distribucion"
-            type="text"
-            class="formulario__input"
-          />
-        </div>
-        <div class="formulario__campo">
-          <label for="habito" class="formulario__label">Hábito:</label>
-          <input
-            v-model="formData.habito"
-            id="habito"
-            type="text"
-            class="formulario__input"
-          />
-        </div>
-        <div class="formulario__campo">
-          <label for="follaje" class="formulario__label">Follaje:</label>
-          <input
-            v-model="formData.follaje"
-            id="follaje"
-            type="text"
-            class="formulario__input"
-          />
-        </div>
-
-        <div class="formulario__campo">
-          <label for="forma-copa" class="formulario__label">Forma copa:</label>
-          <input
-            v-model="formData.forma_copa"
-            id="foma-copa"
-            type="text"
-            class="formulario__input"
-          />
-        </div>
-        <div class="formulario__campo">
-          <label for="tipo-hoja" class="formulario__label">Tipo de hoja:</label>
-          <input
-            v-model="formData.tipo_hoja"
-            id="tipo-hoja"
-            type="text"
-            class="formulario__input"
-          />
-        </div>
-
-        <div class="formulario__campo">
-          <label for="hojas" class="formulario__label"
+          <label for="leaves" class="formulario__label"
             >Información de las hojas:</label
           >
         </div>
         <div class="formulario__campo fomulario__campo--textarea">
           <textarea
-            v-model="formData.hojas"
-            id="hojas"
+            v-model="formData.leaves"
+            id="leaves"
             type="text"
             class="formulario__textarea"
           ></textarea>
@@ -362,14 +371,14 @@ function toggleDetalles(idLista) {
         <!-- fin imagen hojas -->
 
         <div class="formulario__campo">
-          <label for="flor" class="formulario__label"
+          <label for="flowers" class="formulario__label"
             >Información de la flor:</label
           >
         </div>
         <div class="formulario__campo fomulario__campo--textarea">
           <textarea
-            v-model="formData.flor"
-            id="flor"
+            v-model="formData.flowers"
+            id="flowers"
             type="text"
             class="formulario__textarea"
           ></textarea>
@@ -422,14 +431,14 @@ function toggleDetalles(idLista) {
         </div>
         <!-- fin imagen flores -->
         <div class="formulario__campo">
-          <label for="frutos" class="formulario__label"
+          <label for="fruits" class="formulario__label"
             >Información de los frutos:</label
           >
         </div>
         <div class="formulario__campo fomulario__campo--textarea">
           <textarea
-            v-model="formData.frutos"
-            id="frutos"
+            v-model="formData.fruits"
+            id="fruits"
             type="text"
             class="formulario__textarea"
           ></textarea>
@@ -482,14 +491,14 @@ function toggleDetalles(idLista) {
         </div>
         <!-- fin imagen frutos -->
         <div class="formulario__campo">
-          <label for="semillas" class="formulario__label"
+          <label for="seeds" class="formulario__label"
             >Información de las semillas:</label
           >
         </div>
         <div class="formulario__campo fomulario__campo--textarea">
           <textarea
-            v-model="formData.semillas"
-            id="semillas"
+            v-model="formData.seeds"
+            id="seeds"
             type="text"
             class="formulario__textarea"
           ></textarea>
@@ -540,80 +549,47 @@ function toggleDetalles(idLista) {
             />
           </label>
         </div>
+
+        <div class="formulario__campo">
+          <label for="specificEpithet" class="formulario__label">Epíteto Específico:</label>
+          <input
+            v-model="formData.specificEpithet"
+            id="specificEpithet"
+            type="text"
+            class="formulario__input"
+          />
+        </div>
+
+        <div class="formulario__campo">
+          <label for="infraspecificEpithet" class="formulario__label">Epíteto Infragenérico:</label>
+          <input
+            v-model="formData.infraspecificEpithet"
+            id="infraspecificEpithet"
+            type="text"
+            class="formulario__input"
+          />
+        </div>
+
+        <div class="formulario__campo">
+          <label for="taxonRank" class="formulario__label">Categoría del Taxón:</label>
+          <input
+            v-model="formData.taxonRank"
+            id="taxonRank"
+            type="text"
+            class="formulario__input"
+          />
+        </div>
+
+        <div class="formulario__campo">
+          <label for="taxon_key" class="formulario__label">Identificador GBIF:</label>
+          <input
+            v-model="formData.taxon_key"
+            id="taxon_key"
+            type="text"
+            class="formulario__input"
+          />
+        </div>
         <!-- fin imagen semillas -->
-        <div class="formulario__campo">
-          <label for="tallo" class="formulario__label"
-            >Información del tallo:</label
-          >
-        </div>
-        <div class="formulario__campo fomulario__campo--textarea">
-          <textarea
-            v-model="formData.tallo"
-            id="tallo"
-            type="text"
-            class="formulario__textarea"
-          ></textarea>
-        </div>
-        <!-- imagen tallo -->
-        <div class="formulario__campo input__uploadImage">
-          <label for="fileInputTallo" class="formulario__label"
-            >Imagen tallo:</label
-          >
-          <label
-            for="fileInputTallo"
-            class="custom-file-upload"
-            @dragover.prevent
-            @drop.prevent="handleDrop"
-          >
-            <div class="drop-area" @dragover.prevent @drop.prevent="handleDrop">
-              <div
-                v-if="!formData.imageInputStem"
-                class="img__specieUploadPhoto"
-              >
-                <img
-                  src="/icons/icon_upload_photo.png"
-                  alt="Imagen de arrastre o clic"
-                  style="width: 50px; height: auto; margin-bottom: 5px"
-                />
-                <p style="padding: 0; margin: 0">
-                  Arrastra o selecciona un archivo
-                </p>
-              </div>
-              <div
-                v-if="formData.imageInputStem"
-                class="img__specieUploadPhotoSelect"
-              >
-                <img
-                  class="img_specie_selected"
-                  :src="formData.imageInputStem"
-                  alt="Imagen seleccionada"
-                />
-              </div>
-            </div>
-            <input
-              id="fileInputTallo"
-              type="file"
-              ref="imageInputStem"
-              accept="image/*"
-              @change="(e) => handleImageUpload(e, 'imageInputStem')"
-              @drop.prevent="(e) => handleDrop(e, 'imageInputStem')"
-            />
-          </label>
-        </div>
-        <!-- fin imagen tallo -->
-        <div class="formulario__campo">
-          <label for="raiz" class="formulario__label"
-            >Información de la raíz:</label
-          >
-        </div>
-        <div class="formulario__campo fomulario__campo--textarea">
-          <textarea
-            v-model="formData.raiz"
-            id="tallo"
-            type="text"
-            class="formulario__textarea"
-          ></textarea>
-        </div>
         <ul class="lista">
           <li class="opciones">
             <h2 class="card__titulo" @click="toggleDetalles('galeria')">
@@ -785,6 +761,52 @@ function toggleDetalles(idLista) {
                 </label>
               </div>
               <!-- fin imagen paisajistica 3 -->
+               <!-- imagen tallo -->
+              <div class="formulario__campo input__uploadImage">
+                <label for="fileInputTallo" class="formulario__label"
+                  >Imagen paisajistica 4:</label
+                >
+                <label
+                  for="fileInputTallo"
+                  class="custom-file-upload"
+                  @dragover.prevent
+                  @drop.prevent="handleDrop"
+                >
+                  <div class="drop-area" @dragover.prevent @drop.prevent="handleDrop">
+                    <div
+                      v-if="!formData.imageInputStem"
+                      class="img__specieUploadPhoto"
+                    >
+                      <img
+                        src="/icons/icon_upload_photo.png"
+                        alt="Imagen de arrastre o clic"
+                        style="width: 50px; height: auto; margin-bottom: 5px"
+                      />
+                      <p style="padding: 0; margin: 0">
+                        Arrastra o selecciona un archivo
+                      </p>
+                    </div>
+                    <div
+                      v-if="formData.imageInputStem"
+                      class="img__specieUploadPhotoSelect"
+                    >
+                      <img
+                        class="img_specie_selected"
+                        :src="formData.imageInputStem"
+                        alt="Imagen seleccionada"
+                      />
+                    </div>
+                  </div>
+                  <input
+                    id="fileInputTallo"
+                    type="file"
+                    ref="imageInputStem"
+                    accept="image/*"
+                    @change="(e) => handleImageUpload(e, 'imageInputStem')"
+                    @drop.prevent="(e) => handleDrop(e, 'imageInputStem')"
+                  />
+                </label>
+              </div>
             </div>
           </li>
         </ul>
@@ -792,7 +814,7 @@ function toggleDetalles(idLista) {
         <div class="formulario__botones">
           <button type="submit" class="formulario__boton">Guardar</button>
           <button
-            @click="modal.handleClickModalForestSpecieAdd()"
+            @click="modal.handleClickModalForestSpecieAdd(); resetForm()"
             type="button"
             class="formulario__boton formulario__boton--cerrar"
           >

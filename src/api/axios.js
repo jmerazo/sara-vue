@@ -18,27 +18,31 @@ const onRefreshed = (token) => {
 };
 
 api.interceptors.request.use(
-  async (config) => {
-    const csrfToken = getCookie('csrftoken');
-    if (csrfToken) {
-      config.headers['X-CSRFToken'] = csrfToken;
-    }
+  (config) => {
+    return new Promise((resolve, reject) => {
+      // Obtener el token CSRF si es necesario
+      const csrfToken = getCookie('csrftoken');
+      if (csrfToken) {
+        config.headers['X-CSRFToken'] = csrfToken;
+      }
 
-    // Esperar a que Firebase inicialice
-    await new Promise((resolve) => {
-      const unsubscribe = auth.onAuthStateChanged((user) => {
+      // Esperar a que Firebase inicialice
+      const unsubscribe = auth.onAuthStateChanged(async (user) => {
         unsubscribe();
-        resolve();
+
+        if (user) {
+          try {
+            const token = await user.getIdToken(true);
+            config.headers['Authorization'] = `Bearer ${token}`;
+          } catch (error) {
+            console.error('Error obteniendo el token de Firebase:', error);
+            // Manejar el error si es necesario
+          }
+        }
+
+        resolve(config);
       });
     });
-
-    const user = auth.currentUser;
-    if (user) {
-      const token = await user.getIdToken(true);
-      config.headers['Authorization'] = `Bearer ${token}`;
-    }
-
-    return config;
   },
   (error) => {
     return Promise.reject(error);

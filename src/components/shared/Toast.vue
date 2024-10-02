@@ -24,7 +24,7 @@ const store = useToastStore()
     position: fixed;
     top: 12%;
     right: -1200px;
-    z-index: 10;
+    z-index: 100000;
     box-shadow: 0px 10px 15px -3px rgba(0,0,0,0.1);
     transition: all .3s ease-in-out;
 }

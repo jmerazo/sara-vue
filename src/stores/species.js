@@ -113,17 +113,28 @@ export const useEspeciesStore = defineStore('especies', () => {
     }
 
     async function deleteForestSpecie(pk) {
-      const indexToDelete = species.value.findIndex(item => item.ShortcutID === pk);
-    
+      const indexToDelete = species.value.findIndex(item => item.id === pk);    
       if (indexToDelete === -1) {
-        return { message: "Especie no encontrada" };
+        return { success: false, message: "Especie no encontrada" };
+      }    
+      try {
+        const response = await APIService.deleteSpecies(pk);  
+        if (response.status === 200 || response.status === 204) {
+          // La respuesta del APIService fue satisfactoria
+          species.value.splice(indexToDelete, 1); // Elimina el objeto del array
+          return response.data; // Retornamos los datos de la respuesta
+        } else {
+          return response.data; // Retornamos los datos de la respuesta para manejar el error
+        }
+      } catch (error) {    
+        if (error.response && error.response.data) {
+          // Si el error tiene una respuesta con datos, la retornamos
+          return error.response.data;
+        } else {
+          return { success: false, error: 'Error al comunicarse con el servidor' }; // Retornamos un objeto con el mensaje de error
+        }
       }
-    
-      species.value.splice(indexToDelete, 1);
-      await APIService.deleteSpecies(pk);
-    
-      return { message: "Especie eliminada con éxito" };
-    }
+    }    
 
     function selectedForestSpecieUpdate(id) {
       specieSelected.value =  species.value.filter(especie => especie.id === id)
@@ -142,18 +153,24 @@ export const useEspeciesStore = defineStore('especies', () => {
 
     const addForestSpecie = async (data) => {
       try {
-        const response = await APIService.addForestSpecies(data);
-    
-        if (response.status === 200) {
+        const response = await APIService.addForestSpecies(data);    
+        if (response.status == 201) {
           // La respuesta del APIService fue satisfactoria
-          species.value.push(data); // Agrega el nuevo objeto al array
+          species.value.push(response.data.data); // Agrega el nuevo objeto al array
+          return response.data; // Retornamos los datos de la respuesta
         } else {
-          console.error('Error al agregar la especie: ', response.statusText);
+          console.error('Error al agregar la especie: ', response.data.message);
+          return response.data; // Retornamos los datos de la respuesta para manejar el error
         }
-      } catch (error) {
-        console.error('Error al comunicarse con el servidor: ', error);
+      } catch (error) {    
+        if (error.response && error.response.data) {
+          // Si el error tiene una respuesta con datos, la retornamos
+          return error.response.data;
+        } else {
+          return { error: 'Error al comunicarse con el servidor' }; // Retornamos un objeto con el mensaje de error
+        }
       }
-    };  
+    };         
 
     async function loadSpeciesSisa(){
       const responseSisa = await APIService.getSisa()
