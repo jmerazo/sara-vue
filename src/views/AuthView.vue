@@ -32,15 +32,38 @@ const handleLoginFirebase = async () => {
     const response = await store.loginFirebase(email.value, password.value, recaptchaToken);
 
     if (response.success) {
-      router.push({
-        name: "home-panel",
-      });
-      toast.activateToast('Bienvenido','success')
+      toast.activateToast('¡Bienvenido!', 'success');
+      router.push({ name: 'home-panel' });
     } else {
-      toast.activateToast('Usuario o credenciales inválidas', 'error')
+      // Mostrar el mensaje de error proveniente del backend si está disponible
+      const errorMessage = response.error || 'Usuario o credenciales inválidas';
+      toast.activateToast(errorMessage, 'error');
     }
   } catch (e) {
-    toast.activateToast('Hubo un error al iniciar sesión','error')
+    // Mostrar el mensaje de error proveniente del catch si está disponible
+    const errorMessage = e.message || 'Hubo un error al iniciar sesión';
+    toast.activateToast(errorMessage, 'error');
+  }
+};
+
+const loginSocial = async (provider) => {
+  try {
+    await recaptchaLoaded();
+    const recaptchaToken = await executeRecaptcha('login');
+    const result = await store.loginWithProvider(provider, recaptchaToken);
+
+    if (result.success) {
+      toast.activateToast('¡Bienvenido!', 'success');
+      router.push({ name: 'home-panel' });
+    } else {
+      // Mostrar el mensaje de error proveniente del backend si está disponible
+      const errorMessage = result.error || 'Error al iniciar sesión con el proveedor';
+      toast.activateToast(errorMessage, 'error');
+    }
+  } catch (error) {
+    // Mostrar el mensaje de error proveniente del catch si está disponible
+    const errorMessage = error.message || 'Hubo un error al iniciar sesión con el proveedor';
+    toast.activateToast(errorMessage, 'error');
   }
 };
 
@@ -138,18 +161,27 @@ async function handleSocialRegister(provider) {
     // Enviar datos directamente al backend
     try {
       const response = await usersStore.registerUser(socialUserData);
-      console.log('response view register ', response)
-      if(response.status === 201){
+      console.log('response view register ', response);
 
+      if (response.success) {
         router.push({ name: "signUpSuccess" });
-        toast.activateToast('Registro exitoso, completar perfil', 'success')
-        
+        toast.activateToast(response.message || 'Registro exitoso, completar perfil', 'success');
+      } else {
+        const errorMessage = response.message || 'Error en el registro con red social';
+        toast.activateToast(errorMessage, 'error');
       }
     } catch (error) {
-      toast.activateToast('Error en el registro con red social', 'error')
+      console.error('Error al registrar el usuario:', error);
+      toast.activateToast('Error en el registro con red social', 'error');
     }
   } catch (error) {
-    toast.activateToast('Error en la autenticación con red social', 'error')
+    if (error.code === 'auth/popup-closed-by-user') {
+      // El usuario cerró la ventana emergente, no mostrar error
+      console.log('La ventana de autenticación fue cerrada por el usuario.');
+    } else {
+      console.error('Error en la autenticación con red social:', error);
+      toast.activateToast('Error en la autenticación con red social', 'error');
+    }
   }
 }
 
@@ -201,6 +233,17 @@ function showLoginError(message) {
           </div>
           <p v-if="error" class="error">{{ error }}</p>
           <input type="submit" value="Ingresar" class="login__button solid">
+          <div class="content__registerOauth2">
+            <p>Iniciar sesión con:</p>
+            <div class="logos__container">
+              <div class="logo" @click="loginSocial('google')">
+                <img src="/icons/google.png" class="logos__oauth2" />
+              </div>
+              <div class="logo" @click="loginSocial('microsoft')">
+                <img src="/icons/outlook.png" class="logos__oauth2" />
+              </div>
+            </div>
+          </div>
         </form>
 
         <!-- form to sign out -->

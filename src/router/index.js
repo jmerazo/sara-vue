@@ -188,6 +188,11 @@ const router = createRouter({
           component: () => import("../views/dashboardviews/admin/UsersView.vue"),
         },
         {
+          path: "users-validate",
+          name: "users-validate",
+          component: () => import("../views/dashboardviews/admin/UsersValidateView.vue"),
+        },
+        {
           path: "species",
           name: "species",
           component: () => import("../views/dashboardviews/admin/ForestSpeciesView.vue"),

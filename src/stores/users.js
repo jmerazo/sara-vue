@@ -15,6 +15,7 @@ export const useUsersStore = defineStore("useUsersStore", () => {
   const cargando = ref(false)
   const noResultados = computed(() => users.value.length === 0 );
   const roles = ref([])
+  const usersValidate = ref([])
 
   // variables para paginación
   const currentPage = ref(1); // Página actual
@@ -34,6 +35,13 @@ export const useUsersStore = defineStore("useUsersStore", () => {
     totalUsers.value = usersOriginal.value.length;
     const response = await APIService.getRoles();
     roles.value = response.data;
+    cargando.value = false
+  }
+
+  const fetchUsersValidate = async () => {
+    cargando.value = true
+    const { data } = await APIService.usersValidate();
+    usersValidate.value = data.data.users;
     cargando.value = false
   }
 
@@ -81,18 +89,20 @@ export const useUsersStore = defineStore("useUsersStore", () => {
     }
   }  
   
-  async function registerUser (data, recaptcha_token) {
-    try{
-      const response = await APIService.registerUser(data, recaptcha_token)      
-      if (response.status === 201) {
-       /*  users.value.push(response.data); // Agrega el nuevo objeto al array
-        usersOriginal.value.push(response.data); */
-        return response; 
+  async function registerUser(data, recaptcha_token) {
+    try {
+      const response = await APIService.registerUser(data, recaptcha_token);
+  
+      if (response.data.success) {
+        // Registro exitoso
+        return response.data;
       } else {
-        console.error("Error al agregar el usuario: ", response.statusText);
+        // Manejar errores
+        return response.data;
       }
     } catch (error) {
-      console.error("Error al comunicarse con el servidor: ", error);
+      console.error("Error al comunicarse con el servidor:", error);
+      throw error;
     }
   }  
 
@@ -125,6 +135,13 @@ export const useUsersStore = defineStore("useUsersStore", () => {
     const start = (currentPage.value - 1) * itemsPerPage.value;
     const end = start + itemsPerPage.value;
     return users.value.slice(start, end);
+  });
+
+  // Calcula las especies a mostrar en la página actual
+  const displayedUsersValidate = computed(() => {
+    const start = (currentPage.value - 1) * itemsPerPage.value;
+    const end = start + itemsPerPage.value;
+    return usersValidate.value.slice(start, end);
   });
 
   //función para cambiar de página
@@ -175,7 +192,38 @@ export const useUsersStore = defineStore("useUsersStore", () => {
     return { message: "Usuario eliminado con éxito" };
   }
 
+  const userValidateAccept = async (user_id) => {
+    try {
+      const { data } = await APIService.usersValidateAccept(user_id);
+      if (data.success) {
+        // Actualiza el array de usuarios eliminando el usuario aceptado
+        usersValidate.value = usersValidate.value.filter(user => user.id !== user_id);
   
+        return { success: true, message: data.message };
+      } else {
+        return { success: false, message: data.message || 'Error al aceptar el usuario' };
+      }
+    } catch (error) {
+      return { success: false, message: error.response?.data?.message || 'Error en la solicitud al aceptar el usuario' };
+    }
+  };  
+  
+  const userValidateReject = async (user_id) => {
+    try {
+      const { data } = await APIService.usersValidateReject(user_id);
+      if (data.success) {
+        // Actualiza el array de usuarios eliminando el usuario rechazado
+        usersValidate.value = usersValidate.value.filter(user => user.id !== user_id);
+  
+        return { success: true, message: data.message };
+      } else {
+        return { success: false, message: data.message || 'Error al rechazar el usuario' };
+      }
+    } catch (error) {
+      return { success: false, message: error.response?.data?.message || 'Error en la solicitud al rechazar el usuario' };
+    }
+  };
+    
   return {
     currentPage,
     itemsPerPage,
@@ -198,6 +246,10 @@ export const useUsersStore = defineStore("useUsersStore", () => {
     roles,
     createUser,
     registerUser,
-    fetchUsers
+    fetchUsers,
+    fetchUsersValidate,
+    displayedUsersValidate,
+    userValidateAccept,
+    userValidateReject
   };
 });

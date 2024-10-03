@@ -225,6 +225,15 @@ export default {
     modulesUser(email) {
         return api.get('/users/modules', { params: { email }});
     },
+    usersValidate(){
+        return api.get('/users/validate/')
+    },
+    usersValidateAccept(user_id){
+        return api.put(`/users/validate/${user_id}`)
+    },
+    usersValidateReject(user_id){
+        return api.delete(`/users/validate/${user_id}`)
+    },
     /* ==================================================================================================================== */
     /* ==================================================================================================================== */
     // ENDPOINT →→ OTHERS
