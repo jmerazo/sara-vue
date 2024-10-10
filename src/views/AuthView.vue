@@ -155,7 +155,7 @@ async function handleSocialRegister(provider) {
       provider: provider,
       is_social_auth: true,
       department: 0,
-      city: 1128
+      city: 0
     };
 
     // Enviar datos directamente al backend

@@ -12,7 +12,7 @@ export const useHomeStore = defineStore('home', () => {
     const router = useRouter()
 
     const colaboradores = ref([
-        { enlace: 'https://minciencias.gov.co/', img: '/logos/mc-vida.png' },
+        { enlace: 'https://minciencias.gov.co/', img: '/logos/mc_vida.png' },
         { enlace: 'https://www.sgr.gov.co/', img: '/logos/sgr.png' },
         { enlace: 'https://www.putumayo.gov.co/index.php/mi-departamento/presentacion', img: '/logos/gp.png' },
         { enlace: 'https://itp.edu.co/ITP2022/', img: '/logos/itp.png' },

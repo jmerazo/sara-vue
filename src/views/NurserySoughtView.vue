@@ -18,8 +18,6 @@ const formData = ref({
   body: ''
 });
 
-
-
 const handleSubmit = async () => {
   try {
     const response = await nurseries.sendEmail(formData.value);
@@ -45,8 +43,6 @@ function showError(message) {
     duration: 3000
   });
 }
-
-
 </script>
 
 <template>

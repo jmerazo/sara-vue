@@ -107,6 +107,12 @@ function delUser(id, nu) {
   }
   usersStore.deleteUser(id);
 }
+
+function resetForm() {
+  Object.keys(formData.value).forEach(key => {
+    formData.value[key] = "";
+  });
+}
 </script>
 
 <template>
@@ -238,7 +244,7 @@ function delUser(id, nu) {
 
             </div>
 
-            <div @click="modal.handleClickModalUserUpdate(), limpiarModal()"
+            <div @click="modal.handleClickModalUserUpdate(), resetForm()"
               class="button__modal--close">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                 stroke="currentColor" class="w-6 h-6">

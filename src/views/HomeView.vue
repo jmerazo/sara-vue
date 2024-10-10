@@ -48,8 +48,6 @@ function contenidoResumido() {
 <template>
   <div>
     <Header />
-
-    <TopSpecies/>
     <!-- misión, visión y valores -->
     <section class="contenedor planificacion">
       <div class="planificacion__grid">
@@ -100,23 +98,41 @@ function contenidoResumido() {
               </p>
             </div>
           </div>
+          <div class="card" v-if="seccion.titulo === 'Objetivo'">
+            <div class="front" :style="{
+              backgroundImage:
+                'url(/img/backgroundCard/background-valores.jpeg)',
+            }">
+              <div class="front__content">
+                <p class="card__label">{{ seccion.titulo }}</p>
+              </div>
+            </div>
+            <div class="back">
+              <p class="card__text text__objective">
+                {{ seccion.descripcion }}
+              </p>
+            </div>
+          </div>
         </div>
       </div>
     </section>
 
+    <TopSpecies class="top__species"/>
 
-    <SliderGBIF />
+    <!-- <SliderGBIF />
 
     <FanPage />
 
-    <Financiers/>
+    <Financiers/> -->
     
   </div>
   <ButtonTop />
 </template>
 
 <style scoped>
-
+.top__species{
+  margin-bottom: 5rem;
+}
 
 /* MISION Y VISION */
 /* mision vision y valores */
@@ -163,6 +179,10 @@ function contenidoResumido() {
   transition: transform 0.9s;
   border-radius: 1rem;
   box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+.text__objective{
+  font-size: 0.8rem !important;
 }
 
 @media (min-width: 768px) {

@@ -53,7 +53,6 @@ async function userAdd() {
 
   try {
     const response = await usersStore.createUser(formData.value);
-    console.log('response add ', response);
 
     if (response.status === 201) {
       addToast(response.msg, { 

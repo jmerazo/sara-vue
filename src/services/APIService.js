@@ -228,8 +228,8 @@ export default {
     usersValidate(){
         return api.get('/users/validate/')
     },
-    usersValidateAccept(user_id){
-        return api.put(`/users/validate/${user_id}`)
+    usersValidateAccept(user_id, rol){
+        return api.put(`/users/validate/${user_id}`, { rol })
     },
     usersValidateReject(user_id){
         return api.delete(`/users/validate/${user_id}`)
@@ -251,6 +251,9 @@ export default {
     },
     sendEmail(data){
         return api.post(`/utils/send-email/`, data)
+    },
+    sendContactEmail(data){
+        return api.post(`/utils/contact/send-email/`, data)
     },
     /* ==================================================================================================================== */
     /* ==================================================================================================================== */
