@@ -32,9 +32,10 @@ const copyText = () => {
           :icon="['fas', 'circle-xmark']" /></span>
       <p class="modal__titulo">Cítese como</p>
       <p class="modal__texto">
-        Bernal, R., S.R. Gradstein & M. Celis (eds.). 2019. Sistema de
-        información de Arboles y plantas del Sur de la Amazonia colombiana,
-        Corpoamazonia, Bogotá. https://sara.amazoniaesenciadevida.com.co
+        Corpoamazonia (2024), Sistema de Información para la Administración 
+        y Manejo Sostenible de los Recursos Naturales del sur de la Amazonia 
+        colombiana (SARA), accedido el (fecha actualizada), 
+        https://sara.corpoamazonia.gov.co/
       </p>
       <button @click="() => {
         copyText();

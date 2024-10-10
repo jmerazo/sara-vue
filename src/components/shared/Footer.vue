@@ -8,7 +8,17 @@
           <div class="footer__logo">
             <img
               src="/logos/log_corpoamazonia_black.png"
-              alt="Logo de la empresa"
+              alt="Corpoamazonia"
+              class="footer__logos"
+            />
+            <img
+              src="/logos/sgr.png"
+              alt="Sistemas General de Regalías"
+              class="footer__logos"
+            />
+            <img
+              src="/logos/mc_vida.png"
+              alt="Ministerio de Ciencia Tecnología e Innovación"
             />
           </div>
           <!-- fin footer imagen -->
@@ -112,9 +122,29 @@
   margin: 2rem 0 0 0;
 }
 
-.footer__heading {
-  font-size: 1rem;
-  margin: 2rem 0 1rem 0;
+/* Estilos por defecto */
+.footer__logo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.footer__logos {
+  margin-bottom: 0.8rem;
+  max-width: 100%;
+  height: auto;
+}
+
+/* Media query para pantallas mayores o iguales a 1980px */
+@media (min-width: 1980px) {
+  .footer__logo {
+    flex-direction: row;
+    justify-content: center;
+  }
+
+  .footer__logos {
+    margin: 0 1rem;
+  }
 }
 
 .footer__texto {

@@ -13,6 +13,7 @@ export const usePageContent = defineStore('pageContent',()=>{
     const sectionData = ref([]);
     const sectionSelected = ref([]);
     const sectionSelectedView = ref([])
+    const loading = ref(false)
 
     const fetchData = async () => {
         if (contenidoNosotros.value.length === 0) {
@@ -123,7 +124,23 @@ export const usePageContent = defineStore('pageContent',()=>{
         
         return { message: "Sección eliminada con éxito" };
     }
-  
+
+    const sendContactEmail = async (data) => {
+        try {
+            loading.value = true
+            const response = await APIService.sendContactEmail(data);
+            loading.value = false
+            return response.data;  // Retorna la data tal como viene del backend
+        } catch (error) {
+            // Captura y retorna el error en caso de fallo
+            loading.value = false
+            if (error.response) {
+                return error.response.data;  // Maneja errores con respuesta del servidor
+            } else {
+                throw new Error('Error en la conexión');  // Error sin respuesta
+            }
+        }
+    };            
 
     return {
         informacionUsuario,
@@ -142,6 +159,8 @@ export const usePageContent = defineStore('pageContent',()=>{
         selectedSectionUpdate,
         sectionSelected,
         selectedSectionView,
-        sectionSelectedView
+        sectionSelectedView,
+        sendContactEmail,
+        loading
     }
 })

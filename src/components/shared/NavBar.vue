@@ -64,7 +64,7 @@ const nuevoEstilo = () => {
     <div id="navegacion" class="navegacion" :class="{ navegacion__show: navMovil }">
       <div class="navegacion__logo">
         <RouterLink :to="{ name: 'home' }">
-          <img src="/icons/sara.png" alt="Logotipo" />
+          <img src="/icons/sara.png" alt="Logotipo" class="logo__sara"/>
         </RouterLink>
       </div>
       <!-- barra de navegacion -->
@@ -220,10 +220,38 @@ const nuevoEstilo = () => {
 }
 
 .navegacion__logo {
-  max-width: 3.5rem;
+  position: relative;
+  padding: 0 6rem;
+  height: 3rem; /* Asegura que la barra no cambie de altura */
+  display: flex;
+  align-items: center; /* Centra el logo verticalmente */
+  overflow: visible; /* Permite que el logo se desborde */
+}
+
+img.logo__sara {
+  max-width: none;
+  display: inline-block;
+  width: 8rem;
+}
+
+.logo__sara {
+  height: auto; /* Aumenta la altura del logo */
+  width: 8rem !important; /* Mantiene la proporción del logo */
+  margin: 1rem;
+  position: absolute;
+  top: 80%;
+  transform: translateY(-50%); /* Asegura que el logo quede centrado */
+}
+
+/* .navegacion__logo {
+  max-width: 4.5rem;
   padding: 0;
   padding: 0 6rem;
 }
+
+.logo__sara{
+  max-width: 5rem;
+} */
 
 @media (min-width: 1820px) {
   .navegacion__link {

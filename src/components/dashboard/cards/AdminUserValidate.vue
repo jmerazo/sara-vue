@@ -1,9 +1,9 @@
 <script setup>
-import { defineProps } from 'vue';
-import { useUsersStore } from "@/stores/users";
+import { defineProps, ref } from 'vue';
+import { useUsersValidateStore } from "@/stores/dashboard/usersValidate";
 import { useToastStore } from '@/stores/toast';
 
-const usersStore = useUsersStore();
+const userValidateStore = useUsersValidateStore();
 const toast = useToastStore()
 
 const props = defineProps({
@@ -13,20 +13,21 @@ const props = defineProps({
   }
 });
 
+const formData = ref({
+  rol: ""
+})
+
 function acceptUser() {
   const confirmAccept = window.confirm("¿Estás seguro de que deseas aceptar a este usuario?");
   
   if (confirmAccept) {
-    usersStore.userValidateAccept(props.user.id).then(response => {
+    userValidateStore.userValidateAccept(props.user.id, formData.value.rol).then(response => {
       if (response.success) {
-        // Mostrar notificación de éxito
         toast.activateToast(response.message, 'success');
       } else {
-        // Mostrar notificación de error
         toast.activateToast(response.message, 'error');
       }
     }).catch(error => {
-      // Manejo de errores no esperados
       toast.activateToast('Error al procesar la solicitud: ' + error.message, 'error');
     });
   }
@@ -78,6 +79,13 @@ function formatDate(dateString) {
                 <p>{{ user.email }}</p>
                 <p>{{ formatDate(user.date_joined) }}</p>
             </div>
+        </div>
+        <div class="card__body select-container">
+          <label for="rol" class="form__modal--label">Asignar rol:</label>
+          <select name="rol" id="rol" class="form__modal--input" v-model="formData.rol">
+            <option value="" selected disabled>Seleccione un rol...</option>
+            <option v-for="r in userValidateStore.roles" :key="r.id" :value="r.id">{{ r.name }}</option>
+          </select>
         </div>
         <div class="card__footer">
             <div class="buttons">
@@ -188,5 +196,58 @@ button svg {
     width: 4.5rem;
     margin-bottom: -.40rem;
     margin-top: .8rem;
+}
+
+.select-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.form__modal--input {
+    width: 80%; /* Ajusta según el ancho deseado */
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-top: 0.5rem;
+}
+
+.card__footer {
+    background: var(--blanco);
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    padding: 10px;
+}
+
+.buttons {
+    display: flex;
+    gap: 10px;
+}
+
+button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 10%;
+    border: none;
+    cursor: pointer;
+}
+
+button svg {
+    width: 16px;
+    height: 16px;
+}
+
+.btn-success {
+    background-color: var(--primary);
+    color: white;
+}
+
+.btn-danger {
+    background-color: var(--rojo);
+    color: white;
 }
 </style>
