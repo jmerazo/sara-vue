@@ -57,57 +57,73 @@ function toggleDetalles(contenedor) {
           placeholder="Escríbe un término de búsqueda"
         />
       </div>
-      <div class="botones__descarga" v-if="displayedPageRange.length >= 1">
+      <div class="botones__descarga" v-if="report.monitoringData.length >= 1">
+        <!-- Descargar datos actuales en Excel -->
         <a
-          @click="
+          @click="report.downloadDataAll(false).then(() => {
             descargarExcels(
               report.datosImport,
               `Reporte general de monitoreos - ${obtenerFecha()}`
-            )
-          "
-          class="boton"
+            );
+          })"
+          class="boton tooltip"
           href="#"
-          ><font-awesome-icon
-            class="boton__excel"
-            :icon="['fas', 'file-excel']"
-        /></a>
+        >
+          <font-awesome-icon class="boton__excel" :icon="['fas', 'file-excel']" />
+          <span class="tooltip-text">Descargar los monitoreos actuales en Excel</span>
+        </a>
+
+        <!-- Descargar todos los datos en Excel -->
         <a
-          @click="
-            descargarPdfs(
+          @click="async () => {
+            await report.downloadDataAll(true);
+            descargarExcels(
               report.datosImport,
-              `Reporte general de monitoreos - ${obtenerFecha()}`,
-              8,
-              0
-            )
-          "
-          class="boton"
+              `Reporte general de monitoreos - ${obtenerFecha()}`
+            );
+          }"
+          class="boton tooltip"
           href="#"
-          ><font-awesome-icon class="boton__pdf" :icon="['fas', 'file-pdf']"
-        /></a>
+        >
+          <font-awesome-icon class="boton__excel__all" :icon="['fas', 'file-excel']" />
+          <span class="tooltip-text">Descargar todos los monitoreos en Excel</span>
+        </a>
       </div>
     </div>
     <hr />
     <LoadingData v-if="report.cargando" />
     <main class="monitoreos__grid">
       <div v-for="(monitoreo, index) in report.displayedData" :key="index">
-        <MonitoringCardVue
-          :monitoreo="monitoreo"
-          :index="index"
-        />
-      
+        <MonitoringCardVue :monitoreo="monitoreo" :index="index" />
       </div>
     </main>
     <!-- paginador -->
     <section class="paginador">
+      <div class="paginador__informacion">
+        <!-- Muestra la página actual y el total de páginas -->
+        Página {{ report.currentPage }} de {{ report.totalPages }}
+      </div>
+      
       <div class="paginador__botones">
+        <!-- Botón para ir al inicio -->
+        <button
+          class="paginador__boton paginador__boton--inicio"
+          v-if="report.currentPage > 1"
+          @click="report.changePage(1)"
+        >
+          <font-awesome-icon :icon="['fas', 'angles-left']" /> <!-- Icono de ir al inicio -->
+        </button>
+
+        <!-- Botón para ir a la página anterior -->
         <button
           class="paginador__boton paginador__boton--anterior"
           v-if="report.currentPage > 1"
           @click="report.changePage(report.currentPage - 1)"
         >
-          <font-awesome-icon :icon="['fas', 'angles-left']" />
+          <font-awesome-icon :icon="['fas', 'angle-left']" />
         </button>
 
+        <!-- Botones de página intermedia -->
         <button
           v-for="page in displayedPageRange"
           :key="page"
@@ -117,15 +133,27 @@ function toggleDetalles(contenedor) {
         >
           {{ page }}
         </button>
+        
+        <!-- Botón para ir a la página siguiente -->
         <button
           class="paginador__boton paginador__boton--siguiente"
           v-if="report.currentPage < report.totalPages"
           @click="report.changePage(report.currentPage + 1)"
         >
-          <font-awesome-icon :icon="['fas', 'angles-right']" />
+          <font-awesome-icon :icon="['fas', 'angle-right']" />
+        </button>
+
+        <!-- Botón para ir al final -->
+        <button
+          class="paginador__boton paginador__boton--final"
+          v-if="report.currentPage < report.totalPages"
+          @click="report.changePage(report.totalPages)"
+        >
+          <font-awesome-icon :icon="['fas', 'angles-right']" /> <!-- Icono de ir al final -->
         </button>
       </div>
     </section>
+
     <!--fin paginador -->
     <!-- texto validacion buscador -->
     <section class="validacion__contenido">
@@ -138,11 +166,11 @@ function toggleDetalles(contenedor) {
     </section>
     <!--fin texto validacion buscador -->
   </div>
-  <div
+  <!-- <div
       
       @click="report.selectMonitoring({},false)"
       class="agregar"
-    ></div>
+    ></div> -->
   <ModalFormMonitoring/>
 </template>
 
@@ -214,8 +242,52 @@ function toggleDetalles(contenedor) {
 .boton__excel {
   color: rgb(6, 114, 6);
 }
-.boton__pdf {
+.boton__excel__all {
   color: rgb(184, 50, 50);
+}
+
+.boton {
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
+}
+
+/* Estilo del tooltip */
+.tooltip .tooltip-text {
+  visibility: hidden;
+  width: 180px;
+  font-size: 1.2rem;
+  background-color: #333;
+  color: #fff;
+  text-align: center;
+  border-radius: 5px;
+  padding: 8px;
+  position: absolute;
+  z-index: 1;
+  bottom: 125%; /* Posición superior al botón */
+  left: 50%;
+  margin-left: -90px; /* Centrar el tooltip */
+  opacity: 0;
+  transition: opacity 0.3s;
+  pointer-events: none; /* Evita interferencias en el hover */
+}
+
+/* Flecha del tooltip */
+.tooltip .tooltip-text::after {
+  content: '';
+  position: absolute;
+  top: 100%; /* Alinear con el borde inferior del tooltip */
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: #333 transparent transparent transparent;
+}
+
+/* Mostrar el tooltip al pasar el cursor por encima */
+.boton:hover .tooltip-text {
+  visibility: visible;
+  opacity: 1;
 }
 /* seccion especie */
 

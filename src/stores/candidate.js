@@ -37,33 +37,13 @@ export const useGeoCandidateTrees = defineStore("geoCandidateTrees", () => {
 
   const fetchData = async (codeFilter = null) => {
     if (!isDataLoaded) {
+      // 1. Obtener datos iniciales
       const { data } = await APIService.getGeoCandidateTrees();
       geoCandidateData.value = data;
-      geoDataNew.value = data;
+      geoDataNew.value = data; // Datos iniciales para el mapa
       isDataLoaded = true;
-
-      // Filtrar datos únicos de taxon_key
-      const uniqueTaxonKeys = Array.from(
-        new Set(
-          geoCandidateData.value
-            .map(item => item.taxon_key) // Extraer taxon_key
-            .filter(taxonKey => taxonKey !== null && taxonKey !== undefined) // Filtrar valores no nulos y no indefinidos
-        )
-      );
-
-      // Verificar si hay taxonKeys únicos antes de llamar a fetchGBIFCoordinates
-      let gbifData = [];
-      if (uniqueTaxonKeys.length > 0) {
-        // Obtener datos de GBIF y conservar solo los campos necesarios
-        gbifData = await fetchGBIFCoordinates(uniqueTaxonKeys);
-      }
-
-      // Enriquecer los datos originales con las coordenadas obtenidas
-      enrichOriginalData(data, gbifData);
-      geoDataNew.value = geoEnrichData.value.concat(geoCandidateEnrichGBIFData.value);
-      combinedGeoData.value = geoDataNew.value;
-
-        
+  
+      // 2. Actualizar departamentos y ciudades si es necesario
       const defDep = [
         ...new Map(
           geoCandidateData.value.map((dp) => [dp.departamento, dp])
@@ -73,7 +53,7 @@ export const useGeoCandidateTrees = defineStore("geoCandidateTrees", () => {
         cod_especie: dp.cod_especie,
         departamento: dp.departamento,
       }));
-
+  
       const defCities = [
         ...new Map(
           geoCandidateData.value.map((ct) => [ct.municipio, ct])
@@ -83,17 +63,59 @@ export const useGeoCandidateTrees = defineStore("geoCandidateTrees", () => {
         cod_especie: ct.cod_especie,
         departamento: ct.departamento,
       }));
-
+  
+      // 3. Aplicar filtro si es necesario
       if (codeFilter) {
         filterGeo(null, null, codeFilter);
       } else {
-        geoDataNew.value = combinedGeoData.value;
+        geoDataNew.value = data; // Usamos los datos iniciales
       }
+  
+      // 4. Iniciar la obtención de datos de GBIF en segundo plano
+      fetchGBIFDataAndEnrich(codeFilter);
+  
     } else if (codeFilter) {
       // Si los datos ya están cargados, solo aplicar el filtro
       filterGeo(null, null, codeFilter);
     }
   };
+  
+  const fetchGBIFDataAndEnrich = async (codeFilter) => {
+    // Filtrar datos únicos de taxon_key
+    const uniqueTaxonKeys = Array.from(
+      new Set(
+        geoCandidateData.value
+          .map(item => item.taxon_key)
+          .filter(taxonKey => taxonKey !== null && taxonKey !== undefined)
+      )
+    );
+  
+    // Verificar si hay taxonKeys únicos antes de llamar a fetchGBIFCoordinates
+    if (uniqueTaxonKeys.length > 0) {
+      try {
+        // Obtener datos de GBIF sin bloquear (no usamos await aquí)
+        const gbifDataPromise = fetchGBIFCoordinates(uniqueTaxonKeys);
+  
+        // Cuando los datos de GBIF estén disponibles, enriquecer los datos originales
+        gbifDataPromise.then(gbifData => {
+          enrichOriginalData(geoCandidateData.value, gbifData);
+  
+          // Actualizar los datos combinados
+          geoDataNew.value = geoEnrichData.value.concat(geoCandidateEnrichGBIFData.value);
+          combinedGeoData.value = geoDataNew.value;
+  
+          // Aplicar filtro nuevamente si es necesario
+          if (codeFilter) {
+            filterGeo(null, null, codeFilter);
+          } else {
+            geoDataNew.value = combinedGeoData.value;
+          }
+        });
+      } catch (error) {
+        console.error('Error al obtener datos de GBIF:', error);
+      }
+    }
+  };  
 
   /* // Filtrar datos únicos de taxon_key
   const getUniqueTaxonKeys = (data) => {
@@ -128,7 +150,6 @@ export const useGeoCandidateTrees = defineStore("geoCandidateTrees", () => {
       try {
         const response = await fetch(`https://api.gbif.org/v1/occurrence/search?taxonKey=${taxonKey}&limit=100`);
   
-        // Verificar si la respuesta es válida antes de intentar convertirla en JSON
         if (!response.ok) {
           throw new Error(`Error en la solicitud: ${response.status} ${response.statusText}`);
         }
@@ -144,13 +165,12 @@ export const useGeoCandidateTrees = defineStore("geoCandidateTrees", () => {
         }));
       } catch (error) {
         console.error(`Error al obtener los datos de GBIF para taxonKey ${taxonKey}:`, error);
-        return [];  // Retornar un array vacío en caso de error para evitar que toda la cadena falle
+        return [];
       }
     });
   
-    const gbifData = await Promise.all(promises);
-  
-    return gbifData.flat();
+    const gbifDataArrays = await Promise.all(promises);
+    return gbifDataArrays.flat();
   }  
   
   function enrichOriginalData(originalData, gbifData) {
@@ -175,15 +195,15 @@ export const useGeoCandidateTrees = defineStore("geoCandidateTrees", () => {
     geoCandidateEnrichGBIFData.value = gbifData.map(gbifItem => {
       const originalItem = originalData.find(item => item.taxon_key === gbifItem.taxonKey);
       return {
-          codigo: originalItem ? originalItem.codigo : gbifItem.taxonKey, // Usar el código original si existe, sino usar taxonKey
-          nombre_cientifico: gbifItem.nombre_cientifico,
-          nombre_comun: originalItem.nombre_comun,
-          coordenadas: gbifItem.lat + ", " + gbifItem.lon,
-          taxon_key: gbifItem.taxonKey,
-          lat: gbifItem.lat,
-          lon: gbifItem.lon,
-          habito: originalItem.habito,
-          source: 'gbif',
+        codigo: originalItem ? originalItem.codigo : gbifItem.taxonKey,
+        nombre_cientifico: gbifItem.nombre_cientifico,
+        nombre_comun: originalItem ? originalItem.nombre_comun : gbifItem.nombre_comun,
+        coordenadas: gbifItem.lat + ", " + gbifItem.lon,
+        taxon_key: gbifItem.taxonKey,
+        lat: gbifItem.lat,
+        lon: gbifItem.lon,
+        habito: originalItem ? originalItem.habito : null,
+        source: 'gbif',
       };
     });
   }

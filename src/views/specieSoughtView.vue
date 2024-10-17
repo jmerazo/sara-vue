@@ -1,6 +1,6 @@
 <script setup>
 import { ref, onMounted, computed } from "vue";
-import { useRouter } from "vue-router";
+import { useRouter, useRoute } from "vue-router";
 import { getFullImageUrl } from "@/helpers/";
 import { obtenerFecha, formatSubtitle, formatList, formatListB } from "@/helpers";
 
@@ -10,8 +10,6 @@ import { PageFlip } from 'page-flip';
 //store
 import { useConsultaStore } from "@/stores/consulta";
 import { useGeoCandidateTrees } from "@/stores/candidate";
-import { useAverageSpecie } from "@/stores/average";
-import { useModalStore } from "@/stores/modal";
 
 //components
 import QuoteButton from "@/components/species/utils/QuoteButton.vue";
@@ -21,20 +19,18 @@ import ImageSlider from "@/components/species/utils/ImageSlider.vue";
 import LoadingData from "../components/shared/LoadingData.vue";
 import DownloadFile from '@/components/species/utils/DownloadFile.vue'
 
-//check to delete
-import ChartAverage from "@/components/species/charts/ChartAverage.vue";
-import ModalSpecieComponent from "@/components/species/modals/ModalSpecieComponent.vue";
-import FlowerCalendar from "@/components/species/calendars/FlowerCalendar.vue";
-import FruitCalendar from "@/components/species/calendars/FruitCalendar.vue";
-
 // Configurar el worker de PDF.js con la versión correcta
 GlobalWorkerOptions.workerSrc = 'https://unpkg.com/pdfjs-dist@2.16.105/build/pdf.worker.min.js';
 
 const router = useRouter();
+const route = useRoute();
+
+const props = defineProps({
+  code_specie: String
+});
 
 const specie = useConsultaStore();
 const geoStore = useGeoCandidateTrees();
-
 
 const codeFilter = specie.specie.code_specie;
 
@@ -162,27 +158,27 @@ const initPageFlip = () => {
   }
 };
 
-// Código ejecutado cuando el componente se monta
 onMounted(async () => {
-  
-  if (!specie.specie.code_specie) {
-    // Redirigir si no hay un código de especie
+  const code_specie = route.params.code_specie;
+  if (code_specie) {
+    await specie.consultSpecie(code_specie, "busqueda");    
+    if (!specie.specie || !specie.specie.code_specie) {
+      // Si no se encuentra la especie, redirige a la vista general de especies
+      router.push({ name: "especies" });
+      return;
+    }
+  } else {
     router.push({ name: "especies" });
     return;
   }
 
-  getFlipbookDimensions()
-
-  // Obtener la URL del PDF a partir de los datos de la especie
+  // Configuración del flipbook y carga del PDF
+  getFlipbookDimensions();
   const pdfUrl = getFullImageUrl(specie.specie.images[0].protocol);
-
-  // Convertir el PDF a imágenes
   await convertPdfToImages(pdfUrl);
-
-  // Inicializar PageFlip
   initPageFlip();
 
-  // Validar y cargar otras imágenes relacionadas con la especie
+  // Validación y carga de imágenes relacionadas con la especie
   geoStore.validateUrl([
     getFullImageUrl(specie.specie.images[0].img_general),
     getFullImageUrl(specie.specie.images[0].img_landscape_one),
@@ -191,10 +187,10 @@ onMounted(async () => {
     getFullImageUrl(specie.specie.images[0].img_leafs),
     getFullImageUrl(specie.specie.images[0].img_flowers),
     getFullImageUrl(specie.specie.images[0].img_fruits),
-  ])
+  ]);
 
   // Obtener datos geográficos y filtrar resultados
-  await geoStore.fetchData(codeFilter);
+  geoStore.fetchData(codeFilter);
   filteredData.value = geoStore.geoDataNew;
 });
 
@@ -205,7 +201,6 @@ const backgroundStyle = computed(() => {
 
 const getFlipbookDimensions = () => {
   const screenWidth = window.innerWidth;
-  console.log('screen', screenWidth)
   if (screenWidth <= 500) {
     // phone
     pageWidth.value = 600;

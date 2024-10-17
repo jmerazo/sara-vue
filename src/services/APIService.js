@@ -76,12 +76,6 @@ export default {
     getSpeciesData(){
         return api.get('/species/report/general')
     },
-    // Busca y retorn los individuos evaluados de cada especie en base a su nombre común -- http://localhost:8000/api/species/candidates/search/name_specie
-    lookCandidateSpecie(nombre_comun){
-        return api.get(`/species/candidates/search/${nombre_comun}`)
-    },
-
-
     /* ==================================================================================================================== */
     /* ==================================================================================================================== */
     // ENDPOINT →→ CANDIDATES TREES
@@ -104,13 +98,23 @@ export default {
     candidateExportXLSX(){
         return api.get('/candidates/export/all')
     },
+    // Busca y retorn los individuos evaluados de cada especie en base a su nombre común -- http://localhost:8000/api/species/candidates/search/name_specie
+    lookCandidateSpecie(code){
+        return api.get(`/candidates/search/${code}`)
+    },
     /* ==================================================================================================================== */
     /* ==================================================================================================================== */
     // ENDPOINT →→ MONITORING
     // (PROTECT) Retorna la cantidad mensual de monitoreos realizados, pendientes y total por municipios -- http://localhost:8000/api/monitoring/data
-    getMonitoringData(){
-        return api.get('/monitoring/report/data')
-    },
+    getMonitoringData(page = 1, pageSize = 50, searchTerm = '') {
+        return api.get('/monitoring', {
+          params: {
+            page: page,
+            page_size: pageSize,
+            search: searchTerm,  // Envía el término de búsqueda como parámetro
+          },
+        });
+    },              
     
     // (PROTECT) Retorna la cantidad mensual de monitoreos realizados, pendientes y total por municipios -- http://localhost:8000/api/monitoring/report/general/total
     getValuesByDepartment(){
@@ -134,6 +138,9 @@ export default {
     //returns users monitoring
     getUsersMonitoring(){
         return api.get('/property/users/monitoring')
+    },
+    downloadMonitoringAll(){
+        return api.get('/monitoring/report/data')
     },
     /* ==================================================================================================================== */
     /* ==================================================================================================================== */

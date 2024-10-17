@@ -41,6 +41,7 @@ const displayedPageRange = computed(() => {
 onMounted(async () => {
   scrollTop()
   await especies.loadSpeciesSisa();
+  await especies.loadAllSpecies();
 });
 
 

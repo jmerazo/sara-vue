@@ -25,26 +25,29 @@ export const useConsultaStore = defineStore("consulta", () => {
     cargando.value = false;
   }
 
-  //consultar por nombre común
-  async function consultSpecie(code_specie,queryPage) {
-    cargando.value = true;
-    const { data } = await APIService.lookSpecie(code_specie);
-    specie.value = data;
-    router.push("/busqueda")
-    // APIService.pageCountVisit(code_specie);
-    // console.log('dato de queryPage =',queryPage);
-    // if(queryPage === 'especies'){
-    //   router.push("/busqueda")
-    // }else{
-    //   router.push("/panel/panel-busqueda")
-    // }
+  async function consultSpecie(code_specie, queryPage) {
+    if (specie.value && specie.value.code_specie === code_specie) {
+      // Si la especie ya está cargada, no vuelve a consultar
+      router.push(queryPage === 'especies' ? "/busqueda" : "/panel/panel-busqueda");
+      return;
+    }
   
-    
+    cargando.value = true;
+    try {
+      const { data } = await APIService.lookSpecie(code_specie);
+      specie.value = data;
+    } catch (error) {
+      console.error("Error al cargar la especie:", error);
+    } finally {
+      cargando.value = false;
+    }
+  
+    router.push({ name: "busqueda", params: { code_specie } });
+  
     if (modal.modalSpecie) {
       modal.handleClickModalSpecie();
     }
-    cargando.value = false;
-  }
+  }  
 
   return {
     specie,

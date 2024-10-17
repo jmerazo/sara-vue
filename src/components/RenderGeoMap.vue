@@ -99,6 +99,7 @@ import treeIconGBIFPath from "/icons/icon_tree_pink.png";
 import treePalmIconGreenPath from "/icons/icon_tree_palm_green.png";
 import treePalmIconPinkPath from "/icons/icon_tree_palm_pink.png";
 import { useGeoCandidateTrees } from "../stores/candidate";
+import { defaults as defaultControls, Zoom } from 'ol/control';
 
 const geoStore = useGeoCandidateTrees();
 
@@ -238,10 +239,12 @@ function drawMap(perimeterCoordinates, vectorSource) {
   const newCenter = [center[0] - .3, center[1]]; // se crea esta variación para realizar el responsive
   mapInstance = new Map({
     target: mapContainer.value,
+    controls: [],
     layers: [
       new TileLayer({
         source: new OSM({
           opacity: 0.8,
+          attributions: null,
         }),
       }),
       geojsonLayer, // Añadir la capa GeoJSON aquí

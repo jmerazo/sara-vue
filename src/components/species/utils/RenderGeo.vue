@@ -99,7 +99,8 @@ const vectorLayer = new VectorLayer({
 function initMap(centerCoordinate) {
   map.value = new Map({
     target: mapContainer.value,
-    layers: [
+    controls: [],
+    layers: [ 
       new TileLayer({
         source: new OSM(),
       }),

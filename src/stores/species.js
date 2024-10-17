@@ -23,19 +23,30 @@ export const useEspeciesStore = defineStore('especies', () => {
     const itemsPerPage = ref(12); // Elementos por página
 
 
-    onMounted(async () => {
-      cargando.value = true
-      const { data } = await APIService.getSpecies();
-      species.value = data;
-      speciesOriginals.value = data;
-      const uniqueSpecies = [...new Map(data.map(specie => [specie.vernacularName, specie])).values()];
-      uniqueNomComunes.value = uniqueSpecies.map(specie => ({
-        vernacularName: specie.vernacularName,
-        nombre_cientifico: specie.nombre_cientifico,
-        code_specie: specie.code_specie,
-      }));
-      cargando.value = false
-    });
+    async function loadAllSpecies() {
+      if (speciesOriginals.value.length === 0) { // Solo carga si no hay datos
+        cargando.value = true;
+        try {
+          const { data } = await APIService.getSpecies();
+          species.value = data;
+          speciesOriginals.value = data;
+          const uniqueSpecies = [...new Map(data.map(specie => [specie.vernacularName, specie])).values()];
+          uniqueNomComunes.value = uniqueSpecies.map(specie => ({
+            vernacularName: specie.vernacularName,
+            nombre_cientifico: specie.nombre_cientifico,
+            code_specie: specie.code_specie,
+          }));
+        } catch (error) {
+          console.error("Error al cargar las especies:", error);
+        } finally {
+          cargando.value = false;
+        }
+      }
+    }
+    
+    function selectSpecieByCode(code_specie) {
+      specie.value = speciesOriginals.value.find(specie => specie.code_specie === code_specie);
+    }
 
     function cargarData() {
       species.value.forEach((dato) => {
@@ -201,6 +212,7 @@ export const useEspeciesStore = defineStore('especies', () => {
       loadSpeciesSisa,
       sisaList,
       goToFirstPage,
-      goToLastPage
+      goToLastPage,
+      loadAllSpecies
     };
 });

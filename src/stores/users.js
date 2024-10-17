@@ -19,6 +19,7 @@ export const useUsersStore = defineStore("useUsersStore", () => {
   // variables para paginación
   const currentPage = ref(1); // Página actual
   const itemsPerPage = ref(12); // Elementos por página
+  const maxVisiblePages = 5; // Número máximo de páginas visibles
 
   const fetchUsers = async () => {
     cargando.value = true
@@ -128,6 +129,36 @@ export const useUsersStore = defineStore("useUsersStore", () => {
     if (page >= 1 && page <= totalPages.value) {
       currentPage.value = page;
     }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  // Función para calcular el rango de páginas visibles
+  const displayedPageRange = computed(() => {
+    const half = Math.floor(maxVisiblePages / 2);
+    let start = Math.max(1, currentPage.value - half);
+    let end = Math.min(totalPages.value, currentPage.value + half);
+
+    // Ajusta el rango para que siempre tenga 10 páginas, si es posible
+    if (end - start + 1 < maxVisiblePages) {
+      if (currentPage.value < half + 1) {
+        end = Math.min(totalPages.value, start + maxVisiblePages - 1);
+      } else if (currentPage.value > totalPages.value - half) {
+        start = Math.max(1, end - maxVisiblePages + 1);
+      }
+    }
+
+    return Array.from({ length: end - start + 1 }, (_, i) => start + i);
+  });
+
+  // Funciones para ir a la primera y última página
+  function goToFirstPage() {
+    currentPage.value = 1;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function goToLastPage() {
+    currentPage.value = totalPages.value;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   //quitar los filtros del motor de busqueda
@@ -188,5 +219,8 @@ export const useUsersStore = defineStore("useUsersStore", () => {
     createUser,
     registerUser,
     fetchUsers,
+    goToFirstPage,
+    goToLastPage,
+    displayedPageRange
   };
 });

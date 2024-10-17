@@ -28,6 +28,7 @@ export const useSpecieMonitoring = defineStore("especieMonitoreo", () => {
       cargando.value = true;
       nombreEspecie.value = nombre_especie;
       const { data } = await APIService.lookMonitoringSpecie(cod_especie);
+      console.log('data mon ', data)
       monitoreosEspecie.value = data
       monitoreosEspecieOriginal.value = data
       ordenarPorFechas(monitoreosEspecie.value, 'fecha_monitoreo')
