@@ -1,17 +1,15 @@
 <script setup>
-import { computed, ref, onMounted } from "vue";
+import { computed, ref } from "vue";
 import { useRoute } from "vue-router"
 import { useModalStore } from "@/stores/modal";
 import { useEspeciesStore } from "@/stores/species";
-import { useConsultaStore } from "@/stores/consulta";
-import { useCalendarStore } from '@/stores/calendarMonitoring'
-import { getFullImageUrl, formatListB } from "@/helpers/";
+import { useConsultaStore } from "@/stores/consulta";import { getFullImageUrl} from "@/helpers/";
 const defaultImageUrl = '/img/sin_img.png';
 
 const modal = useModalStore();
 const species = useEspeciesStore();
 const consulta = useConsultaStore();
-const calendar = useCalendarStore()
+
 
 const route = useRoute();
 const queryPage = computed(() => route.name)
@@ -102,7 +100,7 @@ function parseData(text) {
             <p class="modal__texto">
               {{ specie.family }}
             </p>
-            <h3 class="modal__titulo modal__titulo-otros">Otros nombres:</h3>
+            <h3 class="modal_titulo modal_titulo-otros">Otros nombres:</h3>
 
             <div class="other__names">
               <div v-for="(item, index) in parseData(specie.otherNames)" :key="index">
@@ -426,14 +424,14 @@ function parseData(text) {
 
 
 
-.modal__info .other__names {
+.modal_info .other_names {
   height: 160px;
   display: grid;
   gap: .5rem;
   overflow-y: auto;
 }
 
-.modal__info .other__names div p {
+.modal_info .other_names div p {
   font-size: 1rem;
   line-height: 1;
   font-style: italic;

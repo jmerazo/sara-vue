@@ -560,10 +560,10 @@ form.form__sign-up {
 .forms form .form__field {
   max-width: 380px;
   width: 100%;
-  height: 44px;
+  height: 40px;
   background-color: #f0f0f0;
-  margin: 1rem 0;
-  border-radius: 44px;
+  margin: .6rem 0;
+  border-radius: 40px;
   display: grid;
   grid-template-columns: 15% 85%;
   padding: 0 .4rem;

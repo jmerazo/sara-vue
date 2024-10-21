@@ -19,12 +19,20 @@ export const usePageContent = defineStore('pageContent',()=>{
         if (contenidoNosotros.value.length === 0) {
             const { data } = await APIService.getPageContent()
             contenidoNosotros.value = data
+                    
             contenidoNosotros.value.forEach(seccion =>{
-                informacionUsuario.value.push({
-                    titulo: seccion.title,
-                    descripcion: seccion.content,
-                });
-            })  
+                if( seccion.title === 'Misión' || 
+                    seccion.title === 'Visión' || 
+                    seccion.title === 'Valores'||
+                    seccion.title === 'Objetivo'
+                ){
+                    informacionUsuario.value.push({
+                        titulo: seccion.title,
+                        descripcion: seccion.content,
+                    });
+                }
+            })
+              
         }      
     }
 
