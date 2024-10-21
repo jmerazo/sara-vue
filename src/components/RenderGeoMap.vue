@@ -57,25 +57,6 @@
         </p>
       </div>
     </div>
-    <div class="legend">
-      <h4>Leyenda</h4>
-      <div class="legend-item">
-        <img :src="treeIconPath" alt="Árbol Corpoamazonia" class="legend-icon">
-        <span>Árbol - Corpoamazonia</span>
-      </div>
-      <div class="legend-item">
-        <img :src="treePalmIconGreenPath" alt="Palma Corpoamazonia" class="legend-icon">
-        <span>Palma - Corpoamazonia</span>
-      </div>
-      <div class="legend-item">
-        <img :src="treeIconGBIFPath" alt="Árbol GBIF" class="legend-icon">
-        <span>Árbol - GBIF (Global Biodiversity Information Facility)</span>
-      </div>
-      <div class="legend-item">
-        <img :src="treePalmIconPinkPath" alt="Palma GBIF" class="legend-icon">
-        <span>Palma - GBIF (Global Biodiversity Information Facility)</span>
-      </div>
-    </div>
   </div>
 </template>
 

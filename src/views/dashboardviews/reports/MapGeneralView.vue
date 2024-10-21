@@ -4,6 +4,10 @@ import RenderGeo from "@/components/RenderGeoMap.vue";
 import { useGeoCandidateTrees } from "@/stores/candidate";
 import { useEspeciesStore } from "@/stores/species";
 import { locatesColombia } from "@/stores/locates";
+import treeIconPath from "/icons/icon_tree_green.png";
+import treeIconGBIFPath from "/icons/icon_tree_pink.png";
+import treePalmIconGreenPath from "/icons/icon_tree_palm_green.png";
+import treePalmIconPinkPath from "/icons/icon_tree_palm_pink.png";
 
 const locates = locatesColombia();
 const geoStore = useGeoCandidateTrees();
@@ -11,15 +15,15 @@ const species = useEspeciesStore();
 
 const renderGeoMapRef = ref(null);
 const codeFind = ref("");
-const department = ref({ code: "", name: "" });
+const department = ref({ id: "", name: "" });
 const city = ref("");
 const source = ref("")
 const currentSource = ref("");
 
 onMounted(async () => {
   await geoStore.fetchData(); // Cargar y enriquecer los datos
+  species.loadAllSpecies();
 });
-
 
 watch(
   () => source.value,
@@ -31,7 +35,7 @@ watch(
 
 watch(source, (newSource) => {
   if (newSource === 'gbif') {
-    department.value = { code: "", name: "" };
+    department.value = { id: "", name: "" };
     city.value = "";
   }
 });
@@ -43,18 +47,18 @@ function callOnlyPerimeter() {
 }
 
 const filterGeoData = () => {
-  geoStore.filterGeo(department.value.name, city.value, codeFind.value, source.value);
+  geoStore.filterGeo(department.value.id, city.value, codeFind.value, source.value);
   geoStore.calculatePerimeterCoordinates(
-    department.value.name,
+    department.value.id,
     city.value,
     codeFind.value
   );
 };
 
 const filteredCities = computed(() => {
-  if (department.value.code) {
+  if (department.value.id) {
     const filtered = locates.cities.filter(
-      (city) => city.department === department.value.code
+      (city) => city.department === department.value.id
     );
     return filtered;
   }
@@ -63,7 +67,7 @@ const filteredCities = computed(() => {
 
 function delParameters() {
   codeFind.value = "";
-  department.value = { code: "", name: "" };
+  department.value = { id: "", name: "" };
   city.value = "";
 }
 
@@ -106,13 +110,13 @@ function execDeleteParameter() {
             v-model="department"
             @change="filterGeoData"
           >
-            <option :value="{ code: '', name: '' }" disabled>
+            <option :value="{ id: '', name: '' }" disabled>
               Seleccione un departamento...
             </option>
             <option
               v-for="loc in locates.departments"
               :key="loc.id"
-              :value="{ code: loc.code, name: loc.name }"
+              :value="{ id: loc.id, name: loc.name }"
             >
               {{ loc.name }}
             </option>
@@ -132,7 +136,7 @@ function execDeleteParameter() {
               <option
                 v-for="city in filteredCities"
                 :key="city.id"
-                :value="city.name"
+                :value="city.id"
               >
                 {{ city.name }}
               </option>
@@ -151,7 +155,7 @@ function execDeleteParameter() {
             <option
               v-for="especie in species.uniqueNomComunes"
               :key="especie.cod_especie"
-              :value="especie.cod_especie"
+              :value="especie.code_specie"
             >
               {{ especie.vernacularName + " | " + especie.nombre_cientifico }}
             </option>
@@ -196,6 +200,25 @@ function execDeleteParameter() {
             </button>
           </div>
         </fieldset>
+        <div class="legend">
+
+        <div class="legend-item">
+          <img :src="treeIconPath" alt="Árbol Corpoamazonia" class="legend-icon">
+          <span>Árbol - Corpoamazonia</span>
+        </div>
+        <div class="legend-item">
+          <img :src="treePalmIconGreenPath" alt="Palma Corpoamazonia" class="legend-icon">
+          <span>Palma - Corpoamazonia</span>
+        </div>
+        <div class="legend-item">
+          <img :src="treeIconGBIFPath" alt="Árbol GBIF" class="legend-icon">
+          <span>Árbol - GBIF (Global Biodiversity Information Facility)</span>
+        </div>
+        <div class="legend-item">
+          <img :src="treePalmIconPinkPath" alt="Palma GBIF" class="legend-icon">
+          <span>Palma - GBIF (Global Biodiversity Information Facility)</span>
+        </div>
+        </div>
       </div>
       <div class="mapa" >
         <RenderGeo ref="renderGeoMapRef"/>
@@ -302,5 +325,31 @@ function execDeleteParameter() {
   .filtro__boton {
     font-size: 0.9rem;
   }
+}
+
+.legend {
+  margin-top: 10px;
+  padding: 15px;
+  background-color: rgba(255, 255, 255, 0.85);
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border: 1px solid var(--primary);
+}
+
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.legend-icon {
+  width: 24px;
+  height: 24px;
+  margin-right: 10px;
+}
+
+.legend-item span {
+  font-size: 1rem;
 }
 </style>

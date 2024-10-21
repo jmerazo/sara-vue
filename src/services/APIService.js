@@ -55,6 +55,12 @@ export default {
     lookSpecie(code){
         return api.get(`/species/search/code/${code}`) 
     },
+    specieGBIF(gbif){
+        return api.post(`/species/gbif/`, gbif) 
+    },
+    specieVerifyGBIF(gbif){
+        return api.post(`/species/gbif/verify/`, gbif) 
+    },
     // SUGGERTS OR FILTERS
     // Validar y eliminar -- http://localhost:8000/api/species/family/filter
     getFamilies(){

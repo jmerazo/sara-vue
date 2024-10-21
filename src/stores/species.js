@@ -42,7 +42,7 @@ export const useEspeciesStore = defineStore('especies', () => {
           cargando.value = false;
         }
       }
-    }
+    } 
     
     function selectSpecieByCode(code_specie) {
       specie.value = speciesOriginals.value.find(specie => specie.code_specie === code_specie);

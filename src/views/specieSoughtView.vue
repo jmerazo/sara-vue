@@ -31,29 +31,36 @@ const props = defineProps({
 
 const specie = useConsultaStore();
 const geoStore = useGeoCandidateTrees();
-
 const codeFilter = specie.specie.code_specie;
+console.log('specie ', specie)
 
 const filteredData = ref([]);
 
 const downloadsList = computed(() => {
   if (!specie.specie.code_specie) {
-    // if there is not specie go view species
+    // Si no existe la especie, redirige a la vista de especies
     router.push({ name: "especies" });
     return;
   } else {
-    return [
-      { title: "Protocolo para el manejo sostenible de la especie", url: getFullImageUrl(specie.specie.images[0].protocol), icon: "/icons/file_pdf.svg" },
-      { title: "Resolución de adopción del protocolo", url: getFullImageUrl(specie.specie.images[0].resolution_protocol), icon: "/icons/file_word.svg" },
-      { title: "Anexo 1 - Instrucciones para los interesados", url: getFullImageUrl(specie.specie.images[0].annex_one), icon: "/icons/file_pdf.svg" },
-      { title: "Anexo 2 - Instrucciones para los usuarios", url: getFullImageUrl(specie.specie.images[0].annex_two), icon: "/icons/file_pdf.svg" },
-      { title: "Formato para coordenadas del predio", url: getFullImageUrl(specie.specie.images[0].format_coordinates), icon: "/icons/file_excel.svg" },
-      { title: "Instructivo para el diligenciamiento de coordenadas", url: getFullImageUrl(specie.specie.images[0].intructive_coordinates), icon: "/icons/file_excel.svg" },
-      { title: "Formato para informe de inventario", url: getFullImageUrl(specie.specie.images[0].format_inventary), icon: "/icons/file_word.svg" },
-    ]
-  }
+    const documents = [
+      { title: "Protocolo para el manejo sostenible de la especie", url: getFullImageUrl(specie.specie.images[0]?.protocol), icon: "/icons/file_pdf.svg" },
+      { title: "Resolución de adopción del protocolo", url: getFullImageUrl(specie.specie.images[0]?.resolution_protocol), icon: "/icons/file_word.svg" },
+      { title: "Anexo 1 - Instrucciones para los interesados", url: getFullImageUrl(specie.specie.images[0]?.annex_one), icon: "/icons/file_pdf.svg" },
+      { title: "Anexo 2 - Instrucciones para los usuarios", url: getFullImageUrl(specie.specie.images[0]?.annex_two), icon: "/icons/file_pdf.svg" },
+      { title: "Formato para coordenadas del predio", url: getFullImageUrl(specie.specie.images[0]?.format_coordinates), icon: "/icons/file_excel.svg" },
+      { title: "Instructivo para el diligenciamiento de coordenadas", url: getFullImageUrl(specie.specie.images[0]?.intructive_coordinates), icon: "/icons/file_excel.svg" },
+      { title: "Formato para informe de inventario", url: getFullImageUrl(specie.specie.images[0]?.format_inventary), icon: "/icons/file_word.svg" },
+    ];
 
-})
+    // Filtrar documentos que no tienen URL (si son nulos o vacíos)
+    const filteredDocuments = documents.filter(doc => doc.url);
+
+    // Retornar los documentos o un mensaje de que no hay documentos disponibles
+    return filteredDocuments.length > 0 
+      ? filteredDocuments 
+      : [{ title: "No hay documentos disponibles", url: "", icon: "/icons/no_documents.svg" }];
+  }
+});
 
 const images = ref([]);
 const bookRef = ref(null);
@@ -190,8 +197,8 @@ onMounted(async () => {
   ]);
 
   // Obtener datos geográficos y filtrar resultados
-  geoStore.fetchData(codeFilter);
-  filteredData.value = geoStore.geoDataNew;
+  /* geoStore.fetchData(codeFilter);
+  filteredData.value = geoStore.geoDataNew; */
 });
 
 const backgroundStyle = computed(() => {
@@ -244,8 +251,8 @@ const getFlipbookDimensions = () => {
       </div>
 
       <div class="map" :class="{ 'show__content': navValue === 'map' }">
-        <LoadingData :color="'white'" v-if="filteredData.length <= 0" />
-        <RenderGeo v-if="filteredData.length > 0" :filteredData="filteredData" />
+        <LoadingData :color="'white'" v-if="!specie.specie.geo_data" />
+        <RenderGeo v-if="specie.specie.geo_data" :filteredData="specie.specie.geo_data" />
       </div>
 
       <div class="gallery" :class="{ 'show__content': navValue === 'gallery' }">

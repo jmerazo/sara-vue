@@ -19,6 +19,7 @@ import treePalmIconPinkPath from "/icons/icon_tree_palm_pink.png";
 const mapContainer = ref(null);
 const map = shallowRef(null);
 const { filteredData } = defineProps(['filteredData']);
+console.log('data render component ', filteredData)
 
 const geojsonSource = new VectorSource({
   url: '/geojson/export.geojson',
