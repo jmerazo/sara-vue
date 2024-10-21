@@ -12,7 +12,7 @@ const consulta = useCandidateStore();
     <div class="modal__contenido">
       <div class="modal__encabezado">
         <h2 class="modal__titulo">
-          Especie: <span>{{ consulta.nombreEspecie }}</span>
+          Especie: <span>{{ consulta.infoCandidato.vernacularName }}</span>
         </h2>
         <hr />
         <p class="modal__subtitulo">Datos del candidato</p>
@@ -66,24 +66,24 @@ const consulta = useCandidateStore();
         <div class="card">
           <p class="card__info">
             Altitud:
-            <span class="card__dato">{{ consulta.infoCandidato.altitud }}</span>
+            <span class="card__dato">{{ consulta.infoCandidato.minimumElevationInMeters }}</span>
           </p>
-          <p class="card__info">
-            Altura comercial:
-            <span class="card__dato">{{
-              consulta.infoCandidato.altura_comercial
-            }}</span>
-          </p>
-          <p class="card__info">
+          <!-- <p class="card__info">
             Altura total:
             <span class="card__dato">{{
               consulta.infoCandidato.altura_total
             }}</span>
-          </p>
+          </p> -->
           <p class="card__info">
             Cobertura:
             <span class="card__dato">{{
               consulta.infoCandidato.cobertura
+            }}</span>
+          </p>
+          <p class="card__info">
+            Entorno:
+            <span class="card__dato">{{
+              consulta.infoCandidato.entorno_individuo
             }}</span>
           </p>
           <p class="card__info">

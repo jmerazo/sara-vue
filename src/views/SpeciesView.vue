@@ -17,8 +17,6 @@ const valueSearched = ref("");
 const isSearching = computed(() => valueSearched.value !== "");
 const activeDownload = ref(false)
 
-
-
 //limpiar filtros antes de cambiar de vista
 onBeforeRouteLeave((to, from, next) => {
   especies.quitarFiltroEspecie();
@@ -41,6 +39,7 @@ const displayedPageRange = computed(() => {
 onMounted(async () => {
   scrollTop()
   await especies.loadSpeciesSisa();
+  await especies.loadAllSpecies();
 });
 
 

@@ -91,23 +91,68 @@ const displayedPageRange = computed(() => {
 
       <!-- paginador -->
       <section class="paginador">
-        <div class="paginador__botones">
-          <button class="paginador__boton paginador__boton--anterior" v-if="usersStore.currentPage > 1"
-            @click="usersStore.changePage(usersStore.currentPage - 1)">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M4.83578 12L11.0429 18.2071L12.4571 16.7929L7.66421 12L12.4571 7.20712L11.0429 5.79291L4.83578 12ZM10.4857 12L16.6928 18.2071L18.107 16.7929L13.3141 12L18.107 7.20712L16.6928 5.79291L10.4857 12Z"></path></svg>
-          </button>
+        <div class="paginador__content">
+          <div class="paginador__botones">
+            <!-- Botón "Ir al inicio" -->
+            <button 
+              class="paginador__boton" 
+              @click="usersStore.goToFirstPage" 
+              v-if="usersStore.currentPage > 1"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M4.83578 12L11.0429 18.2071L12.4571 16.7929L7.66421 12L12.4571 7.20712L11.0429 5.79291L4.83578 12ZM10.4857 12L16.6928 18.2071L18.107 16.7929L13.3141 12L18.107 7.20712L16.6928 5.79291L10.4857 12Z"></path>
+              </svg>
+            </button>
+            
+            <!-- Botón de página anterior -->
+            <button 
+              class="paginador__boton paginador__boton--anterior" 
+              v-if="usersStore.currentPage > 1" 
+              @click="usersStore.changePage(usersStore.currentPage - 1)"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M11.8284 12.0005L14.6569 14.8289L13.2426 16.2431L9 12.0005L13.2426 7.75781L14.6569 9.17203L11.8284 12.0005Z"></path>
+              </svg>           
+            </button>
 
-          <button v-for="page in displayedPageRange" :key="page" @click="usersStore.changePage(page)"
-            class="paginador__boton" :class="{
-            'paginador__boton-actual': page === usersStore.currentPage,
-          }">
-            {{ page }}
-          </button>
-          <button class="paginador__boton paginador__boton--siguiente"
-            v-if="usersStore.currentPage < usersStore.totalPages"
-            @click="usersStore.changePage(usersStore.currentPage + 1)">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M19.1642 12L12.9571 5.79291L11.5429 7.20712L16.3358 12L11.5429 16.7929L12.9571 18.2071L19.1642 12ZM13.5143 12L7.30722 5.79291L5.89301 7.20712L10.6859 12L5.89301 16.7929L7.30722 18.2071L13.5143 12Z"></path></svg>
-          </button>
+            <!-- Botones de páginas numeradas -->
+            <button 
+              v-for="page in usersStore.displayedPageRange" 
+              :key="page" 
+              @click="usersStore.changePage(page)"
+              class="paginador__boton" 
+              :class="{ 'paginador__boton-actual': page === usersStore.currentPage }"
+            >
+              {{ page }}
+            </button>
+
+            <!-- Botón de página siguiente -->
+            <button 
+              class="paginador__boton paginador__boton--siguiente" 
+              v-if="usersStore.currentPage < usersStore.totalPages" 
+              @click="usersStore.changePage(usersStore.currentPage + 1)"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12.1717 12.0005L9.34326 9.17203L10.7575 7.75781L15.0001 12.0005L10.7575 16.2431L9.34326 14.8289L12.1717 12.0005Z"></path>
+              </svg> 
+            </button>
+
+            <!-- Botón "Ir al final" -->
+            <button 
+              class="paginador__boton" 
+              @click="usersStore.goToLastPage" 
+              v-if="usersStore.currentPage < usersStore.totalPages"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M19.1642 12L12.9571 5.79291L11.5429 7.20712L16.3358 12L11.5429 16.7929L12.9571 18.2071L19.1642 12ZM13.5143 12L7.30722 5.79291L5.89301 7.20712L10.6859 12L5.89301 16.7929L7.30722 18.2071L13.5143 12Z"></path>
+              </svg>
+            </button>
+
+          </div>
+          <!-- Indicador de página actual -->
+          <div class="paginador__info">
+            Página {{ usersStore.currentPage }} de {{ usersStore.totalPages }}
+          </div>
         </div>        
       </section>
 
@@ -137,6 +182,12 @@ const displayedPageRange = computed(() => {
 .reporte__heading {
   font-size: 1.1rem;
   margin: 2rem ;
+}
+
+.paginador__content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 @media (min-width: 768px) {
@@ -198,8 +249,6 @@ const displayedPageRange = computed(() => {
 .boton {
   font-size: 2rem;
 }
-
-
 
 .boton__excel {
   color: rgb(6, 114, 6);

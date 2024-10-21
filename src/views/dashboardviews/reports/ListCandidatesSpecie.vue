@@ -74,11 +74,11 @@ const displayedPageRange = computed(() => {
           <tr
             class="tabla__fila"
             v-for="candidato in consulta.displayedCandidates"
-            :key="candidato.ShortcutIDEV"
+            :key="candidato.id"
           >
             <td class="tabla__dato fecha">
               <span class="nombre__campo">Fecha evaluación: </span>
-              {{ candidato.fecha_evaluacion }}
+              {{ candidato.eventDate }}
             </td>
             <td class="tabla__dato">
               <span class="nombre__campo"># Placa: </span>
@@ -98,15 +98,15 @@ const displayedPageRange = computed(() => {
             </td>
             <td class="tabla__dato">
               <span class="nombre__campo">Departamento: </span>
-              {{ candidato.departamento }}
+              {{ candidato.departamento_name }}
             </td>
             <td class="tabla__dato">
               <span class="nombre__campo">Municipio: </span>
-              {{ candidato.municipio }}
+              {{ candidato.ciudad_name }}
             </td>
             <td class="tabla__dato tabla__botones">
               <button
-                @click="consulta.verMonitoreosCandidato(candidato.ShortcutIDEV)"
+                @click="consulta.verMonitoreosCandidato(candidato.id)"
                 class="tabla__boton"
               >
                 <font-awesome-icon :icon="['fas', 'eye']" /> Ver Monitoreos

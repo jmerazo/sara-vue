@@ -57,25 +57,6 @@
         </p>
       </div>
     </div>
-    <div class="legend">
-      <h4>Leyenda</h4>
-      <div class="legend-item">
-        <img :src="treeIconPath" alt="Árbol Corpoamazonia" class="legend-icon">
-        <span>Árbol - Corpoamazonia</span>
-      </div>
-      <div class="legend-item">
-        <img :src="treePalmIconGreenPath" alt="Palma Corpoamazonia" class="legend-icon">
-        <span>Palma - Corpoamazonia</span>
-      </div>
-      <div class="legend-item">
-        <img :src="treeIconGBIFPath" alt="Árbol GBIF" class="legend-icon">
-        <span>Árbol - GBIF (Global Biodiversity Information Facility)</span>
-      </div>
-      <div class="legend-item">
-        <img :src="treePalmIconPinkPath" alt="Palma GBIF" class="legend-icon">
-        <span>Palma - GBIF (Global Biodiversity Information Facility)</span>
-      </div>
-    </div>
   </div>
 </template>
 
@@ -99,6 +80,7 @@ import treeIconGBIFPath from "/icons/icon_tree_pink.png";
 import treePalmIconGreenPath from "/icons/icon_tree_palm_green.png";
 import treePalmIconPinkPath from "/icons/icon_tree_palm_pink.png";
 import { useGeoCandidateTrees } from "../stores/candidate";
+import { defaults as defaultControls, Zoom } from 'ol/control';
 
 const geoStore = useGeoCandidateTrees();
 
@@ -238,10 +220,12 @@ function drawMap(perimeterCoordinates, vectorSource) {
   const newCenter = [center[0] - .3, center[1]]; // se crea esta variación para realizar el responsive
   mapInstance = new Map({
     target: mapContainer.value,
+    controls: [],
     layers: [
       new TileLayer({
         source: new OSM({
           opacity: 0.8,
+          attributions: null,
         }),
       }),
       geojsonLayer, // Añadir la capa GeoJSON aquí

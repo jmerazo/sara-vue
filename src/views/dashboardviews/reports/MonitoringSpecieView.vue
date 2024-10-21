@@ -130,7 +130,7 @@ const displayedPageRange = computed(() => {
           <td class="tabla__dato" :class="{ sinInfo: !monitoreo.altura_comercial }">
             <span class="nombre__campo">Altura comerical: </span>{{
       monitoreo.altura_comercial
-        ? monitoreo.altura_comercial
+        ? monitoreo.altura_del_fuste
         : "Por evaluar"
     }}
           </td>

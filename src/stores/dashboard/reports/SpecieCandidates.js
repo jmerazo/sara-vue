@@ -26,13 +26,15 @@ export const useCandidateStore = defineStore("candidate", () => {
 
   const cargando = ref(false);
 
+
   //consultar candidatos de una especie
-  async function verCandidatosEspecie(nombre_comun) {
+  async function verCandidatosEspecie(code, vernacularName) {
     cargando.value = true;
-    nombreEspecie.value = nombre_comun;
-    const { data } = await APIService.lookCandidateSpecie(nombre_comun);
-    candidatosEspecie.value = data;
-    candidatosEspecieOriginal.value = data;
+    nombreEspecie.value = vernacularName;
+    const { data } = await APIService.lookCandidateSpecie(code);
+    console.log('data ', data)
+    candidatosEspecie.value = data.data;
+    candidatosEspecieOriginal.value = data.data;
     ordenarPorFechas(candidatosEspecie.value,'fecha_evaluacion')
     ordenarPorFechas(candidatosEspecieOriginal.value,'fecha_evaluacion')
     router.push("/panel/candidates-species");

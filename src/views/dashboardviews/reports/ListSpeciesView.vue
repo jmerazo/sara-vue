@@ -93,7 +93,7 @@ const getBackgroundImageStyle = (images) => {
               <div class="card__botones">
                 <button
                   class="boton__primario"
-                  @click="candidatos.verCandidatosEspecie(especie.vernacularName)"
+                  @click="candidatos.verCandidatosEspecie(especie.code_specie, especie.vernacularName)"
                 >
                   <font-awesome-icon :icon="['fas', 'leaf']" /> Ver candidatos
                 </button>

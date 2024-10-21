@@ -74,8 +74,8 @@ function toggleDetalles(idLista) {
         </div>
         <div class="card">
           <div
-            v-for="candidato in consulta.monitoreosCandidato"
-            :key="candidato.ShortcutIDEV"
+            v-for="candidato in consulta.monitoreosCandidato.data"
+            :key="candidato.id"
           >
             <ul class="lista__monitoreo">
               <li

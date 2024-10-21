@@ -1,6 +1,6 @@
 <script setup>
 import { ref, onMounted, computed } from "vue";
-import { useRouter } from "vue-router";
+import { useRouter, useRoute } from "vue-router";
 import { getFullImageUrl } from "@/helpers/";
 import { obtenerFecha, formatSubtitle, formatList, formatListB } from "@/helpers";
 
@@ -10,8 +10,6 @@ import { PageFlip } from 'page-flip';
 //store
 import { useConsultaStore } from "@/stores/consulta";
 import { useGeoCandidateTrees } from "@/stores/candidate";
-import { useAverageSpecie } from "@/stores/average";
-import { useModalStore } from "@/stores/modal";
 
 //components
 import QuoteButton from "@/components/species/utils/QuoteButton.vue";
@@ -21,43 +19,48 @@ import ImageSlider from "@/components/species/utils/ImageSlider.vue";
 import LoadingData from "../components/shared/LoadingData.vue";
 import DownloadFile from '@/components/species/utils/DownloadFile.vue'
 
-//check to delete
-import ChartAverage from "@/components/species/charts/ChartAverage.vue";
-import ModalSpecieComponent from "@/components/species/modals/ModalSpecieComponent.vue";
-import FlowerCalendar from "@/components/species/calendars/FlowerCalendar.vue";
-import FruitCalendar from "@/components/species/calendars/FruitCalendar.vue";
-
 // Configurar el worker de PDF.js con la versión correcta
 GlobalWorkerOptions.workerSrc = 'https://unpkg.com/pdfjs-dist@2.16.105/build/pdf.worker.min.js';
 
 const router = useRouter();
+const route = useRoute();
+
+const props = defineProps({
+  code_specie: String
+});
 
 const specie = useConsultaStore();
 const geoStore = useGeoCandidateTrees();
-
-
 const codeFilter = specie.specie.code_specie;
+console.log('specie ', specie)
 
 const filteredData = ref([]);
 
 const downloadsList = computed(() => {
   if (!specie.specie.code_specie) {
-    // if there is not specie go view species
+    // Si no existe la especie, redirige a la vista de especies
     router.push({ name: "especies" });
     return;
   } else {
-    return [
-      { title: "Protocolo para el manejo sostenible de la especie", url: getFullImageUrl(specie.specie.images[0].protocol), icon: "/icons/file_pdf.svg" },
-      { title: "Resolución de adopción del protocolo", url: getFullImageUrl(specie.specie.images[0].resolution_protocol), icon: "/icons/file_word.svg" },
-      { title: "Anexo 1 - Instrucciones para los interesados", url: getFullImageUrl(specie.specie.images[0].annex_one), icon: "/icons/file_pdf.svg" },
-      { title: "Anexo 2 - Instrucciones para los usuarios", url: getFullImageUrl(specie.specie.images[0].annex_two), icon: "/icons/file_pdf.svg" },
-      { title: "Formato para coordenadas del predio", url: getFullImageUrl(specie.specie.images[0].format_coordinates), icon: "/icons/file_excel.svg" },
-      { title: "Instructivo para el diligenciamiento de coordenadas", url: getFullImageUrl(specie.specie.images[0].intructive_coordinates), icon: "/icons/file_excel.svg" },
-      { title: "Formato para informe de inventario", url: getFullImageUrl(specie.specie.images[0].format_inventary), icon: "/icons/file_word.svg" },
-    ]
-  }
+    const documents = [
+      { title: "Protocolo para el manejo sostenible de la especie", url: getFullImageUrl(specie.specie.images[0]?.protocol), icon: "/icons/file_pdf.svg" },
+      { title: "Resolución de adopción del protocolo", url: getFullImageUrl(specie.specie.images[0]?.resolution_protocol), icon: "/icons/file_word.svg" },
+      { title: "Anexo 1 - Instrucciones para los interesados", url: getFullImageUrl(specie.specie.images[0]?.annex_one), icon: "/icons/file_pdf.svg" },
+      { title: "Anexo 2 - Instrucciones para los usuarios", url: getFullImageUrl(specie.specie.images[0]?.annex_two), icon: "/icons/file_pdf.svg" },
+      { title: "Formato para coordenadas del predio", url: getFullImageUrl(specie.specie.images[0]?.format_coordinates), icon: "/icons/file_excel.svg" },
+      { title: "Instructivo para el diligenciamiento de coordenadas", url: getFullImageUrl(specie.specie.images[0]?.intructive_coordinates), icon: "/icons/file_excel.svg" },
+      { title: "Formato para informe de inventario", url: getFullImageUrl(specie.specie.images[0]?.format_inventary), icon: "/icons/file_word.svg" },
+    ];
 
-})
+    // Filtrar documentos que no tienen URL (si son nulos o vacíos)
+    const filteredDocuments = documents.filter(doc => doc.url);
+
+    // Retornar los documentos o un mensaje de que no hay documentos disponibles
+    return filteredDocuments.length > 0 
+      ? filteredDocuments 
+      : [{ title: "No hay documentos disponibles", url: "", icon: "/icons/no_documents.svg" }];
+  }
+});
 
 const images = ref([]);
 const bookRef = ref(null);
@@ -162,27 +165,27 @@ const initPageFlip = () => {
   }
 };
 
-// Código ejecutado cuando el componente se monta
 onMounted(async () => {
-  
-  if (!specie.specie.code_specie) {
-    // Redirigir si no hay un código de especie
+  const code_specie = route.params.code_specie;
+  if (code_specie) {
+    await specie.consultSpecie(code_specie, "busqueda");    
+    if (!specie.specie || !specie.specie.code_specie) {
+      // Si no se encuentra la especie, redirige a la vista general de especies
+      router.push({ name: "especies" });
+      return;
+    }
+  } else {
     router.push({ name: "especies" });
     return;
   }
 
-  getFlipbookDimensions()
-
-  // Obtener la URL del PDF a partir de los datos de la especie
+  // Configuración del flipbook y carga del PDF
+  getFlipbookDimensions();
   const pdfUrl = getFullImageUrl(specie.specie.images[0].protocol);
-
-  // Convertir el PDF a imágenes
   await convertPdfToImages(pdfUrl);
-
-  // Inicializar PageFlip
   initPageFlip();
 
-  // Validar y cargar otras imágenes relacionadas con la especie
+  // Validación y carga de imágenes relacionadas con la especie
   geoStore.validateUrl([
     getFullImageUrl(specie.specie.images[0].img_general),
     getFullImageUrl(specie.specie.images[0].img_landscape_one),
@@ -191,11 +194,11 @@ onMounted(async () => {
     getFullImageUrl(specie.specie.images[0].img_leafs),
     getFullImageUrl(specie.specie.images[0].img_flowers),
     getFullImageUrl(specie.specie.images[0].img_fruits),
-  ])
+  ]);
 
   // Obtener datos geográficos y filtrar resultados
-  await geoStore.fetchData(codeFilter);
-  filteredData.value = geoStore.geoDataNew;
+  /* geoStore.fetchData(codeFilter);
+  filteredData.value = geoStore.geoDataNew; */
 });
 
 const backgroundStyle = computed(() => {
@@ -205,7 +208,6 @@ const backgroundStyle = computed(() => {
 
 const getFlipbookDimensions = () => {
   const screenWidth = window.innerWidth;
-  console.log('screen', screenWidth)
   if (screenWidth <= 500) {
     // phone
     pageWidth.value = 600;
@@ -249,8 +251,8 @@ const getFlipbookDimensions = () => {
       </div>
 
       <div class="map" :class="{ 'show__content': navValue === 'map' }">
-        <LoadingData :color="'white'" v-if="filteredData.length <= 0" />
-        <RenderGeo v-if="filteredData.length > 0" :filteredData="filteredData" />
+        <LoadingData :color="'white'" v-if="!specie.specie.geo_data" />
+        <RenderGeo v-if="specie.specie.geo_data" :filteredData="specie.specie.geo_data" />
       </div>
 
       <div class="gallery" :class="{ 'show__content': navValue === 'gallery' }">
