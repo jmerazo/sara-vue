@@ -1,16 +1,17 @@
 <script setup>
-import { computed, ref, onMounted } from "vue";
+import { computed, ref } from "vue";
 import { useRoute } from "vue-router"
 import { useModalStore } from "@/stores/modal";
 import { useEspeciesStore } from "@/stores/species";
 import { useConsultaStore } from "@/stores/consulta";
-import { useCalendarStore } from '@/stores/calendarMonitoring'
-import { getFullImageUrl, formatListB } from "@/helpers/";
+
+import { getFullImageUrl} from "@/helpers/";
+const defaultImageUrl = '/img/sin_img.png';
 
 const modal = useModalStore();
 const species = useEspeciesStore();
 const consulta = useConsultaStore();
-const calendar = useCalendarStore()
+
 
 const route = useRoute();
 const queryPage = computed(() => route.name)
@@ -23,27 +24,24 @@ const verImg = (url) => {
   
   imageSelected.value = getFullImageUrl(url);
 };
-//calendar.calendarFlower()
-
 
 const limpiarModal = () => {
   imageSelected.value = null;
 };
 
 function parseData(text) {
-  const textFormatted = text.split(',')
-  const ArrayFinanciers = []
+  if (!text) return null;  // Verifica si 'text' es null, undefined o vacío.
+
+  const textFormatted = text.split(',');
+  const ArrayFinanciers = [];
+  
   textFormatted.forEach(item => {
     const newArray = item.split(':');
     ArrayFinanciers.push(newArray);
   });
 
   return ArrayFinanciers;
-  ;
 }
-
-
-
 </script>
 
 <template>
@@ -54,22 +52,35 @@ function parseData(text) {
         <div class="contenido__derecha">
           <div class="modal__flex">
             <div class="modal__imagen"
-              @click="verImg(specie.images[0].img_general)"
-              :style="{ backgroundImage: `url(${imageSelected ? imageSelected : getFullImageUrl(specie.images[0].img_general)})` }">
-              
+              @click="verImg(specie.images[0]?.img_general)"
+              :style="{ backgroundImage: `url(${imageSelected ? imageSelected : (specie.images[0]?.img_general ? getFullImageUrl(specie.images[0].img_general) : defaultImageUrl)})` }">
             </div>
            
             <div class="modal__iconos">
-              <img @click="verImg(specie.images[0].img_leafs)" class="modal__icono" src="/icons/hojas.png"
-                alt="img-icon" />
-              <img @click="verImg(specie.images[0].img_flowers)" class="modal__icono" src="/icons/flores.png"
-                alt="img-icon" />
-              <img @click="verImg(specie.images[0].img_fruits)" class="modal__icono" src="/icons/frutos.png"
-                alt="img-icon" />
-              <img @click="verImg(specie.images[0].img_seeds)" class="modal__icono" src="/icons/semillas.png"
-                alt="img-icon" />
-              <img @click="verImg(specie.images[0].img_stem)" class="modal__icono" src="/icons/tallo.png"
-                alt="img-icon" />
+              <img @click="verImg(specie.images[0]?.img_leafs ? specie.images[0].img_leafs : defaultImageUrl)" 
+                  class="modal__icono" 
+                  src="/icons/hojas.png" 
+                  alt="img-icon" />
+
+              <img @click="verImg(specie.images[0]?.img_flowers ? specie.images[0].img_flowers : defaultImageUrl)" 
+                  class="modal__icono" 
+                  src="/icons/flores.png" 
+                  alt="img-icon" />
+
+              <img @click="verImg(specie.images[0]?.img_fruits ? specie.images[0].img_fruits : defaultImageUrl)" 
+                  class="modal__icono" 
+                  src="/icons/frutos.png" 
+                  alt="img-icon" />
+
+              <img @click="verImg(specie.images[0]?.img_seeds ? specie.images[0].img_seeds : defaultImageUrl)" 
+                  class="modal__icono" 
+                  src="/icons/semillas.png" 
+                  alt="img-icon" />
+
+              <img @click="verImg(specie.images[0]?.img_stem ? specie.images[0].img_stem : defaultImageUrl)" 
+                  class="modal__icono" 
+                  src="/icons/tallo.png" 
+                  alt="img-icon" />
             </div>
           </div>
         </div>
@@ -91,7 +102,7 @@ function parseData(text) {
             <p class="modal__texto">
               {{ specie.family }}
             </p>
-            <h3 class="modal__titulo modal__titulo-otros">Otros nombres:</h3>
+            <h3 class="modal_titulo modal_titulo-otros">Otros nombres:</h3>
 
             <div class="other__names">
               <div v-for="(item, index) in parseData(specie.otherNames)" :key="index">
@@ -112,7 +123,7 @@ function parseData(text) {
           <div class="modal__botones">
             <div class="boton__container">
               <button type="button" class="boton__mas animacion"
-                @click="consulta.consultSpecie(specie.code_specie, queryPage), calendar.getCalendarSpecie(specie.code_specie), limpiarModal()">
+                @click="consulta.consultSpecie(specie.code_specie, queryPage), limpiarModal()">
                 <span>Ver Descripción completa</span>
               </button>
             </div>
@@ -415,14 +426,14 @@ function parseData(text) {
 
 
 
-.modal__info .other__names {
+.modal_info .other_names {
   height: 160px;
   display: grid;
   gap: .5rem;
   overflow-y: auto;
 }
 
-.modal__info .other__names div p {
+.modal_info .other_names div p {
   font-size: 1rem;
   line-height: 1;
   font-style: italic;

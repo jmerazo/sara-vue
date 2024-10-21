@@ -14,6 +14,7 @@ export const useCalendarStore = defineStore("species", () => {
       dataCalendar.value = data;
     } catch (error) {
       console.error("Error getting data:", error);
+      
     }
   });
 

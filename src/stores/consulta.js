@@ -12,7 +12,6 @@ export const useConsultaStore = defineStore("consulta", () => {
   const specie = ref({});
   const familia = ref({});
   const strFamilia = ref("");
-
   const cargando = ref(false);
 
   //consultar especie por familia
@@ -29,6 +28,7 @@ export const useConsultaStore = defineStore("consulta", () => {
   async function consultSpecie(code_specie,queryPage) {
     cargando.value = true;
     const { data } = await APIService.lookSpecie(code_specie);
+        
     specie.value = data;
     router.push("/busqueda")
     // APIService.pageCountVisit(code_specie);

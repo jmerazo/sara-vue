@@ -135,6 +135,7 @@ const convertPdfToImages = async (pdfUrl) => {
 }
 
 const initPageFlip = () => {
+
   try {
     pageFlip = new PageFlip(bookRef.value, {
       width: pageWidth.value,
@@ -192,7 +193,6 @@ onMounted(async () => {
     getFullImageUrl(specie.specie.images[0].img_flowers),
     getFullImageUrl(specie.specie.images[0].img_fruits),
   ])
-
   // Obtener datos geográficos y filtrar resultados
   await geoStore.fetchData(codeFilter);
   filteredData.value = geoStore.geoDataNew;
