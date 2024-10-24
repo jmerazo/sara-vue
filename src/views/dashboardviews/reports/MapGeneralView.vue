@@ -4,6 +4,7 @@ import RenderGeo from "@/components/RenderGeoMap.vue";
 import { useGeoCandidateTrees } from "@/stores/candidate";
 import { useEspeciesStore } from "@/stores/species";
 import { locatesColombia } from "@/stores/locates";
+import { useToastStore } from '@/stores/toast';
 import treeIconPath from "/icons/icon_tree_green.png";
 import treeIconGBIFPath from "/icons/icon_tree_pink.png";
 import treePalmIconGreenPath from "/icons/icon_tree_palm_green.png";
@@ -12,6 +13,7 @@ import treePalmIconPinkPath from "/icons/icon_tree_palm_pink.png";
 const locates = locatesColombia();
 const geoStore = useGeoCandidateTrees();
 const species = useEspeciesStore();
+const toast = useToastStore()
 
 const renderGeoMapRef = ref(null);
 const codeFind = ref("");
@@ -41,6 +43,10 @@ watch(source, (newSource) => {
 });
 
 function callOnlyPerimeter() {
+  if (!source.value || !department.value.id) {
+    toast.activateToast('Seleccione una fuente de datos y una localidad', 'danger');
+    return
+  }
   if (renderGeoMapRef.value && renderGeoMapRef.value.onlyPerimeter) {
     renderGeoMapRef.value.onlyPerimeter();
   }
@@ -69,10 +75,14 @@ function delParameters() {
   codeFind.value = "";
   department.value = { id: "", name: "" };
   city.value = "";
+  source.value = "";
 }
 
 function execDeleteParameter() {
-  source.value = "";
+  if (source.value === "" && department.value.id === "" && city.value === "" && codeFind.value === "") {
+    toast.activateToast('No hay parametros para eliminar.', 'danger');
+    return
+  }
   delParameters();
   geoStore.deleteFilterGeo();
 }

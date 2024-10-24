@@ -1,5 +1,5 @@
 <script setup>
-import { computed } from "vue";
+import { computed, onMounted } from "vue";
 import { onBeforeRouteLeave } from "vue-router";
 import { useEspeciesStore } from "@/stores/species";
 import { useCandidateStore } from "@/stores/dashboard/reports/SpecieCandidates";
@@ -18,6 +18,10 @@ const especieMonitoreos = useSpecieMonitoring();
 onBeforeRouteLeave((to, from, next) => {
   especies.quitarFiltroEspecie();
   next();
+});
+
+onMounted(async () => {
+  await especies.loadAllSpecies();
 });
 
 //botones paginador
@@ -121,12 +125,17 @@ const getBackgroundImageStyle = (images) => {
       <!-- paginador -->
       <section class="paginador">
         <div class="paginador__botones">
+          <button class="paginador__boton paginador__boton--inicio" v-if="especies.currentPage > 1"
+            @click="especies.goToFirstPage()">
+            <font-awesome-icon :icon="['fas', 'angle-double-left']" />
+          </button>
+
           <button
             class="paginador__boton paginador__boton--anterior"
             v-if="especies.currentPage > 1"
             @click="especies.changePage(especies.currentPage - 1)"
           >
-            <font-awesome-icon :icon="['fas', 'angles-left']" />
+            <font-awesome-icon :icon="['fas', 'angle-left']" />
           </button>
 
           <button
@@ -145,8 +154,17 @@ const getBackgroundImageStyle = (images) => {
             v-if="especies.currentPage < especies.totalPages"
             @click="especies.changePage(especies.currentPage + 1)"
           >
-            <font-awesome-icon :icon="['fas', 'angles-right']" />
+            <font-awesome-icon :icon="['fas', 'angle-right']" />
           </button>
+          <!-- Botón de final -->
+          <button class="paginador__boton paginador__boton--final" v-if="especies.currentPage < especies.totalPages"
+            @click="especies.goToLastPage()">
+            <font-awesome-icon :icon="['fas', 'angle-double-right']" />
+          </button>
+        </div>
+        <!-- Mostrar el total de páginas -->
+        <div class="paginador__info">
+          Página {{ especies.currentPage }} de {{ especies.totalPages }}
         </div>
       </section>
       <!--fin paginador -->
@@ -165,6 +183,12 @@ const getBackgroundImageStyle = (images) => {
 </template>
 
 <style scope>
+.paginador {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
 /* encabezado de la vista */
 .reporte__heading {
   font-size: 1.1rem;

@@ -254,7 +254,6 @@ export const useGeoCandidateTrees = defineStore("geoCandidateTrees", () => {
     let filteredData = geoCandidateData.value;
 
     if (source) {
-        console.log('Filtrando por source: ', source);
         filteredData = filteredData.filter(item => item.source === source);
     }
 
@@ -300,7 +299,7 @@ export const useGeoCandidateTrees = defineStore("geoCandidateTrees", () => {
   }
 
   function deleteFilterGeo() {
-    geoDataNew.value = combinedGeoData.value.map((item) => ({
+    geoDataNew.value = geoCandidateData.value.map((item) => ({
       lon: item.lon,
       lat: item.lat,
       nombre_comun: item.nombre_comun,

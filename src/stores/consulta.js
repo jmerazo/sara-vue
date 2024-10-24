@@ -53,7 +53,7 @@ export const useConsultaStore = defineStore("consulta", () => {
           if (diffDays > 30) {
               // Si han pasado más de 30 días, llamar a storeGBIFData
               if (data.taxon_key) {
-                  await storeGBIFData(data.taxon_key);
+                  storeGBIFData(data.taxon_key);
               }
           } else {
               console.log('No han pasado más de 30 días desde el último registro de GBIF, no se almacenan nuevos datos.');
@@ -61,7 +61,7 @@ export const useConsultaStore = defineStore("consulta", () => {
       } else {
           // Si no hay registros previos de GBIF, almacenar los datos de GBIF
           if (data.taxon_key) {
-              await storeGBIFData(data.taxon_key);
+              storeGBIFData(data.taxon_key);
           }
       }
     } catch (error) {

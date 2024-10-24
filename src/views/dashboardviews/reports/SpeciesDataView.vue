@@ -8,7 +8,6 @@ import { descargarExcel, descargarPdf, obtenerFecha } from "@/helpers";
 import LoadingData from "@/components/shared/LoadingData.vue";
 
 const especies = useEspeciesData();
-console.log('species ', especies)
 
 //limpiar filtros antes de cambiar de vista
 onBeforeRouteLeave((to, from, next) => {
@@ -99,9 +98,14 @@ const displayedPageRange = computed(() => {
     <!-- paginador -->
     <section class="paginador">
       <div class="paginador__botones">
+        <button class="paginador__boton paginador__boton--inicio" v-if="especies.currentPage > 1"
+          @click="especies.goToFirstPage()">
+          <font-awesome-icon :icon="['fas', 'angle-double-left']" />
+        </button>
+
         <button class="paginador__boton paginador__boton--anterior" v-if="especies.currentPage > 1"
           @click="especies.changePage(especies.currentPage - 1)">
-          <font-awesome-icon :icon="['fas', 'angles-left']" />
+          <font-awesome-icon :icon="['fas', 'angle-left']" />
         </button>
 
         <button v-for="page in displayedPageRange" :key="page" @click="especies.changePage(page)"
@@ -110,8 +114,18 @@ const displayedPageRange = computed(() => {
         </button>
         <button class="paginador__boton paginador__boton--siguiente" v-if="especies.currentPage < especies.totalPages"
           @click="especies.changePage(especies.currentPage + 1)">
-          <font-awesome-icon :icon="['fas', 'angles-right']" />
+          <font-awesome-icon :icon="['fas', 'angle-right']" />
         </button>
+
+        <!-- Botón de final -->
+        <button class="paginador__boton paginador__boton--final" v-if="especies.currentPage < especies.totalPages"
+          @click="especies.goToLastPage()">
+          <font-awesome-icon :icon="['fas', 'angle-double-right']" />
+        </button>
+      </div>
+      <!-- Mostrar el total de páginas -->
+      <div class="paginador__info">
+        Página {{ especies.currentPage }} de {{ especies.totalPages }}
       </div>
     </section>
     <!--fin paginador -->
@@ -281,5 +295,12 @@ const displayedPageRange = computed(() => {
 .card__dato,
 .card__descripcion {
   margin: 0;
+}
+
+.paginador {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
 }
 </style>

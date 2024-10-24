@@ -73,9 +73,13 @@ const customHeaders = [
     <!-- paginador -->
     <section class="paginador">
       <div class="paginador__botones">
+        <button class="paginador__boton paginador__boton--inicio" v-if="report.currentPage > 1"
+          @click="report.goToFirstPage()">
+          <font-awesome-icon :icon="['fas', 'angle-double-left']" />
+        </button>
         <button class="paginador__boton paginador__boton--anterior" v-if="report.currentPage > 1"
           @click="report.changePage(report.currentPage - 1)">
-          <font-awesome-icon :icon="['fas', 'angles-left']" />
+          <font-awesome-icon :icon="['fas', 'angle-left']" />
         </button>
 
         <button v-for="page in displayedPageRange" :key="page" @click="report.changePage(page)" class="paginador__boton"
@@ -84,9 +88,18 @@ const customHeaders = [
         </button>
         <button class="paginador__boton paginador__boton--siguiente" v-if="report.currentPage < report.totalPages"
           @click="report.changePage(report.currentPage + 1)">
-          <font-awesome-icon :icon="['fas', 'angles-right']" />
+          <font-awesome-icon :icon="['fas', 'angle-right']" />
         </button>
-      </div>
+        <!-- Botón de final -->
+        <button class="paginador__boton paginador__boton--final" v-if="report.currentPage < report.totalPages"
+            @click="report.goToLastPage()">
+            <font-awesome-icon :icon="['fas', 'angle-double-right']" />
+          </button>
+        </div>
+        <!-- Mostrar el total de páginas -->
+        <div class="paginador__info">
+          Página {{ report.currentPage }} de {{ report.totalPages }}
+        </div>
     </section>
     <!--fin paginador -->
     <!-- texto validacion buscador -->
@@ -102,6 +115,13 @@ const customHeaders = [
 </template>
 
 <style scoped>
+.paginador {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
 /* generales */
 .dato {
   font-weight: 900;

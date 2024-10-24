@@ -195,10 +195,6 @@ onMounted(async () => {
     getFullImageUrl(specie.specie.images[0].img_flowers),
     getFullImageUrl(specie.specie.images[0].img_fruits),
   ]);
-
-  // Obtener datos geográficos y filtrar resultados
-  /* geoStore.fetchData(codeFilter);
-  filteredData.value = geoStore.geoDataNew; */
 });
 
 const backgroundStyle = computed(() => {

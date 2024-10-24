@@ -103,8 +103,22 @@ export const useGeneralEvaluations = defineStore("generalEvaluations", () => {
   function changePage(page) {
     if (page >= 1 && page <= totalPages.value) {
       currentPage.value = page;
+      window.scrollTo({ top: 0, behavior: 'smooth' }); // Mueve la página al inicio
     }
   }
+
+  // Función para ir a la primera página
+  function goToFirstPage() {
+    currentPage.value = 1;
+    window.scrollTo({ top: 0, behavior: 'smooth' }); // Mueve la página al inicio
+  }
+
+  // Función para ir a la última página
+  function goToLastPage() {
+    currentPage.value = totalPages.value;
+    window.scrollTo({ top: 0, behavior: 'smooth' }); // Mueve la página al inicio
+  }
+
   //quitar los filtros del motor de busqueda
   function quitarFiltroBuscado() {
     if (evaluacionDataOriginal.value) {
@@ -121,6 +135,8 @@ export const useGeneralEvaluations = defineStore("generalEvaluations", () => {
     displayedData,
     changePage,
     buscarTermino,
-    quitarFiltroBuscado
+    quitarFiltroBuscado,
+    goToFirstPage,
+    goToLastPage
   };
 });
