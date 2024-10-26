@@ -1,8 +1,10 @@
 <script setup>
+
 import { ref, computed } from "vue";
 import { RouterLink, useRoute } from "vue-router";
 
 const route = useRoute();
+
 const paginaNoImage = computed(() =>
   route.name === "glossary"
   || route.name === "auth"
@@ -13,34 +15,40 @@ const paginaNoImage = computed(() =>
 );
 
 //mostrar barra lateral
-const navMovil = ref(true);
+const navMovil = ref(false);
 const mostrarNavMovil = () => {
-  navMovil.value = !navMovil.value;
-};
-
-window.addEventListener("scroll", function () {
-  nuevoEstilo();
-});
-
-const nuevoEstilo = () => {
-  var navegacion = document.querySelector(".navegacion");
-  var enlaces = document.querySelectorAll(".navegacion__enlace");
-
-  // Verifica si el elemento navegacion y los enlaces existen antes de acceder a sus propiedades
-  if (navegacion && enlaces.length > 0) {
-    if (window.scrollY > 70) {
-      navegacion.classList.add("background__ver");
-      enlaces.forEach(function (enlace) {
-        enlace.classList.add("cambiar__fuente");
-      });
-    } else {
-      navegacion.classList.remove("background__ver");
-      enlaces.forEach(function (enlace) {
-        enlace.classList.remove("cambiar__fuente");
-      });
-    }
+  const totalScreenWidth = window.innerWidth;
+  if (totalScreenWidth <= 992) {
+    navMovil.value = !navMovil.value;
   }
 };
+
+//validate scroll depending of page
+const isScroll = ref(false)
+window.addEventListener("scroll", function () {
+  isScroll.value = window.scrollY > 70
+});
+
+const colorLink = computed(() => {
+  if (navMovil.value) {
+    return '#fff';
+  }
+  if (isScroll.value) {
+    return '#1a2a35';
+  }
+  return paginaNoImage.value ? '#1a2a35' : '#fff';
+});
+
+const backgroundNav = computed(() => {
+  if (navMovil.value) {
+    return '#1a2a35';
+  }
+  if (isScroll.value) {
+    return '#fff'
+  }
+  return paginaNoImage.value ? '#fff' : 'none';
+})
+
 </script>
 
 <template>
@@ -61,38 +69,39 @@ const nuevoEstilo = () => {
     </div>
     <!--fin nav movil -->
 
-    <div id="navegacion" class="navegacion" :class="{ navegacion__show: navMovil }">
+    <div id="navegacion" class="navegacion" :class="{ navegacion__show: navMovil }"
+      :style="{ background: backgroundNav }">
       <div class="navegacion__logo">
         <RouterLink :to="{ name: 'home' }">
-          <img src="/icons/sara.png" alt="Logotipo" class="logo__sara"/>
+          <img src="/icons/sara.png" alt="Logotipo" class="logo__sara" :class="{ 'logo__sara--expand': isScroll }" />
         </RouterLink>
       </div>
       <!-- barra de navegacion -->
 
       <nav class="navegacion__barra">
-        <RouterLink :to="{ name: 'home' }" class="navegacion__enlace" :class="{ glosario: paginaNoImage }"
+        <RouterLink :to="{ name: 'home' }" class="navegacion__enlace" :style="{ color: colorLink }"
           @click="mostrarNavMovil">
           Inicio
         </RouterLink>
 
-        <RouterLink :to="{ name: 'especies' }" class="navegacion__enlace" :class="{ glosario: paginaNoImage }"
+        <RouterLink :to="{ name: 'especies' }" class="navegacion__enlace" :style="{ color: colorLink }"
           @click="mostrarNavMovil">
           Especies
         </RouterLink>
-        <RouterLink :to="{ name: 'familias' }" class="navegacion__enlace" :class="{ glosario: paginaNoImage }"
+        <RouterLink :to="{ name: 'familias' }" class="navegacion__enlace" :style="{ color: colorLink }"
           @click="mostrarNavMovil">
           Familias
         </RouterLink>
 
-        <RouterLink :to="{ name: 'glossary' }" class="navegacion__enlace" :class="{ glosario: paginaNoImage }"
+        <RouterLink :to="{ name: 'glossary' }" class="navegacion__enlace" :style="{ color: colorLink }"
           @click="mostrarNavMovil">
           Glosario
         </RouterLink>
-        <RouterLink :to="{ name: 'nurseries' }" class="navegacion__enlace" :class="{ glosario: paginaNoImage }"
+        <RouterLink :to="{ name: 'nurseries' }" class="navegacion__enlace" :style="{ color: colorLink }"
           @click="mostrarNavMovil">
           Viveros
         </RouterLink>
-        <RouterLink :to="{ name: 'aboutus' }" class="navegacion__enlace" :class="{ glosario: paginaNoImage }"
+        <RouterLink :to="{ name: 'aboutus' }" class="navegacion__enlace" :style="{ color: colorLink }"
           @click="mostrarNavMovil">
           Acerca de
         </RouterLink>
@@ -117,7 +126,7 @@ const nuevoEstilo = () => {
   z-index: 1000;
   position: fixed;
   padding: 0 0 1rem 0;
-  transition: 0.6s ease-in-out all;
+  transition: 0.3s ease-in-out all;
 }
 
 .navegacion__barra {
@@ -130,9 +139,8 @@ const nuevoEstilo = () => {
   .navegacion__barra {
     display: flex;
     flex-direction: column;
-    align-items: center;
     align-content: center;
-    gap: 0.3rem;
+    gap: 1rem;
   }
 }
 
@@ -171,6 +179,7 @@ const nuevoEstilo = () => {
     background: var(--gris);
     z-index: 1000;
   }
+
 }
 
 @media (max-width: 768px) {
@@ -196,7 +205,6 @@ const nuevoEstilo = () => {
   padding: 0.2rem;
   text-transform: uppercase;
   transition: background-color 0.3s;
-  color: var(--blanco);
 }
 
 .navegacion__enlace:hover {
@@ -207,51 +215,26 @@ const nuevoEstilo = () => {
   border-radius: 5px;
 }
 
-.navegacion__enlace--loging {
-  background-color: var(--primary);
-  border-radius: 5px;
-  color: var(--blanco);
-  padding: 0rem 0.3rem;
-  font-weight: 700;
-}
-
-.navegacion__enlace--loging:hover {
-  background-color: var(--primary-hover);
-}
-
 .navegacion__logo {
-  position: relative;
-  padding: 0 6rem;
-  height: 3rem; /* Asegura que la barra no cambie de altura */
-  display: flex;
-  align-items: center; /* Centra el logo verticalmente */
-  overflow: visible; /* Permite que el logo se desborde */
-}
-
-img.logo__sara {
-  max-width: none;
-  display: inline-block;
-  width: 8rem;
+  max-width: 4rem;
+  padding: 0;
+  padding: 0 7rem;
 }
 
 .logo__sara {
-  height: auto; /* Aumenta la altura del logo */
-  width: 8rem !important; /* Mantiene la proporción del logo */
-  margin: 1rem;
-  position: absolute;
-  top: 80%;
-  transform: translateY(-50%); /* Asegura que el logo quede centrado */
+  max-width: 4rem;
+  transition: all .3s ease-in-out;
 }
 
-/* .navegacion__logo {
-  max-width: 4.5rem;
-  padding: 0;
-  padding: 0 6rem;
+@media (min-width: 768px) {
+  .logo__sara {
+    max-width: 8rem;
+  }
 }
 
-.logo__sara{
-  max-width: 5rem;
-} */
+.logo__sara--expand {
+  max-width: 4rem;
+}
 
 @media (min-width: 1820px) {
   .navegacion__link {
@@ -289,9 +272,14 @@ img.logo__sara {
   color: var(--primary-hover);
 }
 
-.navegacion__logo--movil {
-  padding: 0 2rem;
+.navegacion__enlace--loging {
+  background-color: var(--primary);
+  border-radius: 5px;
+  color: var(--blanco);
+  padding: 0rem 0.3rem;
+  font-weight: 700;
 }
+
 
 @media (max-width: 992px) {
   .nav__movil {
@@ -303,34 +291,16 @@ img.logo__sara {
     top: 0;
   }
 
-  .navegacion__logo--movil {
-    width: 4rem;
-    padding: 0 2rem;
-  }
 }
 
-@media (max-width: 768px) {
-  .navegacion__logo--movil {
-    max-width: 3.2rem;
-    padding: 0 rem;
-  }
+.navegacion__logo--movil {
+  max-width: 4rem;
+  padding: 0 2rem;
 }
 
-.background__ver {
-  background: var(--blanco);
-}
 
-.cambiar__fuente {
-  color: var(--gris);
-}
 
-.glosario {
-  color: var(--blanco);
-}
-
-@media (min-width: 992px) {
-  .glosario {
-    color: var(--gris);
-  }
+.navegacion__enlace--loging:hover {
+  background-color: var(--primary-hover);
 }
 </style>

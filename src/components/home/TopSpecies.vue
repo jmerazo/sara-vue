@@ -85,10 +85,17 @@ const goToViewSpecies = () => {
 @media (min-width: 768px) {
     .topEspecies__grid {
         grid-template-columns: repeat(2, 1fr);
+        column-gap: 1rem;
     }
 }
 
-@media (min-width: 992px) {
+@media (min-width: 1340px) {
+    .topEspecies__grid {
+        grid-template-columns: repeat(2, 1fr);
+        column-gap: 2rem;
+    }
+}
+@media (min-width: 1920px) {
     .topEspecies__grid {
         grid-template-columns: repeat(4, 1fr);
         gap: 1rem;

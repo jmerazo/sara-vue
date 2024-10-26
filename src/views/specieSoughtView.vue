@@ -115,6 +115,7 @@ const convertPdfToImages = async (pdfUrl) => {
 }
 
 const initPageFlip = () => {
+
   try {
     pageFlip = new PageFlip(bookRef.value, {
       width: pageWidth.value,

@@ -4,14 +4,14 @@ import { useRoute } from "vue-router";
 
 const route = useRoute();
 
-const paginaInicio = computed(() => route.name === "home");
+
 
 const images = [
-  "/img/homeCarousel/slider_1.jpg", 
-  "/img/homeCarousel/slider_2.jpg", 
-  "/img/homeCarousel/slider_3.jpg", 
-  "/img/homeCarousel/slider_4.jpg", 
-  "/img/homeCarousel/slider_5.jpg", 
+  "/img/homeCarousel/slider_1.jpg",
+  "/img/homeCarousel/slider_2.jpg",
+  "/img/homeCarousel/slider_3.jpg",
+  "/img/homeCarousel/slider_4.jpg",
+  "/img/homeCarousel/slider_5.jpg",
   "/img/homeCarousel/slider_6.jpg",
   "/img/homeCarousel/slider_7.jpg",
   "/img/homeCarousel/slider_8.jpg",
@@ -19,7 +19,7 @@ const images = [
 ];
 
 const currentIndex = ref(0);
-const currentImage = computed(() => images[currentIndex.value]);
+
 
 onMounted(() => {
   setInterval(() => {
@@ -37,17 +37,13 @@ function changeBackgroundImage(direction) {
   <header class="header">
     <!-- Texto sobre las imágenes -->
     <div class="header__text">
-      SISTEMA DE INFORMACIÓN PARA LA ADMINISTRACIÓN Y MANEJO SOSTENIBLE DE LOS RECURSOS NATURALES DEL SUR DE LA AMAZONIA COLOMBIANA 
+      <h1>SISTEMA DE INFORMACIÓN PARA LA ADMINISTRACIÓN Y MANEJO SOSTENIBLE DE LOS RECURSOS NATURALES DEL SUR DE LA
+        AMAZONIA COLOMBIANA</h1>
     </div>
 
     <!-- Imágenes con fade-in/out -->
-    <div
-      v-for="(image, index) in images"
-      :key="index"
-      class="header__image"
-      :class="{ active: index === currentIndex }"
-      :style="{ backgroundImage: 'url(' + image + ')' }"
-    ></div>
+    <div v-for="(image, index) in images" :key="index" class="header__image" :class="{ active: index === currentIndex }"
+      :style="{ backgroundImage: 'url(' + image + ')' }"></div>
 
     <!-- Botones para cambiar imagen -->
     <button class="nav-button left" @click="changeBackgroundImage(-1)">&#10094;</button>
@@ -55,11 +51,7 @@ function changeBackgroundImage(direction) {
 
     <!-- Indicadores -->
     <div class="indicators">
-      <span
-        v-for="(image, index) in images"
-        :key="index"
-        :class="['dot', { active: index === currentIndex }]"
-      ></span>
+      <span v-for="(image, index) in images" :key="index" :class="['dot', { active: index === currentIndex }]"></span>
     </div>
   </header>
 </template>
@@ -67,7 +59,7 @@ function changeBackgroundImage(direction) {
 <style scoped>
 .header {
   position: relative;
-  height: 900px;
+  height: 820px;
   background-size: cover;
   background-position: center bottom;
   background-repeat: no-repeat;
@@ -76,19 +68,51 @@ function changeBackgroundImage(direction) {
   top: 0;
   overflow: hidden;
 }
-
-.header__text {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  color: white;
-  font-size: 2.5rem;
-  font-weight: bold;
-  text-align: center;
-  z-index: 3; /* Asegura que esté sobre las imágenes */
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7); /* Sombra para mayor legibilidad */
+@media (min-width: 1340px) {
+  .header{
+    height: 620px;
+  }
 }
+
+@media (min-width: 1440px) {
+  .header{
+    height: 900px;
+  }
+}
+.header__text {
+  margin: 0 auto;
+  margin-top: 70%;
+  position: relative;
+  max-width: 90%;
+  color: white;
+  z-index: 3;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+}
+
+.header__text h1 {
+  font-size: 1.5rem;
+  text-align: center;
+}
+
+@media (min-width: 768px) {
+  .header__text {
+    margin-top: 50%;
+  }
+
+  .header__text h1 {
+    font-size: 2rem;
+  }
+}
+
+@media (min-width: 1340px) {
+  .header__text {
+    margin-top: 20%;
+  }
+  .header__text h1 {
+    font-size: 3rem;
+  }
+}
+
 
 .header__image {
   position: absolute;
