@@ -41,8 +41,7 @@ export const useConsultaStore = defineStore("consulta", () => {
                   lastCreatedGBIF = createdDate;
               }
           }
-      });
-      
+      });      
 
       // Si se encontró una fecha, validar si han pasado más de 30 días
       if (lastCreatedGBIF) {

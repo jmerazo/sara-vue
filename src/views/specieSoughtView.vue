@@ -2,8 +2,6 @@
 import { ref, onMounted, computed } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import { getFullImageUrl } from "@/helpers/";
-import { obtenerFecha, formatSubtitle, formatList, formatListB } from "@/helpers";
-
 import { getDocument, GlobalWorkerOptions } from 'pdfjs-dist';
 import { PageFlip } from 'page-flip';
 
@@ -31,10 +29,6 @@ const props = defineProps({
 
 const specie = useConsultaStore();
 const geoStore = useGeoCandidateTrees();
-const codeFilter = specie.specie.code_specie;
-console.log('specie ', specie)
-
-const filteredData = ref([]);
 
 const downloadsList = computed(() => {
   if (!specie.specie.code_specie) {
@@ -65,25 +59,15 @@ const downloadsList = computed(() => {
 const images = ref([]);
 const bookRef = ref(null);
 let pageFlip;
-
 const pageWidth = ref(0);
 const pageHeight = ref(0);
-
 const currentPage = ref(0);
 const isFlipbookVisible = ref(false);
-
-//variable to take the value from nav
 const navValue = ref('protocol')
 
 const changeValueNav = ((item) => {
   navValue.value = item
 })
-
-async function filterGeo(codigo, data) {
-  return await data
-    .filter((item) => item.codigo === codigo)
-    .map((item) => ({ lon: item.lon, lat: item.lat }));
-}
 
 const {
   vernacularName,
@@ -91,17 +75,10 @@ const {
 } = specie.specie;
 
 const scrollToTop = () => {
-  // para cuando se consulta desde la vista Especies
   window.scrollTo(0, 0);
 };
 
 scrollToTop();
-
-
-const totalPages = computed(() => images.value.length);
-const isFirstPage = computed(() => currentPage.value === 0);
-const isLastPage = computed(() => currentPage.value === totalPages.value - 1);
-const isShowingCover = computed(() => currentPage.value === 0);
 
 const convertPdfToImages = async (pdfUrl) => {
   if (!pdfUrl || pdfUrl === "/img/sin_img.png") {
@@ -117,7 +94,7 @@ const convertPdfToImages = async (pdfUrl) => {
     for (let pageNum = 1; pageNum <= numPages; pageNum++) {
       imagePromises.push(
         pdf.getPage(pageNum).then(async (page) => {
-          const viewport = page.getViewport({ scale: 1 })
+          const viewport = page.getViewport({ scale: 2.5 })
           const canvas = document.createElement('canvas')
           const context = canvas.getContext('2d')
           canvas.height = viewport.height
@@ -149,7 +126,10 @@ const initPageFlip = () => {
       maxHeight: pageHeight.value,
       maxShadowOpacity: 0.5,
       showCover: true,
-      mobileScrollSupport: false
+      mobileScrollSupport: false,
+      useMouseEvents: true, // Habilitar eventos de mouse
+      flippingTime: 700,    // Duración del cambio de página (efecto suave)
+      swipeDistance: 30     // Distancia para detectar swipe
     });
 
     pageFlip.loadFromHTML(document.querySelectorAll('.page'));
@@ -226,22 +206,85 @@ const getFlipbookDimensions = () => {
     return
   }
 };
-</script>
 
+const zoomLevel = ref(1); // Nivel inicial de zoom
+const maxZoom = 3; // Zoom máximo
+const minZoom = 1; // Zoom mínimo
+const zoomX = ref(0); // Coordenadas X para el zoom
+const zoomY = ref(0); // Coordenadas Y para el zoom
+
+// Estilo de zoom para el contenedor del libro
+const getZoomStyle = () => {
+  // Si estamos en la portada, centramos el origen del zoom
+  const originX = currentPage.value === 0 ? 'center' : `${zoomX.value}px`;
+  const originY = currentPage.value === 0 ? 'center' : `${zoomY.value}px`;
+
+  return {
+    transform: `scale(${zoomLevel.value})`,
+    transformOrigin: `${originX} ${originY}`, // Origen del zoom basado en la posición del ratón o centrado en la portada
+  };
+};
+
+// Estilo adicional para centrar la portada
+const getBookStyle = () => {
+  if (currentPage.value === 0) {
+    return {
+      margin: '0 auto', // Centrar el contenedor del libro
+      display: 'block',
+    };
+  }
+  return {
+    margin: '0',
+    display: 'block', // Aseguramos que se comporte correctamente en otras páginas
+  };
+};
+
+// Actualizar las coordenadas del ratón para manejar el zoom
+const handleMouseMove = (event) => {
+  const bookElement = bookRef.value;
+  const rect = bookElement.getBoundingClientRect();
+
+  // Ajustar las coordenadas del ratón dentro del flipbook para el zoom
+  zoomX.value = event.clientX - rect.left;
+  zoomY.value = event.clientY - rect.top;
+};
+
+// Manejar el zoom con la rueda del ratón
+const handleWheelZoom = (event) => {
+  const delta = event.deltaY > 0 ? -0.1 : 0.1; // Aumentar o reducir el zoom
+  zoomLevel.value = Math.min(maxZoom, Math.max(minZoom, zoomLevel.value + delta));
+
+  event.preventDefault(); // Evitar el scroll del navegador
+};
+</script>
 
 <template>
   <div class="sought" :style="backgroundStyle">
     <div class="shadow"></div>
     <div class="sought__content">
 
-      <div class="flipbook" :class="{ 'show__content': navValue === 'protocol' }">
-        <div style="">
+      <div class="flipbook-container">
+        <div
+          class="flipbook"
+          :class="{ 'show__content': navValue === 'protocol' }"
+          @mousemove="handleMouseMove"
+          @wheel="handleWheelZoom"
+        >
           <LoadingData :color="'white'" v-if="!isFlipbookVisible" />
-        </div>
-
-        <div id="book" class="book" ref="bookRef" :class="{ 'cover-view': currentPage === 0 }">
-          <div v-for="(image, index) in images" :key="index" class="page">
-            <img :src="image" :alt="`Page ${index + 1}`" />
+          <div
+            id="book"
+            class="book"
+            ref="bookRef"
+            :class="{ 'cover-view': currentPage === 0 }"
+            :style="[getZoomStyle(), getBookStyle()]"
+          >
+            <div
+              v-for="(image, index) in images"
+              :key="index"
+              class="page"
+            >
+              <img :src="image" :alt="`Page ${index + 1}`" />
+            </div>
           </div>
         </div>
       </div>
@@ -276,9 +319,6 @@ const getFlipbookDimensions = () => {
     <QuoteButton />
     <PagesQueries :scientificName="scientificName" :vernacularName="vernacularName" />
   </div>
-
-
-
 </template>
 
 <style scoped>
