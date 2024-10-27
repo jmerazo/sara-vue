@@ -1,6 +1,6 @@
 <script setup>
 import { computed, ref } from "vue";
-import { useRoute } from "vue-router"
+import { useRoute, useRouter } from "vue-router"
 import { useModalStore } from "@/stores/modal";
 import { useEspeciesStore } from "@/stores/species";
 import { useConsultaStore } from "@/stores/consulta";import { getFullImageUrl} from "@/helpers/";
@@ -14,6 +14,8 @@ const consulta = useConsultaStore();
 const route = useRoute();
 const queryPage = computed(() => route.name)
 
+const router = useRouter()
+
 
 const imageSelected = ref(null);
 
@@ -25,6 +27,7 @@ const verImg = (url) => {
 
 const limpiarModal = () => {
   imageSelected.value = null;
+  modal.handleClickModalSpecie()
 };
 
 function parseData(text) {
@@ -120,9 +123,13 @@ function parseData(text) {
           </div>
           <div class="modal__botones">
             <div class="boton__container">
-              <button type="button" class="boton__mas animacion"
+              <!-- <button type="button" class="boton__mas animacion"
                 @click="consulta.consultSpecie(specie.code_specie, queryPage), limpiarModal()">
-                <span>Ver Descripción completa</span>
+                <span>Ver Descripción completa </span>
+              </button> -->
+              <button type="button" class="boton__mas animacion"
+                @click="router.push(`/busqueda/${specie.code_specie}`), limpiarModal()">
+                <span>Ver Descripción completa </span>
               </button>
             </div>
             <div @click="

@@ -1,8 +1,26 @@
 <script setup>
 import { ref, onMounted } from "vue";
-import { useGeoCandidateTrees } from "@/stores/candidate";
+import { getFullImageUrl, validateUrl } from "@/helpers";
+import { useConsultaStore } from "@/stores/consulta";
 
-const geoStore = useGeoCandidateTrees();
+const consulta = useConsultaStore()
+const validImages = ref([])
+const urls = [
+  getFullImageUrl(consulta.specie.images[0].img_general),
+  getFullImageUrl(consulta.specie.images[0].img_landscape_one),
+  getFullImageUrl(consulta.specie.images[0].img_landscape_two),
+  getFullImageUrl(consulta.specie.images[0].img_landscape_three),
+  getFullImageUrl(consulta.specie.images[0].img_leafs),
+  getFullImageUrl(consulta.specie.images[0].img_flowers),
+  getFullImageUrl(consulta.specie.images[0].img_fruits),
+]
+
+async function fetchImages (){
+  validImages.value = await validateUrl(urls)
+}
+
+onMounted(() => fetchImages())
+
 const currentIndex = ref(0);
 
 const changeImage = (index) => {
@@ -11,26 +29,25 @@ const changeImage = (index) => {
 </script>
 
 <template>
+
   <div class="slider__specie">
     <div class="slider__specie-content">
       <div class="imagen" :style="{ transform: `translateX(-${currentIndex * 100}%)` }">
         <!-- activa -->
-        <div v-for="(img, index) in geoStore.validImages" :key="index">
+        <div v-for="(img, index) in validImages" :key="index">
           <div class="image__active" :style="{ backgroundImage: 'url(' + img + ')' }"></div>
         </div>
       </div>
     </div>
     <div class="thumbnail__images">
-      
-      <img v-for="(img, index) in geoStore.validImages" :key="'thumb-' + index" :src="img" :alt="'Miniatura' + index"
+
+      <img v-for="(img, index) in validImages" :key="'thumb-' + index" :src="img" :alt="'Miniatura' + index"
         class="image" :class="{ active: currentIndex === index }" @click="changeImage(index)" />
-      
+
     </div>
+
   </div>
 </template>
-
-
-
 
 <style scoped>
 .slider__specie {
@@ -40,9 +57,9 @@ const changeImage = (index) => {
 
 
 .slider__specie-content {
- overflow: hidden;
- border-radius: .6rem;
- margin: 0 auto;
+  overflow: hidden;
+  border-radius: .6rem;
+  margin: 0 auto;
 }
 
 @media (min-width: 768px) {
@@ -73,6 +90,7 @@ const changeImage = (index) => {
 }
 
 @media (min-width: 768px) {
+
   .imagen,
   .slider__specie-content,
   .image__active {
@@ -81,7 +99,9 @@ const changeImage = (index) => {
     height: 650px;
   }
 }
+
 @media (min-width: 920px) {
+
   .imagen,
   .slider__specie-content,
   .image__active {
@@ -92,6 +112,7 @@ const changeImage = (index) => {
 }
 
 @media (min-width: 1440px) {
+
   .imagen,
   .slider__specie-content,
   .image__active {
@@ -107,7 +128,7 @@ const changeImage = (index) => {
   align-items: center;
   justify-content: center;
   margin-top: 1rem;
-  
+
 }
 
 
@@ -123,11 +144,12 @@ const changeImage = (index) => {
 }
 
 @media (min-width: 768px) {
-  .image{
+  .image {
     width: 50px;
     height: 50px;
   }
 }
+
 .image:hover,
 .image.active {
   opacity: 1;
