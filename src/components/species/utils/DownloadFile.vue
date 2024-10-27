@@ -1,25 +1,36 @@
+<script setup>
+import { useConsultaStore } from '@/stores/consulta';
+import { getFullImageUrl } from '@/helpers/index'
+
+const consulta = useConsultaStore()
+
+const documents = [
+    { title: "Protocolo para el manejo sostenible de la especie", url: getFullImageUrl(consulta.specie.images[0].protocol), icon: "/icons/file_pdf.svg" },
+    { title: "Resolución de adopción del protocolo", url: getFullImageUrl(consulta.specie.images[0].resolution_protocol), icon: "/icons/file_word.svg" },
+    { title: "Anexo 1 - Instrucciones para los interesados", url: getFullImageUrl(consulta.specie.images[0].annex_one), icon: "/icons/file_pdf.svg" },
+    { title: "Anexo 2 - Instrucciones para los usuarios", url: getFullImageUrl(consulta.specie.images[0].annex_two), icon: "/icons/file_pdf.svg" },
+    { title: "Formato para coordenadas del predio", url: getFullImageUrl(consulta.specie.images[0].format_coordinates), icon: "/icons/file_excel.svg" },
+    { title: "Instructivo para el diligenciamiento de coordenadas", url:getFullImageUrl(consulta.specie.images[0].intructive_coordinates), icon: "/icons/file_excel.svg" },
+    { title: "Formato para informe de inventario", url: getFullImageUrl(consulta.specie.images[0].format_inventary), icon: "/icons/file_word.svg" },
+  ];
+
+</script>
+
 <template>
   <div class="download-cards-container">
     <div class="download-cards">
-      <div v-for="(download, index) in downloads" :key="index" class="download-card">
+      <div v-for="(download, index) in documents" :key="index" class="download-card">
         <img :src="download.icon" :alt="download.title + ' icon'" class="card-icon" />
         <h3>{{ download.title }}</h3>
+        
         <a :href="download.url" download class="download-button">
-          Descargar
+          Descargar {{  }}
         </a>
       </div>
     </div>
   </div>
 </template>
 
-<script setup>
-defineProps({
-  downloads: {
-    type: Array,
-    required: true
-  }
-})
-</script>
 
 <style scoped>
 .download-cards-container {
@@ -123,6 +134,7 @@ defineProps({
     font-size: .9rem;
   }
 }
+
 @media (min-width: 1440px) {
   .download-card h3 {
     margin-bottom: 1rem;

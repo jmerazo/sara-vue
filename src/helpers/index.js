@@ -31,8 +31,19 @@ export const getFullImageUrl = (relativePath) => {
   } catch (error) {
     return "/img/sin_img.png";
   }
-
-
+};
+// validate formatted url
+export const validateUrl = async (array) => {
+  const validURLs = [];
+  await Promise.all(array.map(async (item) => {
+    try {
+      const { ok } = await fetch(item);
+      if (ok) validURLs.push(item);
+    } catch (error) {
+      console.log('Error al obtener imagen:', error);
+    }
+  }));
+  return validURLs;
 };
 
 export const getFullImageNurseryUrl = (relativePath) => {
@@ -497,4 +508,19 @@ function formatTextWithoutCitation(text) {
 
   return formattedText;
 }
+
+//generate id white 10 characters
+export function generateAlphanumericId(length) {
+  var result = '';
+  var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  var charactersLength = characters.length;
+  for (var i = 0; i < length; i++) {
+      result += characters.charAt(Math.floor(Math.random() * charactersLength));
+  }
+  return result;
+}
+
+
+
+
 

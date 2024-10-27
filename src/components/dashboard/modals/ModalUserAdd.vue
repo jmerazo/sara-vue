@@ -3,11 +3,9 @@ import { watch, computed, ref } from "vue";
 import { useModalStore } from "@/stores/modal";
 import { useUsersStore } from "@/stores/users";
 import { locatesColombia } from "@/stores/locates";
-import APIService from "@/services/APIService";
-import { useRouter } from "vue-router";
 import { useToast } from '../../../helpers/ToastManagement';
 
-const router = useRouter();
+
 const locates = locatesColombia();
 const modal = useModalStore();
 const usersStore = useUsersStore();

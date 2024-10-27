@@ -40,10 +40,9 @@ const router = createRouter({
           component: () => import("../views/SpeciesView.vue"),
         },
         {
-          path: "busqueda/:code_specie?",
+          path: "busqueda/:code_specie",
           name: "busqueda",
           component: () => import("../views/specieSoughtView.vue"),
-          props: true
         },
         {
           path: "familias",

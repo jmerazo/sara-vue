@@ -6,31 +6,15 @@ import JSZip from "jszip";
 export const useGeoCandidateTrees = defineStore("geoCandidateTrees", () => {
   const geoCandidateData = ref([]);
   const geoDataNew = ref([]);
-  let isDataLoaded = false;
+  var isDataLoaded = false;
   const coordinatesPolygon = ref([]);
   const coordinatesKML = ref([]);
   const departments = ref([]);
   const cities = ref([]);
   const candidates = ref([]);
-  const validImages = ref([]);
   const sourceData = ref('');
-  const combinedGeoData = ref([]);
 
-  const validateUrl = async (array) => {
-    const newValidImages = [];
-    for (const imageUrl of array) {
-      try {
-        const response = await fetch(imageUrl);
-        if (response.ok) {
-          newValidImages.push(imageUrl);
-        }
-      } catch (error) {
-        console.error(`Error al acceder a la imagen en ${imageUrl}:`, error);
-      }
-    }
-    validImages.value = newValidImages;
-    
-  };
+  
 
   const fetchData = async (codeFilter = null) => {
     if (!isDataLoaded) {
@@ -324,7 +308,6 @@ export const useGeoCandidateTrees = defineStore("geoCandidateTrees", () => {
     coordinatesKML,
     departments,
     cities,
-    validImages,
     addCandidate,
     fetchData,
     filterGeo,
@@ -332,7 +315,6 @@ export const useGeoCandidateTrees = defineStore("geoCandidateTrees", () => {
     calculatePerimeterCoordinates,
     convertToKML,
     exportToKML,
-    validateUrl,
     sourceData,
   };
 });

@@ -228,7 +228,7 @@ const backgroundNav = computed(() => {
 
 @media (min-width: 768px) {
   .logo__sara {
-    max-width: 8rem;
+    max-width: 7rem;
   }
 }
 

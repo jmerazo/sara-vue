@@ -6,7 +6,7 @@ import { descargarExcels, descargarPdfs, obtenerFecha } from "@/helpers";
 import { useModalStore } from "@/stores/modal";
 //componentes
 import LoadingData from "@/components/shared/LoadingData.vue";
-import ModalCandidateAdd from "@/components/dashboard/modals/ModalCandidateAdd.vue";
+import ModalCandidate from "@/components/dashboard/modals/ModalCandidate.vue";
 import AssessmentCard from "@/components/dashboard/cards/AssessmentCard.vue"
 
 const modal = useModalStore();
@@ -110,7 +110,7 @@ const customHeaders = [
     </section>
     <!--fin texto validacion buscador -->
     <div @click="modal.handleClickModalCandidateAdd()" class="agregar"></div>
-    <ModalCandidateAdd />
+    <ModalCandidate />
   </div>
 </template>
 

@@ -1,12 +1,11 @@
 <script setup>
-import { ref, onMounted, computed, watch, nextTick } from 'vue';
-import { locatesColombia } from "@/stores/locates";
-import { useEspeciesStore } from "../../../stores/species";
+import { ref, onMounted, computed, watch } from 'vue';
+import { useEspeciesStore } from "@/stores/species";
 import { propertyStore } from '@/stores/dashboard/property'
-import { useGeoCandidateTrees } from "../../../stores/candidate";
+import { useGeoCandidateTrees } from "@/stores/candidate";
 import { useModalStore } from "@/stores/modal";
+import { generateAlphanumericId } from '@/helpers/index'
 
-const locates = locatesColombia();
 const species = useEspeciesStore();
 const property = propertyStore();
 const candidates = useGeoCandidateTrees();
@@ -15,45 +14,9 @@ var deparment = ref('');
 var city = ref('');
 let folderNumber = ref('');
 
-//PS-1769-18-247-00f48a44-002-23
-// Propiedad computada para generar el código de la especie
-const codeSpecie = computed(() => {
-  const myAlphanumericId = generateAlphanumericId(10);
-
-  const year = new Date().getFullYear().toString().slice(-2);
-
-  // Asignar myAlphanumericId a formData
-  formData.value.id = myAlphanumericId;
-  // Asegúrate de que formData.municipio o formData.cities se refiere al valor correcto que necesitas
-  var code = `PS-${formData.value.cod_especie}-${deparment.value}-${city.value}-${myAlphanumericId}-${folderNumber.value}-${year}`
-  formData.value.cod_expediente = code;
-  return code;
-});
-
-function generateAlphanumericId(length) {
-    var result = '';
-    var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    var charactersLength = characters.length;
-    for (var i = 0; i < length; i++) {
-        result += characters.charAt(Math.floor(Math.random() * charactersLength));
-    }
-    return result;
-}
-
-const filteredCities = computed(() => {
-  const { departamento } = formData.value;
-
-  if (departamento) {
-    const filtered = locates.cities.filter(
-      (city) => city.department === departamento
-    );
-    return filtered;
-  }
-  return [];
-});
 
 const formData = ref({
-    id: '',
+    id: generateAlphanumericId(10),
     cod_expediente: '',
     cod_especie : '',
     eventDate : '',
@@ -84,6 +47,12 @@ const formData = ref({
     evaluacion : '',
     observaciones : ''
 });
+
+//PS-1769-18-247-00f48a44-002-23
+// Propiedad computada para generar el expediente
+const year = new Date().getFullYear().toString().slice(-2);
+formData.value.cod_expediente = computed(() => `PS-${formData.value.cod_especie}-${deparment.value}-${city.value}-${formData.value.id}-${folderNumber.value}-${year}`);
+
 
 watch(() => formData.value.property, (newPropertyId) => {
   if (newPropertyId) {
@@ -240,13 +209,13 @@ watch(evaluacion, (nuevoValor) => {
         <div class="modal__contenido">
             <div class="form__addCandidate">
                 <div class="title__addCandidate">
-                    <span>Registrar nuevo individuo</span>
+                    <span>Registrar nueva evaluación</span>
                 </div>
                 <form @submit.prevent="handleSubmit">                  
                   <div class="form-section data__evaluation">
                     <label>Fecha: </label><input type="date" v-model="formData.eventDate" placeholder="">
                     <label>Usuario: </label><input type="text" :placeholder="userData.first_name + ' ' + userData.last_name" disabled>
-                    <label>Código individuo: </label><input type="text" v-model="formData.cod_expediente" :placeholder="codeSpecie" disabled>
+                    <label>Código individuo: </label><input type="text" v-model="formData.cod_expediente" disabled>
                     <label class="formulario__label" for="species"
                     >Especies:</label
                     >
