@@ -1,36 +1,56 @@
 <script setup>
+import { ref, onMounted, watch } from 'vue';
 import { useConsultaStore } from '@/stores/consulta';
-import { getFullImageUrl } from '@/helpers/index'
+import { getFullDocumentUrl, validateUrl } from '@/helpers/index';
 
-const consulta = useConsultaStore()
+const consulta = useConsultaStore();
+const validDocuments = ref([]); // Aquí se almacenarán solo los documentos válidos
 
-const documents = [
-    { title: "Protocolo para el manejo sostenible de la especie", url: getFullImageUrl(consulta.specie.images[0].protocol), icon: "/icons/file_pdf.svg" },
-    { title: "Resolución de adopción del protocolo", url: getFullImageUrl(consulta.specie.images[0].resolution_protocol), icon: "/icons/file_word.svg" },
-    { title: "Anexo 1 - Instrucciones para los interesados", url: getFullImageUrl(consulta.specie.images[0].annex_one), icon: "/icons/file_pdf.svg" },
-    { title: "Anexo 2 - Instrucciones para los usuarios", url: getFullImageUrl(consulta.specie.images[0].annex_two), icon: "/icons/file_pdf.svg" },
-    { title: "Formato para coordenadas del predio", url: getFullImageUrl(consulta.specie.images[0].format_coordinates), icon: "/icons/file_excel.svg" },
-    { title: "Instructivo para el diligenciamiento de coordenadas", url:getFullImageUrl(consulta.specie.images[0].intructive_coordinates), icon: "/icons/file_excel.svg" },
-    { title: "Formato para informe de inventario", url: getFullImageUrl(consulta.specie.images[0].format_inventary), icon: "/icons/file_word.svg" },
+// Filtra y valida las URLs de los documentos
+const loadValidDocuments = async () => {
+  // Limpiar `validDocuments` antes de cargar nuevos documentos
+  validDocuments.value = [];
+
+  // Lista inicial de documentos basada en la especie actual
+  const documents = [
+    { title: "Protocolo para el manejo sostenible de la especie", url: getFullDocumentUrl(consulta.specie.images[0]?.protocol), icon: "/icons/file_pdf.svg" },
+    { title: "Resolución de adopción del protocolo", url: getFullDocumentUrl(consulta.specie.images[0]?.resolution_protocol), icon: "/icons/file_word.svg" },
+    { title: "Anexo 1 - Instrucciones para los interesados", url: getFullDocumentUrl(consulta.specie.images[0]?.annex_one), icon: "/icons/file_pdf.svg" },
+    { title: "Anexo 2 - Instrucciones para los usuarios", url: getFullDocumentUrl(consulta.specie.images[0]?.annex_two), icon: "/icons/file_pdf.svg" },
+    { title: "Formato para coordenadas del predio", url: getFullDocumentUrl(consulta.specie.images[0]?.format_coordinates), icon: "/icons/file_excel.svg" },
+    { title: "Instructivo para el diligenciamiento de coordenadas", url: getFullDocumentUrl(consulta.specie.images[0]?.intructive_coordinates), icon: "/icons/file_excel.svg" },
+    { title: "Formato para informe de inventario", url: getFullDocumentUrl(consulta.specie.images[0]?.format_inventary), icon: "/icons/file_word.svg" },
   ];
 
+  const urls = documents.map(doc => doc.url).filter(url => url && !url.includes("/img/sin_img.png"));
+  const validUrls = await validateUrl(urls);
+  validDocuments.value = documents.filter(doc => validUrls.includes(doc.url));
+};
+
+// Vuelve a cargar documentos válidos al cambiar de especie
+watch(
+  () => consulta.specie, // Observa cambios en la especie
+  () => loadValidDocuments(), // Carga documentos válidos al cambiar de especie
+  { immediate: true }
+);
 </script>
 
 <template>
   <div class="download-cards-container">
-    <div class="download-cards">
-      <div v-for="(download, index) in documents" :key="index" class="download-card">
+    <div v-if="validDocuments.length === 0">
+      <p style="color: white; font-weight: 500; font-size: 2rem;">No hay documentos disponibles</p>
+    </div>
+    <div v-else class="download-cards">
+      <div v-for="(download, index) in validDocuments" :key="index" class="download-card">
         <img :src="download.icon" :alt="download.title + ' icon'" class="card-icon" />
         <h3>{{ download.title }}</h3>
-        
         <a :href="download.url" download class="download-button">
-          Descargar {{  }}
+          Descargar
         </a>
       </div>
     </div>
   </div>
 </template>
-
 
 <style scoped>
 .download-cards-container {

@@ -20,22 +20,36 @@ import 'jspdf-autotable'; // Importar autoTable plugin
 /*** funciones helpers ****/
 
 //funcion para obtener la ruta de una imagen formateada
-export const getFullImageUrl = (relativePath) => {
-
+export const getFullImageUrl = (relativePath, allowDefault = true) => {
   try {
     if (relativePath) {
       return `${api.defaults.baseURL}/${relativePath.replace(/\\/g, "/")}`;
     } else {
-      return "/img/sin_img.png";
+      return allowDefault ? "/img/sin_img.png" : null;
     }
   } catch (error) {
-    return "/img/sin_img.png";
+    return allowDefault ? "/img/sin_img.png" : null;
   }
 };
+
+// función para obtener la url para documentos
+export const getFullDocumentUrl = (relativePath) => {
+  try {
+    if (relativePath) {
+      return `${api.defaults.baseURL}/${relativePath.replace(/\\/g, "/")}`;
+    } else {
+      return null;
+    }
+  } catch (error) {
+    return null;
+  }
+};
+
 // validate formatted url
 export const validateUrl = async (array) => {
   const validURLs = [];
   await Promise.all(array.map(async (item) => {
+    /* if (!item || null) return; */
     try {
       const { ok } = await fetch(item);
       if (ok) validURLs.push(item);

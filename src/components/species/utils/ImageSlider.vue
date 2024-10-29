@@ -1,31 +1,54 @@
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, watch } from "vue";
 import { getFullImageUrl, validateUrl } from "@/helpers";
 import { useConsultaStore } from "@/stores/consulta";
 
-const consulta = useConsultaStore()
-const validImages = ref([])
-const urls = [
-  getFullImageUrl(consulta.specie.images[0].img_general),
-  getFullImageUrl(consulta.specie.images[0].img_landscape_one),
-  getFullImageUrl(consulta.specie.images[0].img_landscape_two),
-  getFullImageUrl(consulta.specie.images[0].img_landscape_three),
-  getFullImageUrl(consulta.specie.images[0].img_leafs),
-  getFullImageUrl(consulta.specie.images[0].img_flowers),
-  getFullImageUrl(consulta.specie.images[0].img_fruits),
-]
-
-async function fetchImages (){
-  validImages.value = await validateUrl(urls)
-}
-
-onMounted(() => fetchImages())
-
+const consulta = useConsultaStore();
+const validImages = ref([]);
 const currentIndex = ref(0);
+const showModal = ref(false);
+
+const loadImages = async () => {
+  const urls = [
+    getFullImageUrl(consulta.specie.images[0]?.img_general, false),
+    getFullImageUrl(consulta.specie.images[0]?.img_landscape_one, false),
+    getFullImageUrl(consulta.specie.images[0]?.img_landscape_two, false),
+    getFullImageUrl(consulta.specie.images[0]?.img_landscape_three, false),
+    getFullImageUrl(consulta.specie.images[0]?.img_leafs, false),
+    getFullImageUrl(consulta.specie.images[0]?.img_flowers, false),
+    getFullImageUrl(consulta.specie.images[0]?.img_fruits, false),
+  ].filter(url => url);
+
+  validImages.value = await validateUrl(urls);
+};
+
+
+watch(
+  () => consulta.specie,
+  () => {
+    validImages.value = []; // Limpia las imágenes antes de cargar nuevas
+    currentIndex.value = 0; // Restablece el índice de la imagen
+    loadImages(); // Carga las nuevas imágenes
+  },
+  { immediate: true }
+);
 
 const changeImage = (index) => {
-  currentIndex.value = index; // Actualiza el índice actual con el índice del thumbnail clickeado
+  currentIndex.value = index;
 };
+
+const openModal = () => {
+  showModal.value = true;
+};
+
+const closeModal = () => {
+  showModal.value = false;
+};
+
+onMounted(() => {
+  loadImages();
+});
+
 </script>
 
 <template>
@@ -35,7 +58,7 @@ const changeImage = (index) => {
       <div class="imagen" :style="{ transform: `translateX(-${currentIndex * 100}%)` }">
         <!-- activa -->
         <div v-for="(img, index) in validImages" :key="index">
-          <div class="image__active" :style="{ backgroundImage: 'url(' + img + ')' }"></div>
+          <div class="image__active" :style="{ backgroundImage: 'url(' + img + ')' }" @click="openModal"></div>
         </div>
       </div>
     </div>
@@ -45,6 +68,16 @@ const changeImage = (index) => {
         class="image" :class="{ active: currentIndex === index }" @click="changeImage(index)" />
 
     </div>
+
+    <!-- Modal de imagen ampliada -->
+    <Teleport to="body">
+      <div v-if="showModal" class="modal-overlay" @click.self="closeModal">
+        <div class="modal-slider">
+          <button class="close-button" @click="closeModal">Cerrar</button>
+          <img :src="validImages[currentIndex]" alt="Imagen ampliada" class="modal-image" />
+        </div>
+      </div>
+    </Teleport>
 
   </div>
 </template>
@@ -154,5 +187,56 @@ const changeImage = (index) => {
 .image.active {
   opacity: 1;
   border: 2.5px solid white;
+}
+
+/* Estilos de Modal */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.7); /* Fondo semitransparente */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999 !important;
+}
+
+.modal-slider {
+  position: relative;
+  max-width: 90%;
+  max-height: 90%;
+  background-color: white;
+  border-radius: 8px;
+  overflow: hidden;
+  z-index: 10000; /* Asegúrate de que este valor sea superior al navbar */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-image {
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+}
+
+.close-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  padding: 5px 10px;
+  background-color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  color: #333;
+  z-index: 10001; /* Superior a todo */
+}
+
+.close-button:hover {
+  background-color: #ddd;
 }
 </style>

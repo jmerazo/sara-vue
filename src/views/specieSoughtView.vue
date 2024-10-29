@@ -105,21 +105,19 @@ const initPageFlip = () => {
 };
 
 onMounted(async () => {
+  window.scrollTo({ top: 0, behavior: 'smooth' }); // Para que la vista se visualice en top
   await consulta.consultSpecie(currentSpecie.value, 'busqueda')
   // Configuración del flipbook y carga del PDF
   getFlipbookDimensions();
   const pdfUrl = getFullImageUrl(consulta.specie.images[0].protocol);
   await convertPdfToImages(pdfUrl);
-  initPageFlip();
-  
+  initPageFlip();  
 })
-
 
 const backgroundStyle = computed(() => {
   const leafImage = consulta.specie.images?.[0]?.img_leafs;
   return leafImage ? { backgroundImage: `url(${getFullImageUrl(leafImage)})` } : {};
 });
-
 
 function getFlipbookDimensions() {
   const screenWidth = window.innerWidth;
@@ -145,56 +143,6 @@ function getFlipbookDimensions() {
     return
   }
 };
-
-const zoomLevel = ref(1); // Nivel inicial de zoom
-const maxZoom = 3; // Zoom máximo
-const minZoom = 1; // Zoom mínimo
-const zoomX = ref(0); // Coordenadas X para el zoom
-const zoomY = ref(0); // Coordenadas Y para el zoom
-
-// Estilo de zoom para el contenedor del libro
-const getZoomStyle = () => {
-  // Si estamos en la portada, centramos el origen del zoom
-  const originX = currentPage.value === 0 ? 'center' : `${zoomX.value}px`;
-  const originY = currentPage.value === 0 ? 'center' : `${zoomY.value}px`;
-
-  return {
-    transform: `scale(${zoomLevel.value})`,
-    transformOrigin: `${originX} ${originY}`, // Origen del zoom basado en la posición del ratón o centrado en la portada
-  };
-};
-
-// Estilo adicional para centrar la portada
-const getBookStyle = () => {
-  if (currentPage.value === 0) {
-    return {
-      margin: '0 auto', // Centrar el contenedor del libro
-      display: 'block',
-    };
-  }
-  return {
-    margin: '0',
-    display: 'block', // Aseguramos que se comporte correctamente en otras páginas
-  };
-};
-
-// Actualizar las coordenadas del ratón para manejar el zoom
-const handleMouseMove = (event) => {
-  const bookElement = bookRef.value;
-  const rect = bookElement.getBoundingClientRect();
-
-  // Ajustar las coordenadas del ratón dentro del flipbook para el zoom
-  zoomX.value = event.clientX - rect.left;
-  zoomY.value = event.clientY - rect.top;
-};
-
-// Manejar el zoom con la rueda del ratón
-const handleWheelZoom = (event) => {
-  const delta = event.deltaY > 0 ? -0.1 : 0.1; // Aumentar o reducir el zoom
-  zoomLevel.value = Math.min(maxZoom, Math.max(minZoom, zoomLevel.value + delta));
-
-  event.preventDefault(); // Evitar el scroll del navegador
-};
 </script>
 
 <template>
@@ -203,26 +151,18 @@ const handleWheelZoom = (event) => {
     <div class="shadow"></div>
     <div class="sought__content">
 
-      <div class="flipbook-container">
-        <div class="flipbook" :class="{ 'show__content': navValue === 'protocol' }" @mousemove="handleMouseMove"
-          @wheel="handleWheelZoom">
-
-          <div v-if="!noProtocol">
+      <div class="flipbook" :class="{ 'show__content': navValue === 'protocol' }">
+        <div v-if="!noProtocol">
             <LoadingData :color="'white'" v-if="!isFlipbookVisible" />
           </div>
 
-          <div id="book" class="book" ref="bookRef" :class="{ 'cover-view': currentPage === 0 }" :style="[getZoomStyle(), getBookStyle()]" v-if="!noProtocol">
-            <div v-for="(image, index) in images" :key="index" class="page">
-              <img :src="image" :alt="`Page ${index + 1}`" />
-            </div>
+        <div id="book" class="book" ref="bookRef" :class="{ 'cover-view': currentPage === 0 }" v-if="!noProtocol">
+          <div v-for="(image, index) in images" :key="index" class="page">
+            <img :src="image" :alt="`Page ${index + 1}`" />
           </div>
-
-          <p v-else style="color: white; font-weight: 500; font-size: 2rem;">Especie en espera de protocolo</p>
-
         </div>
 
-
-
+        <p v-else style="color: white; font-weight: 500; font-size: 2rem;">Especie en espera de protocolo</p>
       </div>
 
       <div class="map" :class="{ 'show__content': navValue === 'map' }">
@@ -253,11 +193,16 @@ const handleWheelZoom = (event) => {
   </div>
   <div>
     <QuoteButton />
-    <!-- <PagesQueries :scientificName="scientificName" :vernacularName="vernacularName" /> -->
+    <PagesQueries :scientificName="consulta.specie.scientificName" :vernacularName="consulta.specie.vernacularName" />
   </div>
 </template>
 
 <style scoped>
+.cover-page {
+  margin: 0 auto;
+  display: block;
+}
+
 /* general component */
 .sought {
   position: relative;
@@ -296,7 +241,6 @@ const handleWheelZoom = (event) => {
   justify-content: center;
   width: 78%;
 }
-
 
 .sought__nav ul li {
   color: white;
@@ -367,7 +311,6 @@ const handleWheelZoom = (event) => {
 }
 
 
-
 @media (min-width: 768px) {
   .flipbook {
     margin-top: -2rem;
@@ -391,7 +334,6 @@ const handleWheelZoom = (event) => {
 }
 
 
-
 @media (min-width: 920px) {
   .book.cover-view {
     transform: translateX(-22.8%);
@@ -410,7 +352,6 @@ const handleWheelZoom = (event) => {
     height: 100%;
   }
 }
-
 
 .border__nav {
   border-bottom: 3px solid white;
@@ -484,7 +425,6 @@ const handleWheelZoom = (event) => {
     margin-top: 8rem;
   }
 }
-
 
 
 /* downloads */
