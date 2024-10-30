@@ -16,6 +16,8 @@ export const useNurseriesStore = defineStore('nurseries', () => {
     onMounted(async () => {
         const { data } = await APIService.listNurseries();
         nurseriesData.value = data;
+        console.log(nurseriesData.value);
+        
         nurseriesOriginalData.value = data;
     })
 
