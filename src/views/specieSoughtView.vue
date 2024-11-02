@@ -1,6 +1,6 @@
 <script setup>
 import { computed, onMounted, ref } from 'vue';
-import { useRoute } from 'vue-router'
+import { useRoute, onBeforeRouteLeave  } from 'vue-router'
 import { useConsultaStore } from '../stores/consulta';
 import { getFullImageUrl } from "@/helpers/";
 import { getDocument, GlobalWorkerOptions } from 'pdfjs-dist';
@@ -143,6 +143,11 @@ function getFlipbookDimensions() {
     return
   }
 };
+
+onBeforeRouteLeave((to, from, next) => {
+  consulta.specie = [];
+  next();
+});
 </script>
 
 <template>
@@ -172,13 +177,20 @@ function getFlipbookDimensions() {
 
       <div class="gallery" :class="{ 'show__content': navValue === 'gallery' }">
 
-        <LoadingData :color="'white'" v-if="!consulta.specie.code_specie" />
-        <ImageSlider class="slider" v-if="consulta.specie.code_specie" />
+        <LoadingData :color="'white'" v-if="!consulta.specie.images?.[0]?.img_leafs" />
+        <ImageSlider class="slider" v-if="consulta.specie.images?.[0]?.img_leafs" />
       </div>
 
       <div class="downloads" :class="{ 'show__content': navValue === 'downloads' }">
-        <LoadingData :color="'white'" v-if="!consulta.specie.code_specie" />
-        <DownloadFile v-if="consulta.specie.code_specie" />
+        <div>
+          <LoadingData :color="'white'" v-if="!consulta.specie.code_specie" />
+        </div>
+
+        <div v-if="!noProtocol">
+          <DownloadFile />
+        </div>
+        <p v-else style="color: white; font-weight: 500; font-size: 2rem; text-align: center;height: 35dvh; padding-top: 18rem;">No hay documentos disponibles</p>
+
       </div>
     </div>
 

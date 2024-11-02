@@ -36,11 +36,9 @@ watch(
 </script>
 
 <template>
-  <div class="download-cards-container">
-    <div v-if="validDocuments.length === 0">
-      <p style="color: white; font-weight: 500; font-size: 2rem;">No hay documentos disponibles</p>
-    </div>
-    <div v-else class="download-cards">
+  <div class="download-cards-container" v-if="validDocuments.length">
+   
+    <div class="download-cards">
       <div v-for="(download, index) in validDocuments" :key="index" class="download-card">
         <img :src="download.icon" :alt="download.title + ' icon'" class="card-icon" />
         <h3>{{ download.title }}</h3>

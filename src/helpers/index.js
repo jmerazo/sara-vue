@@ -48,17 +48,21 @@ export const getFullDocumentUrl = (relativePath) => {
 // validate formatted url
 export const validateUrl = async (array) => {
   const validURLs = [];
+
   await Promise.all(array.map(async (item) => {
-    /* if (!item || null) return; */
-    try {
-      const { ok } = await fetch(item);
-      if (ok) validURLs.push(item);
-    } catch (error) {
-      console.log('Error al obtener imagen:', error);
+    if (item) {
+      const url = `${api.defaults.baseURL}/${item.replace(/\\/g, "/")}`
+      try {
+        const { ok } = await fetch(url);
+        if (ok) validURLs.push(url);
+      } catch (error) {
+        console.log('Error al obtener imagen:', error);
+      }
     }
   }));
   return validURLs;
 };
+
 
 export const getFullImageNurseryUrl = (relativePath) => {
 
@@ -208,7 +212,7 @@ export const descargarPdfs = (datos, tituloTabla, columnas, inicio, customHeader
   // Extraer la primera fila como headers
   const dataHeaders = Object.keys(datos[0]);
   const columnasMostrar = Math.min(columnas, dataHeaders.length);
-  
+
   // Usar la primera fila de 'datos' como los headers
   const extractedHeaders = datos[0]; // Primera fila para los headers
 
@@ -259,14 +263,14 @@ export const descargarPdfs = (datos, tituloTabla, columnas, inicio, customHeader
       fontSize: 9
     },
     columnStyles: headersToUse.reduce((styles, _, index) => {
-      styles[index] = { 
+      styles[index] = {
         cellWidth: columnWidth,
         halign: 'left',
         valign: 'top'
       };
       return styles;
     }, {}),
-    didParseCell: function(data) {
+    didParseCell: function (data) {
       if (data.section === 'body') {
         data.cell.styles.fillColor = data.row.index % 2 === 0 ? [255, 255, 255] : [245, 245, 245];
       }
@@ -529,7 +533,7 @@ export function generateAlphanumericId(length) {
   var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
   var charactersLength = characters.length;
   for (var i = 0; i < length; i++) {
-      result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    result += characters.charAt(Math.floor(Math.random() * charactersLength));
   }
   return result;
 }

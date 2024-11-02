@@ -133,8 +133,6 @@ function parseData(text) {
               </button>
             </div>
             <div @click="
-              modal.handleClickModalSpecie(),
-              verImg(specie.images[0].img_general),
               limpiarModal()
               " class="button__modal--close">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"

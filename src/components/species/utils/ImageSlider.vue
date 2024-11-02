@@ -1,6 +1,6 @@
 <script setup>
-import { ref, onMounted, watch } from "vue";
-import { getFullImageUrl, validateUrl } from "@/helpers";
+import { ref, onMounted } from "vue";
+import { validateUrl } from "@/helpers";
 import { useConsultaStore } from "@/stores/consulta";
 
 const consulta = useConsultaStore();
@@ -8,30 +8,19 @@ const validImages = ref([]);
 const currentIndex = ref(0);
 const showModal = ref(false);
 
+const urls = ref([
+    consulta.specie.images[0].img_general,
+    consulta.specie.images[0].img_landscape_one,
+    consulta.specie.images[0].img_landscape_two,
+    consulta.specie.images[0].img_landscape_three,
+    consulta.specie.images[0].img_leafs,
+    consulta.specie.images[0].img_flowers,
+    consulta.specie.images[0].img_fruits,
+  ])
+  
 const loadImages = async () => {
-  const urls = [
-    getFullImageUrl(consulta.specie.images[0]?.img_general, false),
-    getFullImageUrl(consulta.specie.images[0]?.img_landscape_one, false),
-    getFullImageUrl(consulta.specie.images[0]?.img_landscape_two, false),
-    getFullImageUrl(consulta.specie.images[0]?.img_landscape_three, false),
-    getFullImageUrl(consulta.specie.images[0]?.img_leafs, false),
-    getFullImageUrl(consulta.specie.images[0]?.img_flowers, false),
-    getFullImageUrl(consulta.specie.images[0]?.img_fruits, false),
-  ].filter(url => url);
-
-  validImages.value = await validateUrl(urls);
+  validImages.value = await validateUrl(urls.value);
 };
-
-
-watch(
-  () => consulta.specie,
-  () => {
-    validImages.value = []; // Limpia las imágenes antes de cargar nuevas
-    currentIndex.value = 0; // Restablece el índice de la imagen
-    loadImages(); // Carga las nuevas imágenes
-  },
-  { immediate: true }
-);
 
 const changeImage = (index) => {
   currentIndex.value = index;
@@ -196,7 +185,8 @@ onMounted(() => {
   left: 0;
   width: 100vw;
   height: 100vh;
-  background-color: rgba(0, 0, 0, 0.7); /* Fondo semitransparente */
+  background-color: rgba(0, 0, 0, 0.7);
+  /* Fondo semitransparente */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -210,7 +200,8 @@ onMounted(() => {
   background-color: white;
   border-radius: 8px;
   overflow: hidden;
-  z-index: 10000; /* Asegúrate de que este valor sea superior al navbar */
+  z-index: 10000;
+  /* Asegúrate de que este valor sea superior al navbar */
   display: flex;
   justify-content: center;
   align-items: center;
@@ -233,7 +224,8 @@ onMounted(() => {
   cursor: pointer;
   font-size: 16px;
   color: #333;
-  z-index: 10001; /* Superior a todo */
+  z-index: 10001;
+  /* Superior a todo */
 }
 
 .close-button:hover {

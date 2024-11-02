@@ -3,7 +3,6 @@ import { defineStore } from "pinia";
 import { useRouter } from "vue-router";
 import { useModalStore } from "@/stores/modal";
 import { useToastStore } from "./toast";
-import { getFullImageUrl } from "../helpers";
 
 import APIService from "@/services/APIService";
 
@@ -12,7 +11,7 @@ export const useConsultaStore = defineStore("consulta", () => {
   const modal = useModalStore();
   const router = useRouter();
   const toast = useToastStore()
-  const specie = ref({});
+  const specie = ref([]);
   const familia = ref({});
   const strFamilia = ref("");
   const cargando = ref(false);
@@ -56,9 +55,9 @@ export const useConsultaStore = defineStore("consulta", () => {
               if (data.taxon_key) {
                   storeGBIFData(data.taxon_key);
               }
-          } else {
-              console.log('No han pasado más de 30 días desde el último registro de GBIF, no se almacenan nuevos datos.');
-          }
+
+              return
+          } 
       } else {
           // Si no hay registros previos de GBIF, almacenar los datos de GBIF
           if (data.taxon_key) {

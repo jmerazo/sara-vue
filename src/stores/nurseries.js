@@ -2,31 +2,28 @@ import { ref, onMounted, computed } from 'vue'
 import { defineStore } from 'pinia'
 import { useRouter } from 'vue-router'
 import APIService from '../services/APIService'
+import { useModalStore } from './modal'
 
 export const useNurseriesStore = defineStore('nurseries', () => {
     const nurseriesData = ref([]);
     const nurseriesOriginalData = ref([]);
     const nursery = ref([]);
-    const nurseries = ref([]);
     const router = useRouter()
+    const modal = useModalStore()
     // variables para paginación
     const currentPage = ref(1);
     const itemsPerPage = ref(6);
+    const formNurseries = ref(0)
 
     onMounted(async () => {
         const { data } = await APIService.listNurseries();
         nurseriesData.value = data;
-        console.log(nurseriesData.value);
-        
         nurseriesOriginalData.value = data;
     })
 
     const getNursery = async (data) => {
-        try {
-            nursery.value = data
-        } catch (error) {
-            console.log(error)
-        }
+        nursery.value = data
+        modal.handleClickModalNurserySpecieList()
     }
 
     // Calcula el número total de páginas en función de los datos
@@ -99,6 +96,10 @@ export const useNurseriesStore = defineStore('nurseries', () => {
         });
     }
 
+    function showFormNurseries(id){
+        return formNurseries.value = id
+    }
+
     return {
         getNursery,
         nursery,
@@ -111,6 +112,8 @@ export const useNurseriesStore = defineStore('nurseries', () => {
         goToLastPage,
         totalPages,
         currentPage,
-        searchTerm
+        searchTerm,
+        formNurseries,
+        showFormNurseries,
     }
 })
