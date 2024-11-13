@@ -11,8 +11,8 @@ const pageStore = usePageContent();
 const toast = useToastStore()
 
 const formData = ref({
-  to_email: "correspondencia@corpoamazonia.gov.co",
-  /* to_email: "sheesarte@gmail.com", */
+  /*to_email: "correspondencia@corpoamazonia.gov.co",*/
+  to_email: "sheesarte@gmail.com",
   from_email: "",
   subject: "Sara | Información Proyecto BPIN 202200010017",
   body: ''
@@ -55,7 +55,7 @@ function resetForm() {
        
 
         <p class="banner__text">
-          ACERCA DEL PROYECTO
+          ACERCA DE
         </p>
       </div>
     </section>
@@ -72,7 +72,7 @@ function resetForm() {
           <p>
             El Sistema de Información para la Administración y Manejo Sostenible de los Recursos Naturales del sur de la Amazonia colombiana (SARA) nace como una herramienta en línea de divulgación de los resultados del Proyecto BPIN 2022000100017 y en particular como estrategia de comunicación y transferencia de conocimiento a mediano y largo plazo, de los lineamientos de manejo sostenible de la flora silvestre y los productos forestales no maderables de las especies forestales priorizadas por Corpoamazonia para la elaboración de protocolos para el manejo sostenible de estos recursos, de acuerdo con lo definido en el Decreto 1076 de 2015 modificado y adicionado por el Decreto 690 de 2021.
           </p>
-          <p><strong>Proyecto Semillas CTeI</strong></p>
+          <h1 class="proyecto__titulo">Proyecto Semillas CTeI</h1>
           <p>
             El proyecto identificado con código BPIN 2022000100017 denominado IMPLEMENTACIÓN DE UN SISTEMA DE INFORMACIÓN DE LA FENOLOGÍA DE ESPECIES FORESTALES NATIVAS DEL SUR DE LA AMAZONIA PARA LA GENERACIÓN DE CONOCIMIENTOS QUE PERMITA EL DESARROLLO DE INICIATIVAS DE BIOECONOMÍA EN LOS DEPARTAMENTOS DE PUTUMAYO CAQUETÁ, nace en el marco de la convocatoria del Ministerio de Ciencia Tecnología e Innovación No. 018 de 2021, y fue viabilizado, priorizado y aprobado por el Órgano Colegiado De Administración Y Decisión – OCAD de Ciencia, Tecnología E Innovación Del Sistema General De Regalías -SGR, mediante Acuerdo 021 del 19 de mayo de 2022.
           </p>
@@ -82,7 +82,7 @@ function resetForm() {
           <p>
             El proyecto tiene como objetivo general: Incrementar el conocimiento sobre el comportamiento fenológico de las especies forestales nativas del sur de la Amazonía colombiana, abastecedoras de semillas, e indicador de producto principal la generación de 70 Protocolos de manejo sostenible de especies forestales nativas del sur de la amazonia colombiana para el aprovechamiento de semillas con información técnica sobre la fenología productiva y reproductiva por especie.
           </p>
-          <p><strong>Para el cumplimiento del objetivo general, se contemplaron tres objetivos específicos:</strong></p>
+          <p>Para el cumplimiento del objetivo general, se contemplaron tres objetivos específicos:</p>
           <ul>
             <li>Implementar un sistema de información para el monitoreo y seguimiento de la fenología de árboles semilleros nativos de la región.</li>
             <li>Generar lineamientos para el aprovechamiento sostenible de PFNM acorde a las condiciones ecosistémicas de la región del sur de la amazonia.</li>
@@ -125,7 +125,7 @@ function resetForm() {
                 <td>SGR - Asignación para la ciencia, tecnología e innovación Convocatorias 2021 - Ambiente y desarrollo sostenible, Departamento del Caquetá</td>
                 <td>Talento humano, gastos de viaje, recursos tecnológicos, capacitaciones, divulgación y comunicación, y supervisión</td>
                 <td>Efectivo</td>
-                <td>$1.870.082.852,00</td>
+                <td class="financiadores__valor">$1.870.082.852,00</td>
               </tr>
 
               <!-- Fila 2 -->
@@ -137,7 +137,7 @@ function resetForm() {
                 <td>SGR - Asignación para la ciencia, tecnología e innovación Convocatorias 2021 - Ambiente y desarrollo sostenible, Departamento del Putumayo</td>
                 <td>Talento humano, gastos de viaje, recursos tecnológicos, capacitaciones, divulgación y comunicación, y supervisión</td>
                 <td>Efectivo</td>
-                <td>$1.870.082.853,00</td>
+                <td class="financiadores__valor">$1.870.082.853,00</td>
               </tr>
 
               <!-- Fila 3 -->
@@ -146,7 +146,7 @@ function resetForm() {
                 <td>Corpoamazonia</td>
                 <td>Recursos de administración y supervisión del proyecto</td>
                 <td>En especie</td>
-                <td>$257.222.728,00</td>
+                <td class="financiadores__valor">$257.222.728,00</td>
               </tr>
 
               <!-- Fila 4 -->
@@ -155,7 +155,7 @@ function resetForm() {
                 <td>Instituto Tecnológico del Putumayo</td>
                 <td>Mano de obra profesional, asesorías, trabajos de pasantía</td>
                 <td>En especie</td>
-                <td>$16.819.200,00</td>
+                <td class="financiadores__valor">$16.819.200,00</td>
               </tr>
 
               <!-- Fila 5 -->
@@ -164,7 +164,7 @@ function resetForm() {
                 <td>Gobernación del Putumayo</td>
                 <td>Mano de obra profesional, acompañamiento en el proceso</td>
                 <td>En especie</td>
-                <td>$10.000.000,00</td>
+                <td class="financiadores__valor">$10.000.000,00</td>
               </tr>
             </tbody>
           </table>
@@ -176,11 +176,11 @@ function resetForm() {
     <section class="contact">
       <div class="contact__contenido">
         <h1 class="contact__titulo">
-          CONTACTO
+          Contacto
         </h1>
         <div class="contact__informacion">
           <p>
-            Si se requiere información adicional o ampliada sobre este proyecto, remita la comunicación al correo oficial de la entidad, con el asunto: <strong>Información Proyecto BPIN 2022000100017</strong>.
+            Si se requiere información adicional o ampliada sobre este proyecto, por favor registre a continuación su solicitud:
           </p>
           <!-- Formulario de contacto -->
           <form @submit.prevent="handleSubmit" class="contact__form">
@@ -645,5 +645,12 @@ function resetForm() {
   background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M20.998 3V5C20.998 14.6274 15.6255 19 8.99805 19L5.24077 18.9999C5.0786 19.912 4.99805 20.907 4.99805 22H2.99805C2.99805 20.6373 3.11376 19.3997 3.34381 18.2682C3.1133 16.9741 2.99805 15.2176 2.99805 13C2.99805 7.47715 7.4752 3 12.998 3C14.998 3 16.998 4 20.998 3ZM12.998 5C8.57977 5 4.99805 8.58172 4.99805 13C4.99805 13.3624 5.00125 13.7111 5.00759 14.0459C6.26198 12.0684 8.09902 10.5048 10.5019 9.13176L11.4942 10.8682C8.6393 12.4996 6.74554 14.3535 5.77329 16.9998L8.99805 17C15.0132 17 18.8692 13.0269 18.9949 5.38766C17.6229 5.52113 16.3481 5.436 14.7754 5.20009C13.6243 5.02742 13.3988 5 12.998 5Z"></path></svg>');
   background-size: contain; /* Ajusta el tamaño del SVG */
   background-repeat: no-repeat;
+}
+
+.financiadores__valor{
+  display: flex;
+  text-align: right;
+  justify-content: right;
+  align-items: right;
 }
 </style>

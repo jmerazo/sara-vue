@@ -1,6 +1,6 @@
 <script setup>
 import { ref, onMounted } from "vue";
-import { validateUrl } from "@/helpers";
+import { validateUrlImages } from "@/helpers";
 import { useConsultaStore } from "@/stores/consulta";
 
 const consulta = useConsultaStore();
@@ -19,7 +19,8 @@ const urls = ref([
   ])
   
 const loadImages = async () => {
-  validImages.value = await validateUrl(urls.value);
+  validImages.value = await validateUrlImages(urls.value);
+  console.log('valid ', validImages.value)
 };
 
 const changeImage = (index) => {

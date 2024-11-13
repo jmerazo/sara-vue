@@ -25,6 +25,10 @@ const error = ref(null);
 const isRequest = ref(false);
 const isRequestOAuth2 = ref(true);
 
+onMounted(async () => {
+  window.scrollTo({ top: 0, behavior: 'smooth' }); // Para que la vista se visualice en top 
+})
+
 const handleLoginFirebase = async () => {
   try {
     await recaptchaLoaded();

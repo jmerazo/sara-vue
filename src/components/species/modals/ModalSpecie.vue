@@ -103,7 +103,7 @@ function parseData(text) {
             <p class="modal__texto">
               {{ specie.family }}
             </p>
-            <h3 class="modal_titulo modal_titulo-otros">Otros nombres:</h3>
+            <h3 class="modal_titulo modal_titulo-otros">Nombres comunes:</h3>
 
             <div class="other__names">
               <div v-for="(item, index) in parseData(specie.otherNames)" :key="index">

@@ -298,6 +298,10 @@ export default {
     deleteNurseriesAssign(id){
         return api.delete(`/nurseries/admin/${id}`)
     },
+    // Administración de los contenidos del vivero
+    listNurseriesUser(rlid){
+        return api.get(`/nurseries/user/${rlid}`)
+    },
     /* ==================================================================================================================== */
     /* ==================================================================================================================== */
     // ENDPOINT →→ EMPIRICAL KNOWLEDGE

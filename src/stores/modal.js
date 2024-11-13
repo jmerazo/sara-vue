@@ -29,6 +29,7 @@ export const useModalStore = defineStore('modal',()=>{
     const modalNurseryUpdate = ref(false)
     const modalNurseryAssignSpecie = ref(false)
     const modalNurserySpecieList = ref(false)
+    const modalSpecieInventory = ref(false)
 
     const isEdit = ref(false)
     
@@ -138,6 +139,10 @@ export const useModalStore = defineStore('modal',()=>{
         modalNurserySpecieList.value = !modalNurserySpecieList.value
     }
 
+    function handleClickModalSpecieInventory() {
+        modalSpecieInventory.value = !modalSpecieInventory.value
+    }
+
     return {
         modalSpecie,
         modalUserAdd,
@@ -188,5 +193,7 @@ export const useModalStore = defineStore('modal',()=>{
         handleClickModalNurserySpecieList,
         modalNurserySpecieList,
         isEdit,
+        handleClickModalSpecieInventory,
+        modalSpecieInventory
     }
 })

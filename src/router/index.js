@@ -222,6 +222,11 @@ const router = createRouter({
           name: "property",
           component: () => import("../views/dashboardviews/admin/PropertyView.vue"),
         },
+        {
+          path: "nurseries-user",
+          name: "nurseries-user",
+          component: () => import("../views/dashboardviews/admin/NurseriesUserView.vue"),
+        },
       ]
     },
 

@@ -42,6 +42,24 @@ export const validateUrl = async (array) => {
 
   await Promise.all(array.map(async (item) => {
     if (item) {
+      const url = `${item.replace(/\\/g, "/")}`
+      try {
+        const { ok } = await fetch(url);
+        if (ok) validURLs.push(url);
+      } catch (error) {
+        console.log('Error al obtener imagen:', error);
+      }
+    }
+  }));
+  return validURLs;
+};
+
+//validate formatted url
+export const validateUrlImages = async (array) => {
+  const validURLs = [];
+
+  await Promise.all(array.map(async (item) => {
+    if (item) {
       const url = `${api.defaults.baseURL}/${item.replace(/\\/g, "/")}`
       try {
         const { ok } = await fetch(url);
