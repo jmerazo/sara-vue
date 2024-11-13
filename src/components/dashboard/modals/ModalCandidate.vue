@@ -379,80 +379,89 @@ watch(evaluacion, (nuevoValor) => {
 </template>
 
 <style scoped>
+/* Estilos del modal */
 .modal {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0.6);
   overflow: auto;
   z-index: 11000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
 }
 
 .modal__contenido {
-  position: absolute;
-  top: 50%;
-  left: 50%;
   background-color: white;
-  padding: 20px;
-  border-radius: 10px;
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
   text-align: center;
-  width: 95%;
-  max-height: 83%;
+  width: 100%;
+  max-width: 600px;
+  max-height: 80vh;
   overflow-y: auto;
-  transform: translate(-50%, -50%);
-  z-index: 1000;
-  margin-top: 2rem;
+  position: relative;
+  transform: translate(0, 0);
 }
 
 @media (min-width: 768px) {
   .modal__contenido {
-    margin-top: 0;
+    padding: 2rem;
   }
 }
 
 @media (min-width: 992px) {
   .modal__contenido {
-    width: 50%;
-    margin-top: 1rem;
+    width: 60%;
   }
 }
 @media (min-width: 1440px) {
   .modal__contenido {
-    width: 40%;
+    width: 45%;
   }
 }
 @media (min-width: 1820px) {
   .modal__contenido {
-    width: 30%;
+    width: 35%;
   }
 }
 
+/* Estilos del formulario */
 .form__addCandidate {
-  max-width: 600px;
+  max-width: 100%;
   margin: 0 auto;
-  padding: 20px;
+  padding: 1rem;
 }
 
 .title__addCandidate {
   text-align: center;
-  margin-bottom: 20px;
-  font-size: 24px;
+  margin-bottom: 1.5rem;
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: var(--primary);
 }
 
 .data__evaluation, .data__ubication, .data__candidate, .data__items {
-  border: 1px solid #ccc;
-  padding: 10px;
-  margin-bottom: 20px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 10px;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 1rem;
+  font-size: 1rem;
 }
 
 label {
-  margin-bottom: 5px;
-  display: block;
+  margin-bottom: 0.3rem;
+  font-weight: 600;
+  color: #555;
+  font-size: 1rem;
 }
 
 input[type="text"], 
@@ -463,34 +472,56 @@ input[type="date"],
 select, 
 textarea {
   width: 100%;
-  padding: 8px;
-  margin-bottom: 10px;
+  padding: 0.6rem;
+  margin-bottom: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  font-size: 0.95rem;
+  transition: border-color 0.2s ease;
 }
 
+input[type="text"]:focus, 
+input[type="number"]:focus, 
+input[type="email"]:focus, 
+input[type="tel"]:focus, 
+input[type="date"]:focus, 
+select:focus, 
+textarea:focus {
+  border-color: var(--primary);
+  outline: none;
+}
 
+/* Estilos de los botones */
 .formulario__botones {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
-  margin: 1.3rem 0 0 0;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
 }
 
 .formulario__boton {
   border-radius: 5px;
   font-weight: 700;
-  padding: 0.3rem;
+  padding: 0.6rem;
   font-size: 1rem;
   color: var(--blanco);
   background-color: var(--primary);
+  cursor: pointer;
+  transition: background-color 0.3s ease;
 }
+
 .formulario__boton--cerrar {
   background-color: var(--secondary);
 }
+
 .formulario__boton:hover {
   background-color: var(--primary-hover);
 }
+
 .formulario__boton--cerrar:hover {
   background-color: var(--secondary-hover);
 }
+
 </style>
   

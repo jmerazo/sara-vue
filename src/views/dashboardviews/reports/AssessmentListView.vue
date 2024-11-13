@@ -53,14 +53,8 @@ const customHeaders = [
             `Reporte general de evaluaciones - ${obtenerFecha()}`
           )
           " class="boton" href="#"><font-awesome-icon class="boton__excel" :icon="['fas', 'file-excel']" /></a>
-        <a @click="
-          descargarPdfs(
-            report.datosImport,
-            `Reporte general de evaluaciones - ${obtenerFecha()}`,
-            4,
-            0
-          )
-          " class="boton" href="#"><font-awesome-icon class="boton__pdf" :icon="['fas', 'file-pdf']" /></a>
+          
+        <a @click="()=> report.loadDataPdf()" class="boton" href="#"><font-awesome-icon class="boton__pdf" :icon="['fas', 'file-pdf']" /></a>
       </div>
     </div>
     <hr />

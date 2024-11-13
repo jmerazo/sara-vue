@@ -2,7 +2,7 @@
 import { computed } from "vue";
 import { onBeforeRouteLeave } from "vue-router";
 import { useSamplesMade } from "@/stores/dashboard/reports/samplesMade";
-import { descargarExcel, descargarPdf, obtenerFecha } from "@/helpers";
+import { descargarExcel, descargarPdfs, obtenerFecha } from "@/helpers";
 
 //componentes
 import LoadingData from "@/components/shared/LoadingData.vue";
@@ -60,7 +60,7 @@ const displayedPageRange = computed(() => {
         /></a>
         <a
           @click="
-            descargarPdf(
+            descargarPdfs(
               samples.datosImport,
               `Reporte de muestras realizadas - ${obtenerFecha()}`,
               6,

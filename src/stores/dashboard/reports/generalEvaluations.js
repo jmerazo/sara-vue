@@ -1,6 +1,6 @@
 import { ref, onMounted, watch, computed } from "vue";
 import { defineStore } from "pinia";
-import { ordenarPorFechas } from "@/helpers/";
+import { ordenarPorFechas, downloadPdf } from "@/helpers/";
 import APIService from "@/services/APIService";
 
 export const useGeneralEvaluations = defineStore("generalEvaluations", () => {
@@ -26,43 +26,51 @@ export const useGeneralEvaluations = defineStore("generalEvaluations", () => {
     cargando.value = false;
   });
 
-  function cargarData() {
+  // function cargarData() {
+  //   const headers = [
+  //     'Fecha del Evento',
+  //     'Cód. Expediente',
+  //     'Nombre Común',
+  //     'Nombre Científico'
+  //   ];
+  
+  //   const data = evaluacionData.value.map(dato => [
+  //     dato.eventDate,
+  //     dato.cod_expediente,
+  //     dato.cod_especie.vernacularName,
+  //     `${dato.cod_especie.scientificName} - ${dato.cod_especie.scientificNameAuthorship}`
+  //   ]);
+  
+  //    datosImport.value = [headers, ...data];
+  // }
+
+  const loadDataPdf = ()=>{
     const headers = [
       'Fecha del Evento',
       'Cód. Expediente',
-      'Nombre Común',
-      'Nombre Científico'
-    ];
-  
-    const data = evaluacionData.value.map(dato => [
-      dato.eventDate,
-      dato.cod_expediente,
-      dato.cod_especie.vernacularName,
-      `${dato.cod_especie.scientificName} - ${dato.cod_especie.scientificNameAuthorship}`
-    ]);
-  
-    datosImport.value = [headers, ...data];
+      'placa',
+    ]
+    
+    evaluacionData.value.map(item =>{
+      const row = [item.eventDate, item.cod_expediente, item.numero_placa]
+      datosImport.value.push(row)
+    })
+    console.log('cargando datos para pdf...');
+    
+    //downloadPdf(headers, datosImport.value, 'Reporte de evaluaciones')
   }
 
-  /* function cargarData() {
-    evaluacionData.value.forEach((dato) => {
-      const { eventDate, cod_expediente   } = dato
-      const { vernacularName, scientificName, scientificNameAuthorship  } = dato.cod_especie
-      datosImport.value.push([eventDate, cod_expediente, vernacularName, ${scientificName} - ${scientificNameAuthorship}]);    
-    });
-  } */
+  //cargar datos de importación
+  // watch(
+  //   () => evaluacionData.value,
+  //   () => {
+  //     datosImport.value = [];
+  //     cargarData();
+  //   },
+  //   { deep: true }
+  // );
 
-  //cargar datos de importacion
-  watch(
-    () => evaluacionData.value,
-    () => {
-      datosImport.value = [];
-      cargarData();
-    },
-    { deep: true }
-  );
-
-  //motor de busqueda para el reporte de evaluaciones realizadas
+  //motor de búsqueda para el reporte de evaluaciones realizadas
   function buscarTermino(termino) {
     changePage(1);
     evaluacionData.value = evaluacionDataOriginal.value.filter((term) => {
@@ -137,6 +145,7 @@ export const useGeneralEvaluations = defineStore("generalEvaluations", () => {
     buscarTermino,
     quitarFiltroBuscado,
     goToFirstPage,
-    goToLastPage
+    goToLastPage,
+    loadDataPdf
   };
 });

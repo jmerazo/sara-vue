@@ -6,15 +6,6 @@ import api from "@/api/axios";
 import ExcelJS from 'exceljs';
 import { saveAs } from 'file-saver';
 
-//para funcion descargarExcel
-import exportFromJSON from "export-from-json";
-
-
-//para funcion descargarPDF
-import pdfMake from "pdfmake/build/pdfmake";
-import pdfFonts from 'pdfmake/build/vfs_fonts';
-/* pdfMake.vfs = pdfFonts.pdfMake.vfs; */
-
 import jsPDF from 'jspdf';
 import 'jspdf-autotable'; // Importar autoTable plugin
 /*** funciones helpers ****/
@@ -45,7 +36,7 @@ export const getFullDocumentUrl = (relativePath) => {
   }
 };
 
-// validate formatted url
+//validate formatted url
 export const validateUrl = async (array) => {
   const validURLs = [];
 
@@ -62,7 +53,6 @@ export const validateUrl = async (array) => {
   }));
   return validURLs;
 };
-
 
 export const getFullImageNurseryUrl = (relativePath) => {
 
@@ -162,35 +152,6 @@ export const descargarExcels = async (datos, excelName) => {
   saveAs(blob, `${excelName}.xlsx`);
 };
 
-//descargar reportes en excel
-export const descargarExcel = (datos, excelName) => {
-  if (!Array.isArray(datos) || datos.length === 0) {
-    console.error('No hay datos para generar el Excel');
-    return;
-  }
-
-  // Extraer los encabezados de la primera fila de datos
-  const headers = datos[0];
-
-  // Extraer los datos del resto de las filas
-  const bodyData = datos.slice(1);
-
-  // Convertir los datos en objetos dinámicos basados en los encabezados
-  const data = bodyData.map(row => {
-    const obj = {};
-    headers.forEach((header, index) => {
-      obj[header] = row[index];
-    });
-    return obj;
-  });
-
-  const fileName = excelName;
-  const exportType = exportFromJSON.types.xls;
-
-  // Export the data as Excel file
-  return exportFromJSON({ data, fileName, exportType });
-};
-
 // FUNCIONES ACTUALIZADAS Y FINALES
 export const descargarPdfs = (datos, tituloTabla, columnas, inicio, customHeaders) => {
   if (!Array.isArray(datos) || datos.length === 0) {
@@ -286,68 +247,9 @@ export const descargarPdfs = (datos, tituloTabla, columnas, inicio, customHeader
   doc.save(`${tituloTabla}.pdf`);
 };
 
-//imprimir o descargar info en pdf
-export const descargarPdf = (datos, tituloTabla, columnas, inicio) => {
-  const columnasMostrar = Math.min(columnas, Object.keys(datos[0]).length);
-  const ordenado = ref(0);
-
-  ordenado.value = inicio;
-
-  if (columnasMostrar > 0) {
-    try {
-      const headers = Object.keys(datos[0]).slice(
-        ordenado.value,
-        columnasMostrar + ordenado.value
-      );
-      //ojo esta variable no se puede cambiar la solicita la librería
-      const documentDefinition = {
-        pageOrientation: "landscape", //para vertical seria: portrait
-        content: [
-          { text: tituloTabla, style: "header" },
-          {
-            table: {
-              widths: Array(columnasMostrar).fill("auto"),
-              headerRows: 1,
-              body: [
-                headers.map((header) => ({
-                  text: header,
-                  fillColor: "#10613e",
-                  color: "#ffffff",
-                })), // Color primario
-                ...datos.map((objeto) =>
-                  headers
-                    .map((header) => objeto[header])
-                    .slice(0, columnasMostrar)
-                ),
-              ],
-            },
-            layout: {
-              fillColor: function (rowIndex, node, columnIndex) {
-                return rowIndex === 0 ? "#10613e" : null; // Fila de encabezados con color de fondo
-              },
-            },
-          },
-        ],
-        margin: [10, 10, 10, 10], // Márgenes: [izquierda, arriba, derecha, abajo]
-        styles: {
-          header: {
-            fontSize: 18,
-            bold: true,
-            margin: [0, 0, 0, 15], // Márgenes para el título (15 puntos en la parte inferior)
-          },
-        },
-      };
-
-      const pdfDoc = pdfMake.createPdf(documentDefinition);
-      return pdfDoc.open();
-    } catch {
-      alert("hubo un error al descargar la tabla");
-    }
-  } else {
-    console.error("No hay suficientes columnas en los datos para mostrar.");
-  }
-};
-
+export const downloadPdf = (headers, dataRow, title) =>{
+  console.log('creando pdf....', headers, dataRow,title);
+}
 //formatear fecha actual
 export const obtenerFecha = () => {
   const opcionesFormato = {

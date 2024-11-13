@@ -6,8 +6,6 @@ import {ordenarPorFechas} from '@/helpers/'
 import APIService from "@/services/APIService";
 
 export const useCandidateStore = defineStore("candidate", () => {
-
-
   const modal = useModalStore();
   const router = useRouter();
   const nombreEspecie = ref("");
@@ -23,9 +21,7 @@ export const useCandidateStore = defineStore("candidate", () => {
   // variables para paginación
   const currentPage = ref(1); // Página actual
   const itemsPerPage = ref(12); // Elementos por página
-
   const cargando = ref(false);
-
 
   //consultar candidatos de una especie
   async function verCandidatosEspecie(code, vernacularName) {
