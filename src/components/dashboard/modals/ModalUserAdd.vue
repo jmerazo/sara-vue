@@ -60,7 +60,6 @@ async function userAdd() {
       modal.handleClickModalUserAdd();
     }
   } catch (error) {
-    console.log('error ', error)
     // Mostrar el mensaje de error en el toast
     if (error.message) {
       addToast(error.message, { 

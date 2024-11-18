@@ -13,7 +13,7 @@ import NurseryUser from '@/components/dashboard/cards/NurseryUser.vue'
 import LoadingData from "@/components/shared/LoadingData.vue";
 
 //helpers
-import { descargarExcel, descargarPdf, obtenerFecha } from "@/helpers";
+import { descargarExcels, descargarPdfs, obtenerFecha } from "@/helpers";
 
 const nurseriesStore = useNurseriesDashStore();
 const nurseriesUser = useNurseriesUserStore();
@@ -65,6 +65,10 @@ function deleteNursery(id, nu) {
   }
   nurseriesStore.deleteNursery(id);
 }
+
+async function changeNurseryUserState(id, state) {
+  await nurseriesUser.changeStateNurseryUser(id, state);
+}
 </script>
 
 <template>
@@ -82,13 +86,13 @@ function deleteNursery(id, nu) {
       </div>
       <div class="botones__descarga">
         <a @click="
-            descargarExcel(
+            descargarExcels(
               nurseriesStore.datosImport,
               `Listado de viveros SARA - ${obtenerFecha()}`
             )
             " class="boton" href="#"><font-awesome-icon class="boton__excel" :icon="['fas', 'file-excel']" /></a>
         <a @click="
-            descargarPdf(
+            descargarPdfs(
               nurseriesStore.datosImport,
               `Listado de usuarios SARA - ${obtenerFecha()}`,
               8,
@@ -101,7 +105,7 @@ function deleteNursery(id, nu) {
     <hr />
     <div class="nurseries__grid">
       <div v-for="nursery in nurseriesUser.displayedNurseryUser" :key="nursery.id">
-        <NurseryUser :nursery="nursery" :deleteNursery="deleteNursery"/>
+        <NurseryUser :nursery="nursery" :deleteNursery="deleteNursery" :changeNurseryUserState="changeNurseryUserState"/>
       </div>
     </div>
 

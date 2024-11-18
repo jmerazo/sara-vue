@@ -93,8 +93,7 @@ function onToggleChange(event) {
                 <button @click="nurseriesStore.selectedUserCreateNursery(user.id)" class="nav__element animation"><span class="nav__text">Vivero</span></button>
             </div>
         </div>
-    </div>
-   
+    </div>   
 </template>
 
 <style scoped>

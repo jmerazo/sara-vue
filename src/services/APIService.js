@@ -302,6 +302,18 @@ export default {
     listNurseriesUser(rlid){
         return api.get(`/nurseries/user/${rlid}`)
     },
+    createNurseriesUser(data){
+        return api.post(`/nurseries/user/`, data)
+    },
+    updateNurseriesUser(id, data){
+        return api.put(`/nurseries/user/${id}`, data)
+    },
+    stateNurseriesUser(id, newState){
+        return api.put(`/nurseries/user/state/${id}`, newState)
+    },
+    deleteNurseriesUser(id){
+        return api.delete(`/nurseries/user/${id}`)
+    },
     /* ==================================================================================================================== */
     /* ==================================================================================================================== */
     // ENDPOINT →→ EMPIRICAL KNOWLEDGE

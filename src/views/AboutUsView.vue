@@ -11,8 +11,8 @@ const pageStore = usePageContent();
 const toast = useToastStore()
 
 const formData = ref({
-  /*to_email: "correspondencia@corpoamazonia.gov.co",*/
-  to_email: "sheesarte@gmail.com",
+  to_email: "correspondencia@corpoamazonia.gov.co",
+  //to_email: "sheesarte@gmail.com",
   from_email: "",
   subject: "Sara | Información Proyecto BPIN 202200010017",
   body: ''
@@ -647,10 +647,7 @@ function resetForm() {
   background-repeat: no-repeat;
 }
 
-.financiadores__valor{
-  display: flex;
-  text-align: right;
-  justify-content: right;
-  align-items: right;
+.financiadores__valor {
+  text-align: right !important;
 }
 </style>

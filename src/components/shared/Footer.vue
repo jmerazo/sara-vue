@@ -150,11 +150,11 @@
 .footer__texto {
   text-align: center;
   font-weight: 700;
-  font-size: 0.9rem;
+  font-size: 0.8rem;
 }
 .footer__texto--titulo {
   font-weight: 700;
-  font-size: 0.8rem;
+  font-size: 0.9rem;
 }
 
 .footer__social {

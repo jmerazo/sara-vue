@@ -27,6 +27,14 @@ const changeImage = (index) => {
   currentIndex.value = index;
 };
 
+const nextImage = () => {
+  currentIndex.value = (currentIndex.value + 1) % validImages.value.length;
+};
+
+const prevImage = () => {
+  currentIndex.value = (currentIndex.value - 1 + validImages.value.length) % validImages.value.length;
+};
+
 const openModal = () => {
   showModal.value = true;
 };
@@ -45,12 +53,18 @@ onMounted(() => {
 
   <div class="slider__specie">
     <div class="slider__specie-content">
+      <button v-if="!showModal" class="nav-button prev" @click="prevImage">
+        <svg width="24" height="24" fill="white" viewBox="0 0 24 24"><path d="M15.41 7.41L10.83 12l4.58 4.59L14 18l-6-6 6-6z"/></svg>
+      </button>
       <div class="imagen" :style="{ transform: `translateX(-${currentIndex * 100}%)` }">
         <!-- activa -->
         <div v-for="(img, index) in validImages" :key="index">
           <div class="image__active" :style="{ backgroundImage: 'url(' + img + ')' }" @click="openModal"></div>
         </div>
       </div>
+      <button v-if="!showModal" class="nav-button next" @click="nextImage">
+        <svg width="24" height="24" fill="white" viewBox="0 0 24 24"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg>
+      </button>
     </div>
     <div class="thumbnail__images">
 
@@ -64,7 +78,13 @@ onMounted(() => {
       <div v-if="showModal" class="modal-overlay" @click.self="closeModal">
         <div class="modal-slider">
           <button class="close-button" @click="closeModal">Cerrar</button>
+          <button class="nav-button modal-prev" @click="prevImage">
+            <svg width="24" height="24" fill="white" viewBox="0 0 24 24"><path d="M15.41 7.41L10.83 12l4.58 4.59L14 18l-6-6 6-6z"/></svg>
+          </button>
           <img :src="validImages[currentIndex]" alt="Imagen ampliada" class="modal-image" />
+          <button class="nav-button modal-next" @click="nextImage">
+            <svg width="24" height="24" fill="white" viewBox="0 0 24 24"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6z"/></svg>
+          </button>
         </div>
       </div>
     </Teleport>
@@ -225,11 +245,45 @@ onMounted(() => {
   cursor: pointer;
   font-size: 16px;
   color: #333;
-  z-index: 10001;
-  /* Superior a todo */
 }
 
 .close-button:hover {
   background-color: #ddd;
+}
+
+.nav-button {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255, 255, 255, 0.5);
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+}
+
+.prev {
+  left: 10px; /* Ajuste para posicionar el botón a la izquierda de la imagen */
+}
+
+.next {
+  right: 90px; /* Ajuste para posicionar el botón a la derecha de la imagen */
+}
+
+/* Ajustes para el modo maximizado */
+.modal-slider .modal-prev {
+  left: 10px; /* Posición a la izquierda en modo maximizado */
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.modal-slider .modal-next {
+  right: 10px; /* Posición a la derecha en modo maximizado */
+  top: 50%;
+  transform: translateY(-50%);
 }
 </style>

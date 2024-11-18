@@ -98,6 +98,60 @@ export const useNurseriesUserStore = defineStore('nurseriesUser',()=>{
         });
     }
 
+    const updateNurseryUser = async (id, data) => {
+        const nurseriesUserIndex = nurseriesUser.value.findIndex((nurseries) => nurseries.id === id);
+        if (nurseriesUserIndex !== -1) {
+            const response = await APIService.updateNurseriesUser(id, data)
+            if (response.status == 200) {
+                Object.assign(nurseriesUser.value[nurseriesUserIndex], data);
+                return { status: response.status, msg: response.data.message, data: response.data };
+            } else {
+                throw new Error(response.data.msg || 'Error desconocido al crear el usuario.');
+            }
+        } else {
+            if (error.response && error.response.data && error.response.data.msg) {
+                throw new Error(error.response.data.msg);
+            } else {
+                throw new Error('Error al comunicarse con el servidor.');
+            }
+        }
+    };
+
+    const changeStateNurseryUser = async (id, newState) => {
+        const nurseryUserIndex = nurseriesUser.value.findIndex((snu) => snu.id === id);
+        if (nurseryUserIndex !== -1) {
+            const response = await APIService.stateNurseriesUser(id, {newState})
+            if (response.status == 200) {
+                nurseriesUser.value[nurseryUserIndex].activo = newState;
+                return { status: response.status, msg: response.data.message, data: response.data };
+            } else {
+                throw new Error(response.data.msg || 'Error desconocido al actualizar el estado de la especie.');
+            }
+        } else {
+            if (error.response && error.response.data && error.response.data.msg) {
+                throw new Error(error.response.data.msg);
+            } else {
+                throw new Error('Error al comunicarse con el servidor.');
+            }
+        }
+    };
+
+    async function deleteNurseryUser(pk) {
+        const indexToDelete = nurseriesUser.value.findIndex(item => item.id === pk);
+      
+        if (indexToDelete === -1) {
+          return { message: "Especie no encontrada" };
+        }
+    
+        const response = await APIService.deleteNurseriesUser(pk);
+        if (response.status == 200) {
+            nurseriesUser.value.splice(indexToDelete, 1);
+            return { status: response.status, msg: response.data.message, data: response.data };
+        } else {
+            throw new Error(response.data.msg || 'Error desconocido al eliminar la especie.');
+        }
+      }
+
     return { 
         getNurseriesUser,
         changePage,
@@ -107,6 +161,11 @@ export const useNurseriesUserStore = defineStore('nurseriesUser',()=>{
         displayedNurseryUser,
         selectedSpecie,
         selectSpecieInventory,
-        selectedSpecieInventory
+        selectedSpecieInventory,
+        //Update nursery user
+        updateNurseryUser,
+        changeStateNurseryUser,
+        //Delete nursery user
+        deleteNurseryUser
     }
 })

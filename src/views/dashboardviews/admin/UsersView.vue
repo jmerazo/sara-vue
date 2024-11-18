@@ -11,7 +11,7 @@ import ModalNurseryAdd from "@/components/dashboard/modals/ModalNurseryAdd.vue";
 import ModalAssignUserSpecies from "@/components/dashboard/modals/ModalAssignUserSpecies.vue";
 import ModalUserSpeciesList from "@/components/dashboard/modals/ModalUserSpeciesList.vue";
 import AdminUser from "@/components/dashboard/cards/AdminUser.vue";
-import { descargarExcel, descargarPdf, obtenerFecha } from "@/helpers";
+import { descargarExcels, descargarPdfs, obtenerFecha } from "@/helpers";
 
 //componentes
 import LoadingData from "@/components/shared/LoadingData.vue";
@@ -63,13 +63,13 @@ const displayedPageRange = computed(() => {
       </div>
       <div class="botones__descarga">
         <a @click="
-            descargarExcel(
+            descargarExcels(
               usersStore.datosImport,
               `Listado de usuarios SARA - ${obtenerFecha()}`
             )
             " class="boton" href="#"><font-awesome-icon class="boton__excel" :icon="['fas', 'file-excel']" /></a>
         <a @click="
-            descargarPdf(
+            descargarPdfs(
               usersStore.datosImport,
               `Listado de usuarios SARA - ${obtenerFecha()}`,
               8,

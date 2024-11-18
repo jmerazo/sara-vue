@@ -1,25 +1,91 @@
 <script setup>
-
+import { defineProps } from 'vue';
 import { useNurseriesUserStore } from "@/stores/dashboard/nurseriesUser";
+import { useToast } from '../../../helpers/ToastManagement';
 
 const nurseriesUser = useNurseriesUserStore();
+const { addToast } = useToast();
 
-defineProps({
+const props = defineProps({
     nursery: {
         type: Object,
         required: true
     },
-    deleteNursery: {
+    changeNurseryUserState: {
         type: Function,
         required: true
     }
 })
+
+function onToggleChange(event) {
+  // Evita que el checkbox cambie su estado visual de inmediato
+  event.preventDefault();
+
+  // Cambiamos el estado de is_active invirtiendo el booleano (de true a false o viceversa)
+  const newState = !props.nursery.activo;
+
+  // Muestra la confirmación al usuario
+  const confirmState = window.confirm(
+    `¿Estás seguro de que deseas ${newState ? "activar" : "desactivar"} esta especie?`
+  );
+
+  // Si el usuario cancela la confirmación, restablecemos el estado visual del checkbox
+  if (!confirmState) {
+    event.target.checked = props.nursery.activo;
+    return;
+  }
+
+  // Si el usuario confirma, ejecuta el cambio de estado llamando a la función pasada por props
+  props.changeNurseryUserState(props.nursery.id, newState); // Pasamos el nuevo estado booleano (true o false)
+}
+
+async function deleteNurseryUser(id, nu) {
+    try {
+        const confirmDelete = window.confirm(
+        `¿Estás seguro de que desea eliminar la especie ${nu} del inventario?`
+        );
+        if (!confirmDelete) {
+            return;
+        }
+        const response = await nurseriesUser.deleteNurseryUser(id);
+            if(response.status == 200){
+                addToast(response.msg, {
+                type: 'success',
+                duration: 3000
+            })
+        }         
+    } catch (error) {
+        if (error.message) {
+        addToast(error.message, { 
+            type: 'error',
+            duration: 3000
+        });
+        } else {
+        addToast("Ocurrió un error al procesar la solicitud.", { 
+            type: 'error',
+            duration: 3000
+        });
+        }
+    }
+}
 </script>
 
 <template>
     <div class="card__nursery">
         <div class="card__heading">
-
+            <div class="card__options">
+                <div class="card__check">
+                    <label class="switch">
+                        <input
+                            @change="onToggleChange($event)"
+                            :checked="props.nursery.activo"
+                            class="card__input"
+                            type="checkbox"
+                        />
+                        <span class="card__check--button"></span>
+                    </label>
+                </div>
+            </div>
             <div class="card__image">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
                     <path fill="#000000" 
@@ -29,15 +95,35 @@ defineProps({
         </div>
         <div class="card__body">
             <div class="card__content">
-                <p class="dato">{{nursery.vernacularName}}</p>
+                <p class="dato">{{ nursery.vernacularName }}</p>
                 <p>{{ nursery.scientificName + " " + nursery.scientificNameAuthorship }}</p>
             </div>
             <div class="card__content">
-                <p>Cantidad base: {{ nursery.cantidad_stock }}</p>
-                <p>Vendidas: {{ nursery.ventas_realizadas }}</p>
-                <p>Disponible: {{ nursery.cantidad_stock - nursery.ventas_realizadas }}</p>
+                <table class="inventory-table">
+                    <thead>
+                        <tr>
+                            <th>Tipo</th>
+                            <th>Cantidad</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Cantidad base</td>
+                            <td>{{ nursery.cantidad_stock }}</td>
+                        </tr>
+                        <tr>
+                            <td>Vendidas</td>
+                            <td>{{ nursery.ventas_realizadas }}</td>
+                        </tr>
+                        <tr>
+                            <td>Disponible</td>
+                            <td>{{ nursery.cantidad_stock - nursery.ventas_realizadas }}</td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
+
         <div class="card__footer">
             <div class="footer__image">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
@@ -47,8 +133,8 @@ defineProps({
             </div>
             <div class="buttons">
                 <button @click="nurseriesUser.selectedSpecieInventory(nursery.id)" class="nav__element animation"><span class="nav__text">Actualizar inventario</span></button>
-                <button @click="nurseriesUser.selectedUpdateNursery(nursery.id)" class="nav__element animation"><span class="nav__text">Desactivar especie</span></button>
-                <button @click="deleteNursery(nursery.id, nursery.nombre_vivero)" class="nav__element animation" style="color: rgb(200, 73, 12);"><span class="nav__text">Eliminar especie</span></button>
+                <!-- <button @click="nurseriesUser.selectedUpdateNursery(nursery.id)" class="nav__element animation"><span class="nav__text">Desactivar especie</span></button> -->
+                <button @click="deleteNurseryUser(nursery.id, nursery.vernacularName)" class="nav__element animation" style="color: rgb(200, 73, 12);"><span class="nav__text">Eliminar especie</span></button>
             </div>
         </div>
     </div>
@@ -136,7 +222,7 @@ defineProps({
     background: var(--blanco);
     bottom: 0;
     transition: all .3s ease-in-out;
-    transform: translateY(78%);
+    transform: translateY(70%);
 }
 
 .card__footer:hover {
@@ -200,4 +286,115 @@ defineProps({
         width: 360px;
     }
 }
+
+.card__options {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: .5rem 1rem
+}
+
+.card__user {
+    position: relative;
+    width: 310px;
+    background-color: var(--blanco);
+    border-radius: 0.5rem;
+    box-shadow: 0 0 0.5rem #00000030;
+    padding-bottom: 3rem;
+    overflow: hidden;
+}
+
+@media (min-width: 768px) {
+    .card__user {  
+        width: 350px;
+    }
+}
+
+/* switch */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 40px;
+    height: 24px;
+    margin-left: 4px;
+}
+
+.switch .tabla__input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.card__check--button {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--secondary);
+    -webkit-transition: 0.4s;
+    transition: 0.4s;
+    border-radius: 34px;
+}
+
+.card__check--button:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    -webkit-transition: 0.4s;
+    transition: 0.4s;
+    border-radius: 50%;
+}
+
+.card__input:checked+.card__check--button {
+    background-color: var(--primary);
+}
+
+.card__input:focus+.card__check--button {
+    box-shadow: 0 0 1px var(--primary);
+}
+
+.card__input:checked+.card__check--button:before {
+    -webkit-transform: translateX(16px);
+    -ms-transform: translateX(16px);
+    transform: translateX(16px);
+}
+
+.inventory-table {
+    width: 100%;
+    border-collapse: separate; /* Cambiar a "separate" para soportar bordes redondeados */
+    border-spacing: 0; /* Asegura que no haya espacio entre celdas */
+    margin-top: 1rem;
+    font-size: 1rem;
+    border-radius: 8px; /* Bordes redondeados para toda la tabla */
+    overflow: hidden; /* Asegura que los bordes redondeados se apliquen correctamente */
+    border: 1px solid #ddd; /* Borde exterior de la tabla */
+}
+
+.inventory-table th,
+.inventory-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center;
+}
+
+.inventory-table th {
+    background-color: var(--primary);
+    color: white;
+    font-weight: bold;
+}
+
+.inventory-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.inventory-table tr:hover {
+    background-color: #f1f1f1;
+}
+
 </style>

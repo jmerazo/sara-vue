@@ -205,7 +205,7 @@ onBeforeRouteLeave((to, from, next) => {
   </div>
   <div>
     <QuoteButton />
-    <PagesQueries :scientificName="consulta.specie.scientificName" :vernacularName="consulta.specie.vernacularName" />
+    <PagesQueries v-if="consulta.specie.scientificName" :scientificName="consulta.specie.scientificName" :vernacularName="consulta.specie.vernacularName" />
   </div>
 </template>
 

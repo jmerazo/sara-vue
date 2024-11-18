@@ -2,15 +2,18 @@
 import { ref, onMounted, computed, watch } from 'vue';
 import { useNurseriesUserStore } from "@/stores/dashboard/nurseriesUser";
 import { useModalStore } from "@/stores/modal";
+import { useToast } from '../../../helpers/ToastManagement';
 
 const nurseriesUser = useNurseriesUserStore();
 const modal = useModalStore();
+const { addToast } = useToast();
 
 const formData = ref({
   tipo_venta: '',
   unidad_medida: '',
   cantidad_stock: '',
   ventas_realizadas: '',
+  total_disponible: '',
   observaciones: '',
 });
 
@@ -22,6 +25,7 @@ const initializeFormData = () => {
       unidad_medida: selectedNursery.unidad_medida || "",
       cantidad_stock: selectedNursery.cantidad_stock || "",
       ventas_realizadas: selectedNursery.ventas_realizadas || "",
+      total_disponible: selectedNursery.total_disponible || "",
       observaciones: selectedNursery.observaciones || "",
     };
   } else {
@@ -31,14 +35,48 @@ const initializeFormData = () => {
       unidad_medida: '',
       cantidad_stock: '',
       ventas_realizadas: '',
+      total_disponible: '',
       observaciones: ''
     };
   }
 };
 
+// Cálculo automático de total_disponible
+const totalDisponible = computed(() => {
+  const stock = parseInt(formData.value.cantidad_stock || 0);
+  const ventas = parseInt(formData.value.ventas_realizadas || 0);
+  return stock - ventas >= 0 ? stock - ventas : 0; // Evita valores negativos
+});
+
+// Sincronizar el valor calculado con formData
+watch(totalDisponible, (newValue) => {
+  formData.value.total_disponible = newValue;
+});
+
 async function nurseryUserUpdate() {
-  await nurseriesUser.updateNursery(nurseriesUser.nurseryUpdateSelected[0].id, formData.value);
-  modal.handleClickModalSpecieInventory();
+  try {
+    const response = await nurseriesUser.updateNurseryUser(nurseriesUser.selectedSpecie[0].id, formData.value);
+    
+    if(response.status == 200){
+      addToast(response.msg, {
+        type: 'success',
+        duration: 3000
+      })
+      modal.handleClickModalSpecieInventory();
+    }    
+  } catch (error) {
+    if (error.message) {
+      addToast(error.message, { 
+        type: 'error',
+        duration: 3000
+      });
+    } else {
+      addToast("Ocurrió un error al procesar la solicitud.", { 
+        type: 'error',
+        duration: 3000
+      });
+    }    
+  }
 }
 
 watch(
@@ -69,19 +107,44 @@ onMounted(() => {
       <div class="form__modal--content">
 
         <h3 class="form__modal--title">Actualizar inventario</h3>
-        <!-- <span>{{ nurseriesUser.nurseriesUser.vernacularName }}</span> -->
         <hr>
         <form class="form__modal" @submit.prevent="nurseryUserUpdate">
 
           <div class="form__modal--field">
             <label class="form__modal--label" for="usuario">Tipo de venta: </label>
-            <input class="form__modal--input" type="text" v-model="formData.tipo_venta">
+            <select name="tipo_venta" id="tipo_venta" class="form__modal--input" v-model="formData.tipo_venta">
+                <option value="null" selected disabled>
+                  {{ nurseriesUser.selectedSpecie[0].tipo_venta }}
+                </option>
+                <option value="Plántulas">
+                  Plántulas
+                </option>
+                <option value="Semillas">
+                  Semillas
+                </option>
+            </select>
           </div>
 
 
           <div class="form__modal--field">
             <label class="form__modal--label" for="usuario">Unidad de medida: </label>
-            <input class="form__modal--input" type="text" v-model="formData.unidad_medida">
+            <select name="unidad_medida" id="unidad_medida" class="form__modal--input" v-model="formData.unidad_medida">
+                <option value="null" selected disabled>
+                  {{ nurseriesUser.selectedSpecie[0].unidad_medida }}
+                </option>
+                <option value="Número">
+                  Número
+                </option>
+                <option value="Unidad">
+                  Unidad
+                </option>
+                <option value="Kilogramo">
+                  Kilogramo
+                </option>
+                <option value="Gramo">
+                  Gramo
+                </option>
+            </select>
           </div>
 
 
@@ -94,6 +157,11 @@ onMounted(() => {
           <div class="form__modal--field">
             <label class="form__modal--label">Ventas realizadas: </label>
             <input class="form__modal--input" type="text" v-model="formData.ventas_realizadas">
+          </div>
+
+          <div class="form__modal--field">
+            <label class="form__modal--label">Total disponible: </label>
+            <input class="form__modal--input" type="text" v-model="formData.total_disponible" disabled>
           </div>
 
           <div class="form__modal--field">

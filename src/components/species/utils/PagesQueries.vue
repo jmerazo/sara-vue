@@ -1,5 +1,8 @@
 <script setup>
 import { defineProps } from 'vue';
+import { useConsultaStore } from "@/stores/consulta";
+
+const consulta = useConsultaStore();
 
 const props = defineProps({
   scientificName: {

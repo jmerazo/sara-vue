@@ -27,7 +27,7 @@ export const useConsultaStore = defineStore("consulta", () => {
   }
 
   async function consultSpecie(code_specie, queryPage) {
-
+    
     try {
 
       const { data } = await APIService.lookSpecie(code_specie);
