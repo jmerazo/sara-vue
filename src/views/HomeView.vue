@@ -90,7 +90,7 @@ onMounted(async () => {
           <div class="card" v-else-if="seccion.titulo === 'Objetivo'">
             <div class="front" :style="{
               backgroundImage:
-                'url(/img/backgroundCard/background-valores.jpeg)',
+                'url(/img/backgroundCard/background-objetivo.jpeg)',
             }">
               <div vel class="front__content">
                 <p class="card__label">{{ seccion.titulo }}</p>

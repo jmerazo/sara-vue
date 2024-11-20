@@ -3,7 +3,7 @@ import { ref, computed } from "vue";
 import Alerta from "@/components/dashboard/base/Alert.vue";
 import { useSpecieMonitoring } from "@/stores/dashboard/reports/SpecieMonitoring";
 
-import { descargarExcel, descargarPdf, obtenerFecha } from "@/helpers";
+import { descargarExcels, descargarPdfs, obtenerFecha } from "@/helpers";
 
 const consulta = useSpecieMonitoring();
 
@@ -87,13 +87,13 @@ const displayedPageRange = computed(() => {
     </fieldset>
     <div class="botones__descarga" v-if="displayedPageRange.length > 1">
       <a @click="
-      descargarExcel(
+      descargarExcels(
         consulta.datosImport,
         `Monitoreos ${consulta.nombreEspecie} - ${obtenerFecha()}`
       )
       " class="boton" href="#"><font-awesome-icon class="boton__excel" :icon="['fas', 'file-excel']" /></a>
       <a @click="
-      descargarPdf(
+      descargarPdfs(
         consulta.datosImport,
         `Monitoreos de la especie ${consulta.nombreEspecie} - ${obtenerFecha()}`, 11, 5
       )

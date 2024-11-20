@@ -2,7 +2,7 @@
 import { computed } from "vue";
 import { onBeforeRouteLeave } from "vue-router";
 import { useEspeciesData } from "@/stores/dashboard/reports/speciesData";
-import { descargarExcel, descargarPdf, obtenerFecha } from "@/helpers";
+import { descargarExcels, descargarPdfs, obtenerFecha } from "@/helpers";
 
 //componentes
 import LoadingData from "@/components/shared/LoadingData.vue";
@@ -40,10 +40,10 @@ const displayedPageRange = computed(() => {
           @input="especies.buscarTermino($event.target.value)" />
       </div>
       <div class="botones__descarga" v-if="displayedPageRange.length > 1">
-        <a @click="descargarExcel(especies.datosImport, 'Datos generales')" class="boton" href="#"><font-awesome-icon
+        <a @click="descargarExcels(especies.datosImport, 'Datos generales')" class="boton" href="#"><font-awesome-icon
             class="boton__excel" :icon="['fas', 'file-excel']" /></a>
         <a @click="
-            descargarPdf(
+            descargarPdfs(
               especies.datosImport,
               `Datos generales - ${obtenerFecha()}`,
               6,

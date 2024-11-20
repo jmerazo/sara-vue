@@ -4,8 +4,8 @@ import { onBeforeRouteLeave } from "vue-router";
 import { useEspeciesStore } from "@/stores/species";
 import { useModalStore } from "@/stores/modal";
 import {
-  descargarExcel,
-  descargarPdf,
+  descargarExcels,
+  descargarPdfs,
   obtenerFecha,
   getFullImageUrl,
 } from "@/helpers";
@@ -75,13 +75,13 @@ const displayedPageRange = computed(() => {
       </div>
       <div class="botones__descarga">
         <a @click="
-            descargarExcel(
+            descargarExcels(
               especies.datosImport,
               `Listado de especies forestales - ${obtenerFecha()}`
             )
             " class="boton" href="#"><font-awesome-icon class="boton__excel" :icon="['fas', 'file-excel']" /></a>
         <a @click="
-            descargarPdf(
+            descargarPdfs(
               especies.datosImport,
               `Listado de especies forestales - ${obtenerFecha()}`,
               5,

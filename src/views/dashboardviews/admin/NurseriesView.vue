@@ -14,7 +14,7 @@ import Nursery from "@/components/dashboard/cards/Nursery.vue";
 import LoadingData from "@/components/shared/LoadingData.vue";
 
 //helpers
-import { descargarExcel, descargarPdf, obtenerFecha } from "@/helpers";
+import { descargarExcels, descargarPdfs, obtenerFecha } from "@/helpers";
 
 
 const nurseriesStore = useNurseriesDashStore();
@@ -65,13 +65,13 @@ function deleteNursery(id, nu) {
       </div>
       <div class="botones__descarga">
         <a @click="
-            descargarExcel(
+            descargarExcels(
               nurseriesStore.datosImport,
               `Listado de viveros SARA - ${obtenerFecha()}`
             )
             " class="boton" href="#"><font-awesome-icon class="boton__excel" :icon="['fas', 'file-excel']" /></a>
         <a @click="
-            descargarPdf(
+            descargarPdfs(
               nurseriesStore.datosImport,
               `Listado de usuarios SARA - ${obtenerFecha()}`,
               8,

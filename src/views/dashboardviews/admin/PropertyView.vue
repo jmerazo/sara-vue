@@ -13,7 +13,7 @@ import { useModalStore } from "@/stores/modal";
 
 
 
-import { descargarExcel, descargarPdf, obtenerFecha } from "@/helpers";
+import { descargarExcels, descargarPdfs, obtenerFecha } from "@/helpers";
 
 //componentes
 import LoadingData from "@/components/shared/LoadingData.vue";
@@ -66,13 +66,13 @@ function deleteProperty(id, nu) {
       </div>
       <div class="botones__descarga">
         <a @click="
-            descargarExcel(
+            descargarExcels(
               propertiesStore.datosImport,
               `Listado de predios SARA - ${obtenerFecha()}`
             )
             " class="boton" href="#"><font-awesome-icon class="boton__excel" :icon="['fas', 'file-excel']" /></a>
         <a @click="
-            descargarPdf(
+            descargarPdfs(
               propertiesStore.datosImport,
               `Listado de usuarios SARA - ${obtenerFecha()}`,
               8,

@@ -1,6 +1,6 @@
 <script setup>
 import { computed } from "vue";
-import { descargarExcel, descargarPdf, obtenerFecha } from "@/helpers";
+import { descargarExcels, descargarPdfs, obtenerFecha } from "@/helpers";
 import { useCandidateStore } from '@/stores/dashboard/reports/SpecieCandidates'
 import ModalInfoCandidate from '@/components/dashboard/modals/ModalInfoCandidate.vue';
 import ModalCandidates from '@/components/dashboard/modals/ModalCandidates.vue'
@@ -42,13 +42,13 @@ const displayedPageRange = computed(() => {
         />
       </div>
       <div class="botones__descarga" v-if="displayedPageRange.length > 1">
-        <a @click="descargarExcel(consulta.datosImport,`candidatos ${consulta.nombreEspecie}`)" class="boton" href="#"
+        <a @click="descargarExcels(consulta.datosImport,`candidatos ${consulta.nombreEspecie}`)" class="boton" href="#"
           ><font-awesome-icon
             class="boton__excel"
             :icon="['fas', 'file-excel']"
         /></a>
         <a
-          @click="descargarPdf(consulta.datosImport, `candidatos de la especie ${consulta.nombreEspecie} - ${obtenerFecha()}`,8,1)"
+          @click="descargarPdfs(consulta.datosImport, `candidatos de la especie ${consulta.nombreEspecie} - ${obtenerFecha()}`,8,1)"
           class="boton"
           href="#"
           ><font-awesome-icon class="boton__pdf" :icon="['fas', 'file-pdf']"

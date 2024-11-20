@@ -1,7 +1,7 @@
 <script setup>
 import { useModalStore } from "@/stores/modal";
 import { useCandidateStore } from "@/stores/dashboard/reports/SpecieCandidates";
-import { descargarExcel, descargarPdf, obtenerFecha } from "@/helpers";
+import { descargarExcels, descargarPdfs, obtenerFecha } from "@/helpers";
 
 const modal = useModalStore();
 const consulta = useCandidateStore();
@@ -38,7 +38,7 @@ function toggleDetalles(idLista) {
             <div class="botones__descarga" >
               <a
                 @click="
-                  descargarExcel(
+                  descargarExcels(
                     consulta.monitoreosCandidato,
                     `Monitoreos candidato ${consulta.idCandidato}- ${obtenerFecha()}`
                   )
@@ -51,7 +51,7 @@ function toggleDetalles(idLista) {
               /></a>
               <a
                 @click="
-                  descargarPdf(
+                  descargarPdfs(
                     consulta.monitoreosCandidato,
                     `Monitoreos del candidato ${
                       consulta.idCandidato
