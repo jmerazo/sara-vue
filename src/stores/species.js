@@ -22,12 +22,41 @@ export const useEspeciesStore = defineStore('especies', () => {
     const currentPage = ref(1); // Página actual
     const itemsPerPage = ref(12); // Elementos por página
 
-
     async function loadAllSpecies() {
       if (speciesOriginals.value.length === 0) { // Solo carga si no hay datos
         cargando.value = true;
         try {
           const { data } = await APIService.getSpecies();
+          
+          // Filter species where images.protocol is not null or empty
+          const filteredData = data.filter(specie => 
+            specie.images && specie.images.length > 0 &&
+            specie.images.some(image => image.protocol && image.protocol.trim() !== '')
+          );
+          
+          species.value = filteredData;
+          speciesOriginals.value = filteredData;
+    
+          const uniqueSpecies = [...new Map(filteredData.map(specie => [specie.vernacularName, specie])).values()];
+          uniqueNomComunes.value = uniqueSpecies.map(specie => ({
+            vernacularName: specie.vernacularName,
+            nombre_cientifico: specie.nombre_cientifico,
+            code_specie: specie.code_specie,
+          }));
+        } catch (error) {
+          console.error("Error al cargar las especies:", error);
+        } finally {
+          cargando.value = false;
+        }
+      }
+    }    
+
+    /* async function loadAllSpecies() {
+      if (speciesOriginals.value.length === 0) { // Solo carga si no hay datos
+        cargando.value = true;
+        try {
+          const { data } = await APIService.getSpecies();
+          console.log('data species ', data)
           species.value = data;
           speciesOriginals.value = data;
           const uniqueSpecies = [...new Map(data.map(specie => [specie.vernacularName, specie])).values()];
@@ -42,7 +71,7 @@ export const useEspeciesStore = defineStore('especies', () => {
           cargando.value = false;
         }
       }
-    } 
+    }  */
     
     function selectSpecieByCode(code_specie) {
       specie.value = speciesOriginals.value.find(specie => specie.code_specie === code_specie);

@@ -261,6 +261,20 @@ export const useGeoCandidateTrees = defineStore("geoCandidateTrees", () => {
         }
     }
 
+    if (source === 'SISA') {
+      if (departmentCode && city) {
+          filteredData = filteredData.filter(item => item.departamento_id == departmentCode && item.municipio_id == city);
+      } 
+      // Filtrar por solo "departmentCode" si se proporciona
+      else if (departmentCode) {
+          filteredData = filteredData.filter(item => item.departamento_id == departmentCode);
+      } 
+      // Filtrar por solo "city" si se proporciona
+      else if (city) {
+          filteredData = filteredData.filter(item => item.municipio_id == city);
+      }
+    }
+
     // Asignar los datos filtrados a geoDataNew
     geoDataNew.value = filteredData.map(item => ({
         lon: item.lon,

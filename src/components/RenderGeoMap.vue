@@ -79,6 +79,8 @@ import treeIconPath from "/icons/icon_tree_green.png";
 import treeIconGBIFPath from "/icons/icon_tree_pink.png";
 import treePalmIconGreenPath from "/icons/icon_tree_palm_green.png";
 import treePalmIconPinkPath from "/icons/icon_tree_palm_pink.png";
+import treeIconSisaPath from "/icons/icon_tree_sisa.png";
+import treePalmIconSisaPath from "/icons/icon_tree_palm_sisa.png";
 import { useGeoCandidateTrees } from "../stores/candidate";
 import { defaults as defaultControls, Zoom } from 'ol/control';
 
@@ -273,6 +275,22 @@ function drawMap(perimeterCoordinates, vectorSource) {
     }),
   });
 
+  const treeIconSISAStyle = new Style({
+    image: new Icon({
+      src: treeIconSisaPath,
+      scale: 0.06,
+      anchor: [0.5, 1],
+    }),
+  });
+
+  const treePalmSISAIconStyle = new Style({
+    image: new Icon({
+      src: treePalmIconSisaPath,
+      scale: 0.06,
+      anchor: [0.5, 1],
+    }),
+  });
+
   const vectorLayer = new VectorLayer({
     source: vectorSource,
     style: function (feature) {
@@ -290,6 +308,12 @@ function drawMap(perimeterCoordinates, vectorSource) {
           return treeIconGBIFStyle;
         } else if (habito === 'Palma') {
           return treePalmGBIFIconStyle;
+        }
+      } else if (source === 'SISA') {
+        if (habito === 'Árbol') {
+          return treeIconSISAStyle;
+        } else if (habito === 'Palma') {
+          return treePalmSISAIconStyle;
         }
       }
     },

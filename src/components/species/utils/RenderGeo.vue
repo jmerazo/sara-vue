@@ -15,11 +15,13 @@ import treeIconPath from "/icons/icon_tree_green.png";
 import treeIconGBIFPath from "/icons/icon_tree_pink.png";
 import treePalmIconGreenPath from "/icons/icon_tree_palm_green.png";
 import treePalmIconPinkPath from "/icons/icon_tree_palm_pink.png";
+import treeIconSisaPath from "/icons/icon_tree_sisa.png";
+import treePalmIconSisaPath from "/icons/icon_tree_palm_sisa.png";
 
 const mapContainer = ref(null);
 const map = shallowRef(null);
 const { filteredData } = defineProps(['filteredData']);
-
+console.log('map general ', filteredData)
 
 const geojsonSource = new VectorSource({
   url: '/geojson/export.geojson',
@@ -73,6 +75,22 @@ const treePalmGBIFIconStyle = new Style({
   }),
 });
 
+const treeIconSisaStyle = new Style({
+  image: new Icon({
+    src: treeIconSisaPath,
+    scale: 0.06,
+    anchor: [0.5, 1],
+  }),
+});
+
+const treePalmSisaIconStyle = new Style({
+  image: new Icon({
+    src: treePalmIconSisaPath,
+    scale: 0.06,
+    anchor: [0.5, 1],
+  }),
+});
+
 const vectorLayer = new VectorLayer({
   source: vectorSource,
   style: function (feature) {
@@ -91,7 +109,14 @@ const vectorLayer = new VectorLayer({
       } else if (habito === 'Palma') {
         return treePalmGBIFIconStyle;
       }
+    } else if (source === 'SISA') {
+      if (habito === 'Árbol') {
+        return treeIconSisaStyle;
+      } else if (habito === 'Palma') {
+        return treePalmSisaIconStyle;
+      }
     }
+    
     // Default style if none of the conditions are met
     return treeIconStyle;
   },
@@ -158,19 +183,20 @@ watch(() => filteredData, (newData) => {
 
       <div class="legend-item">
         <img :src="treeIconPath" alt="Árbol Corpoamazonia" class="legend-icon">
-        <span>Árbol - Corpoamazonia</span>
-      </div>
-      <div class="legend-item">
         <img :src="treePalmIconGreenPath" alt="Palma Corpoamazonia" class="legend-icon">
-        <span>Palma - Corpoamazonia</span>
+        <span>Corpoamazonia Proyecto Semillas</span>
       </div>
+
+      <div class="legend-item">
+        <img :src="treeIconSisaPath" alt="Árbol Corpoamazonia" class="legend-icon">
+        <img :src="treePalmIconSisaPath" alt="Palma Corpoamazonia" class="legend-icon">
+        <span>Corpoamazonia SISA</span>
+      </div>
+
       <div class="legend-item">
         <img :src="treeIconGBIFPath" alt="Árbol GBIF" class="legend-icon">
-        <span>Árbol - GBIF (Global Biodiversity Information Facility)</span>
-      </div>
-      <div class="legend-item">
         <img :src="treePalmIconPinkPath" alt="Palma GBIF" class="legend-icon">
-        <span>Palma - GBIF (Global Biodiversity Information Facility)</span>
+        <span>GBIF (Global Biodiversity Information Facility)</span>
       </div>
     </div>
   </div>

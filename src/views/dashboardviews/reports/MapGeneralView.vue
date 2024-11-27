@@ -9,6 +9,8 @@ import treeIconPath from "/icons/icon_tree_green.png";
 import treeIconGBIFPath from "/icons/icon_tree_pink.png";
 import treePalmIconGreenPath from "/icons/icon_tree_palm_green.png";
 import treePalmIconPinkPath from "/icons/icon_tree_palm_pink.png";
+import treeIconSisaPath from "/icons/icon_tree_sisa.png";
+import treePalmIconSisaPath from "/icons/icon_tree_palm_sisa.png";
 
 const locates = locatesColombia();
 const geoStore = useGeoCandidateTrees();
@@ -109,6 +111,7 @@ function execDeleteParameter() {
               Seleccione una fuente de datos...
             </option>
             <option value="gbif">GBIF</option>
+            <option value="SISA">SISA</option>
             <option value="original">Proyecto Semillas</option>
           </select>
 
@@ -214,19 +217,18 @@ function execDeleteParameter() {
 
         <div class="legend-item">
           <img :src="treeIconPath" alt="Árbol Corpoamazonia" class="legend-icon">
-          <span>Árbol - Corpoamazonia</span>
+          <img :src="treePalmIconGreenPath" alt="Palma Corpoamazonia" class="legend-icon">
+          <span>Corpoamazonia Proyectos Semillas</span>
         </div>
         <div class="legend-item">
-          <img :src="treePalmIconGreenPath" alt="Palma Corpoamazonia" class="legend-icon">
-          <span>Palma - Corpoamazonia</span>
+          <img :src="treeIconSisaPath" alt="Árbol Corpoamazonia" class="legend-icon">
+          <img :src="treePalmIconSisaPath" alt="Palma Corpoamazonia" class="legend-icon">
+          <span>Corpoamazonia SISA</span>
         </div>
         <div class="legend-item">
           <img :src="treeIconGBIFPath" alt="Árbol GBIF" class="legend-icon">
-          <span>Árbol - GBIF (Global Biodiversity Information Facility)</span>
-        </div>
-        <div class="legend-item">
           <img :src="treePalmIconPinkPath" alt="Palma GBIF" class="legend-icon">
-          <span>Palma - GBIF (Global Biodiversity Information Facility)</span>
+          <span>GBIF (Global Biodiversity Information Facility)</span>
         </div>
         </div>
       </div>
