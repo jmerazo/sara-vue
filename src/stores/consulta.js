@@ -3,6 +3,7 @@ import { defineStore } from "pinia";
 import { useRouter } from "vue-router";
 import { useModalStore } from "@/stores/modal";
 import { useToastStore } from "./toast";
+import api from '../api/axios';
 
 import APIService from "@/services/APIService";
 

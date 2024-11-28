@@ -10,6 +10,11 @@ import jsPDF from 'jspdf';
 import 'jspdf-autotable'; // Importar autoTable plugin
 /*** funciones helpers ****/
 
+export const getImagesFlipbook = (code_specie, num_page) => {
+  const baseUrlImages = `http://localhost:8000/api/images/${code_specie}/flipbook/page_${num_page}.jpg`;
+  return baseUrlImages;
+}
+
 //funcion para obtener la ruta de una imagen formateada
 export const getFullImageUrl = (relativePath, allowDefault = true) => {
   try {

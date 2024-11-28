@@ -2,8 +2,7 @@
 import { computed, onMounted, ref } from 'vue';
 import { useRoute, onBeforeRouteLeave  } from 'vue-router'
 import { useConsultaStore } from '../stores/consulta';
-import { getFullImageUrl } from "@/helpers/";
-import { getDocument, GlobalWorkerOptions } from 'pdfjs-dist';
+import { getFullImageUrl, getImagesFlipbook } from "@/helpers/";
 import { PageFlip } from 'page-flip';
 
 //components
@@ -27,50 +26,12 @@ const pageHeight = ref(0);
 const currentPage = ref(0)
 const isFlipbookVisible = ref(false);
 
-// Configurar el worker de PDF.js con la versión correcta
-GlobalWorkerOptions.workerSrc = 'https://unpkg.com/pdfjs-dist@2.16.105/build/pdf.worker.min.js';
-
-//variable to take the value from nav
 const navValue = ref('protocol')
 const changeValueNav = ((item) => {
   navValue.value = item
 })
 
 const noProtocol = ref(true)
-const convertPdfToImages = async (pdfUrl) => {
-  if (!pdfUrl || pdfUrl === "/img/sin_img.png") {
-    console.log('URL del PDF no proporcionada o vacía. No se procesará nada.');
-    return;
-  }
-  noProtocol.value = false
-  isFlipbookVisible.value = false;
-  try {
-    const pdf = await getDocument(pdfUrl).promise
-    const numPages = pdf.numPages
-    const imagePromises = []
-
-    for (let pageNum = 1; pageNum <= numPages; pageNum++) {
-      imagePromises.push(
-        pdf.getPage(pageNum).then(async (page) => {
-          const viewport = page.getViewport({ scale: 2.5 })
-          const canvas = document.createElement('canvas')
-          const context = canvas.getContext('2d')
-          canvas.height = viewport.height
-          canvas.width = viewport.width
-
-          await page.render({ canvasContext: context, viewport }).promise
-
-          return canvas.toDataURL('image/png')
-        })
-      )
-    }
-
-    images.value = await Promise.all(imagePromises)
-
-  } catch (error) {
-    console.error('Error al convertir PDF a imágenes:', error)
-  }
-}
 
 const initPageFlip = () => {
 
@@ -105,13 +66,16 @@ const initPageFlip = () => {
 };
 
 onMounted(async () => {
-  window.scrollTo({ top: 0, behavior: 'smooth' }); // Para que la vista se visualice en top
+  window.scrollTo({ top: 0, behavior: 'smooth' });
   await consulta.consultSpecie(currentSpecie.value, 'busqueda')
-  // Configuración del flipbook y carga del PDF
   getFlipbookDimensions();
-  const pdfUrl = getFullImageUrl(consulta.specie.images[0].protocol);
-  await convertPdfToImages(pdfUrl);
-  initPageFlip();  
+  if (consulta.specie.num_pages > 0) {
+    noProtocol.value = false;
+    await fetchImagesForFlipbook(consulta.specie.code_specie, consulta.specie.num_pages);
+    initPageFlip();
+  } else {
+    noProtocol.value = true;
+  }
 })
 
 const backgroundStyle = computed(() => {
@@ -142,6 +106,10 @@ function getFlipbookDimensions() {
     pageHeight.value = 700;
     return
   }
+};
+
+const fetchImagesForFlipbook = async (codeSpecie, numPages) => {
+  images.value = Array.from({ length: numPages }, (_, i) => getImagesFlipbook(codeSpecie, i + 1));
 };
 
 onBeforeRouteLeave((to, from, next) => {
