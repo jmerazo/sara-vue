@@ -3,7 +3,7 @@ import { computed, onMounted} from "vue";
 import { onBeforeRouteLeave } from "vue-router";
 import { useUsersValidateStore } from "@/stores/dashboard/usersValidate";
 import AdminUserValidate from "@/components/dashboard/cards/AdminUserValidate.vue";
-import { descargarExcel, descargarPdf, obtenerFecha } from "@/helpers";
+import { descargarExcels, descargarPdfs, obtenerFecha } from "@/helpers";
 
 //componentes
 import LoadingData from "@/components/shared/LoadingData.vue";

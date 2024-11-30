@@ -33,7 +33,7 @@ export const useConsultaStore = defineStore("consulta", () => {
 
       const { data } = await APIService.lookSpecie(code_specie);
       specie.value = data;
-
+      console.log('data ', data)
       let lastCreatedGBIF = null;
         
       data.geo_data.forEach((item) => {

@@ -21,7 +21,6 @@ import treePalmIconSisaPath from "/icons/icon_tree_palm_sisa.png";
 const mapContainer = ref(null);
 const map = shallowRef(null);
 const { filteredData } = defineProps(['filteredData']);
-console.log('map general ', filteredData)
 
 const geojsonSource = new VectorSource({
   url: '/geojson/export.geojson',

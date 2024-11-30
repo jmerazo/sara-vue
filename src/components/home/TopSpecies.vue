@@ -8,6 +8,7 @@ import { useHomeStore } from "@/stores/home";
 import { useConsultaStore } from "@/stores/consulta";
 
 const homeStore = useHomeStore();
+console.log('topspecies ', homeStore.topSpecies)
 const consulta = useConsultaStore();
 const router = useRouter();
 
@@ -26,7 +27,7 @@ const goToViewSpecies = () => {
             <div class="topEspecie__contenido" v-for="specie in homeStore.topSpecies" :key="specie.cod_especie">
                 <div class="topEspecie__contenido-imagen" :style="{
                     backgroundImage:
-                        'url(' + getFullImageUrl(specie.images[0].img_general) + ')',
+                        'url(' + getFullImageUrl(specie.img_general) + ')',
                 }">
                     <a class="topEspeice__enlace animacion" @click="router.push(`/busqueda/${specie.code_specie}`)"><span
                             class="animacion__text">{{ specie.vernacularName.split(' ')[0] }}</span></a>

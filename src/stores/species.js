@@ -22,7 +22,7 @@ export const useEspeciesStore = defineStore('especies', () => {
     const currentPage = ref(1); // Página actual
     const itemsPerPage = ref(12); // Elementos por página
 
-    /* async function loadAllSpecies() {
+    async function loadAllSpecies() {
       if (speciesOriginals.value.length === 0) { // Solo carga si no hay datos
         cargando.value = true;
         try {
@@ -49,9 +49,9 @@ export const useEspeciesStore = defineStore('especies', () => {
           cargando.value = false;
         }
       }
-    } */    
+    }    
 
-    async function loadAllSpecies() {
+    /* async function loadAllSpecies() {
       if (speciesOriginals.value.length === 0) { // Solo carga si no hay datos
         cargando.value = true;
         try {
@@ -71,7 +71,7 @@ export const useEspeciesStore = defineStore('especies', () => {
           cargando.value = false;
         }
       }
-    }
+    } */
     
     function selectSpecieByCode(code_specie) {
       specie.value = speciesOriginals.value.find(specie => specie.code_specie === code_specie);

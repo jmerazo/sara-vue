@@ -12,6 +12,7 @@ import 'jspdf-autotable'; // Importar autoTable plugin
 
 export const getImagesFlipbook = (code_specie, num_page) => {
   const baseUrlImages = `http://localhost:8000/api/images/${code_specie}/flipbook/page_${num_page}.jpg`;
+  //const baseUrlImages = `https://apisara.corpoamazonia.gov.co/api/images/${code_specie}/flipbook/page_${num_page}.jpg`;
   return baseUrlImages;
 }
 

@@ -1,7 +1,6 @@
 <script setup>
 import { computed, onMounted, ref } from "vue";
 import { onBeforeRouteLeave } from "vue-router";
-import { descargarExcel, descargarPdf, obtenerFecha } from "@/helpers";
 import { usePageContent } from "../../stores/page";
 import { useModalStore } from "@/stores/modal";
 //componentes
