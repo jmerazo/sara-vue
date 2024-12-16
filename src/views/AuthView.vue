@@ -92,6 +92,7 @@ function changeForm() {
 
 const filteredCities = computed(() => {
   const { department } = formData.value;
+  console.log('department ', department)
   if (department) {
     return locates.cities.filter(city => city.department === department);
   }
@@ -243,9 +244,9 @@ function showLoginError(message) {
               <div class="logo" @click="loginSocial('google')">
                 <img src="/icons/google.png" class="logos__oauth2" />
               </div>
-              <div class="logo" @click="loginSocial('microsoft')">
+              <!-- <div class="logo" @click="loginSocial('microsoft')">
                 <img src="/icons/outlook.png" class="logos__oauth2" />
-              </div>
+              </div> -->
             </div>
           </div>
         </form>
@@ -318,12 +319,14 @@ function showLoginError(message) {
                 </path>
               </svg>
             </div>
-            <select v-model="formData.department" style="color: gray;" name="department" id="department">
-              <option value="">--Departamento--</option>
-              <option v-for="loc in locates.departments" :key="loc.id" :value="loc.code">
-                {{ loc.name }}
-              </option>
-            </select>
+              <select name="department" id="department" class="form__modal--input" v-model="formData.department">
+                <option value="null" selected disabled>
+                  Seleccione un departamento...
+                </option>
+                <option v-for="loc in locates.departments" :key="loc.id" :value="loc.id">
+                  {{ loc.name }}
+                </option>
+              </select>
             <!-- <input type="text" v-model="formData.department" placeholder="Departamento"> -->
           </div>
           <div class="form__field">
@@ -334,13 +337,14 @@ function showLoginError(message) {
                 </path>
               </svg>
             </div>
-            <select :disabled="filteredCities.length === 0" v-model="formData.city" style="color: gray;" name="city"
-              id="city">
-              <option value="">--Ciudad--</option>
-              <option v-for="city in filteredCities" :key="city.id" :value="city.id">
-                {{ city.name }}
-              </option>
-            </select>
+             <select name="city" id="city" class="form__modal--input" v-model="formData.city">
+                <option value="null" selected disabled>
+                  Seleccione un municipio...
+                </option>
+                <option v-for="city in filteredCities" :key="city.id" :value="city.id">
+                  {{ city.name }}
+                </option>
+              </select>
             <!-- <input type="text" v-model="formData.city" placeholder="Ciudad"> -->
           </div>
 
@@ -375,9 +379,9 @@ function showLoginError(message) {
                 <img src="/icons/google.png" class="logos__oauth2">
               </div>
 
-              <div class="logo" @click="handleSocialRegister('microsoft')">
+              <!-- <div class="logo" @click="handleSocialRegister('microsoft')">
                 <img src="/icons/outlook.png" class="logos__oauth2">
-              </div>
+              </div> -->
 
             </div>
           </div>

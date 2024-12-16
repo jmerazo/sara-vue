@@ -120,7 +120,7 @@ function toggleDetalles(idLista) {
 const height = ref(0);
 const handleImageLoad = (event) => {
   height.value = event.target.height;
-  return console.log(height.value);
+  return
 };
 
 async function deleteSpecieForrest(id, vernacularName) {

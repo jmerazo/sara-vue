@@ -1,10 +1,11 @@
 <script setup>
-import { computed } from 'vue';
+import { useRoute, useRouter } from "vue-router"
 import { useEspeciesStore } from "@/stores/species";
 import { getFullImageUrl } from "@/helpers/";
 
 const speciesStore = useEspeciesStore();
 const defaultImageUrl = '/img/sin_img.png';
+const router = useRouter()
 
 const props = defineProps({
   specie: {
@@ -42,7 +43,7 @@ const getBackgroundImageStyle = (images) => {
           <button
             class="card__boton animacion"
             type="button"
-            @click="speciesStore.selectSpecie(specie.code_specie)"
+            @click="router.push(`/busqueda/${specie.code_specie}`)">
           >
             <span> Ver Especie</span>
           </button>

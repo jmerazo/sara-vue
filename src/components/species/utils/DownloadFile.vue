@@ -56,34 +56,19 @@ watch(
   justify-content: center;
   width: 100%;
   padding: 1rem;
+  box-sizing: border-box; /* Evita desbordamiento por padding */
 }
 
 .download-cards {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Ajustable a cualquier ancho */
   gap: 1rem;
-  overflow-y: hidden;
-  overflow-x: scroll;
-  scroll-snap-type: x mandatory;
-  scroll-snap-align: center;
+  width: 100%; /* Asegura que ocupe el ancho completo */
+  box-sizing: border-box; /* Evita overflow por padding */
+  overflow-x: hidden; /* Oculta el scroll horizontal si ocurre */
 }
 
-@media (min-width: 920px) {
-  .download-cards {
-    display: grid;
-    grid-template-columns: repeat(4, 220px);
-    gap: 1rem;
-    max-width: 960px;
-    width: 100%;
-    overflow-x: hidden;
-  }
-}
-
-@media (min-width: 1440px) {
-  .download-cards {
-    gap: 1.5rem;
-  }
-}
-
+/* Tarjetas individuales */
 .download-card {
   background-color: var(--blanco);
   border: 1px solid var(--gris-claro);
@@ -95,96 +80,64 @@ watch(
   display: flex;
   flex-direction: column;
   align-items: center;
-
-}
-
-@media (min-width: 920px) {
-  .download-card {
-    padding: 1rem;
-    width: 185px;
-    height: 165px;
-  }
-}
-
-@media (min-width: 1440px) {
-  .download-card {
-    padding: 1rem;
-    width: auto;
-    height: auto;
-  }
+  justify-content: space-between;
 }
 
 .download-card:hover {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
+/* Icono dentro de las tarjetas */
 .card-icon {
   width: 48px;
   height: 48px;
   margin-bottom: 1rem;
 }
 
-@media (min-width: 920px) {
+/* Responsividad */
+
+/* Pantallas grandes (Desktop) */
+@media (min-width: 1440px) {
+  .download-cards {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+  }
+}
+
+/* Pantallas medianas (Tablets y Laptops) */
+@media (min-width: 920px) and (max-width: 1439px) {
+  .download-cards {
+    grid-template-columns: repeat(3, 1fr); /* 3 columnas en pantallas medianas */
+  }
+}
+
+/* Tablets verticales y dispositivos pequeños */
+@media (max-width: 919px) {
+  .download-cards {
+    grid-template-columns: repeat(2, 1fr); /* 2 columnas en tablets y móviles grandes */
+    gap: 1rem;
+  }
+}
+
+/* Pantallas móviles pequeñas */
+@media (max-width: 640px) {
+  .download-cards {
+    grid-template-columns: 1fr; /* Una sola columna en pantallas angostas */
+    gap: 0.8rem;
+  }
+
+  .download-card {
+    padding: 1rem;
+  }
+
   .card-icon {
     width: 35px;
     height: 35px;
-    margin-bottom: 0;
   }
-}
 
-@media (min-width: 1440px) {
-  .card-icon {
-    width: 48px;
-    height: 48px;
-    margin-bottom: 0;
-  }
-}
-
-.download-card h3 {
-  color: var(--gris-fuente);
-  margin-bottom: 1rem;
-  font-size: 1.1rem;
-}
-
-@media (min-width: 920px) {
-  .download-card h3 {
-    margin-bottom: 1rem;
-    font-size: .9rem;
-  }
-}
-
-@media (min-width: 1440px) {
-  .download-card h3 {
-    margin-bottom: 1rem;
-    font-size: 1.1rem;
-  }
-}
-
-.download-button {
-  display: inline-block;
-  background-color: var(--primary);
-  color: var(--blanco);
-  padding: 0.5rem 1rem;
-  text-decoration: none;
-  border-radius: 4px;
-  margin-top: auto;
-  transition: background-color 0.3s ease;
-  font-weight: 500;
-}
-
-.download-button:hover {
-  background-color: var(--primary-hover);
-}
-
-@media (max-width: 960px) {
-  .download-cards {
-    grid-template-columns: repeat(2, 300px);
-  }
-}
-
-@media (max-width: 640px) {
-  .download-cards {
-    grid-template-columns: 300px;
+  .download-button {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.9rem;
   }
 }
 </style>

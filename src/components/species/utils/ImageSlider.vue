@@ -6,21 +6,19 @@ import { useConsultaStore } from "@/stores/consulta";
 const consulta = useConsultaStore();
 const validImages = ref([]);
 const currentIndex = ref(0);
-const showModal = ref(false);
 
 const urls = ref([
-    consulta.specie.images[0].img_general,
-    consulta.specie.images[0].img_landscape_one,
-    consulta.specie.images[0].img_landscape_two,
-    consulta.specie.images[0].img_landscape_three,
-    consulta.specie.images[0].img_leafs,
-    consulta.specie.images[0].img_flowers,
-    consulta.specie.images[0].img_fruits,
-  ])
-  
+  consulta.specie.images[0].img_general,
+  consulta.specie.images[0].img_landscape_one,
+  consulta.specie.images[0].img_landscape_two,
+  consulta.specie.images[0].img_landscape_three,
+  consulta.specie.images[0].img_leafs,
+  consulta.specie.images[0].img_flowers,
+  consulta.specie.images[0].img_fruits,
+]);
+
 const loadImages = async () => {
   validImages.value = await validateUrlImages(urls.value);
-  console.log('valid ', validImages.value)
 };
 
 const changeImage = (index) => {
@@ -35,60 +33,44 @@ const prevImage = () => {
   currentIndex.value = (currentIndex.value - 1 + validImages.value.length) % validImages.value.length;
 };
 
-const openModal = () => {
-  showModal.value = true;
-};
-
-const closeModal = () => {
-  showModal.value = false;
-};
-
 onMounted(() => {
   loadImages();
 });
-
 </script>
 
 <template>
-
   <div class="slider__specie">
     <div class="slider__specie-content">
-      <button v-if="!showModal" class="nav-button prev" @click="prevImage">
-        <svg width="24" height="24" fill="white" viewBox="0 0 24 24"><path d="M15.41 7.41L10.83 12l4.58 4.59L14 18l-6-6 6-6z"/></svg>
+      <button class="nav-button prev" @click="prevImage">
+        <svg width="24" height="24" fill="white" viewBox="0 0 24 24">
+          <path d="M15.41 7.41L10.83 12l4.58 4.59L14 18l-6-6 6-6z" />
+        </svg>
       </button>
+
       <div class="imagen" :style="{ transform: `translateX(-${currentIndex * 100}%)` }">
-        <!-- activa -->
-        <div v-for="(img, index) in validImages" :key="index">
-          <div class="image__active" :style="{ backgroundImage: 'url(' + img + ')' }" @click="openModal"></div>
+        <div v-for="(img, index) in validImages" :key="index" class="image__container">
+          <div class="image__active" :style="{ backgroundImage: 'url(' + img + ')' }"></div>
         </div>
       </div>
-      <button v-if="!showModal" class="nav-button next" @click="nextImage">
-        <svg width="24" height="24" fill="white" viewBox="0 0 24 24"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg>
+
+      <button class="nav-button next" @click="nextImage">
+        <svg width="24" height="24" fill="white" viewBox="0 0 24 24">
+          <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6z" />
+        </svg>
       </button>
     </div>
+
     <div class="thumbnail__images">
-
-      <img v-for="(img, index) in validImages" :key="'thumb-' + index" :src="img" :alt="'Miniatura' + index"
-        class="image" :class="{ active: currentIndex === index }" @click="changeImage(index)" />
-
+      <img
+        v-for="(img, index) in validImages"
+        :key="'thumb-' + index"
+        :src="img"
+        :alt="'Miniatura' + index"
+        class="image"
+        :class="{ active: currentIndex === index }"
+        @click="changeImage(index)"
+      />
     </div>
-
-    <!-- Modal de imagen ampliada -->
-    <Teleport to="body">
-      <div v-if="showModal" class="modal-overlay" @click.self="closeModal">
-        <div class="modal-slider">
-          <button class="close-button" @click="closeModal">Cerrar</button>
-          <button class="nav-button modal-prev" @click="prevImage">
-            <svg width="24" height="24" fill="white" viewBox="0 0 24 24"><path d="M15.41 7.41L10.83 12l4.58 4.59L14 18l-6-6 6-6z"/></svg>
-          </button>
-          <img :src="validImages[currentIndex]" alt="Imagen ampliada" class="modal-image" />
-          <button class="nav-button modal-next" @click="nextImage">
-            <svg width="24" height="24" fill="white" viewBox="0 0 24 24"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6z"/></svg>
-          </button>
-        </div>
-      </div>
-    </Teleport>
-
   </div>
 </template>
 
@@ -96,194 +78,129 @@ onMounted(() => {
 .slider__specie {
   position: relative;
   width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
 }
-
 
 .slider__specie-content {
+  width: 100%;
+  height: 80%; /* Ocupa el 80% del alto disponible */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
   overflow: hidden;
-  border-radius: .6rem;
-  margin: 0 auto;
-}
-
-@media (min-width: 768px) {
-  .slider__specie-content {
-    margin: 0 auto;
-    overflow: hidden;
-    border-radius: .6rem;
-  }
 }
 
 .imagen {
   display: flex;
-  transition: transform 0.3s ease;
+  transition: transform 0.5s ease-in-out; /* Transición más suave */
+  width: 100%; /* El ancho total del slider */
+  height: 100%;
+}
+
+.image__container {
+  flex-shrink: 0;
+  width: 100%; /* Cada imagen ocupa todo el ancho del contenedor */
+  height: 100%; /* Altura dinámica basada en el contenedor */
 }
 
 .image__active {
-  background-size: cover;
+  width: 100%;
+  height: 100%;
+  background-size: cover; /* La imagen llena el contenedor sin deformarse */
   background-position: center;
   background-repeat: no-repeat;
+  aspect-ratio: 16 / 9; /* Mantener proporción */
 }
 
-.imagen,
-.slider__specie-content,
-.image__active {
-  width: 350px;
-  height: 330px;
-
-}
-
-@media (min-width: 768px) {
-
-  .imagen,
-  .slider__specie-content,
-  .image__active {
-
-    width: 750px;
-    height: 650px;
-  }
-}
-
-@media (min-width: 920px) {
-
-  .imagen,
-  .slider__specie-content,
-  .image__active {
-
-    width: 600px;
-    height: 340px;
-  }
-}
-
-@media (min-width: 1440px) {
-
-  .imagen,
-  .slider__specie-content,
-  .image__active {
-
-    width: 900px;
-    height: 600px;
-  }
-}
-
-
+/* Miniaturas */
 .thumbnail__images {
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-top: 1rem;
-
+  gap: 10px;
+  margin-top: 15px;
 }
-
 
 .image {
-  width: 40px;
-  height: 40px;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border: 2px solid transparent;
   opacity: 0.5;
   cursor: pointer;
-  border-radius: 50%;
-  margin-right: 10px;
-  transition: all .1s ease-in-out;
-  border: 2.5px solid transparent;
+  transition: border 0.3s ease, opacity 0.3s ease;
 }
 
-@media (min-width: 768px) {
-  .image {
-    width: 50px;
-    height: 50px;
-  }
-}
-
-.image:hover,
 .image.active {
   opacity: 1;
-  border: 2.5px solid white;
+  border: 2px solid white;
 }
 
-/* Estilos de Modal */
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background-color: rgba(0, 0, 0, 0.7);
-  /* Fondo semitransparente */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 9999 !important;
+.image:hover {
+  opacity: 1;
 }
 
-.modal-slider {
-  position: relative;
-  max-width: 90%;
-  max-height: 90%;
-  background-color: white;
-  border-radius: 8px;
-  overflow: hidden;
-  z-index: 10000;
-  /* Asegúrate de que este valor sea superior al navbar */
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.modal-image {
-  width: 100%;
-  height: auto;
-  border-radius: 8px;
-}
-
-.close-button {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  padding: 5px 10px;
-  background-color: #fff;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 16px;
-  color: #333;
-}
-
-.close-button:hover {
-  background-color: #ddd;
-}
-
+/* Botones de navegación */
 .nav-button {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  background: rgba(255, 255, 255, 0.5);
+  background-color: rgba(0, 0, 0, 0.5);
   border: none;
-  padding: 10px;
+  border-radius: 50%;
   cursor: pointer;
-  z-index: 1;
+  z-index: 10;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 50%;
+  width: 40px;
+  height: 40px;
 }
 
-.prev {
-  left: 10px; /* Ajuste para posicionar el botón a la izquierda de la imagen */
+.nav-button.prev {
+  left: 10px;
 }
 
-.next {
-  right: 90px; /* Ajuste para posicionar el botón a la derecha de la imagen */
+.nav-button.next {
+  right: 10px;
 }
 
-/* Ajustes para el modo maximizado */
-.modal-slider .modal-prev {
-  left: 10px; /* Posición a la izquierda en modo maximizado */
-  top: 50%;
-  transform: translateY(-50%);
+.nav-button svg {
+  fill: white;
 }
 
-.modal-slider .modal-next {
-  right: 10px; /* Posición a la derecha en modo maximizado */
-  top: 50%;
-  transform: translateY(-50%);
+/* Responsividad */
+@media (max-width: 768px) {
+  .image__active {
+    aspect-ratio: 4 / 3;
+  }
+
+  .image {
+    width: 40px;
+    height: 40px;
+  }
+
+  .nav-button {
+    width: 35px;
+    height: 35px;
+  }
+}
+
+@media (max-width: 480px) {
+  .image {
+    width: 30px;
+    height: 30px;
+  }
+
+  .nav-button {
+    width: 30px;
+    height: 30px;
+  }
 }
 </style>

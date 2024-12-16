@@ -7,6 +7,7 @@ import { useEspeciesStore } from "@/stores/species";
 const property = propertyStore();
 const modal = useModalStore();
 const species = useEspeciesStore();
+console.log('species ', species)
 
 const error = ref("");
 
@@ -26,6 +27,11 @@ const formData = ref({
   PRM: '',
   cantidad_placas: '',  
 });
+
+onMounted(async () => {
+  await species.loadAllSpecies();
+});
+
 
 const requiredFields = ['expediente', 'resolucion', 'ep_usuario', 'ep_predio', 'ep_especie_cod'];
 

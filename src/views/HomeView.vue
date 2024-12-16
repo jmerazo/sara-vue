@@ -1,19 +1,15 @@
 <script setup>
 import { onMounted } from "vue";
-
+//Stores
 import { useHomeStore } from "@/stores/home";
 import { usePageContent } from "@/stores/page";
-
-
 //components
 import Header from '@/components/home/Header.vue';
 import ButtonTop from '@/components/shared/ButtonTop.vue'
 import TopSpecies from '../components/home/TopSpecies.vue'
 
-
 const pageStore = usePageContent();
 const homeStore = useHomeStore();
-
 
 const scrollToTop = () => {
   window.scrollTo({
@@ -24,21 +20,18 @@ const scrollToTop = () => {
 
 onMounted(async () => {
   scrollToTop()
-  /*   await geoStore.fetchData(); */
   await pageStore.fetchData();
   await homeStore.fetchData();
 });
-
 </script>
 
 <template>
   <div>
-    <Header />
+    <Header/>
     <!-- misión, visión y valores -->
     <section class="contenedor">
       <div class="planning">
         <div v-for="(seccion, index) in pageStore.informacionUsuario" :key="index">
-
           <div class="card" v-if="seccion.titulo === 'Misión'">
             <div class="front" :style="{
               backgroundImage:
@@ -118,7 +111,6 @@ onMounted(async () => {
   margin-bottom: 5rem;
 }
 
-
 /* mision vision y valores */
 .planning {
   max-width: 1200px;
@@ -150,7 +142,6 @@ onMounted(async () => {
   perspective: 1000px;
 }
 
-
 .front,
 .back {
   position: absolute;
@@ -180,7 +171,6 @@ onMounted(async () => {
     height: 300px;
   }
 }
-
 
 .front {
   background-position: center;

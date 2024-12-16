@@ -117,7 +117,6 @@ function parseData(text) {
 
                 </p>
               </div>
-
             </div>
 
           </div>

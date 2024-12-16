@@ -1,15 +1,9 @@
 <script setup>
-import { onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
-
 import { getFullImageUrl } from "@/helpers/";
-
 import { useHomeStore } from "@/stores/home";
-import { useConsultaStore } from "@/stores/consulta";
 
 const homeStore = useHomeStore();
-console.log('topspecies ', homeStore.topSpecies)
-const consulta = useConsultaStore();
 const router = useRouter();
 
 const goToViewSpecies = () => {

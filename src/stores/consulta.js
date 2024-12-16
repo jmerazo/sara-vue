@@ -3,12 +3,10 @@ import { defineStore } from "pinia";
 import { useRouter } from "vue-router";
 import { useModalStore } from "@/stores/modal";
 import { useToastStore } from "./toast";
-import api from '../api/axios';
 
 import APIService from "@/services/APIService";
 
 export const useConsultaStore = defineStore("consulta", () => {
-
   const modal = useModalStore();
   const router = useRouter();
   const toast = useToastStore()
@@ -16,7 +14,6 @@ export const useConsultaStore = defineStore("consulta", () => {
   const familia = ref({});
   const strFamilia = ref("");
   const cargando = ref(false);
-
   //consultar especie por familia
   async function selectFamily(name_family) {
     cargando.value = true;
@@ -28,14 +25,10 @@ export const useConsultaStore = defineStore("consulta", () => {
   }
 
   async function consultSpecie(code_specie, queryPage) {
-    
     try {
-
       const { data } = await APIService.lookSpecie(code_specie);
       specie.value = data;
-      console.log('data ', data)
       let lastCreatedGBIF = null;
-        
       data.geo_data.forEach((item) => {
           if (item.source === 'gbif') {
               const createdDate = new Date(item.last_created);
@@ -45,42 +38,34 @@ export const useConsultaStore = defineStore("consulta", () => {
           }
       });      
 
-      // Si se encontró una fecha, validar si han pasado más de 30 días
       if (lastCreatedGBIF) {
         const currentDate = new Date();
         const diffTime = Math.abs(currentDate - lastCreatedGBIF);
         const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
           if (diffDays > 30) {
-              // Si han pasado más de 30 días, llamar a storeGBIFData
               if (data.taxon_key) {
                   storeGBIFData(data.taxon_key);
               }
-
               return
           } 
       } else {
-          // Si no hay registros previos de GBIF, almacenar los datos de GBIF
           if (data.taxon_key) {
               storeGBIFData(data.taxon_key);
           }
       }
-
     } catch (error) {
       toast.activateToast('Especie no encontrada', 'error')
       router.push({ name: 'especies' })
     }
-
   }
 
   async function storeGBIFData(taxonKey) {
     const gbifData = await fetchGBIFCoordinates([taxonKey]);
     if (gbifData.length > 0) {
       try {
-        const response = await APIService.specieGBIF(gbifData);
-        console.log('Datos de GBIF almacenados exitosamente:', response.data);
+        await APIService.specieGBIF(gbifData);
       } catch (error) {
-        console.error('Error al almacenar los datos de GBIF:', error);
+        return 
       }
     } else {
       console.log("No hay datos nuevos de GBIF para almacenar.");
@@ -91,11 +76,9 @@ export const useConsultaStore = defineStore("consulta", () => {
     const promises = taxonKeys.map(async (taxonKey) => {
       try {
         const response = await fetch(`https://api.gbif.org/v1/occurrence/search?taxonKey=${taxonKey}&limit=100`);
-
         if (!response.ok) {
           throw new Error(`Error en la solicitud: ${response.status} ${response.statusText}`);
         }
-
         const data = await response.json();
         return data.results
           .filter(result => result.decimalLatitude !== null && result.decimalLongitude !== null)
@@ -121,7 +104,6 @@ export const useConsultaStore = defineStore("consulta", () => {
         return [];
       }
     });
-
     const gbifDataArrays = await Promise.all(promises);
     return gbifDataArrays.flat();
   }    

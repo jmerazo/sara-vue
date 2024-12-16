@@ -4,8 +4,6 @@ import APIService from '../services/APIService'
 import { useModalStore } from "@/stores/modal";
 
 export const usePageContent = defineStore('pageContent',()=>{
-
-    
     const modal = useModalStore();
     const contenidoNosotros = ref([]);
     const informacionUsuario = ref([]);

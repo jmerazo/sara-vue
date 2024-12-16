@@ -203,39 +203,19 @@ watch(() => filteredData, (newData) => {
 
 <style scoped>
 .map-container {
-  width: auto;
-  height: auto;
+  width: 100%; /* Asegura que el contenedor ocupe todo el ancho */
+  height: 100%; /* Asegura que el contenedor ocupe todo el alto */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* Opcional: asegura que la leyenda no se superponga al mapa */
 }
 
-.map-container>div:first-child {
-  height: 290px;
-  border-radius: 25px;
+.map-container > div:first-child {
+  flex-grow: 1; /* Permite que el mapa crezca y ocupe el espacio disponible */
+  height: auto; /* Elimina las restricciones de altura fija */
   border-radius: 1rem;
   overflow: hidden;
 }
-
-@media (min-width: 768px) {
-  .map-container>div:first-child {
-    height: 600px;
-  }
-}
-@media (min-width: 920px) {
-  .map-container>div:first-child {
-    height: 400px;
-  }
-}
-@media (min-width: 1340px) {
-  .map-container>div:first-child {
-    height:200px;
-  }
-}
-@media (min-width: 1440px) {
-  .map-container>div:first-child {
-    height: 500px;
-    
-  }
-}
-
 
 .legend {
   margin-top: 10px;
@@ -244,7 +224,6 @@ watch(() => filteredData, (newData) => {
   border-radius: 10px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
-
 
 .legend-item {
   display: flex;
