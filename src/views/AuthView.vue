@@ -149,6 +149,7 @@ async function handleSocialRegister(provider) {
     }
 
     const result = await signInWithPopup(auth, authProvider);
+    console.log('result social reg ', result)
     const user = result.user;
 
     // Preparar datos para el registro social
@@ -176,8 +177,16 @@ async function handleSocialRegister(provider) {
         toast.activateToast(errorMessage, 'error');
       }
     } catch (error) {
-      console.error('Error al registrar el usuario:', error);
-      toast.activateToast('Error en el registro con red social', 'error');
+      // Extraer mensaje del error
+      let errorMessage = 'Error en el registro con Gmail';
+      if (error.response && error.response.data && error.response.data.msg) {
+        errorMessage = error.response.data.msg; // Mensaje enviado desde el backend
+      } else if (error.message) {
+        errorMessage = error.message; // Mensaje general de error
+      }
+
+      // Mostrar el mensaje
+      toast.activateToast(errorMessage, 'error');
     }
   } catch (error) {
     if (error.code === 'auth/popup-closed-by-user') {
