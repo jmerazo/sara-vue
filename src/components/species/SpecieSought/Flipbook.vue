@@ -105,14 +105,33 @@ function getFlipbookDimensions() {
   const screenWidth = window.innerWidth;
   const screenHeight = window.innerHeight;
 
-  // Margen dinámico para diferentes tamaños de pantalla
-  const horizontalMargin = screenWidth > 768 ? 200 : 20; // Más margen en pantallas grandes
-  const verticalMargin = screenHeight > 600 ? 40 : 40;  // Más margen en pantallas grandes
+  const aspectRatio = 1.414; // Relación de aspecto A4 (ancho/alto)
 
+  // Ajuste exclusivo para móviles
+  if (screenWidth <= 768) {
+    // Usa todo el ancho disponible
+    pageWidth.value = screenWidth;
+
+    pageHeight.value = screenHeight - 40; // Deja márgenes pequeños arriba y abajo
+    pageWidth.value = pageHeight.value * aspectRatio * 0.62; // Ajusta el ancho manteniendo proporció
+    return; // Salir para no afectar otras resoluciones
+  }
+
+  // Ajuste exclusivo para resolución 1340x600
+  if (screenWidth === 1340 && screenHeight === 600) {
+    const margin = 40; // Márgenes específicos para esta resolución
+    pageWidth.value = (screenWidth - margin * 2) * 0.85; // Usar el ancho total menos márgenes
+    pageHeight.value = Math.min(screenHeight - margin * 2, pageWidth.value / aspectRatio); // Mantener proporción sin desbordar
+    return; // Salir aquí para no afectar otras resoluciones
+  }
+
+  // Margen dinámico para diferentes tamaños de pantalla (resoluciones mayores)
+  const horizontalMargin = screenWidth > 768 ? 200 : 20; // Más margen en pantallas grandes
+  const verticalMargin = screenHeight > 600 ? 40 : 20; // Margen vertical dinámico
   const navbarHeight = 80; // Altura estimada de la navbar (ajusta si es necesario)
 
   pageWidth.value = screenWidth - horizontalMargin * 2; // Ajustar con márgenes
-  pageHeight.value = screenHeight - navbarHeight - verticalMargin * 2; // Ajustar con márgenes
+  pageHeight.value = Math.min(screenHeight - navbarHeight - verticalMargin * 2, pageWidth.value / aspectRatio); // Mantener proporción sin desbordar
 }
 
 const fetchImagesForFlipbook = async (codeSpecie, numPages) => {

@@ -92,7 +92,6 @@ function changeForm() {
 
 const filteredCities = computed(() => {
   const { department } = formData.value;
-  console.log('department ', department)
   if (department) {
     return locates.cities.filter(city => city.department === department);
   }
@@ -114,15 +113,12 @@ async function sendData(e) {
     try {
       const recaptchaToken = await executeRecaptcha('register');
       const response = await usersStore.registerUser({ ...formData.value, recaptcha_token: recaptchaToken });
-      console.log('response ', response)
       resetForm();
-      if(response.status === 201){
-        
+      if(response.success){        
         router.push({ name: "signUpSuccess" });
-        toast.activateToast('Registro exitoso, completar perfil', 'success')
+        toast.activateToast(response.msg, 'success')
       }
     } catch (error) {
-      console.log(error);
       toast.activateToast('Hubo un error en el registro', 'error')
     }
   } else {
@@ -260,6 +256,9 @@ function showLoginError(message) {
           </div>
         </form>
 
+        <div v-if="usersStore.loading" class="loading-overlay">
+          <LoadingData  v-if="usersStore.loading"/>
+        </div>
         <!-- form to sign out -->
         <form class="form__sign-up">
           <h2 class="title">Solicitar ingreso</h2>
@@ -329,7 +328,7 @@ function showLoginError(message) {
               </svg>
             </div>
               <select name="department" id="department" class="form__modal--input" v-model="formData.department">
-                <option value="null" selected disabled>
+                <option value="" selected disabled>
                   Seleccione un departamento...
                 </option>
                 <option v-for="loc in locates.departments" :key="loc.id" :value="loc.id">
@@ -347,7 +346,7 @@ function showLoginError(message) {
               </svg>
             </div>
              <select name="city" id="city" class="form__modal--input" v-model="formData.city">
-                <option value="null" selected disabled>
+                <option value="" selected disabled>
                   Seleccione un municipio...
                 </option>
                 <option v-for="city in filteredCities" :key="city.id" :value="city.id">
@@ -378,7 +377,7 @@ function showLoginError(message) {
             <input type="password" v-model="formData.confirm_password" placeholder="Confirmar Contraseña">
           </div>
           <p v-if="error" class="error">{{ error }}</p>
-          <input @click="sendData" type="submit" value="Enviar" class="login__button solid">
+          <input @click="sendData" type="submit" value="Enviar" class="login__button solid" :disabled="usersStore.loading">
 
           <div class="content__registerOauth2">
             <p>Registrarse con: </p>

@@ -38,11 +38,14 @@ const consulta = useConsultaStore()
 .fullscreen-container {
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start; /* Alinear contenido hacia arriba */
   align-items: center;
   padding: 20px;
   box-sizing: border-box;
-  overflow: hidden; /* Previene cualquier scroll horizontal */
+  overflow-y: auto; /* Habilitar scroll vertical */
+  overflow-x: hidden; /* Prevenir scroll horizontal */
+  min-height: 100vh; /* Ocupa toda la altura de la pantalla */
+  max-height: 100vh; /* Limitar la altura a la pantalla */
 }
 
 /* Contenido de descargas */
@@ -54,6 +57,8 @@ const consulta = useConsultaStore()
   display: flex;
   flex-direction: column;
   gap: 1rem;
+  box-sizing: border-box;
+  overflow-y: auto; /* Asegura que este contenido también permita scroll si es necesario */
 }
 
 /* Contenedor de tarjetas */
@@ -115,8 +120,9 @@ const consulta = useConsultaStore()
   background-color: #0056b3;
 }
 
+/* Botón de cerrar */
 .close-button {
-  position: absolute;
+  position: fixed;
   top: 20px;
   right: 20px;
   background: none;
@@ -163,6 +169,38 @@ const consulta = useConsultaStore()
   .download-cards {
     grid-template-columns: 1fr; /* Una columna en móviles */
     gap: 1rem;
+  }
+
+  .download-card {
+    padding: 1rem;
+  }
+
+  .card-icon {
+    width: 35px;
+    height: 35px;
+  }
+
+  .download-button {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.9rem;
+  }
+}
+
+/* Tablets */
+@media (max-width: 1199px) {
+  .downloads-content {
+    max-width: 960px;
+  }
+}
+
+/* Móviles */
+@media (max-width: 767px) {
+  .downloads-content {
+    max-width: 100%;
+  }
+
+  .download-cards {
+    grid-template-columns: 1fr; /* Una columna en móviles */
   }
 
   .download-card {

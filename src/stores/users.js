@@ -12,7 +12,7 @@ export const useUsersStore = defineStore("useUsersStore", () => {
   const idUser = ref();
   const newState = ref();
   const datosImport = ref([]);
-  const cargando = ref(false)
+  const loading = ref(false)
   const noResultados = computed(() => users.value.length === 0 );
   const roles = ref([])
 
@@ -22,14 +22,14 @@ export const useUsersStore = defineStore("useUsersStore", () => {
   const maxVisiblePages = 5; // Número máximo de páginas visibles
 
   const fetchUsers = async () => {
-    cargando.value = true
+    loading.value = true
     const { data } = await APIService.getUsers();
     users.value = data;
     usersOriginal.value = data;
     totalUsers.value = usersOriginal.value.length;
     const response = await APIService.getRoles();
     roles.value = response.data;
-    cargando.value = false
+    loading.value = false
   }
 
   function cargarData() {
@@ -76,21 +76,25 @@ export const useUsersStore = defineStore("useUsersStore", () => {
   }  
   
   async function registerUser(data, recaptcha_token) {
+    loading.value = true;
     try {
-      const response = await APIService.registerUser(data, recaptcha_token);
-  
-      if (response.data.success) {
-        // Registro exitoso
-        return response.data;
-      } else {
-        // Manejar errores
-        return response.data;
-      }
+        const response = await APIService.registerUser(data, recaptcha_token);
+
+        if (response.data.success) {
+            // Registro exitoso
+            return response.data;
+        } else {
+            // Manejar errores
+            return response.data;
+        }
     } catch (error) {
-      console.error("Error al comunicarse con el servidor:", error);
-      throw error;
+        console.error("Error al comunicarse con el servidor:", error);
+        throw error;
+    } finally {
+        // Siempre se ejecuta, sin importar si hubo error o no
+        loading.value = false;
     }
-  }  
+  }
 
   //seleccionar un usuario para mostrar en el modal
   function selectedUserUpdate(id) {
@@ -207,7 +211,7 @@ export const useUsersStore = defineStore("useUsersStore", () => {
     totalUsers,
     noResultados,
     datosImport,
-    cargando,
+    loading,
     buscarTermino,
     quitarFiltroUsuario,
     changePage,

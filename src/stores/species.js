@@ -56,7 +56,7 @@ export const useEspeciesStore = defineStore('especies', () => {
         cargando.value = true;
         try {
           const { data } = await APIService.getSpecies();
-          console.log('data species ', data)
+          /* console.log('data species ', data) */
           species.value = data;
           speciesOriginals.value = data;
           const uniqueSpecies = [...new Map(data.map(specie => [specie.vernacularName, specie])).values()];
