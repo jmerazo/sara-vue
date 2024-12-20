@@ -12,7 +12,7 @@ export const propertyStore = defineStore('property',()=>{
   const propertySelected = ref([]);
   const totalProperty = ref(0);
   const datosImport = ref([]);
-  const cargando = ref(false);
+  const loading = ref(false);
   const userSelected = ref('');
   const propertyUsers = ref([]);
   const userPropertySelected = ref('');
@@ -25,21 +25,21 @@ export const propertyStore = defineStore('property',()=>{
   const itemsPerPage = ref(12); // Elementos por página
 
   onMounted(async () => {
-      cargando.value = true
+      loading.value = true
       const { data } = await APIService.listProperty();
       property.value = data;
       propertyOriginal.value = data;
       totalProperty.value = propertyOriginal.value.length;
-      cargando.value = false
+      loading.value = false
   });
 
   async function fetchProperty () {
-    cargando.value = true
+    loading.value = true
     const { data } = await APIService.listProperty();
     property.value = data;
     propertyOriginal.value = data;
     totalProperty.value = propertyOriginal.value.length;
-    cargando.value = false
+    loading.value = false
   }
 
   function loadData() {
@@ -65,39 +65,70 @@ export const propertyStore = defineStore('property',()=>{
   }
 
   const createProperty= async (data) => {
+    loading.value = true
     try {
       const response = await APIService.createProperty(data);
+      console.log('response store p ', response)
       
       if (response.status === 201) {
         // La respuesta del APIService fue satisfactoria
         property.value.push(response.data); // Agrega el nuevo objeto al array
+        return {
+          success: true,
+          msg: response.data.msg || 'Predio agregado satisfactoriamente.', // Mensaje del backend o uno por defecto
+          data: response.data
+        };
       } else {
-        console.error("Error al agregar el predio: ", response.statusText);
+        return {
+          success: false,
+          msg: response.statusText || 'Error desconocido al argegar el predio.'
+        };
       }
     } catch (error) {
-      console.error("Error al comunicarse con el servidor: ", error);
+      return {
+        success: false,
+        msg: error.response?.data?.msg || 'Error al agregar el predio.',
+        errors: error.response?.data?.errors || null
+      };
+    } finally {
+      loading.value = false
     }
   };
 
   const selectedUserCreateUsersProperty = (id) => {
-    console.log('id', id)
     userPropertySelected.value = id;
     modal.handleClickModalAssignUserSpecies()
   }
 
-  const createUsersProperty= async (data) => {
+  const createUsersProperty = async (data) => {
+    loading.value = true;
     try {
       const response = await APIService.createUsersProperty(data);
-
-      if (response.status === 201) {
+      console.log('response store ', response)
+  
+      if (response.status == 201) {
         propertyUsers.value.push(response.data); // Agrega el nuevo objeto al array
+        return {
+          success: true,
+          msg: response.data.msg || 'Especie asignada satisfactoriamente.', // Mensaje del backend o uno por defecto
+          data: response.data
+        };
       } else {
-        console.error("Error al agregar el predio: ", response.statusText);
+        return {
+          success: false,
+          msg: response.statusText || 'Error desconocido al asignar la especie.'
+        };
       }
     } catch (error) {
-      console.error("Error al comunicarse con el servidor: ", error);
+      return {
+        success: false,
+        msg: error.response?.data?.msg || 'Error al asignar la especie.',
+        errors: error.response?.data?.errors || null
+      };
+    } finally {
+      loading.value = false;
     }
-  };
+  };  
 
   const listPropertyId = async (id) => {
     try {
@@ -233,7 +264,7 @@ export const propertyStore = defineStore('property',()=>{
       changePage,
       displayedProperty,
       datosImport,
-      cargando,
+      loading,
       totalProperty,
       userSelected,
       selectedUserCreateProperty,

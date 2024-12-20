@@ -3,10 +3,13 @@ import { ref, computed, watch, onMounted } from 'vue';
 import { propertyStore } from "@/stores/dashboard/property";
 import { useModalStore } from "@/stores/modal";
 import { locatesColombia } from "@/stores/locates";
+import { useToastStore } from '@/stores/toast';
+import LoadingData from "@/components/shared/LoadingData.vue";
 
 const locates = locatesColombia();
 const property = propertyStore();
 const modal = useModalStore();
+const toast = useToastStore()
 
 const error = ref("");
 
@@ -16,15 +19,14 @@ const isEdit = computed(()=>{
 })
 
 const initializeFormData = () => {
-  const selectedProperty = property.propertySelected[0]; // Asegúrate de que propertySelected sea un objeto correcto
+  const selectedProperty = property.propertySelected[0];
   if (selectedProperty) {
-    formData.value = {
-      nombre_predio: selectedProperty.nombre_predio || "",
-      p_departamento: selectedProperty.p_departamento || "",
-      p_municipio: selectedProperty.p_municipio || "",
-    };
+    formData.value.nombre_predio = selectedProperty.nombre_predio || "";
+    formData.value.p_departamento = selectedProperty.p_departamento || "";
+    formData.value.p_municipio = selectedProperty.p_municipio || "";
+    formData.value.p_user = property.userSelected || '';
   } else {
-    resetForm()
+    resetForm();
   }
 };
 
@@ -33,36 +35,38 @@ const formData = ref({
   p_user: '',
   nombre_predio: '',
   p_departamento: '',
-  p_municipio: ''
+  p_municipio: '',
+  corregimiento: '',
+  vereda: ''
 });
 
 watch(() => property.userSelected, (newValue) => {
-  formData.value.p_user = newValue;
+  if (newValue && newValue !== '') {
+    formData.value.p_user = newValue;
+  }
 });
 
-
 function resetForm() {
-  formData.value.nombre_predio = '';
-  formData.value.p_departamento = '';
-  formData.value.p_municipio = '';
+  Object.keys(formData.value).forEach(key => {
+    formData.value[key] = "";
+  });
+  property.userSelected = '';
 }
 
-const newProperty = () => {
+const newProperty = async () => {
   try {
-    property.createProperty(formData.value);
-    resetForm();
-    modal.handleClickModalProperty(false);
-  } catch (error) {
-    if (error.response && error.response.data && error.response.data.error) {
-      // Si hay un mensaje de error en la respuesta, lo puedes mostrar
-      alert(error.response.data.error);
+    const response = await property.createProperty(formData.value);
+    if (response.success) {
+      resetForm();
+      modal.handleClickModalProperty(false);
+      toast.activateToast(response.msg, 'success'); // Muestra el mensaje del backend
     } else {
-      // En caso de un error inesperado
-      alert("Ocurrió un error al procesar la solicitud.");
+      toast.activateToast(response.msg, 'error'); // Muestra el mensaje de error
     }
+  } catch (error) {
+    toast.activateToast('Hubo un error al agregar el predio', 'error'); // Error no esperado
   }
 }
-
 
 //logic to update a property
 async function propertyUpdate() {
@@ -74,15 +78,15 @@ async function propertyUpdate() {
 watch(
   () => property.propertySelected,
   (newValue, oldValue) => {
-    if (newValue !== oldValue) {
+    // Sólo ejecutar initializeFormData si isEdit es true
+    if (isEdit.value && newValue !== oldValue) {
       initializeFormData();
     }
   },
-  { immediate: true } // Esto asegura que initializeFormData se llame inmediatamente
+  { immediate: false } // Evitar la ejecución inmediata si no la necesitas
 );
 
 const handleSubmit = () => {
-  console.log('datos user: ', formData.value)
   if (Object.values(formData.value).some(value => value === "")) {
     error.value = "Hay campos vacíos";
     setTimeout(() => {
@@ -120,6 +124,9 @@ onMounted(() => {
   <div class="modal" v-if="modal.modalProperty">
     <div class="modal__contenido">
       <div class="form__modal--content">
+        <div>
+          <LoadingData v-if="property.loading" />
+        </div>
 
         <h3 class="form__modal--title">{{ isEdit ? 'Actualizar predio' : 'Registrar nuevo predio' }}</h3>
         <hr>
@@ -129,7 +136,6 @@ onMounted(() => {
             <label class="form__modal--label">Nombre del predio: </label>
             <input class="form__modal--input" type="text" v-model="formData.nombre_predio" />
           </div>
-
 
           <div class="form__modal--field">
             <label class="form__modal--label" for="departamento">Departamento:</label>
@@ -152,12 +158,23 @@ onMounted(() => {
             </select>
 
           </div>
+
+          <div class="form__modal--field">
+            <label class="form__modal--label">Corregimiento: </label>
+            <input class="form__modal--input" type="text" v-model="formData.corregimiento" />
+          </div>
+
+          <div class="form__modal--field">
+            <label class="form__modal--label">Vereda: </label>
+            <input class="form__modal--input" type="text" v-model="formData.vereda" />
+          </div>
+
           <p class="msg__error" v-if="error">
             {{ error }}
           </p>
 
           <div class="form__modal--buttons">
-            <button type="submit" class="form__modal--save"><svg style="width: 2rem;"
+            <button type="submit" class="form__modal--save" :disabled="property.loading"><svg style="width: 2rem;"
                 xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
                 <path
                   d="M7 19V13H17V19H19V7.82843L16.1716 5H5V19H7ZM4 3H17L21 7V20C21 20.5523 20.5523 21 20 21H4C3.44772 21 3 20.5523 3 20V4C3 3.44772 3.44772 3 4 3ZM9 15V19H15V15H9Z">

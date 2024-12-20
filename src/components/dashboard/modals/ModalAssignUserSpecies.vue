@@ -3,11 +3,12 @@ import { ref, watch, computed, onMounted } from 'vue';
 import { propertyStore } from "@/stores/dashboard/property";
 import { useModalStore } from "@/stores/modal";
 import { useEspeciesStore } from "@/stores/species";
+import { useToastStore } from '@/stores/toast';
 
 const property = propertyStore();
 const modal = useModalStore();
 const species = useEspeciesStore();
-console.log('species ', species)
+const toast = useToastStore()
 
 const error = ref("");
 
@@ -17,15 +18,15 @@ const formData = ref({
   fecha_exp: '',
   ep_usuario: '',
   ep_predio: '',
-  ep_especie_cod: '',  
-  tamano_UMF: '',
-  cantidad_autorizada: '',
+  ep_especie: '',  
+  tamano_UMF: '', // Árbol
+  cantidad_autorizada: '', // Árbol
   cantidad_remanentes: '',
   cantidad_aprovechable: '',
-  cant_monitoreos: '',
+  cant_monitoreos: '', // Árbol
   PCM: '',
   PRM: '',
-  cantidad_placas: '',  
+  cantidad_placas: '', // Árbol  
 });
 
 onMounted(async () => {
@@ -33,7 +34,7 @@ onMounted(async () => {
 });
 
 
-const requiredFields = ['expediente', 'resolucion', 'ep_usuario', 'ep_predio', 'ep_especie_cod'];
+const requiredFields = ['expediente', 'resolucion', 'ep_usuario', 'ep_predio', 'ep_especie'];
 
 const searchQuery = ref('');
 const selectedEspecieOption = ref('');
@@ -50,18 +51,20 @@ const filteredEspecies = computed(() => {
 });
 
 watch(() => property.userPropertySelected, (newValue) => {
-  formData.value.ep_usuario = newValue;
+  formData.value.ep_usuario = newValue || '';
 });
 
 function resetForm() {
   Object.keys(formData.value).forEach(key => {
     formData.value[key] = "";
   });
+  property.userPropertySelected = '';
 }
 
-const handleSubmit = () => {
+const handleSubmit = async () => {
   const areRequiredFieldsEmpty = requiredFields.some(field => formData.value[field] === '');
-  
+  console.log('data create ', formData.value)
+
   if (areRequiredFieldsEmpty) {
     error.value = 'Hay campos vacíos';
     setTimeout(() => {
@@ -70,16 +73,31 @@ const handleSubmit = () => {
     return;
   }
 
-  try {
-    property.createUsersProperty(formData.value);
-    resetForm();
-    modal.handleClickModalAssignUserSpecies();
-  } catch (error) {
-    if (error.response && error.response.data && error.response.data.error) {
-      alert(error.response.data.error);
-    } else {
-      alert("Ocurrió un error al procesar la solicitud.");
+  const normalizeData = (data) => {
+  const normalized = {};
+    for (const key in data) {
+      if (data[key] === '' || data[key] === null || data[key] === undefined) {
+        normalized[key] = null; // Reemplaza valores vacíos con null
+      } else {
+        normalized[key] = data[key];
+      }
     }
+    return normalized;
+  };
+
+  const normalizedFormData = normalizeData(formData.value)
+
+  try {
+    const response = await property.createUsersProperty(normalizedFormData); // Espera la respuesta del store
+    if (response.success) {
+      resetForm();
+      modal.handleClickModalAssignUserSpecies();
+      toast.activateToast(response.msg, 'success'); // Muestra el mensaje del backend
+    } else {
+      toast.activateToast(response.msg, 'error'); // Muestra el mensaje de error
+    }
+  } catch (error) {
+    toast.activateToast('Hubo un error en la asignación', 'error'); // Error no esperado
   }
 };
 
@@ -90,29 +108,34 @@ const handlePropertyChange = async () => {
 }
 
 const selectedEspecie = computed(() => {
-  return species.species.find(e => e.code_specie === formData.value.ep_especie_cod);
+  return species.species.find(e => e.code_specie === formData.value.ep_especie);
 });
 
 const isPalma = computed(() => {
-  return selectedEspecie.value && selectedEspecie.value.habitos === 'Palma';
+  return selectedEspecie.value && selectedEspecie.value.habit === 'Palma';
 });
 
 function handleSelect(event) {
   selectedEspecieOption.value = event.target.value;
 
-  const selectedOption = species.sspecies.find(ef =>
+  const selectedOption = species.species.find(ef =>
     `${ef.code_specie} / ${ef.vernacularName} / ${ef.nombre_cientifico}` === selectedEspecieOption.value
   );
 
   if (selectedOption) {
-    formData.value.ep_especie_cod = selectedOption.code_specie;
+    formData.value.ep_especie = selectedOption.code_specie;
   } else {
-    formData.value.ep_especie_cod = ''; // Reset if no match
+    formData.value.ep_especie = ''; // Reset if no match
   }
 }
 
 function updateSearchQuery(event) {
   searchQuery.value = event.target.value;
+}
+
+function handleCloseModal() {
+  resetForm(); // Reinicia los datos del formulario
+  modal.handleClickModalAssignUserSpecies(); // Cierra el modal
 }
 </script>
 
@@ -230,7 +253,7 @@ function updateSearchQuery(event) {
                 </path>
               </svg></button>
 
-            <div class="button__modal--close" @click="() => { resetForm(); modal.handleClickModalAssignUserSpecies(); }">
+            <div class="button__modal--close" @click="handleCloseModal()">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                 stroke="currentColor" class="w-6 h-6">
                 <path stroke-linecap="round" stroke-linejoin="round"
@@ -307,7 +330,4 @@ function updateSearchQuery(event) {
     width: 30%;
   }
 }
-
-
-
 </style>
