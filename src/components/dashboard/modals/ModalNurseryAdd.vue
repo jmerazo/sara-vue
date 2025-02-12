@@ -2,12 +2,15 @@
 import { ref, computed, watch } from 'vue';
 import { useNurseriesDashStore } from "@/stores/dashboard/nurseries";
 import { useModalStore } from "@/stores/modal";
-
+import { useToastStore } from '@/stores/toast';
 import { locatesColombia } from "@/stores/locates";
+import SvgIcon from "@/assets/SvgIcon.vue";
+import LoadingData from "@/components/shared/LoadingData.vue";
 
 const locates = locatesColombia();
 const nurseriesStore = useNurseriesDashStore();
 const modal = useModalStore();
+const toast = useToastStore();
 const error = ref("");
 
 const formData = ref({
@@ -40,9 +43,9 @@ function resetForm() {
   });
 }
 
-const handleSubmit = () => {
+const handleSubmit = async () => {
   const fieldsToValidate = Object.entries(formData.value)
-    .filter(([key]) => key !== 'logo')
+    .filter(([key]) => key !== 'logo' && key !== 'tipo_registro' && key !== 'numero_registro_ica' && key !== 'ubicacion')
     .map(([key, value]) => value);
 
   if (fieldsToValidate.some(value => value === "")) {
@@ -65,6 +68,10 @@ const handleSubmit = () => {
     data.append('department', formData.value.department);
     data.append('city', formData.value.city);
     data.append('direccion', formData.value.direccion);
+    data.append('clase_vivero', formData.value.clase_vivero);
+    data.append('vigencia_registro', formData.value.vigencia_registro);
+    data.append('tipo_registro', formData.value.tipo_registro);
+    data.append('numero_registro_ica', formData.value.numero_registro_ica);
     data.append('active', formData.value.active);
 
     // Asegúrate de agregar el archivo real (no la URL temporal)
@@ -73,15 +80,20 @@ const handleSubmit = () => {
     }
 
     // Enviar el FormData al store o directamente al backend
-    nurseriesStore.createNursery(data);  // Asegúrate de que esta función acepte FormData
-
-    resetForm();
-    modal.handleClickModalNurseryAdd();
+    const response = await nurseriesStore.createNursery(data);  // Asegúrate de que esta función acepte FormData
+    console.log('resp ', response)
+    if(response.success){
+      toast.activateToast(response.msg, 'success');
+      resetForm();
+      modal.handleClickModalNurseryAdd();
+    }else{
+      toast.activateToast(response.msg, 'error');
+    }    
   } catch (error) {
     if (error.response && error.response.data && error.response.data.error) {
-      alert(error.response.data.error);
+      toast.activateToast(error.response.data.error, 'error');
     } else {
-      alert("Ocurrió un error al procesar la solicitud.");
+      toast.activateToast('Hubo un error en la asignación', 'error');
     }
   }
 };
@@ -98,7 +110,7 @@ const filteredCities = computed(() => {
   return [];
 });
 
-if ("geolocation" in navigator) {
+/* if ("geolocation" in navigator) {
   navigator.geolocation.getCurrentPosition(function (position) {
     const latitude = position.coords.latitude;
     const longitude = position.coords.longitude;
@@ -110,7 +122,7 @@ if ("geolocation" in navigator) {
 } else {
   console.log("Geolocalización no está disponible en tu navegador");
 }
-
+ */
 const fileInput = ref(null);
 const selectedFile = ref(null);
 const imagePreview = ref(null);
@@ -146,12 +158,6 @@ function handleDrop(event) {
           <div class="form__modal--field">
             <label class="form__modal--label" for="usuario">Nombre de vivero: </label>
             <input class="form__modal--input" type="text" v-model="formData.nombre_vivero">
-          </div>
-
-          <div style="display: none;" class="form__modal--field">
-            <label class="form__modal--label text__noview" for="usuario">Representante legal: </label>
-            <input class="form__modal--input" type="text" v-model="formData.representante_legal_id"
-              :placeholder="nurseriesStore.userSelected">
           </div>
 
           <div class="form__modal--field">
@@ -199,11 +205,11 @@ function handleDrop(event) {
             <input class="form__modal--input" type="number" v-model="formData.numero_registro_ica" />
           </div>
 
-          <div class="form__modal--field">
+          <!-- <div class="form__modal--field">
             <label class="form__modal--label">Ubicación: </label>
             <input class="form__modal--input" type="text" v-model="formData.ubicacion" />
           </div>
-
+ -->
           <div class="form__modal--field">
             <label class="form__modal--label">Email: </label>
             <input class="form__modal--input" type="text" v-model="formData.email" />
@@ -282,21 +288,15 @@ function handleDrop(event) {
           </div>
 
           <p class="msg__error" v-if="error">{{ error }}</p>
+          <LoadingData v-if="nurseriesStore.cargando" />
 
-          <div class="formulario__botones">
-            <button type="submit" class="button__user-nursery"><svg style="width: 2rem;"
-                xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                <path
-                  d="M7 19V13H17V19H19V7.82843L16.1716 5H5V19H7ZM4 3H17L21 7V20C21 20.5523 20.5523 21 20 21H4C3.44772 21 3 20.5523 3 20V4C3 3.44772 3.44772 3 4 3ZM9 15V19H15V15H9Z">
-                </path>
-              </svg></button>
+          <div class="form__modal--buttons" :class="{ 'with-error': error }">
+            <button class="form__modal--save" type="submit" :disabled="nurseriesStore.cargando">
+              <SvgIcon iconName="save" size="32" />
+            </button>
 
-            <div  class="button__modal--close" @click="modal.handleClickModalNurseryAdd()">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                stroke="currentColor" class="w-6 h-6">
-                <path stroke-linecap="round" stroke-linejoin="round"
-                  d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-              </svg>
+            <div class="button__modal--close" @click="modal.handleClickModalNurseryAdd()">
+              <SvgIcon iconName="closeModal" size="32"/>
             </div>
           </div>
         </form>

@@ -137,20 +137,25 @@ export const useEspeciesStore = defineStore('especies', () => {
     
     //busqueda por teremino
     function buscarTermino(termino) {
-      changePage(1)
-      species.value = speciesOriginals.value.filter(term => {
-        const lowerTermino = termino.toLowerCase();
-        const lowervernacularName = term.vernacularName ? term.vernacularName.toLowerCase() : '';
-        const lowerScientific = term.nombre_cientifico ? term.nombre_cientifico.toLowerCase(): '';
-        const lowerFamily = term.family ? term.family.toLowerCase(): '';
-  
+      changePage(1);
+    
+      // Eliminar tildes y convertir a minúsculas
+      const normalizeString = (str) => 
+        str ? str.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '') : '';
+    
+      species.value = speciesOriginals.value.filter((term) => {
+        const lowerTermino = normalizeString(termino);
+        const lowervernacularName = normalizeString(term.vernacularName);
+        const lowerScientific = normalizeString(term.nombre_cientifico);
+        const lowerFamily = normalizeString(term.family);
+    
         return (
           lowervernacularName.includes(lowerTermino) ||
           lowerFamily.includes(lowerTermino) ||
           lowerScientific.includes(lowerTermino)
         );
       });
-    }
+    }    
 
     async function deleteForestSpecie(pk) {
       const indexToDelete = species.value.findIndex(item => item.id === pk);    

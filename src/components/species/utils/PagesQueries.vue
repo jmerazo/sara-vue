@@ -111,6 +111,10 @@ const relatedLinks = [
 
 
 .related__page-content .related__page-link img {
-  width: 5rem;
+  max-width: 100%; /* Asegura que el ancho no exceda el contenedor */
+  max-height: 5rem; /* Fija la altura máxima para uniformidad */
+  object-fit: contain; /* Mantiene las proporciones originales */
+  display: block; /* Evita problemas con elementos inline */
+  margin: 0 auto; /* Centra las imágenes horizontalmente */
 }
 </style>

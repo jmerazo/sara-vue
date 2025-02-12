@@ -24,12 +24,15 @@ export const useModalStore = defineStore('modal',()=>{
     const modalFormMonitoring = ref(false)  
     const modalProperty = ref(false)
     const modalAssignUserSpecies = ref(false)
+    const modalAssignUserRecord = ref(false)
     const modalListUserSpecies = ref(false)
     const modalNurseryAdd = ref(false)
     const modalNurseryUpdate = ref(false)
     const modalNurseryAssignSpecie = ref(false)
     const modalNurserySpecieList = ref(false)
     const modalSpecieInventory = ref(false)
+    const modalSliderImagesAdd = ref(false) 
+    const modalSliderImagesUpdate = ref(false) 
 
     const isEdit = ref(false)
     
@@ -119,6 +122,10 @@ export const useModalStore = defineStore('modal',()=>{
         modalAssignUserSpecies.value = !modalAssignUserSpecies.value
     }
 
+    function handleClickModalAssignUserRecord(){
+        modalAssignUserRecord.value = !modalAssignUserRecord.value
+    }
+
     function handleClickModalListUserSpecies(){
         modalListUserSpecies.value = !modalListUserSpecies.value
     }
@@ -141,6 +148,14 @@ export const useModalStore = defineStore('modal',()=>{
 
     function handleClickModalSpecieInventory() {
         modalSpecieInventory.value = !modalSpecieInventory.value
+    }
+
+    function handleClickModalSliderImagesAdd() {
+        modalSliderImagesAdd.value = !modalSliderImagesAdd.value
+    }
+
+    function handleClickModalSliderImagesUpdate() {
+        modalSliderImagesUpdate.value = !modalSliderImagesUpdate.value
     }
 
     return {
@@ -181,6 +196,8 @@ export const useModalStore = defineStore('modal',()=>{
         handleClickModalProperty,
         modalProperty,
         handleClickModalAssignUserSpecies,
+        modalAssignUserRecord,
+        handleClickModalAssignUserRecord,
         modalAssignUserSpecies,
         handleClickModalListUserSpecies,
         modalListUserSpecies,
@@ -194,6 +211,10 @@ export const useModalStore = defineStore('modal',()=>{
         modalNurserySpecieList,
         isEdit,
         handleClickModalSpecieInventory,
-        modalSpecieInventory
+        modalSpecieInventory,
+        handleClickModalSliderImagesAdd,
+        modalSliderImagesAdd,
+        handleClickModalSliderImagesUpdate,
+        modalSliderImagesUpdate
     }
 })

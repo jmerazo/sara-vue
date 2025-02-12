@@ -19,6 +19,8 @@ export const propertyStore = defineStore('property',()=>{
   const propertyUser = ref([]);
   const userSpecies = ref([]);
   const propertySelectedUpdate = ref('');
+  const userRecordSelected = ref('');
+  const propertyRecords = ref([])
 
   // variables para paginación
   const currentPage = ref(1); // Página actual
@@ -68,7 +70,6 @@ export const propertyStore = defineStore('property',()=>{
     loading.value = true
     try {
       const response = await APIService.createProperty(data);
-      console.log('response store p ', response)
       
       if (response.status === 201) {
         // La respuesta del APIService fue satisfactoria
@@ -98,6 +99,11 @@ export const propertyStore = defineStore('property',()=>{
   const selectedUserCreateUsersProperty = (id) => {
     userPropertySelected.value = id;
     modal.handleClickModalAssignUserSpecies()
+  }
+
+  const selectedUserCreateUsersRecord = (id) => {
+    userRecordSelected.value = id;
+    modal.handleClickModalAssignUserRecord()
   }
 
   const createUsersProperty = async (data) => {
@@ -195,9 +201,9 @@ export const propertyStore = defineStore('property',()=>{
   }
 
   async function listUserSpeciesIds(id) {
+    loading.value = true
     try {
       const response = await APIService.listUserSpeciesId(id)
-      console.log('data user species: ', response)
       if(response.status === 200){
         userSpecies.value = response.data;
         modal.handleClickModalListUserSpecies()
@@ -206,6 +212,8 @@ export const propertyStore = defineStore('property',()=>{
       }      
     } catch (error) {
       console.error("Error al comunicarse con el servidor: ", error);
+    } finally {
+      loading.value = false
     }    
   }
 
@@ -252,37 +260,83 @@ export const propertyStore = defineStore('property',()=>{
     return { message: "Predio eliminado con éxito" };
   }
 
-    return { 
-      fetchProperty,
-      createProperty,
-      listProperty,
-      property,
-      propertyOriginal,
-      deleteProperty,
-      searchTerm,
-      removeFilterProperty,
-      changePage,
-      displayedProperty,
-      datosImport,
-      loading,
-      totalProperty,
-      userSelected,
-      selectedUserCreateProperty,
-      createUsersProperty,
-      propertyUsers,
-      selectedUserCreateUsersProperty,
-      userPropertySelected,
-      listPropertyId,
-      propertyUser,
-      listUserSpeciesIds,
-      userSpecies,
-      deleteSpecieUser,
-      selectedPropertyUpdate,
-      updateProperty,
-      
-      propertySelected,
-      currentPage,
-      itemsPerPage,
-      totalPages
+  async function propertyRecordSearch(pk) {
+    loading.value = true;
+    try {
+        const response = await APIService.searchPropertyRecord(pk);
+        return response.data.data || [];
+    } catch (error) {
+        console.error("Error al realizar la consulta:", error);
+        return []; // Retorna un array vacío si ocurre un error
+    } finally {
+        loading.value = false;
     }
+  }
+
+  const createSpeciesRecord = async (data) => {
+    loading.value = true;
+    try {
+      const response = await APIService.speciesRecord(data);
+  
+      if (response.status == 201) {
+        //propertyUsers.value.push(response.data); // Agrega el nuevo objeto al array
+        return {
+          success: true,
+          msg: response.data.msg || 'Especie asignada satisfactoriamente.', // Mensaje del backend o uno por defecto
+        };
+      } else {
+        return {
+          success: false,
+          msg: response.statusText || 'Error desconocido al asignar la especie.'
+        };
+      }
+    } catch (error) {
+      return {
+        success: false,
+        msg: error.response?.data?.msg || 'Error al asignar la especie.',
+        errors: error.response?.data?.errors || null
+      };
+    } finally {
+      loading.value = false;
+    }
+  };  
+
+  return { 
+    fetchProperty,
+    createProperty,
+    listProperty,
+    property,
+    propertyOriginal,
+    deleteProperty,
+    searchTerm,
+    removeFilterProperty,
+    changePage,
+    displayedProperty,
+    datosImport,
+    loading,
+    totalProperty,
+    userSelected,
+    selectedUserCreateProperty,
+    createUsersProperty,
+    propertyUsers,
+    selectedUserCreateUsersProperty,
+    userPropertySelected,
+    listPropertyId,
+    propertyUser,
+    listUserSpeciesIds,
+    userSpecies,
+    deleteSpecieUser,
+    selectedPropertyUpdate,
+    updateProperty,
+    userRecordSelected,
+    selectedUserCreateUsersRecord,
+
+    propertyRecordSearch,
+    createSpeciesRecord,
+    
+    propertySelected,
+    currentPage,
+    itemsPerPage,
+    totalPages
+  }
 })

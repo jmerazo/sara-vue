@@ -1,274 +1,430 @@
 <script setup>
-import { computed, onMounted } from "vue";
-import { onBeforeRouteLeave } from "vue-router";
-import { descargarExcels, descargarPdfs, obtenerFecha } from "@/helpers";
-import { usePageContent } from "../../stores/page";
+import { ref, onMounted, computed, watch } from "vue";
+import { usePageContent } from "@/stores/page";
 import { useModalStore } from "@/stores/modal";
 //componentes
 import LoadingData from "@/components/shared/LoadingData.vue";
-import ModalPageAdd from "@/components/dashboard/ModalPageAdd.vue";
+import ModalSliderImagesAdd from "@/components/dashboard/ModalSliderImagesAdd.vue";
+import ModalSliderImagesUpdate from "@/components/dashboard/ModalSliderImagesUpdate.vue";
+import { getSliderImages } from "../../helpers/index";
+import SvgIcon from "@/assets/SvgIcon.vue";
+import { useToastStore } from "@/stores/toast";
 
+const toast = useToastStore();
 const page = usePageContent();
 const modal = useModalStore();
-console.log('pages sc: ', page)
+const draggedImage = ref(null);
 
-onMounted(() => {
-  page.pagesData();
+// Función para procesar las imágenes
+const processSliderImages = () => {
+  page.sliderImages.forEach((image) => {
+    image.fullUrl = getSliderImages(image.url);
+  });
+};
+
+const sortedSliderImages = computed(() => {
+  return [...page.sliderImages].sort((a, b) => a.order - b.order);
 });
 
+onMounted(async () => {
+  await page.fetchSliderImages();
+  processSliderImages();
+});
+
+const handleDragStart = (image) => {
+  draggedImage.value = image;
+};
+
+const handleDrop = async (targetImage) => {
+    if (draggedImage.value && draggedImage.value !== targetImage) {
+        const draggedIndex = page.sliderImages.indexOf(draggedImage.value);
+        const targetIndex = page.sliderImages.indexOf(targetImage);
+        page.sliderImages.splice(draggedIndex, 1);
+        page.sliderImages.splice(targetIndex, 0, draggedImage.value);
+
+        const reorderedImages = page.sliderImages.map((image, index) => ({
+            id: image.id,
+            order: index + 1,
+        }));
+        draggedImage.value = null;
+
+        try {
+            const response = await page.SliderImagesOrderUpdate(reorderedImages);
+            console.log("response view ", response);
+
+            if (response.success) {
+                toast.activateToast(response.msg, "success");
+            } else {
+                toast.activateToast(response.msg, "error");
+            }
+        } catch (error) {
+            toast.activateToast("Hubo un error al actualizar el orden", "error");
+            await page.fetchSliderImages();
+        }
+    }
+};
+
+const SliderImageDelete = async (id) => {
+  const confirmDelete = window.confirm(
+    `¿Estás seguro de que desea eliminar la imágen?`
+  );
+  if (!confirmDelete) {
+    return;
+  }
+
+  try {
+    const response = await page.SliderImagesDelete(id);
+    if(response.success){
+      toast.activateToast(response.msg, "success");
+    }else{
+      toast.activateToast(response.msg, "error");
+    }
+  } catch (error) {
+    toast.activateToast("Hubo un error al eliminar la imagen", "error");
+  }
+  
+}
+
+watch(
+    () => page.sliderImages,
+    () => {
+        processSliderImages();
+    },
+    { deep: true }
+);
+
+async function SliderImagesStatusUpdate(event, image) {
+  event.preventDefault();
+  
+  const newState = image.status ? 0 : 1; 
+  
+  const confirmState = window.confirm(
+    `¿Estás seguro de que deseas ${newState ? "activar" : "desactivar"} la imagen?`
+  );
+
+  if (!confirmState) {
+    event.target.checked = image.status; // Restaurar el estado original en caso de cancelar
+    return;
+  }
+
+  try {
+    const response = await page.SliderImageStatusUpdate(image.id, { status: newState }); // Enviar un objeto con el campo status
+    if (response.success) {
+      image.status = newState; // Actualizar el estado local
+      toast.activateToast("Estado actualizado exitosamente.", "success");
+    } else {
+      toast.activateToast(response.msg, "error");
+      event.target.checked = image.status; // Restaurar el estado original si falla
+    }
+  } catch (error) {
+    toast.activateToast("Hubo un error al actualizar el estado.", "error");
+    event.target.checked = image.status; // Restaurar el estado original si hay error
+  }
+}
 </script>
 
 <template>
   <div class="contenedor">
-    <!-- encabezado vista -->
-    <h1 class="reporte__heading">Páginas</h1>
-    <div class="contenido__header">
-      <div class="buscador">
-        <div class="buscador__contenido"></div>
-        <label class="buscador__label">Buscar: </label>
-        <input class="buscador__input" type="text" placeholder="Escríbe un término de búsqueda"
-          @input="especies.buscarTermino($event.target.value)" />
-      </div>
-      <div class="botones__descarga"></div>
-    </div>
-    <!-- fin encabezado vista -->
+    <h1 class="reporte__heading">Imágenes del Slider</h1>
     <hr />
+    <LoadingData v-if="page.loading"/>
 
-    <div>
-      <!-- listado de cards -->
-      <main class="reporte__grid">
-        <div class="card" v-for="p in page.pageData" v-bind:key="p.id">
-          <div class="card__grid" v-if="p.id">
-            <div class="card__contenido">
+    <!-- Mostrar mensaje si no hay imágenes -->
+    <div v-else-if="page.sliderImages.length === 0">
+      <p>No hay imágenes disponibles en el slider.</p>
+    </div>
+    
+    <!-- Listado de imágenes -->
+    <div v-else class="reporte__grid">
+      <div
+        class="card"
+        v-for="image in sortedSliderImages"
+        :key="image.id"
+        draggable="true"
+        @dragstart="handleDragStart(image)"
+        @dragover.prevent
+        @drop="handleDrop(image)"
+      >
+      <div class="card__check">
+          <label class="switch">
+              <input
+                  @change="SliderImagesStatusUpdate($event, image)"
+                  :checked="image.status"
+                  class="card__input"
+                  type="checkbox"
+              />
+              <span class="card__check--button"></span>
+          </label>
+      </div>  
 
-              <div>
-                <p class="card__subtitulo">
-                  Título: <span class="card__dato">{{ p.title }}</span>
-                </p>
-                <p class="card__subtitulo">
-                  Router:
-                  <span style="font-weight: 600;" class="card__dato">{{ p.router }}</span>
-                </p>
-              </div>
+      <!-- Contenedor de la imagen con el número en la esquina superior derecha -->
+      <div class="card__image-wrapper">
+        <img :src="image.fullUrl" alt="Imagen del slider" class="card__imagen" />
+        <span class="card__order">{{ image.order }}</span>
+      </div>
 
-              <div class="card__botones">
-                <button class="boton__editar">
-                  <svg style="width: 2rem;"  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M15.7279 9.57627L14.3137 8.16206L5 17.4758V18.89H6.41421L15.7279 9.57627ZM17.1421 8.16206L18.5563 6.74785L17.1421 5.33363L15.7279 6.74785L17.1421 8.16206ZM7.24264 20.89H3V16.6473L16.435 3.21231C16.8256 2.82179 17.4587 2.82179 17.8492 3.21231L20.6777 6.04074C21.0682 6.43126 21.0682 7.06443 20.6777 7.45495L7.24264 20.89Z"></path></svg>
-                </button>
-                <button class="boton__eliminar">
-                  <svg style="width: 2rem;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M17 6H22V8H20V21C20 21.5523 19.5523 22 19 22H5C4.44772 22 4 21.5523 4 21V8H2V6H7V3C7 2.44772 7.44772 2 8 2H16C16.5523 2 17 2.44772 17 3V6ZM18 8H6V20H18V8ZM9 4V6H15V4H9Z"></path></svg>
-                </button>
-              </div>
-            </div>
+      <!-- Detalles de la imagen -->
+      <div class="card__contenido">
+        <p class="card__titulo">{{ image.title }}</p>
+        <p class="card__subtitulo">{{ image.description }} </p>
+
+        <!-- Botones de acción -->
+        <div class="card__botones">
+          <div class="btn__wrapper btn__editSliderImages" @click="page.SliderImagesSelected(image.id)">
+            <SvgIcon iconName="edit" size="24" />
+          </div>
+          <div class="btn__wrapper btn__deleteSliderImages" @click="SliderImageDelete(image.id)">
+            <SvgIcon iconName="delete" size="24" />
           </div>
         </div>
-      </main>
+      </div>
     </div>
-    <div @click="modal.handleClickModalPageAdd()" class="agregar"></div>
-    <ModalPageAdd />
   </div>
+
+    <!-- Botón de agregar -->
+    <button class="boton-fijo" @click="modal.handleClickModalSliderImagesAdd()">
+      <SvgIcon iconName="imageAdd" size="32" />
+    </button>
+  </div>
+
+  <!-- Modal para agregar imágenes -->
+  <ModalSliderImagesAdd />
+  <ModalSliderImagesUpdate/>
 </template>
 
 <style scoped>
-/* encabezado de la vista */
-.reporte__heading {
-  font-size: 1.1rem;
-  margin: 2rem;
-}
-
-@media (min-width: 768px) {
-  .reporte__heading {
-    font-size: 1.3rem;
-    margin: 0 0 3rem 0;
-  }
-}
-
-.contenido__header {
+/* Contenedor principal */
+.contenedor {
+  padding: 1rem;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 1.2rem;
-  margin-bottom: 0.6rem;
 }
 
-@media (min-width: 768px) {
-  .contenido__header {
-    flex-direction: row-reverse;
-    justify-content: space-between;
-    margin: 0 1rem 2rem 1rem;
-  }
-}
-
-.reporte__grid {
-  display: grid;
-  gap: 1rem;
-  margin-top: 2rem;
-  margin-bottom: 2rem;
-}
-
-@media (min-width: 768px) {
-  .reporte__grid {
-    grid-template-columns: repeat(2fr, 1fr);
-  }
-}
-
-@media (min-width: 992px) {
-  .reporte__grid {
-    grid-template-columns: repeat(3, 1fr);
-  }
-}
-
-/* buscador */
-.buscador__label {
-  display: none;
-}
-
-@media (min-width: 768px) {
-  .buscador__label {
-    display: inline;
-    margin-right: 1rem;
-  }
-}
-
-.buscador__input {
-  width: 300px;
-  padding: 0.4rem;
-  border-radius: 6px;
-  border: 1px solid var(--primary);
+/* Título */
+.reporte__heading {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
   text-align: center;
 }
 
-@media (min-width: 768px) {
-  .buscador__input {
-    padding: 0.5rem;
-    text-align: left;
-  }
-}
-
-/* descargas */
-.botones__descarga {
+/* Botón fijo en la esquina inferior derecha */
+.boton-fijo {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
   display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  z-index: 10;
+}
+
+.boton-fijo:hover {
+  background-color: var(--primary-dark);
+  transform: scale(1.1);
+  transition: transform 0.2s ease-in-out;
+}
+
+/* Grid para las imágenes */
+.reporte__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   gap: 1rem;
+  padding: 1rem;
+  border: 2px dashed #ccc; /* Indica que el área es interactiva */
+  border-radius: 8px;
+  background-color: #f9f9f9; /* Sutil fondo para diferenciar el área */
+  transition: background-color 0.3s;
 }
 
-.boton {
-  font-size: 1.5rem;
+.reporte__grid:hover {
+  background-color: #f5f5f5; /* Cambia el color al pasar el mouse */
 }
 
-@media (min-width: 768px) {
-  .boton {
-    font-size: 1.8rem;
-  }
-}
-
-.boton__excel {
-  color: rgb(6, 114, 6);
-}
-
-.boton__pdf {
-  color: rgb(184, 50, 50);
-}
-
-/* cards */
+/* Tarjeta */
 .card {
   background-color: white;
-  /* o cualquier otro color de fondo */
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-  /* sombra sutil */
-  border-radius: 10px;
-  /* bordes redondeados */
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   overflow: hidden;
-  /* para mantener todo dentro de los bordes redondeados */
-  transition: transform 0.2s;
-  /* para efecto al hacer hover */
-  padding: 1rem;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s;
+  cursor: grab; /* Icono de "mover" */
 }
 
 .card:hover {
-  transform: scale(1.02);
-  /* un ligero crecimiento al hacer hover */
+  transform: translateY(-5px);
+  box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
+  background-color: #f0f0f0; /* Fondo claro para resaltar */
+}
+
+.card:active {
+  cursor: grabbing; /* Cambia a "arrastrando" mientras se arrastra */
+  background-color: #e0e0e0; /* Fondo más oscuro mientras se arrastra */
+}
+
+.card.drop-target {
+  background-color: #d1e7ff; /* Resalta el área de soltado */
+  border: 2px solid var(--primary);
+}
+
+/* Contenedor de la imagen */
+.card__image-wrapper {
+  position: relative;
+  width: 100%;
+  height: 150px;
+  overflow: hidden;
+}
+
+/* Imagen */
+.card__imagen {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Orden en la esquina superior derecha */
+.card__order {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: rgba(0, 0, 0, 0.7);
+  color: white;
+  padding: 0.3rem 0.6rem;
+  font-size: 0.9rem;
+  font-weight: bold;
+  border-radius: 5px;
+}
+
+/* Contenido */
+.card__contenido {
+  padding: 0.5rem;
 }
 
 .card__titulo {
-  font-size: 1.2rem;
+  font-size: 1rem;
   font-weight: bold;
+  margin-bottom: 0.5rem;
 }
 
 .card__subtitulo {
-  color: rgb(70, 69, 69);
-  font-size: 1rem;
-}
-.card__contenido{
-  display: flex;
-  gap: 1rem;
-  justify-content: space-between;
-  align-items: center;
+  font-size: 0.9rem;
+  color: #555;
 }
 
-.card__botones{
+/* Botones */
+.card__botones {
   display: flex;
-  gap: 1rem;
   justify-content: space-between;
-  align-items: center;
+  margin-top: 0.5rem;
 }
-.card__botones button{
+
+.card__botones button {
   background: none;
   border: none;
+  cursor: pointer;
+  padding: 0.3rem 0.6rem;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  transition: background-color 0.2s;
 }
 
-.card__botones .boton__editar:hover{
+.btn__wrapper {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.3rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+}
+
+.btn__editSliderImages {
   color: var(--primary);
 }
-.card__botones .boton__eliminar:hover{
+
+.btn__editSliderImages:hover {
+  background-color: var(--primary-light);
+  color: white;
+}
+
+.btn__deleteSliderImages {
   color: var(--rojo);
 }
 
-/* boton agregar */
-.agregar {
-  background-image: url("/icons/icon-add.svg");
-  padding: 0;
-  margin: 0;
-  height: 3rem;
-  background-position: center;
-  background-size: cover;
-  position: fixed;
-  bottom: 10%;
-  right: -1px;
-  z-index: 2;
-  width: 3rem;
-  transition: transform 0.3s ease-out, box-shadow 0.3s ease-out;
+.btn__deleteSliderImages:hover {
+  background-color: var(--rojo-light);
+  color: white;
 }
 
-.agregar:hover {
-  transform: scale(1.08);
+/* switch */
+.card__check {
+  position: absolute;
+  top: 10px; /* Ajusta la distancia desde el borde superior */
+  left: 10px; /* Ajusta la distancia desde el borde izquierdo */
+  z-index: 10;
 }
 
-@media (min-width: 768px) {
-  .agregar {
-    right: 1%;
-    height: 3rem;
-    overflow: hidden;
-    border-radius: 50%;
-  }
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 40px;
+  height: 24px;
+}
 
-  .agregar::before {
-    content: "";
-    display: block;
-    width: 100%;
-    height: 100%;
-    background-image: url("/icons/icon-add.svg");
-    background-position: center;
-    background-size: cover;
-    border-radius: 50%;
-    transition: transform 0.3s ease-out;
-  }
+.card__input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
 
-  .agregar:hover::before {
-    transform: scale(1.08);
-  }
+.card__check--button {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: var(--secondary);
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
+  border-radius: 34px;
+}
 
-  .agregar:hover {
-    box-shadow: 0 0 0 5px rgba(0, 0, 0, 0.2);
-  }
+.card__check--button:before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
+  border-radius: 50%;
+}
+
+.card__input:checked + .card__check--button {
+  background-color: var(--primary);
+}
+
+.card__input:focus + .card__check--button {
+  box-shadow: 0 0 1px var(--primary);
+}
+
+.card__input:checked + .card__check--button:before {
+  -webkit-transform: translateX(16px);
+  -ms-transform: translateX(16px);
+  transform: translateX(16px);
+}
+
+/* Ajustar la posición de la tarjeta para el toggle */
+.card {
+  position: relative; /* Necesario para posicionar el toggle dentro de la tarjeta */
 }
 </style>

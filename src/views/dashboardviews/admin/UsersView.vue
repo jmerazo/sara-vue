@@ -3,12 +3,14 @@ import { computed, onMounted} from "vue";
 import { onBeforeRouteLeave } from "vue-router";
 import { useUsersStore } from "@/stores/users";
 import { useModalStore } from "@/stores/modal";
-
+import { useToastStore } from '@/stores/toast';
+import { propertyStore } from "@/stores/dashboard/property";
 import ModalUserAdd from "@/components/dashboard/modals/ModalUserAdd.vue";
 import ModalUserUpdate from "@/components/dashboard/modals/ModalUserUpdate.vue";
 import ModalProperty from "@/components/dashboard/modals/ModalProperty.vue";
 import ModalNurseryAdd from "@/components/dashboard/modals/ModalNurseryAdd.vue";
 import ModalAssignUserSpecies from "@/components/dashboard/modals/ModalAssignUserSpecies.vue";
+import ModalAssignUserRecord from "../../../components/dashboard/modals/ModalAssignUserRecord.vue";
 import ModalUserSpeciesList from "@/components/dashboard/modals/ModalUserSpeciesList.vue";
 import AdminUser from "@/components/dashboard/cards/AdminUser.vue";
 import { descargarExcels, descargarPdfs, obtenerFecha } from "@/helpers";
@@ -17,7 +19,9 @@ import { descargarExcels, descargarPdfs, obtenerFecha } from "@/helpers";
 import LoadingData from "@/components/shared/LoadingData.vue";
 
 const usersStore = useUsersStore();
+const property = propertyStore();
 const modal = useModalStore();
+const toast = useToastStore()
 
 onMounted(async () => {
     await usersStore.fetchUsers();
@@ -29,8 +33,13 @@ onBeforeRouteLeave((to, from, next) => {
   next();
 });
 
-function changeUserState(id, state) {
-  usersStore.changeStateUser(id, state);
+async function changeUserState(id, state) {
+  const response = await usersStore.changeStateUser(id, state);
+  if(response.success){
+    toast.activateToast(response.msg, 'success');
+  }else{
+    toast.activateToast(response.msg, 'error');
+  }
 }
 
 //botones paginador
@@ -80,7 +89,7 @@ const displayedPageRange = computed(() => {
     </div>
     <!-- fin encabezado vista -->
     <hr />
-    <LoadingData v-if="usersStore.cargando" />
+    <LoadingData v-if="usersStore.loading || property.loading" />
     <main v-else>
       <div class="users__grid">
         <div v-for="user in usersStore.displayedUsers" v-bind:key="user.id">
@@ -170,6 +179,7 @@ const displayedPageRange = computed(() => {
     </main>
     <ModalUserUpdate/>
     <ModalProperty/>
+    <ModalAssignUserRecord/>
     <ModalAssignUserSpecies/>
     <ModalUserSpeciesList/>
     <ModalNurseryAdd/>

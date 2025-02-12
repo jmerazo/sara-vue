@@ -1,109 +1,83 @@
 <script setup>
 import { onMounted } from "vue";
-//Stores
+// Stores
 import { useHomeStore } from "@/stores/home";
-import { usePageContent } from "@/stores/page";
-//components
-import Header from '@/components/home/Header.vue';
-import ButtonTop from '@/components/shared/ButtonTop.vue'
-import TopSpecies from '../components/home/TopSpecies.vue'
+// Components
+import Header from "@/components/home/Header.vue";
+import ButtonTop from "@/components/shared/ButtonTop.vue";
+import TopSpecies from "@/components/home/TopSpecies.vue";
 
-const pageStore = usePageContent();
 const homeStore = useHomeStore();
 
 const scrollToTop = () => {
   window.scrollTo({
     top: 0,
-    behavior: 'smooth', // Smooth scroll effect
+    behavior: "smooth", // Smooth scroll effect
   });
 };
 
 onMounted(async () => {
-  scrollToTop()
-  await pageStore.fetchData();
+  scrollToTop();
   await homeStore.fetchData();
 });
+
+const vals = [
+  {
+    title: "Misión",
+    content:
+      "Promover la conservación y protección de los árboles, así como concientizar a la sociedad sobre su importancia vital para el medio ambiente y el bienestar humano.",
+    backgroundImage: "url(/img/backgroundCard/background-mision.jpeg)",
+  },
+  {
+    title: "Visión",
+    content:
+      "Aspiramos a un mundo donde los árboles sean apreciados y respetados, y donde las comunidades se unan para garantizar un entorno sostenible y saludable.",
+    backgroundImage: "url(/img/backgroundCard/background-vision.webp)",
+  },
+  {
+    title: "Valores",
+    content:
+      "Compromiso con la naturaleza, Responsabilidad ambiental, Colaboración comunitaria, Educación ambiental, Innovación sostenible",
+    backgroundImage: "url(/img/backgroundCard/background-valores.jpeg)",
+  },
+  {
+    title: "Objetivo",
+    content:
+      "Incrementar el conocimiento sobre la morfología, ecología, fenología, distribución geográfica, usos, cosecha, y establecer criterios y lineamientos técnicos para el manejo sostenible de las especies forestales del sur de la Amazonía colombiana, salvaguardando el equilibrio de los ecosistemas y sus funciones, orientados a mejorar la producción de bienes y servicios para la sociedad sin amenazar la existencia de las mismas y los ecosistemas asociados, en los departamentos de Amazonas, Caquetá y Putumayo.",
+    backgroundImage: "url(/img/backgroundCard/background-objetivo.jpeg)",
+  },
+];
 </script>
 
 <template>
   <div>
     <Header/>
-    <!-- misión, visión y valores -->
     <section class="contenedor">
       <div class="planning">
-        <div v-for="(seccion, index) in pageStore.informacionUsuario" :key="index">
-          <div class="card" v-if="seccion.titulo === 'Misión'">
-            <div class="front" :style="{
-              backgroundImage:
-                'url(/img/backgroundCard/background-mision.jpeg)',
-            }">
-              <div class="front__content">
-                <p class="card__label">{{ seccion.titulo }}</p>
-              </div>
-            </div>
-            <div class="back">
-              <p class="card__text">
-                {{ seccion.descripcion }}
-              </p>
+        <div v-for="(seccion, index) in vals" :key="index" class="card">
+          <div
+            class="front"
+            :style="{ backgroundImage: seccion.backgroundImage }"
+          >
+            <div class="front__content">
+              <p class="card__label">{{ seccion.title }}</p>
             </div>
           </div>
-
-          <div class="card" v-else-if="seccion.titulo === 'Visión'">
-            <div class="front" :style="{
-              backgroundImage:
-                'url(/img/backgroundCard/background-vision.webp)',
-            }">
-              <div class="front__content">
-                <p class="card__label">{{ seccion.titulo }}</p>
-              </div>
-            </div>
-            <div class="back">
-              <p class="card__text">
-                {{ seccion.descripcion }}
-              </p>
-            </div>
+          <div class="back">
+            <p
+              class="card__text"
+              :class="{ 'card__text--large': seccion.title === 'Objetivo' }"
+            >
+              {{ seccion.content }}
+            </p>
           </div>
-
-          <div class="card" v-else-if="seccion.titulo === 'Valores'">
-            <div class="front" :style="{
-              backgroundImage:
-                'url(/img/backgroundCard/background-valores.jpeg)',
-            }">
-              <div class="front__content">
-                <p class="card__label">{{ seccion.titulo }}</p>
-              </div>
-            </div>
-            <div class="back">
-              <p class="card__text">
-                {{ seccion.descripcion }}
-              </p>
-            </div>
-          </div>
-
-          <div class="card" v-else-if="seccion.titulo === 'Objetivo'">
-            <div class="front" :style="{
-              backgroundImage:
-                'url(/img/backgroundCard/background-objetivo.jpeg)',
-            }">
-              <div vel class="front__content">
-                <p class="card__label">{{ seccion.titulo }}</p>
-              </div>
-            </div>
-            <div class="back">
-              <p class="card__text card__text--large">
-                {{ seccion.descripcion }}
-              </p>
-            </div>
-          </div>
-
         </div>
       </div>
     </section>
 
     <TopSpecies class="top__species" />
-
+    <ButtonTop />
   </div>
-  <ButtonTop />
 </template>
 
 <style scoped>

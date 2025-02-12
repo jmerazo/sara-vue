@@ -73,8 +73,51 @@ export const useUsersStore = defineStore("useUsersStore", () => {
         throw new Error('Error al comunicarse con el servidor.');
       }
     }
-  }  
+  }
   
+  async function updateUser(uid, data) {
+    loading.value = true; // Activar estado de carga
+    try {
+        // Llamar al servicio de API para actualizar el usuario
+        const response = await APIService.updateUsers(uid, data);
+        console.log('response ', response)
+
+        // Verificar si la respuesta es exitosa
+        if (response.status == 200) {
+            // Buscar el índice del usuario en la lista original
+            const userIndex = usersOriginal.value.findIndex((user) => user.id === uid);
+
+            // Si el usuario existe, actualizar sus datos
+            if (userIndex !== -1) {
+                usersOriginal.value[userIndex] = { ...usersOriginal.value[userIndex], ...data };
+            } else {
+                console.error(`Usuario con ID ${id} no encontrado.`);
+            }
+
+            // Retornar la respuesta de la API
+            return {
+                status: response.status,
+                msg: response.data.msg,
+                success: response.data.success,
+            };
+        } else {
+            // Lanzar un error si la respuesta no es exitosa
+            throw new Error(response.data.msg || 'Error desconocido al actualizar el usuario.');
+        }
+    } catch (error) {
+        // Manejar errores de la API o de red
+        if (error.response && error.response.data && error.response.data.msg) {
+            console.error("Error al comunicarse con el servidor: ", error.response.data.msg);
+            throw new Error(error.response.data.msg);
+        } else {
+            console.error("Error al comunicarse con el servidor: ", error.message);
+            throw new Error('Error al comunicarse con el servidor.');
+        }
+    } finally {
+        loading.value = false; // Desactivar estado de carga
+    }
+  }
+
   async function registerUser(data, recaptcha_token) {
     loading.value = true;
     try {
@@ -103,16 +146,32 @@ export const useUsersStore = defineStore("useUsersStore", () => {
   }
 
   const changeStateUser = async (id, nuevoEstado) => {
-      // Encuentra el índice del usuario en el array basado en su ID
-      const userIndex = users.value.findIndex((usuario) => usuario.id === id);
-      if (userIndex !== -1) {
-          // Si el usuario se encontró en el array, actualiza su estado
-          users.value[userIndex].is_active = nuevoEstado;
-          await APIService.stateUsers(id, {nuevoEstado})
+    loading.value = true;
+    try {
+      const response = await APIService.stateUsers(id, {nuevoEstado})
+      if(response.data.success){
+        const userIndex = users.value.findIndex((usuario) => usuario.id === id);
+        if (userIndex !== -1) {
+            users.value[userIndex].is_active = nuevoEstado;
+        } else {
+            console.error(`Usuario con ID ${id} no encontrado.`);
+        } 
+        return {
+          msg: response.data.msg,
+          success: response.data.success,
+        };
       } else {
-          // Maneja el caso en el que el usuario no se encontró
-          console.error(`Usuario con ID ${id} no encontrado.`);
-      }
+        return {
+          msg: response.data.msg,
+          success: response.data.success,
+        };
+      }           
+    } catch (error) {
+      throw new Error(error.response.data.msg);   
+    } finally {
+      loading.value = false;
+    }
+      
   };
 
   // Calcula el número total de páginas en función de los datos
@@ -224,6 +283,7 @@ export const useUsersStore = defineStore("useUsersStore", () => {
     fetchUsers,
     goToFirstPage,
     goToLastPage,
-    displayedPageRange
+    displayedPageRange,
+    updateUser
   };
 });

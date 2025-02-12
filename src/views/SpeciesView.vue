@@ -5,11 +5,12 @@ import { onBeforeRouteLeave } from "vue-router";
 import { useEspeciesStore } from "@/stores/species";
 import { useEspeciesData } from "@/stores/dashboard/reports/speciesData";
 //Helpers
-import { obtenerFecha, descargarPdfs } from "@/helpers";
+import { obtenerFecha, descargarPdfs, descargarExcels } from "@/helpers";
 //Components
 import Species from "@/components/species/Species.vue";
 import ButtonTop from '@/components/shared/ButtonTop.vue'
 import ModalSpecie from '@/components/species/modals/ModalSpecie.vue';
+import SvgIcon from "@/assets/SvgIcon.vue";
 
 const especies = useEspeciesStore();
 const reportGeneral = useEspeciesData();
@@ -40,11 +41,12 @@ onMounted(async () => {
   scrollTop()
   await especies.loadSpeciesSisa();
   await especies.loadAllSpecies();
+  console.log(`Altura del viewport: ${window.innerHeight}px`);
 });
 
-function showCardDownload() {
-  return activeDownload.value = !activeDownload.value
-}
+const showCardDownload = () => {
+  activeDownload.value = !activeDownload.value; // Cambia el estado para expandir o colapsar la tarjeta
+};
 
 function scrollTop() {
   if (isSearching.value) {
@@ -59,6 +61,19 @@ function scrollTop() {
     })
   }
 }
+
+const codigosExcluidos = [
+  120, 142, 146, 206, 784, 1747, 1786, 1933, 2093, 2320, 2323, 2480, 2484, 
+  2509, 2768, 2789, 2838, 3172, 3413, 3434, 4211, 4449, 4803, 4946, 5264, 
+  5272, 5274, 5284, 5290, 5309, 5310, 5377, 5392, 5418, 5425, 9982, 9986, 
+  9988, 9989, 9992, 9994
+];
+
+const datosFiltrados = computed(() => {
+  return reportGeneral.datosImport.filter(especie => 
+    !codigosExcluidos.includes(especie.cod_especie)
+  );
+});
 </script>
 
 <template>
@@ -69,22 +84,18 @@ function scrollTop() {
         <div class="header_formulario">
           <h1 class="especies__heading">Listado de especies forestales</h1>
           <div class="formulario" :class="{ 'isSearching': isSearching }">
-            <input class="formulario__input" type="text" placeholder="Escribe un término de búsqueda"
-              v-model="valueSearched" @input="especies.buscarTermino($event.target.value), scrollTop()" />
+            <input 
+              class="formulario__input" 
+              type="text" 
+              placeholder="Escribe un término de búsqueda"
+              v-model="valueSearched" 
+              @input="especies.buscarTermino($event.target.value), scrollTop()"
+            />
             <div class="formulario__icono">
-              <svg :style="{ color: isSearching ? 'white' : 'var(--gris)' }" xmlns="http://www.w3.org/2000/svg"
-                fill="none" 
-                viewBox="0 0 24 24" 
-                stroke-width="1.5" 
-                stroke="currentColor" 
-                class="w-6 h-6"
-              >
-                <path 
-                  stroke-linecap="round" 
-                  stroke-linejoin="round"
-                  d="m15.75 15.75-2.489-2.489m0 0a3.375 3.375 0 1 0-4.773-4.773 3.375 3.375 0 0 0 4.774 4.774ZM21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" 
-                />
-              </svg>
+              <SvgIcon 
+                :style="{ color: isSearching ? 'white' : 'var(--gris)' }" 
+                iconName="search"
+              />
             </div>
           </div>
           <p class="formulario__resultados" v-if="isSearching">
@@ -97,77 +108,62 @@ function scrollTop() {
             para {{ valueSearched }}
           </p>
           <p class="formulario__resultados" v-else> Buscar por nombre común, nombre científico o familia</p>
+          
+          <!-- button download -->
+          <div class="downloadSpecies">
+            <!-- Botón de descarga -->
+            <button @click="showCardDownload" class="downloadSpecies__button">
+              <SvgIcon class="downloadSpecies__icon" iconName="arrowDownload" size="24" />
+              Descargar Especies Forestales
+            </button>
+
+            <!-- Contenido dinámico -->
+            <div class="downloadSpecies__card" :class="{ active: activeDownload }">
+              <div class="downloadSpecies__header">
+                <h3 class="downloadSpecies__title">
+                  Listado de especies forestales en proceso de elaboración de protocolo:
+                </h3>
+                <div class="downloadSpecies__icons">
+                  <SvgIcon
+                    @click="descargarPdfs(datosFiltrados, `Listado especies forestales - ${obtenerFecha()}`, 6, 0)"
+                    class="downloadSpecies__icon downloadSpecies__icon--red"
+                    iconName="pdfRed"
+                    size="24"
+                  />
+                  <SvgIcon
+                    @click="descargarExcels(datosFiltrados, `Listado_especies_forestales - ${obtenerFecha()}`)"
+                    class="downloadSpecies__icon downloadSpecies__icon--green"
+                    iconName="xlsxGreen"
+                    size="24"
+                  />
+                </div>
+              </div>
+
+              <div class="downloadSpecies__header">
+                <h3 class="downloadSpecies__title">Listado de especies SISA:</h3>
+                <div class="downloadSpecies__icons">
+                  <SvgIcon
+                    @click="descargarPdfs(especies.sisaList, `Listado especies forestales_SISA - ${obtenerFecha()}`, 6, 0)"
+                    class="downloadSpecies__icon downloadSpecies__icon--red"
+                    iconName="pdfRed"
+                    size="24"
+                  />
+                  <SvgIcon
+                    @click="descargarExcels(especies.sisaList, `Listado_especies_forestales_SISA - ${obtenerFecha()}`)"
+                    class="downloadSpecies__icon downloadSpecies__icon--green"
+                    iconName="xlsxGreen"
+                    size="24"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- end button download -->        
         </div>
       </div>
     </header>
     <!-- fin header vista especie -->
 
-    <!-- button download -->
-    <div class="downloadSpecies" :style="{ 'height': activeDownload ? '500px' : '100px' }">
-      <button @click="showCardDownload()" class="downloadSpecies__button">
-        <svg 
-          class="downloadSpecies__icon" 
-          xmlns="http://www.w3.org/2000/svg" 
-          viewBox="0 0 24 24" 
-          fill="currentColor">
-          <path
-            d="M3 19H21V21H3V19ZM13 13.1716L19.0711 7.1005L20.4853 8.51472L12 17L3.51472 8.51472L4.92893 7.1005L11 13.1716V2H13V13.1716Z"
-          >
-          </path>
-        </svg>
-        Descargar Especies Forestales
-      </button>
-      <div class="downloadSpecies__card" :style="{ 'margin-top': activeDownload ? '1rem' : '-29rem' }">
-        <div class="downloadSpecies__header">
-          <h3 class="downloadSpecies__title">Listado de especies forestales en proceso de elaboración de protocolo:</h3>
-          <div class="downloadSpecies__icons">
-            <svg
-              @click="descargarPdfs(reportGeneral.datosImport, `Listado especies forestales - ${obtenerFecha()}`, 6, 0)"
-              class="downloadSpecies__icon downloadSpecies__icon--red" 
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24" 
-              fill="currentColor"
-            >
-              <path
-                d="M5 4H15V8H19V20H5V4ZM3.9985 2C3.44749 2 3 2.44405 3 2.9918V21.0082C3 21.5447 3.44476 22 3.9934 22H20.0066C20.5551 22 21 21.5489 21 20.9925L20.9997 7L16 2H3.9985ZM10.4999 7.5C10.4999 9.07749 10.0442 10.9373 9.27493 12.6534C8.50287 14.3757 7.46143 15.8502 6.37524 16.7191L7.55464 18.3321C10.4821 16.3804 13.7233 15.0421 16.8585 15.49L17.3162 13.5513C14.6435 12.6604 12.4999 9.98994 12.4999 7.5H10.4999ZM11.0999 13.4716C11.3673 12.8752 11.6042 12.2563 11.8037 11.6285C12.2753 12.3531 12.8553 13.0182 13.5101 13.5953C12.5283 13.7711 11.5665 14.0596 10.6352 14.4276C10.7999 14.1143 10.9551 13.7948 11.0999 13.4716Z"
-              >
-              </path>
-            </svg>
-            <svg @click="descargarExcel(reportGeneral.datosImport, `Listado_especies_forestales - ${obtenerFecha()}`)"
-              class="downloadSpecies__icon downloadSpecies__icon--green" 
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24" 
-              fill="currentColor">
-              <path
-                d="M13.2 12L16 16H13.6L12 13.7143L10.4 16H8L10.8 12L8 8H10.4L12 10.2857L13.6 8H15V4H5V20H19V8H16L13.2 12ZM3 2.9918C3 2.44405 3.44749 2 3.9985 2H16L20.9997 7L21 20.9925C21 21.5489 20.5551 22 20.0066 22H3.9934C3.44476 22 3 21.5447 3 21.0082V2.9918Z"
-              >
-              </path>
-            </svg>
-          </div>
-        </div>
-
-        <div class="downloadSpecies__header">
-          <h3 class="downloadSpecies__title">Listado de especies SISA:</h3>
-          <div class="downloadSpecies__icons">
-            <svg @click="descargarPdfs(especies.sisaList, `Listado especies forestales_SISA - ${obtenerFecha()}`, 6, 0)"
-              class="downloadSpecies__icon downloadSpecies__icon--red" xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24" fill="currentColor">
-              <path
-                d="M5 4H15V8H19V20H5V4ZM3.9985 2C3.44749 2 3 2.44405 3 2.9918V21.0082C3 21.5447 3.44476 22 3.9934 22H20.0066C20.5551 22 21 21.5489 21 20.9925L20.9997 7L16 2H3.9985ZM10.4999 7.5C10.4999 9.07749 10.0442 10.9373 9.27493 12.6534C8.50287 14.3757 7.46143 15.8502 6.37524 16.7191L7.55464 18.3321C10.4821 16.3804 13.7233 15.0421 16.8585 15.49L17.3162 13.5513C14.6435 12.6604 12.4999 9.98994 12.4999 7.5H10.4999ZM11.0999 13.4716C11.3673 12.8752 11.6042 12.2563 11.8037 11.6285C12.2753 12.3531 12.8553 13.0182 13.5101 13.5953C12.5283 13.7711 11.5665 14.0596 10.6352 14.4276C10.7999 14.1143 10.9551 13.7948 11.0999 13.4716Z">
-              </path>
-            </svg>
-            <svg @click="descargarExcel(especies.sisaList, `Listado_especies_forestales_SISA - ${obtenerFecha()}`)"
-              class="downloadSpecies__icon downloadSpecies__icon--green" xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24" fill="currentColor">
-              <path
-                d="M13.2 12L16 16H13.6L12 13.7143L10.4 16H8L10.8 12L8 8H10.4L12 10.2857L13.6 8H15V4H5V20H19V8H16L13.2 12ZM3 2.9918C3 2.44405 3.44749 2 3.9985 2H16L20.9997 7L21 20.9925C21 21.5489 20.5551 22 20.0066 22H3.9934C3.44476 22 3 21.5447 3 21.0082V2.9918Z">
-              </path>
-            </svg>
-          </div>
-        </div>
-      </div>
-    </div>
-    <!-- end button download -->
     <!-- listado especies -->
     <main class="especies">
       <div class="especies__grid">
@@ -229,14 +225,11 @@ function scrollTop() {
 
 <style scoped>
 .downloadSpecies {
-  margin-top: .5rem;
-  left: -.5rem;
+  margin-top: 1rem;
   display: flex;
   flex-direction: column;
-  position: absolute;
-  z-index: 1;
-  transition: all .3s ease-in-out;
-  overflow: hidden;
+  align-items: center;
+  transition: all 0.3s ease-in-out;
 }
 
 @media (min-width: 768px) {
@@ -257,9 +250,9 @@ function scrollTop() {
 }
 
 .downloadSpecies__button {
-  margin: 0 auto;
-  width: 80%;
-  padding: .5rem;
+  width: 80%; /* Ajusta el ancho según el diseño */
+  max-width: 400px;
+  padding: 0.8rem 1rem;
   border-radius: 1rem;
   font-weight: bold;
   background-color: var(--gris);
@@ -267,8 +260,14 @@ function scrollTop() {
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 1;
   font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.downloadSpecies__button:hover {
+  background-color: var(--primary-hover);
+  transform: scale(1.05); /* Efecto visual al pasar el mouse */
 }
 
 @media (min-width: 768px) {
@@ -281,19 +280,29 @@ function scrollTop() {
 }
 
 .downloadSpecies__icon {
-  width: 2rem;
+  margin-right: 0.5rem; /* Espaciado entre el icono y el texto */
+  width: 1.5rem;
   fill: currentColor;
+  cursor: pointer;
 }
 
 .downloadSpecies__card {
-  width: 320px;
-  margin: 0 auto;
-  background-color: white;
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.05);
+  width: 90%;
+  max-width: 400px;
+  background-color: var(--gris-fuente);
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
   border-radius: 1rem;
   padding: 2rem;
-  z-index: 0;
-  transition: all .3s ease-in-out;
+  opacity: 0; /* Inicialmente invisible */
+  height: 0; /* Altura inicial para el estado colapsado */
+  overflow: hidden; /* Oculta el contenido desbordado */
+  transition: all 0.3s ease-in-out;
+}
+
+.downloadSpecies__card.active {
+  opacity: 1; /* Aparece cuando está activo */
+  height: auto; /* Ajusta la altura automáticamente según el contenido */
+  margin-top: 1rem; /* Añade un margen cuando se expande */
 }
 
 @media (min-width: 768px) {
@@ -321,16 +330,6 @@ function scrollTop() {
   cursor: pointer;
 }
 
-.downloadSpecies__icon--red {
-  width: 3.5rem;
-  fill: red;
-}
-
-.downloadSpecies__icon--green {
-  width: 3.5rem;
-  fill: green;
-}
-
 .downloadSpecies__close {
   margin-top: 1rem;
   padding: 0.5rem 1rem;
@@ -342,8 +341,6 @@ function scrollTop() {
   text-align: center;
   border-radius: 0.5rem;
 }
-
-
 
 /* header */
 .especies__heading {
@@ -383,6 +380,7 @@ function scrollTop() {
 .header_formulario {
   display: flex;
   flex-direction: column;
+  align-items: center;
   width: 100%;
   margin: 0 auto;
 }
@@ -404,6 +402,7 @@ function scrollTop() {
   border-radius: 1.2rem;
   width: 80%;
   transition: all .3s ease-in-out;
+  position: relative;
 }
 
 .formulario__input {
@@ -417,8 +416,8 @@ function scrollTop() {
 .formulario__icono {
   width: 2rem;
   color: var(--gris);
-
   display: flex;
+  align-items: center;
 }
 
 .formulario__resultados {
@@ -444,16 +443,19 @@ function scrollTop() {
   }
 }
 
-/* main */
-.especies {
-  margin-top: 8rem;
+@media (max-width: 768px) {
+  .especies {
+    display: flex;
+    margin: 0 auto;
+    margin-top: 5rem;
+  }
 }
 
 @media (min-width: 768px) {
   .especies {
     display: flex;
     margin: 0 auto;
-    margin-top: 15rem;
+    margin-top: 5rem;
   }
 }
 
@@ -498,70 +500,99 @@ function scrollTop() {
   }
 }
 
-.paginador__botones {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.paginador__boton {
-  background-color: var(--primary);
-  color: white;
-  border: none;
-  padding: 0.5rem 1rem;
-  font-size: 1rem;
-  cursor: pointer;
-  border-radius: 5px;
-  transition: background-color 0.3s ease;
-}
-
-.paginador__boton:hover {
-  background-color: var(--primary-hover);
-}
-
-.paginador__boton-actual {
-  background-color: var(--secondary);
-  font-weight: bold;
-}
-
-.paginador__info {
-  margin-top: 1rem;
-  text-align: center;
-  font-size: 1rem;
-  margin-bottom: 2rem;
-}
-
-
 
 /* style for form input */
 .isSearching {
   position: absolute;
-  left: 9.2%;
+  left: 50%;
+  transform: translateX(-50%);
   width: 80%;
-  bottom: -7%;
   background-color: var(--gris);
   z-index: 10;
+  transition: all 0.3s ease-in-out;
 }
 
-@media (min-width: 768px) {
+/* Media queries */
+/* Para teléfonos pequeños o dispositivos de gama baja */
+@media (max-height: 600px) {
   .isSearching {
-    width: 60%;
-    left: 20%;
-    bottom: 18%;
+    top: 120%; /* Ajusta según el diseño */
   }
 }
-@media (min-width: 1340px) {
+
+/* Para teléfonos de gama media y resoluciones estándar */
+@media (min-height: 601px) and (max-height: 720px) {
   .isSearching {
-    width: 60%;
-    left: 20%;
-    bottom: -40%;
+    top: 110%; /* Ajusta según el diseño */
   }
 }
-@media (min-width: 1920px) {
+
+/* Para teléfonos más grandes y modernos */
+@media (min-height: 721px) and (max-height: 900px) {
   .isSearching {
-    left: 19.7%;
-    bottom: 8%;
+    top: 100%; /* Ajusta según el diseño */
+  }
+}
+
+/* Para pantallas grandes o phablets */
+@media (min-height: 901px) and (max-height: 1080px) {
+  .isSearching {
+    top: 90%; /* Ajusta según el diseño */
+  }
+}
+
+
+@media (min-height: 600px) {
+  .isSearching {
+    top: 109%; /* Para pantallas pequeñas */
+  }
+}
+
+@media (min-height: 720px) {
+  .isSearching {
+    top: 90%; /* Resolución intermedia común en dispositivos móviles */
+  }
+}
+
+@media (min-height: 768px) {
+  .isSearching {
+    top: 73%; /* Resolución de tablets pequeñas */
+  }
+}
+
+@media (min-height: 1080px) {
+  .isSearching {
+    top: 61%; /* Full HD estándar */
+  }
+}
+
+@media (min-height: 1200px) {
+  .isSearching {
+    top: 51.2%; /* Pantallas grandes con resolución extendida */
+  }
+}
+
+@media (min-height: 1340px) {
+  .isSearching {
+    top: 45.5%; /* Monitores QHD (2K) */
+  }
+}
+
+@media (min-height: 1440px) {
+  .isSearching {
+    top: 45.5%; /* Monitores QHD más altos */
+  }
+}
+
+@media (min-height: 1640px) {
+  .isSearching {
+    top: 40%; /* Monitores QHD más altos */
+  }
+}
+
+@media (min-height: 2160px) {
+  .isSearching {
+    top: 30.3%; /* Monitores 4K */
   }
 }
 </style>

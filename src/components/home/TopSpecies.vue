@@ -2,6 +2,7 @@
 import { useRouter } from "vue-router";
 import { getFullImageUrl } from "@/helpers/";
 import { useHomeStore } from "@/stores/home";
+import SvgIcon from "@/assets/SvgIcon.vue";
 
 const homeStore = useHomeStore();
 const router = useRouter();
@@ -30,7 +31,7 @@ const goToViewSpecies = () => {
             <!--fin especie -->
         </div>
         <div class="viewSpecies">
-            <button @click="goToViewSpecies()">Ver Todas las especies</button>
+            <button @click="goToViewSpecies()"><SvgIcon iconName="eyeWhite" size="24" style="margin-right: 0.5rem;"/>Ver todas las especies</button>
         </div>
 
     </section>

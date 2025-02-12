@@ -11,10 +11,15 @@ import 'jspdf-autotable'; // Importar autoTable plugin
 /*** funciones helpers ****/
 
 export const getImagesFlipbook = (code_specie, num_page) => {
-  const baseUrlImages = `http://localhost:8000/api/images/${code_specie}/flipbook/page_${num_page}.jpg`;
-  //const baseUrlImages = `https://apisara.corpoamazonia.gov.co/api/images/${code_specie}/flipbook/page_${num_page}.jpg`;
+  // Usa el `baseURL` configurado en `api` para construir la URL
+  const baseUrlImages = `${api.defaults.baseURL}/images/${code_specie}/flipbook/page_${num_page}.jpg`;
   return baseUrlImages;
-}
+};
+
+export const getSliderImages = (url) => {
+  const baseUrlImages = `${api.defaults.baseURL}/${url}`;
+  return baseUrlImages;
+};
 
 //funcion para obtener la ruta de una imagen formateada
 export const getFullImageUrl = (relativePath, allowDefault = true) => {
@@ -95,9 +100,24 @@ export const getFullImageNurseryUrl = (relativePath) => {
 
 // FUNCIONES ACTUALIZADAS Y FINALES
 export const descargarExcels = async (datos, excelName) => {
+  // Verificar que sea un array y que tenga datos
   if (!Array.isArray(datos) || datos.length === 0) {
     console.error('No hay datos para generar el Excel');
     return;
+  }
+
+  /**
+   * 1) Si la primera fila (datos[0]) es un objeto, asumimos que
+   *    "datos" es un array de objetos y lo convertimos al formato
+   *    [[col1, col2, ...], [fila1], [fila2], ...].
+   */
+  if (typeof datos[0] === 'object' && !Array.isArray(datos[0])) {
+    // Extrae las llaves de la primera fila (encabezados)
+    const headers = Object.keys(datos[0]);
+    // Crea las filas de datos a partir de los valores de cada objeto
+    const bodyData = datos.map(obj => Object.values(obj));
+    // Combina las dos cosas: [ [header1, header2], [val1, val2], ... ]
+    datos = [headers, ...bodyData];
   }
 
   // Crear un nuevo workbook y agregar una hoja
@@ -106,11 +126,10 @@ export const descargarExcels = async (datos, excelName) => {
 
   // Extraer los encabezados de la primera fila de datos
   const headers = datos[0];
-
   // Extraer los datos del resto de las filas
   const bodyData = datos.slice(1);
 
-  // Añadir la primera fila (encabezados)
+  // Añadir la fila de encabezados
   worksheet.addRow(headers);
 
   // Añadir las filas de datos
@@ -118,13 +137,13 @@ export const descargarExcels = async (datos, excelName) => {
     worksheet.addRow(row);
   });
 
-  // Obtener el número total de columnas y filas para asegurar que todo esté dentro del margen
+  // Obtener el número total de columnas y filas
   const totalColumns = headers.length;
   const totalRows = worksheet.rowCount;
 
-  // Establecer el estilo de los encabezados
-  headers.forEach((header, index) => {
-    const cell = worksheet.getRow(1).getCell(index + 1); // Fila 1, columna correspondiente
+  // Estilo de los encabezados (fila 1)
+  headers.forEach((_, index) => {
+    const cell = worksheet.getRow(1).getCell(index + 1);
     cell.fill = {
       type: 'pattern',
       pattern: 'solid',
@@ -142,7 +161,7 @@ export const descargarExcels = async (datos, excelName) => {
     };
   });
 
-  // Aplicar bordes a todas las celdas, incluyendo vacías, dentro del rango de la tabla
+  // Aplicar bordes a todas las celdas, incluyendo vacías, en el rango de la tabla
   for (let rowIndex = 1; rowIndex <= totalRows; rowIndex++) {
     const row = worksheet.getRow(rowIndex);
     for (let colIndex = 1; colIndex <= totalColumns; colIndex++) {
@@ -165,14 +184,14 @@ export const descargarExcels = async (datos, excelName) => {
         maxLength = columnLength;
       }
     });
-    column.width = maxLength + 2; // Ajustar un poco más de espacio
+    column.width = maxLength + 2; // Márgen adicional
   });
 
-  // Generar el archivo Excel
+  // Generar el archivo Excel (en memoria) y luego descargarlo
   const buffer = await workbook.xlsx.writeBuffer();
-
-  // Guardar el archivo usando file-saver
-  const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+  const blob = new Blob([buffer], {
+    type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+  });
   saveAs(blob, `${excelName}.xlsx`);
 };
 
@@ -183,6 +202,7 @@ export const descargarPdfs = (datos, tituloTabla, columnas, inicio, customHeader
     return;
   }
 
+  // Configuración básica del PDF
   const doc = new jsPDF({
     orientation: 'landscape',
     unit: 'pt',
@@ -194,26 +214,24 @@ export const descargarPdfs = (datos, tituloTabla, columnas, inicio, customHeader
   const margin = 40;
   const availableWidth = pageWidth - 2 * margin;
 
-  // Extraer la primera fila como headers
-  const dataHeaders = Object.keys(datos[0]);
-  const columnasMostrar = Math.min(columnas, dataHeaders.length);
+  // Extraer los headers de la primera fila o usar customHeaders
+  let headersToUse;
 
-  // Usar la primera fila de 'datos' como los headers
-  const extractedHeaders = datos[0]; // Primera fila para los headers
+  if (Array.isArray(customHeaders)) {
+    headersToUse = customHeaders; // Usar encabezados personalizados
+  } else {
+    const allKeys = Object.keys(datos[0]); // Extraer las llaves de la primera fila (objetos)
+    const columnasMostrar = Math.min(columnas, allKeys.length);
+    headersToUse = allKeys.slice(inicio, inicio + columnasMostrar).map(key => key);
+  }
 
-  // Usar customHeaders si se proporciona, de lo contrario usar los headers extraídos
-  const headersToUse = Array.isArray(customHeaders) ? customHeaders : Object.values(extractedHeaders).slice(inicio, inicio + columnasMostrar);
-
-  // Eliminar la primera fila de los datos para no incluirla en el cuerpo
-  const bodyData = datos.slice(1); // Datos sin la primera fila (que contiene los headers)
-
-  // Preparar los datos para la tabla
-  const body = bodyData.map(objeto =>
-    headersToUse.map((header, index) => {
-      const value = objeto[dataHeaders[inicio + index]];
+  // Extraer los datos del cuerpo (excluyendo la primera fila si se usa como encabezado)
+  const bodyData = datos.map(obj => {
+    return headersToUse.map(header => {
+      const value = obj[header];
       return value !== undefined && value !== null ? String(value) : '';
-    })
-  );
+    });
+  });
 
   // Añadir título
   doc.setFontSize(18);
@@ -227,7 +245,7 @@ export const descargarPdfs = (datos, tituloTabla, columnas, inicio, customHeader
   // Añadir tabla
   doc.autoTable({
     head: [headersToUse],
-    body: body,
+    body: bodyData,
     startY: margin + 60,
     margin: { top: margin, right: margin, bottom: margin, left: margin },
     styles: {
@@ -251,19 +269,24 @@ export const descargarPdfs = (datos, tituloTabla, columnas, inicio, customHeader
       styles[index] = {
         cellWidth: columnWidth,
         halign: 'left',
-        valign: 'top'
+        valign: 'top',
       };
       return styles;
     }, {}),
     didParseCell: function (data) {
       if (data.section === 'body') {
-        data.cell.styles.fillColor = data.row.index % 2 === 0 ? [255, 255, 255] : [245, 245, 245];
+        data.cell.styles.fillColor =
+          data.row.index % 2 === 0 ? [255, 255, 255] : [245, 245, 245];
       }
     },
     didDrawPage: function (data) {
       // Agregar número de página
       doc.setFontSize(10);
-      doc.text('Página ' + doc.internal.getNumberOfPages(), data.settings.margin.left, pageHeight - 10);
+      doc.text(
+        'Página ' + doc.internal.getNumberOfPages(),
+        data.settings.margin.left,
+        pageHeight - 10
+      );
     },
   });
 

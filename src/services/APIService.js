@@ -208,6 +208,28 @@ export default {
     sectionDelete(pid){
         return api.delete(`/page/section/${pid}`)
     },
+    sliderGet(){
+        return api.get('/page/slider/images')
+    },
+    sliderImagesGet(){
+        return api.get(`/page/slider`)
+    },
+    sliderImagesCreate(data){
+        return api.post(`/page/slider`, data, {
+            headers: { 'Content-Type': 'multipart/form-data' }
+        });
+    },
+    sliderImagesUpdate(id, data){
+        return api.put(`/page/slider/${id}`, data, {
+            headers: { 'Content-Type': 'multipart/form-data' }
+        });
+    },
+    sliderImagesOrderUpdate(data) {
+        return api.patch(`/page/slider/order`, data);
+    },    
+    sliderImagesDelete(pid){
+        return api.delete(`/page/slider/${pid}`)
+    },
     /* ==================================================================================================================== */
     /* ==================================================================================================================== */
     // ENDPOINT →→ SAMPLES
@@ -352,5 +374,11 @@ export default {
     },
     deleteUsersProperty(id){
         return api.delete(`/property/users/${id}`)
+    },
+    searchPropertyRecord(id) {
+        return api.get(`/property/users/record-search/${id}`)
+    },
+    speciesRecord(data) {
+        return api.post(`/property/users/species`, data)
     }
 }

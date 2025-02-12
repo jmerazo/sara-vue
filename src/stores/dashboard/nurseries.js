@@ -91,18 +91,22 @@ export const useNurseriesDashStore = defineStore('nurseriesDashboard',()=>{
     }
 
     const createNursery = async (data) => {
+        cargando.value = true
         try {
-        const response = await APIService.createNurseries(data);
-
-        if (response.status === 201) {
-            // La respuesta del APIService fue satisfactoria
-            nurseries.value.push(response.data); // Agrega el nuevo objeto al array
-            console.log('Nursery data: ', nurseries.value)
-        } else {
-            console.error("Error al agregar el vivero: ", response.statusText);
-        }
+            const response = await APIService.createNurseries(data);
+            console.log('response ', response)
+            if (response.status == 201) {
+                console.log('i am here')
+                // La respuesta del APIService fue satisfactoria
+                nurseries.value.push(data); // Agrega el nuevo objeto al array
+                return { success: true, msg: response.data.message };
+            } else {
+                return { success: false, msg: response.data.message || 'Error al asignar el vivero' };
+            }
         } catch (error) {
-        console.error("Error al comunicarse con el servidor: ", error);
+            return { success: false, msg: error.response?.data?.message || 'Error en la solicitud al aceptar el usuario' };
+        } finally {
+            cargando.value = false
         }
     };
 
@@ -224,6 +228,7 @@ export const useNurseriesDashStore = defineStore('nurseriesDashboard',()=>{
         userUpdateSelected,
         updateNursery,
         nurserySelected,
-        nurseryUpdateSelected
+        nurseryUpdateSelected,
+        cargando
     }
 })

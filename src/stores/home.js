@@ -10,6 +10,7 @@ export const useHomeStore = defineStore('home', () => {
     const topSpecies = ref([]);
     const maintenance = ref(false)
     const router = useRouter()
+    const SliderImages = ref([]);
 
     const colaboradores = ref([
         { enlace: 'https://minciencias.gov.co/', img: '/logos/mc_vida.png' },
@@ -25,6 +26,11 @@ export const useHomeStore = defineStore('home', () => {
        
     }
 
+     const SliderImagesGet = async () => {
+            const { data } = await APIService.sliderGet();
+            SliderImages.value = data.data;
+        }
+
     const switchMaintenance = ()=>{
         maintenance.value = !maintenance.value
         if(maintenance.value){
@@ -35,14 +41,13 @@ export const useHomeStore = defineStore('home', () => {
         
     }
 
-  
-
     return {
         colaboradores,
         topSpecies,
         fetchData,
         switchMaintenance,
         maintenance,
-        
+        SliderImagesGet,
+        SliderImages        
     }
 })

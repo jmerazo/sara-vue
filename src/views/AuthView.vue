@@ -145,7 +145,6 @@ async function handleSocialRegister(provider) {
     }
 
     const result = await signInWithPopup(auth, authProvider);
-    console.log('result social reg ', result)
     const user = result.user;
 
     // Preparar datos para el registro social

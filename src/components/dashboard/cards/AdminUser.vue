@@ -87,10 +87,11 @@ function onToggleChange(event) {
             </div>
             <div class="buttons">
                 <button @click="usersStore.selectedUserUpdate(user.id)" class="nav__element animation"><span class="nav__text">Editar Usuario</span></button>
+                <button @click="propertiesStore.selectedUserCreateUsersRecord(user.id)" class="nav__element animation"><span class="nav__text">Crear Expediente</span></button>
                 <button @click="propertiesStore.selectedUserCreateUsersProperty(user.id)" class="nav__element animation"><span class="nav__text">Asignar Especie</span></button>
                 <button @click="propertiesStore.selectedUserCreateProperty(user.id)" class="nav__element animation"><span class="nav__text">Registrar Predio</span></button>
-                <button @click="propertiesStore.listUserSpeciesIds(user.id)" class="nav__element animation"><span class="nav__text">Ver especies</span></button>
-                <button @click="nurseriesStore.selectedUserCreateNursery(user.id)" class="nav__element animation"><span class="nav__text">Vivero</span></button>
+                <button @click="nurseriesStore.selectedUserCreateNursery(user.id)" class="nav__element animation"><span class="nav__text">Asignar Vivero</span></button>
+                <button @click="propertiesStore.listUserSpeciesIds(user.id)" class="nav__element animation"><span class="nav__text">Ver especies</span></button>                
             </div>
         </div>
     </div>   

@@ -71,7 +71,7 @@ export const useUsersValidateStore = defineStore("useUsersValidateStore", () => 
   }
 
   const userValidateAccept = async (user_id, rol) => {
-    console.log('rol ', rol)
+    cargando.value = true
     try {
       const { data } = await APIService.usersValidateAccept(user_id, rol);
       if (data.success) {
@@ -84,10 +84,13 @@ export const useUsersValidateStore = defineStore("useUsersValidateStore", () => 
       }
     } catch (error) {
       return { success: false, message: error.response?.data?.message || 'Error en la solicitud al aceptar el usuario' };
+    } finally {
+      cargando.value = false
     }
   };  
   
   const userValidateReject = async (user_id) => {
+    cargando.value = true
     try {
       const { data } = await APIService.usersValidateReject(user_id);
       if (data.success) {
@@ -100,6 +103,8 @@ export const useUsersValidateStore = defineStore("useUsersValidateStore", () => 
       }
     } catch (error) {
       return { success: false, message: error.response?.data?.message || 'Error en la solicitud al rechazar el usuario' };
+    } finally {
+      cargando.value = false
     }
   };
     

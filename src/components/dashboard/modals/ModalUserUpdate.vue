@@ -4,13 +4,15 @@ import { watch, computed, ref } from "vue";
 import { useModalStore } from "@/stores/modal";
 import { useUsersStore } from "@/stores/users";
 import { locatesColombia } from "@/stores/locates";
-import APIService from "@/services/APIService";
 import { useRouter } from "vue-router";
+import { useToastStore } from "@/stores/toast";
+import LoadingData from "@/components/shared/LoadingData.vue";
 
 const router = useRouter();
 const locates = locatesColombia();
 const modal = useModalStore();
 const usersStore = useUsersStore();
+const toast = useToastStore();
 const error = ref('')
 
 const formData = ref({
@@ -46,17 +48,20 @@ async function userUpdate() {
   }
 
   try {
-    await APIService.updateUsers(usersStore.userSelected[0].id, formData.value);
-    /* $toaster.success(`Usuario ${usersStore.userSelected[0].email} actualizado`); */
-    alert(`Usuario ${usersStore.userSelected[0].email} actualizado`);
-    router.go();
+    const response = await usersStore.updateUser(usersStore.userSelected[0].id, formData.value);
+    console.log('response ', response)
+    if(response.success){
+      modal.handleClickModalUserUpdate();
+      toast.activateToast(response.msg, "success");
+      resetForm()
+    }else {
+      toast.activateToast(response.msg, "error");
+    }
   } catch (error) {
     if (error.response && error.response.data && error.response.data.error) {
-      // Si hay un mensaje de error en la respuesta, lo puedes mostrar
-      alert(error.response.data.error);
+      toast.activateToast(error.response.data.error, "error");
     } else {
-      // En caso de un error inesperado
-      alert("Ocurrió un error al procesar la solicitud.");
+      toast.activateToast("Ocurrió un error al procesar la solicitud.", "error");
     }
   }
 }
@@ -119,7 +124,6 @@ function resetForm() {
   <div class="modal" v-if="modal.modalUserUpdate">
     <div class="modal__contenido">
       <div>
-
         <div>
           <div class="modal__encabezado">
             <div class="modal__imagen">
@@ -253,6 +257,7 @@ function resetForm() {
               </svg>
             </div>
           </form>
+          <LoadingData v-if="usersStore.loading"/>
         </div>
       </div>
     </div>

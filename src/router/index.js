@@ -7,10 +7,6 @@ import GuestLayoutView from "@/views/layouts/GuestLayoutView.vue";
 
 import { useAuthTokenStore } from "@/stores/auth";
 import {useHomeStore} from '../stores/home'
-
-
-
-
 const router = createRouter({
   
   history: createWebHistory(import.meta.env.BASE_URL),

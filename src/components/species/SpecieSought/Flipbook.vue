@@ -1,7 +1,7 @@
 <script setup>
 import { onMounted, ref, nextTick, onBeforeUnmount } from 'vue';
 import { useRoute } from 'vue-router'
-import { useConsultaStore } from '../../../stores/consulta';
+import { useConsultaStore } from '@/stores/consulta';
 import { getImagesFlipbook } from "@/helpers/";
 import { PageFlip } from 'page-flip';
 
@@ -22,7 +22,6 @@ const navValue = ref('protocol')
 const changeValueNav = ((item) => {
   navValue.value = item
 })
-
 
 const noProtocol = ref(true)
 
@@ -135,15 +134,11 @@ function getFlipbookDimensions() {
 }
 
 const fetchImagesForFlipbook = async (codeSpecie, numPages) => {
-  const imagePromises = Array.from({ length: numPages }, (_, i) => {
-    return new Promise((resolve) => {
-      const img = new Image();
-      img.src = getImagesFlipbook(codeSpecie, i + 1);
-      img.onload = () => resolve(img.src);
-    });
-  });
-
-  images.value = await Promise.all(imagePromises);
+  images.value = Array(numPages).fill(null); // Inicializa el array con valores nulos
+  for (let i = 0; i < numPages; i++) {
+    const imageUrl = getImagesFlipbook(codeSpecie, i + 1);
+    images.value[i] = imageUrl; // Asigna la URL directamente sin esperar la carga completa
+  }
 };
 </script>
 
@@ -162,7 +157,7 @@ const fetchImagesForFlipbook = async (codeSpecie, numPages) => {
 
       <div id="book" class="book" ref="bookRef" :class="{ 'cover-view': currentPage === 0 }" v-if="!noProtocol">
         <div v-for="(image, index) in images" :key="index" class="page">
-          <img :src="image" :alt="`Page ${index + 1}`" />
+          <img :src="image" :alt="`Page ${index + 1}`" loading="lazy" />
         </div>
       </div>
 

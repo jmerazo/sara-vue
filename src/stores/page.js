@@ -11,6 +11,9 @@ export const usePageContent = defineStore('pageContent',()=>{
     const sectionData = ref([]);
     const sectionSelected = ref([]);
     const sectionSelectedView = ref([])
+    const sliderImages = ref([])
+    const sliderImagesBase = ref([])
+    const SliderImageSelected = ref('')
     const loading = ref(false)
 
     const fetchData = async () => {
@@ -34,6 +37,182 @@ export const usePageContent = defineStore('pageContent',()=>{
         }      
     }
 
+    // SECTION SLIDER IMAGES
+    const fetchSliderImages = async () => {
+        const { data } = await APIService.sliderImagesGet();
+        sliderImages.value = data.data;
+        sliderImagesBase.value = data.data;
+    }
+
+    const SliderImagesAdd = async (data) => {
+        loading.value = true;
+        try {
+            const response = await APIService.sliderImagesCreate(data);
+            console.log('response slider ', response)
+    
+            if (response.data.success) {
+                sliderImages.value.push(response.data.data);
+                return {
+                    success: true,
+                    msg: response.data.msg
+                };
+            } else {
+                return {
+                    success: false,
+                    msg: response.data.msg
+                };
+            }
+        } catch (error) {
+            return {
+                success: false,
+                msg: error.response?.data?.msg || 'Error inesperado en la comunicación con el servidor.'
+            };
+        } finally {
+            loading.value = false;
+        }
+    };
+    
+    const SliderImagesOrderUpdate = async (reorderedImages) => {
+        loading.value = true;    
+        try {   
+            const response = await APIService.sliderImagesOrderUpdate({ images: reorderedImages });
+            if (response.data.success) {
+                sliderImages.value = reorderedImages.map((image) => {
+                    const originalImage = sliderImages.value.find((img) => img.id === image.id);
+                    return {
+                        ...originalImage,
+                        order: image.order,
+                    };
+                });
+                return {
+                    success: true,
+                    msg: response.data.msg,
+                };
+            } else {
+                return {
+                    success: false,
+                    msg: response.data.msg,
+                };
+            }
+        } catch (error) {
+            console.error("Error en la solicitud:", error.response?.data || error.message);
+            return {
+                success: false,
+                msg: error.response?.data?.msg || "Error inesperado al actualizar el orden.",
+            };
+        } finally {
+            loading.value = false;
+        }
+    };
+    
+    function SliderImagesSelected(id) {
+        SliderImageSelected.value =  sliderImages.value.filter(si => si.id === id)
+        modal.handleClickModalSliderImagesUpdate(SliderImageSelected.value); 
+    }
+
+    const SliderImagesUpdate = async (id, data) => {
+        loading.value = true;
+        try {
+            const response = await APIService.sliderImagesUpdate(id, data);
+            if (response.data.success) {
+                const sliderImagesIndex = sliderImages.value.findIndex((si) => si.id === id);
+                if (sliderImagesIndex !== -1) {
+                    // Crear un nuevo objeto con los datos actualizados
+                    const updatedImage = {
+                        ...sliderImages.value[sliderImagesIndex], // Datos existentes
+                        ...data, // Datos enviados
+                        // Actualizar la URL solo si el backend devuelve una nueva
+                        url: data.image ? response.data.data.url : sliderImages.value[sliderImagesIndex].url,
+                    };
+            
+                    // Reemplazar el objeto en el array para asegurar reactividad
+                    sliderImages.value.splice(sliderImagesIndex, 1, updatedImage);
+                } else {
+                    return {
+                        success: false,
+                        msg: "Imagen no encontrada",
+                    };
+                }
+                return {
+                    success: true,
+                    msg: response.data.msg,
+                };
+            } else {
+                return {
+                    success: false,
+                    msg: response.data.msg,
+                };
+            }            
+        } catch (error) {
+            return {
+                success: false,
+                msg: error.response?.data?.msg || "Error inesperado en la comunicación con el servidor.",
+            };
+        } finally {
+            loading.value = false;
+        }
+    };
+    
+    const SliderImageStatusUpdate = async (id, stat) => {
+        loading.value = true;
+        try {
+            const response = await APIService.sliderImagesUpdate(id, { status: stat });
+            if (response.data.success) {
+                const sliderImagesIndex = sliderImages.value.findIndex((si) => si.id === id);
+                if (sliderImagesIndex !== -1) {
+                    sliderImages.value[sliderImagesIndex].status = stat;
+                }
+                return {
+                    success: true,
+                    msg: response.data.msg,
+                };
+            } else {
+                return {
+                    success: false,
+                    msg: response.data.msg,
+                };
+            }
+        } catch (error) {
+            return {
+                success: false,
+                msg: error.response?.data?.msg || "Error inesperado en la comunicación con el servidor.",
+            };
+        } finally {
+            loading.value = false;
+        }
+    };    
+
+    async function SliderImagesDelete(id) {
+        loading.value = true;
+        try {
+            const response = await APIService.sliderImagesDelete(id);
+            console.log('response delete ', response)
+            if (response.data.success) {
+                const indexToDelete = sliderImages.value.findIndex(item => item.id === id);
+                if (indexToDelete !== -1) {
+                    sliderImages.value.splice(indexToDelete, 1);
+                }
+                return {
+                    success: true,
+                    msg: response.data.msg
+                };
+            } else {
+                return {
+                    success: false,
+                    msg: response.data.msg
+                };
+            }
+        } catch (error) {
+            return {
+                success: false,
+                msg: error.response?.data?.msg || "Error inesperado al eliminar la imagen."
+            };
+        } finally {
+            loading.value = false;
+        }
+    }   
+
+    // CONTENT PAGES
     const pagesData = async () => {
         const { data } = await APIService.pagesGet()
         pageData.value = data     
@@ -167,6 +346,15 @@ export const usePageContent = defineStore('pageContent',()=>{
         selectedSectionView,
         sectionSelectedView,
         sendContactEmail,
-        loading
+        loading,
+        fetchSliderImages,
+        sliderImages,
+        SliderImagesAdd,
+        SliderImagesDelete,
+        SliderImagesOrderUpdate,
+        SliderImagesSelected,
+        SliderImageSelected,
+        SliderImagesUpdate,
+        SliderImageStatusUpdate
     }
 })

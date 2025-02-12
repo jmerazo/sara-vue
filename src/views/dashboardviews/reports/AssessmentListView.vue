@@ -4,6 +4,8 @@ import { onBeforeRouteLeave } from "vue-router";
 import { useGeneralEvaluations } from "@/stores/dashboard/reports/generalEvaluations";
 import { descargarExcels, descargarPdfs, obtenerFecha } from "@/helpers";
 import { useModalStore } from "@/stores/modal";
+import SvgIcon from "@/assets/SvgIcon.vue";
+
 //componentes
 import LoadingData from "@/components/shared/LoadingData.vue";
 import ModalCandidate from "@/components/dashboard/modals/ModalCandidate.vue";

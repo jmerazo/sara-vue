@@ -1,57 +1,113 @@
 <script setup>
-import { ref, onMounted, computed } from "vue";
-import { useRoute } from "vue-router";
+import { ref, onMounted, computed, watch } from "vue";
+import { useHomeStore } from '@/stores/home';
+import { getSliderImages } from "../../helpers/index";
+import SvgIcon from "@/assets/SvgIcon.vue";
 
-const route = useRoute();
-
-
-
-const images = [
-  "/img/homeCarousel/slider_1.jpg",
-  "/img/homeCarousel/slider_2.jpg",
-  "/img/homeCarousel/slider_3.jpg",
-  "/img/homeCarousel/slider_4.jpg",
-  "/img/homeCarousel/slider_5.jpg",
-  "/img/homeCarousel/slider_6.jpg",
-  "/img/homeCarousel/slider_7.jpg",
-  "/img/homeCarousel/slider_8.jpg",
-  "/img/homeCarousel/slider_9.jpg",
-];
+const homeStore = useHomeStore();
+const sliderImages = computed(() => {
+  return homeStore.SliderImages
+    .filter((image) => image.status === 1) // Filtrar imágenes activas
+    .map((image) => ({
+      ...image,
+      link: image.link ? image.link.trim() : null // Asegurar que link sea válido
+    }))
+    .sort((a, b) => a.order - b.order); // Ordenar por campo 'order'
+});
+console.log(sliderImages.value.map((image) => image.link));
 
 const currentIndex = ref(0);
+const isPaused = ref(false);
+let sliderInterval = null;
+/* console.log('home images ', sliderImages) */
 
+const processSliderImages = () => {
+  homeStore.SliderImages.forEach((image) => {
+    image.fullUrl = getSliderImages(image.url);
+  });
+};
 
-onMounted(() => {
-  setInterval(() => {
+onMounted(async () => {
+  await homeStore.SliderImagesGet();
+  processSliderImages();
+  sliderInterval = setInterval(() => {
     changeBackgroundImage(1);
   }, 5000);
 });
 
 function changeBackgroundImage(direction) {
-  const totalImages = images.length;
+  const totalImages = sliderImages.value.length;
   currentIndex.value = (currentIndex.value + direction + totalImages) % totalImages;
+}
+
+watch(
+    () => homeStore.SliderImages,
+    () => {
+        processSliderImages();
+    },
+    { deep: true }
+);
+
+function pauseSlider() {
+  if (!isPaused.value) {
+    isPaused.value = true;
+    clearInterval(sliderInterval); // Detiene el intervalo
+  } else {
+    isPaused.value = false;
+    sliderInterval = setInterval(() => {
+      changeBackgroundImage(1);
+    }, 5000); // Reinicia el intervalo
+  }
 }
 </script>
 
 <template>
   <header class="header">
-    <!-- Texto sobre las imágenes -->
     <div class="header__text">
       <h1>SISTEMA DE INFORMACIÓN PARA LA ADMINISTRACIÓN Y MANEJO SOSTENIBLE DE LOS RECURSOS NATURALES DEL SUR DE LA
         AMAZONIA COLOMBIANA</h1>
     </div>
 
-    <!-- Imágenes con fade-in/out -->
-    <div v-for="(image, index) in images" :key="index" class="header__image" :class="{ active: index === currentIndex }"
-      :style="{ backgroundImage: 'url(' + image + ')' }"></div>
+    <!-- Imágenes con enlace o no -->
+    <div
+      v-for="(image, index) in sliderImages"
+      :key="image.id"
+      class="header__image-wrapper"
+    >
+      <div
+        class="header__image"
+        :class="{ active: index === currentIndex }"
+        :style="{ backgroundImage: 'url(' + image.fullUrl + ')' }"
+      >
+        <!-- Botón sobre la imagen -->
+        <a
+          v-if="image.link && image.link.trim()"
+          :href="image.link"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="btn-go"
+        >
+          <SvgIcon iconName="linkWhite" size="24" class="btn__link" />
+          Ir a...
+        </a>
+      </div>
+    </div>
 
-    <!-- Botones para cambiar imagen -->
     <button class="nav-button left" @click="changeBackgroundImage(-1)">&#10094;</button>
     <button class="nav-button right" @click="changeBackgroundImage(1)">&#10095;</button>
 
-    <!-- Indicadores -->
+    <!-- Botón de pausa -->
+    <button class="btn-pause" @click="pauseSlider">
+      <SvgIcon :iconName="isPaused ? 'playWhite' : 'pauseWhite'" size="24" />
+      {{ isPaused ? 'Reanudar' : 'Pausa' }}
+    </button>
+
     <div class="indicators">
-      <span v-for="(image, index) in images" :key="index" :class="['dot', { active: index === currentIndex }]"></span>
+      <span
+        v-for="(image, index) in sliderImages"
+        :key="image.id"
+        :class="['dot', { active: index === currentIndex }]"
+      ></span>
     </div>
   </header>
 </template>
@@ -79,13 +135,14 @@ function changeBackgroundImage(direction) {
     height: 900px;
   }
 }
+
 .header__text {
   margin: 0 auto;
   margin-top: 70%;
   position: relative;
   max-width: 90%;
   color: white;
-  z-index: 3;
+  z-index: 2;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
 }
 
@@ -126,6 +183,7 @@ function changeBackgroundImage(direction) {
   transition: opacity 1.5s ease-out;
   opacity: 0;
   z-index: 0;
+  pointer-events: none;
 }
 
 .header__image.active {
@@ -136,6 +194,7 @@ function changeBackgroundImage(direction) {
 .header::before {
   content: "";
   position: absolute;
+  pointer-events: none;
   top: 0;
   left: 0;
   width: 100%;
@@ -164,6 +223,36 @@ function changeBackgroundImage(direction) {
 
 .dot.active {
   background-color: rgba(255, 255, 255, 1);
+}
+
+/* Botón de pausa */
+.btn-pause {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: var(--primary); /* Fondo primario */
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 8px;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: bold;
+  color: white; /* Texto blanco */
+  cursor: pointer;
+  z-index: 5;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.btn-pause:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.btn__link {
+  fill: white; /* Icono en color blanco */
 }
 
 .nav-button {
@@ -198,5 +287,42 @@ function changeBackgroundImage(direction) {
   .header__text {
     font-size: 3rem;
   }
+}
+
+/* Estilo del botón "Ir a" */
+.btn-go {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: var(--primary); /* Fondo primario */
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 8px;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: bold;
+  color: white; /* Texto blanco */
+  cursor: pointer;
+  z-index: 5;
+  transition: transform 0.3s, box-shadow 0.3s;
+  pointer-events: auto;
+}
+
+.btn-go:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.btn__link {
+  fill: var(--primary); /* Icono en color verde */
+  z-index: 10;
+}
+
+.btn-go.hidden {
+  display: none; 
+  pointer-events: none;
 }
 </style>

@@ -160,9 +160,7 @@ const displayedPageRange = computed(() => {
 </template>
 
 <style scoped>
-
 /* header contenido */
-
 .header__glosario {
   margin-top: 6.5rem;
 }
@@ -302,9 +300,17 @@ const displayedPageRange = computed(() => {
   font-weight: 700;
   font-size: 1rem;
 }
-/* Paginador */
-.paginador {
-  margin: 3rem 0;
+
+/* Validación del buscador */
+.validacion__contenido {
+  margin-top: 2rem;
+  text-align: center;
+}
+
+.validacion__heading {
+  font-size: 1.5rem;
+  color: var(--primary, #006d77);
+  font-weight: bold;
 }
 
 /* termino */

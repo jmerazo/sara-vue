@@ -35,15 +35,18 @@ function deleteSpecieUser(id, nu) {
 
           <div v-for="ef in property.userSpecies" :key="ef.id">
             <div class="card__body">
-              <p class="info">{{ ef.nom_comunes }}</p>
-              <p>{{ ef.nombre_cientifico_especie + " " + ef.nombre_autor_especie }}</p>
-              <p>cod: <span class="info">{{ ef.ep_especie_cod }}</span></p>
+              <p class="info">{{ ef.vernacularName }}</p>
+              <p>{{ ef.scientificName + " " +  ef.scientificNameAuthorship }}</p>
+              <p>cod: <span class="info">{{ ef.ep_especie_id }}</span></p>
               <hr>
 
               <div>
-                <p>Cant.Individuos <span class="info">{{ ef.cantidad_individuos }}</span></p>
-                <p>Cant. Productiva <span class="info">{{ ef.cantidad_productiva }}</span></p>
-                <p>Cant.Remanente <span class="info">{{ ef.cantidad_remanente }}</span></p>
+                <p>Cant.Autorizada <span class="info">{{ ef.cantidad_autorizada }}</span></p>
+                <p>Cant.Remanentes <span class="info">{{ ef.cantidad_remanentes }}</span></p>
+                <p>Cant. Aprovechable <span class="info">{{ ef.cantidad_aprovechable }}</span></p>
+                <p>CM <span class="info">{{ ef.CM }}</span></p>
+                <p>RM <span class="info">{{ ef.RM }}</span></p>
+                <p>Cant. Placas <span class="info">{{ ef.cantidad_placas }}</span></p>
               </div>
               <hr>
               <p>predio: <span class="info">{{ ef.nombre_predio }}</span></p>
@@ -136,7 +139,7 @@ function deleteSpecieUser(id, nu) {
   padding: 1rem;
   background-color: #fff;
   border-radius: .5rem;
-  height: 320px;
+  height: 400px;
   position: relative;
 }
 
@@ -168,7 +171,7 @@ function deleteSpecieUser(id, nu) {
   border-radius: 10px;
   text-align: center;
   width: 95%;
-  max-height: 83%;
+  max-height: 84%;
   overflow-y: auto;
   transform: translate(-50%, -50%);
   z-index: 1000;

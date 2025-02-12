@@ -1,3 +1,7 @@
+<script setup>
+const currentYear = new Date().getFullYear()
+</script>
+
 <template>
   <footer class="footer">
     <div class="contenedor">
@@ -109,7 +113,7 @@
         <!-- fin footer grid -->
       </div>
     </div>
-    <p class="copyright">todos los derechos reservados &copy;</p>
+    <p class="copyright">corpoamazonia - todos los derechos reservados &copy; 2022 - {{ currentYear }}</p>
   </footer>
 </template>
 

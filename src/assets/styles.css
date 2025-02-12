@@ -21,6 +21,16 @@ font-family: 'Roboto', sans-serif;
   --fuente-principal: 'Montserrat', sans-serif;
   --rojo: rgb(184, 50, 50);
   --gris-fuente:#2c4357;
+  
+  --card-padding: 1.5rem;
+  --card-icon-size: 48px;
+  --card-icon-size-mobile: 35px;
+  --button-color: var(--secondary);
+  --button-hover-color: var(--primary);
+  --border-color: var(--gris-claro);
+  --bg-color: var(--blanco);
+  --box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  --box-shadow-hover: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
 template {
@@ -92,41 +102,60 @@ li{
   list-style-type: none;
 }
 
-Personalización de la barra de desplazamiento para navegadores basados en Webkit
+/* Ancho del scrollbar */
 ::-webkit-scrollbar {
-  width: 12px; /* Ancho de la barra de desplazamiento vertical */
-  height: 12px; /* Altura de la barra de desplazamiento horizontal */
+  width: 10px; /* Ajusta según necesites */
 }
 
+/* Estilo de la pista (track) */
 ::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.1); /* Fondo ligeramente transparente para el track */
-  backdrop-filter: blur(10px); /* Efecto de desenfoque en navegadores compatibles */
-  -webkit-backdrop-filter: blur(10px); /* Efecto de desenfoque para Safari */
-  border-radius: 10px; /* Bordes redondeados para el track */
+  background: #868686;
+  border-radius: 10px;
 }
 
+/* Estilo de la "thumb" (el deslizador) */
 ::-webkit-scrollbar-thumb {
-  background-color: rgba(255, 255, 255, 0.5); /* Color del thumb ligeramente transparente */
-  border-radius: 10px; /* Bordes redondeados para el thumb */
-  border: 3px solid rgba(255, 255, 255, 0.1); /* Espacio alrededor del thumb para evitar el efecto de recorte */
+  background: var(--primary-hover);
+  border-radius: 10px;
 }
 
-::-webkit-scrollbar-thumb:hover {
-  background-color: rgba(255, 255, 255, 0.8); /* Aumenta la opacidad al pasar el ratón */
+/* Para Firefox */
+/* html {
+  scrollbar-width: thin;                    
+  scrollbar-color: var(--primary-hover) #868686;    
+} */
+
+.paginador__botones {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 2rem;
 }
 
-::-webkit-scrollbar-button {
-  display: block;
-  background-color: rgba(255, 255, 255, 0.5); /* Color del botón de flecha */
-  border-radius: 50%; /* Bordes redondeados para los botones de flecha */
+.paginador__boton {
+  background-color: var(--primary);
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
 }
 
-::-webkit-scrollbar-button:hover {
-  background-color: rgba(255, 255, 255, 0.8); /* Aumenta la opacidad al pasar el ratón */
+.paginador__boton:hover {
+  background-color: var(--primary-hover);
 }
 
-/* Personalización de la barra de desplazamiento para Firefox */
-body {
-  scrollbar-width: thin; 
-  /* scrollbar-color: rgba(255, 255, 255, 0.5) rgba(0, 0, 0, 0);  */
+.paginador__boton-actual {
+  background-color: var(--secondary);
+  font-weight: bold;
+}
+
+.paginador__info {
+  margin-top: 1rem !important;
+  text-align: center !important;
+  font-size: 1rem !important;
+  margin-bottom: 2rem !important;
 }
